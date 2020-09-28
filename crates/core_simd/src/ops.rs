@@ -222,6 +222,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl Div for $vector }
             impl_op! { impl Rem for $vector }
             impl_op! { impl Neg for $vector }
+            impl_op_meta! { @index $vector }
         )*
     };
     { mask: $($vector:ty,)* } => {
@@ -230,6 +231,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl BitOr for $vector }
             impl_op! { impl BitXor for $vector }
             impl_op! { impl Not for $vector }
+            impl_op_meta! { @index $vector }
         )*
     };
     { unsigned integer: $($vector:ty,)* } => {
@@ -243,6 +245,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl BitOr for $vector }
             impl_op! { impl BitXor for $vector }
             impl_op! { impl Not for $vector }
+            impl_op_meta! { @index $vector }
 
             // Integers panic on divide by 0
             impl_ref_ops! {
@@ -411,6 +414,28 @@ macro_rules! impl_op_meta {
             impl_op! { impl Neg for $vector }
         )*
     };
+    { @index $vector:ty } => {
+        impl<I> core::ops::Index<I> for $vector
+        where
+            I: core::slice::SliceIndex<[<$vector as crate::Vector>::Scalar]>,
+        {
+            type Output = I::Output;
+            fn index(&self, index: I) -> &Self::Output {
+                let slice: &[_] = self.as_ref();
+                &slice[index]
+            }
+        }
+
+        impl<I> core::ops::IndexMut<I> for $vector
+        where
+            I: core::slice::SliceIndex<[<$vector as crate::Vector>::Scalar]>,
+        {
+            fn index_mut(&mut self, index: I) -> &mut Self::Output {
+                let slice: &mut [_] = self.as_mut();
+                &mut slice[index]
+            }
+        }
+    }
 }
 
 impl_op_meta! {
