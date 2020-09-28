@@ -138,6 +138,11 @@ macro_rules! call_counting_args {
 /// Implements common traits on the specified vector `$name`, holding multiple `$lanes` of `$type`.
 macro_rules! base_vector_traits {
     { $name:path => [$type:ty; $lanes:literal] } => {
+        impl crate::vector::Vector for $name {
+            type Scalar = $type;
+            const LANES: usize = $lanes;
+        }
+
         impl Copy for $name {}
 
         impl Clone for $name {

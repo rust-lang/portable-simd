@@ -9,6 +9,8 @@ mod macros;
 mod fmt;
 mod intrinsics;
 mod ops;
+mod vector;
+pub use vector::*;
 
 mod masks;
 pub use masks::*;
