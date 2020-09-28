@@ -87,6 +87,13 @@ macro_rules! define_mask {
                 Self(self.0 ^ rhs.0)
             }
         }
+
+        impl core::ops::Not for $name {
+            type Output = Self;
+            fn not(self) -> Self {
+                Self(!self.0)
+            }
+        }
     }
 }
 

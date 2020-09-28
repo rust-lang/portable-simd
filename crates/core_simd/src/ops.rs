@@ -10,6 +10,7 @@ where
 
 /// Automatically implements operators over references in addition to the provided operator.
 macro_rules! impl_ref_ops {
+    // binary op
     {
         impl core::ops::$trait:ident<$rhs:ty> for $type:ty {
             type Output = $output:ty;
@@ -52,6 +53,8 @@ macro_rules! impl_ref_ops {
             }
         }
     };
+
+    // binary assignment op
     {
         impl core::ops::$trait:ident<$rhs:ty> for $type:ty {
             $(#[$attrs:meta])*
@@ -70,6 +73,26 @@ macro_rules! impl_ref_ops {
             }
         }
     };
+
+    // unary op
+    {
+        impl core::ops::$trait:ident for $type:ty {
+            type Output = $output:ty;
+            fn $fn:ident($self_tok:ident) -> Self::Output $body:tt
+        }
+    } => {
+        impl core::ops::$trait for $type {
+            type Output = $output;
+            fn $fn($self_tok) -> Self::Output $body
+        }
+
+        impl core::ops::$trait for &'_ $type {
+            type Output = <$type as core::ops::$trait>::Output;
+            fn $fn($self_tok) -> Self::Output {
+                core::ops::$trait::$fn(*$self_tok)
+            }
+        }
+    }
 }
 
 /// Automatically implements operators over vectors and scalars for a particular vector.
@@ -138,6 +161,29 @@ macro_rules! impl_op {
         impl_op! { @binary $type, $rhs, BitXor::bitxor, BitXorAssign::bitxor_assign, simd_xor }
     };
 
+    // Neg and Not implementations
+    { impl Not for $type:ty } => {
+        impl_ref_ops! {
+            impl core::ops::Not for $type {
+                type Output = Self;
+                fn not(self) -> Self::Output {
+                    self ^ <$type>::splat(true.into())
+                }
+            }
+        }
+    };
+
+    { impl Neg for $type:ty } => {
+        impl_ref_ops! {
+            impl core::ops::Neg for $type {
+                type Output = Self;
+                fn neg(self) -> Self::Output {
+                    self * <$type>::splat(-1 as <$type as crate::Vector>::Scalar)
+                }
+            }
+        }
+    };
+
     // generic binary op with assignment when output is `Self`
     { @binary $type:ty, $rhs:ty, $trait:ident :: $trait_fn:ident, $assign_trait:ident :: $assign_trait_fn:ident, $intrinsic:ident } => {
         impl_ref_ops! {
@@ -175,6 +221,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl Mul for $vector }
             impl_op! { impl Div for $vector }
             impl_op! { impl Rem for $vector }
+            impl_op! { impl Neg for $vector }
         )*
     };
     { mask: $($vector:ty,)* } => {
@@ -182,6 +229,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl BitAnd for $vector }
             impl_op! { impl BitOr for $vector }
             impl_op! { impl BitXor for $vector }
+            impl_op! { impl Not for $vector }
         )*
     };
     { unsigned integer: $($vector:ty,)* } => {
@@ -194,6 +242,7 @@ macro_rules! impl_op_meta {
             impl_op! { impl BitAnd for $vector }
             impl_op! { impl BitOr for $vector }
             impl_op! { impl BitXor for $vector }
+            impl_op! { impl Not for $vector }
 
             // Integers panic on divide by 0
             impl_ref_ops! {
@@ -358,6 +407,9 @@ macro_rules! impl_op_meta {
     };
     { signed integer: $($vector:ty,)* } => {
         impl_op_meta! { unsigned integer: $($vector,)* }
+        $(
+            impl_op! { impl Neg for $vector }
+        )*
     };
 }
 
