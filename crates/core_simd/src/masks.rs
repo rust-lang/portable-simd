@@ -1,3 +1,13 @@
+/// The error type returned when converting an integer to a mask fails.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct TryFromMaskError(());
+
+impl core::fmt::Display for TryFromMaskError {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(f, "mask must have all bits set or unset")
+    }
+}
+
 macro_rules! define_mask {
     { $(#[$attr:meta])* struct $name:ident($type:ty); } => {
         $(#[$attr])*
@@ -34,9 +44,47 @@ macro_rules! define_mask {
             }
         }
 
+        impl core::convert::TryFrom<$type> for $name {
+            type Error = TryFromMaskError;
+            fn try_from(value: $type) -> Result<Self, Self::Error> {
+                if value == 0 || !value == 0 {
+                    Ok(Self(value))
+                } else {
+                    Err(TryFromMaskError(()))
+                }
+            }
+        }
+
+        impl core::convert::From<$name> for $type {
+            fn from(value: $name) -> Self {
+                value.0
+            }
+        }
+
         impl core::fmt::Debug for $name {
             fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 self.test().fmt(f)
+            }
+        }
+
+        impl core::ops::BitAnd for $name {
+            type Output = Self;
+            fn bitand(self, rhs: Self) -> Self {
+                Self(self.0 & rhs.0)
+            }
+        }
+
+        impl core::ops::BitOr for $name {
+            type Output = Self;
+            fn bitor(self, rhs: Self) -> Self {
+                Self(self.0 | rhs.0)
+            }
+        }
+
+        impl core::ops::BitXor for $name {
+            type Output = Self;
+            fn bitxor(self, rhs: Self) -> Self {
+                Self(self.0 ^ rhs.0)
             }
         }
     }
