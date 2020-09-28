@@ -30,7 +30,7 @@ macro_rules! impl_ref_ops {
             type Output = <$type as core::ops::$trait<$rhs>>::Output;
 
             $(#[$attrs])*
-            fn $fn($self_tok, $rhs_arg: &$rhs_arg_ty) -> Self::Output {
+            fn $fn($self_tok, $rhs_arg: &$rhs) -> Self::Output {
                 core::ops::$trait::$fn($self_tok, *$rhs_arg)
             }
         }
@@ -39,7 +39,7 @@ macro_rules! impl_ref_ops {
             type Output = <$type as core::ops::$trait<$rhs>>::Output;
 
             $(#[$attrs])*
-            fn $fn($self_tok, $rhs_arg: $rhs_arg_ty) -> Self::Output {
+            fn $fn($self_tok, $rhs_arg: $rhs) -> Self::Output {
                 core::ops::$trait::$fn(*$self_tok, $rhs_arg)
             }
         }
@@ -48,7 +48,7 @@ macro_rules! impl_ref_ops {
             type Output = <$type as core::ops::$trait<$rhs>>::Output;
 
             $(#[$attrs])*
-            fn $fn($self_tok, $rhs_arg: &$rhs_arg_ty) -> Self::Output {
+            fn $fn($self_tok, $rhs_arg: &$rhs) -> Self::Output {
                 core::ops::$trait::$fn(*$self_tok, *$rhs_arg)
             }
         }
@@ -94,6 +94,49 @@ macro_rules! impl_ref_ops {
         }
     }
 }
+
+macro_rules! impl_mask_ops {
+    { $($mask:ty),* } => {
+        $(
+            impl_ref_ops! {
+                impl core::ops::BitAnd<$mask> for $mask {
+                    type Output = Self;
+                    fn bitand(self, rhs: Self) -> Self::Output {
+                        Self(self.0 & rhs.0)
+                    }
+                }
+            }
+
+            impl_ref_ops! {
+                impl core::ops::BitOr<$mask> for $mask {
+                    type Output = Self;
+                    fn bitor(self, rhs: Self) -> Self::Output {
+                        Self(self.0 | rhs.0)
+                    }
+                }
+            }
+
+            impl_ref_ops! {
+                impl core::ops::BitXor<$mask> for $mask {
+                    type Output = Self;
+                    fn bitxor(self, rhs: Self) -> Self::Output {
+                        Self(self.0 ^ rhs.0)
+                    }
+                }
+            }
+
+            impl_ref_ops! {
+                impl core::ops::Not for $mask {
+                    type Output = Self;
+                    fn not(self) -> Self::Output {
+                        Self(!self.0)
+                    }
+                }
+            }
+        )*
+    }
+}
+impl_mask_ops! { crate::mask8, crate::mask16, crate::mask32, crate::mask64, crate::mask128, crate::masksize }
 
 /// Automatically implements operators over vectors and scalars for a particular vector.
 macro_rules! impl_op {

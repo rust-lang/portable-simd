@@ -66,34 +66,6 @@ macro_rules! define_mask {
                 self.test().fmt(f)
             }
         }
-
-        impl core::ops::BitAnd for $name {
-            type Output = Self;
-            fn bitand(self, rhs: Self) -> Self {
-                Self(self.0 & rhs.0)
-            }
-        }
-
-        impl core::ops::BitOr for $name {
-            type Output = Self;
-            fn bitor(self, rhs: Self) -> Self {
-                Self(self.0 | rhs.0)
-            }
-        }
-
-        impl core::ops::BitXor for $name {
-            type Output = Self;
-            fn bitxor(self, rhs: Self) -> Self {
-                Self(self.0 ^ rhs.0)
-            }
-        }
-
-        impl core::ops::Not for $name {
-            type Output = Self;
-            fn not(self) -> Self {
-                Self(!self.0)
-            }
-        }
     }
 }
 
