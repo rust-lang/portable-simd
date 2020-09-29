@@ -197,12 +197,13 @@ macro_rules! impl_op {
     };
 
     // Neg and Not implementations
+    // TODO check that these optimize well
     { impl Not for $type:ty } => {
         impl_ref_ops! {
             impl core::ops::Not for $type {
                 type Output = Self;
                 fn not(self) -> Self::Output {
-                    self ^ <$type>::splat(true.into())
+                    self ^ !<$type>::default()
                 }
             }
         }
