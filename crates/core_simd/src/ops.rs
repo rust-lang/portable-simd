@@ -165,35 +165,35 @@ impl_mask_ops! { crate::mask8, crate::mask16, crate::mask32, crate::mask64, crat
 
 /// Automatically implements operators over vectors and scalars for a particular vector.
 macro_rules! impl_op {
-    { impl Add<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Add::add, AddAssign::add_assign, simd_add }
+    { impl Add for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Add::add, AddAssign::add_assign, simd_add }
     };
-    { impl Sub<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Sub::sub, SubAssign::sub_assign, simd_sub }
+    { impl Sub for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Sub::sub, SubAssign::sub_assign, simd_sub }
     };
-    { impl Mul<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Mul::mul, MulAssign::mul_assign, simd_mul }
+    { impl Mul for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Mul::mul, MulAssign::mul_assign, simd_mul }
     };
-    { impl Div<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Div::div, DivAssign::div_assign, simd_div }
+    { impl Div for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Div::div, DivAssign::div_assign, simd_div }
     };
-    { impl Rem<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Rem::rem, RemAssign::rem_assign, simd_rem }
+    { impl Rem for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Rem::rem, RemAssign::rem_assign, simd_rem }
     };
-    { impl Shl<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Shl::shl, ShlAssign::shl_assign, simd_shl }
+    { impl Shl for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Shl::shl, ShlAssign::shl_assign, simd_shl }
     };
-    { impl Shr<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, Shr::shr, ShrAssign::shr_assign, simd_shr }
+    { impl Shr for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, Shr::shr, ShrAssign::shr_assign, simd_shr }
     };
-    { impl BitAnd<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, BitAnd::bitand, BitAndAssign::bitand_assign, simd_and }
+    { impl BitAnd for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, BitAnd::bitand, BitAndAssign::bitand_assign, simd_and }
     };
-    { impl BitOr<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, BitOr::bitor, BitOrAssign::bitor_assign, simd_or }
+    { impl BitOr for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, BitOr::bitor, BitOrAssign::bitor_assign, simd_or }
     };
-    { impl BitXor<$rhs:ty> for $type:ty } => {
-        impl_op! { @binary $type, $rhs, BitXor::bitxor, BitXorAssign::bitxor_assign, simd_xor }
+    { impl BitXor for $type:ty, $scalar:ty } => {
+        impl_op! { @binary $type, $scalar, BitXor::bitxor, BitXorAssign::bitxor_assign, simd_xor }
     };
 
     // Neg and Not implementations
@@ -221,27 +221,58 @@ macro_rules! impl_op {
     };
 
     // generic binary op with assignment when output is `Self`
-    { @binary $type:ty, $rhs:ty, $trait:ident :: $trait_fn:ident, $assign_trait:ident :: $assign_trait_fn:ident, $intrinsic:ident } => {
+    { @binary $type:ty, $scalar:ty, $trait:ident :: $trait_fn:ident, $assign_trait:ident :: $assign_trait_fn:ident, $intrinsic:ident } => {
         impl_ref_ops! {
-            impl core::ops::$trait<$rhs> for $type {
-                type Output = Self;
+            impl core::ops::$trait<$type> for $type {
+                type Output = $type;
 
                 #[inline]
-                fn $trait_fn(self, rhs: $rhs) -> Self::Output {
+                fn $trait_fn(self, rhs: $type) -> Self::Output {
                     unsafe {
-                        crate::intrinsics::$intrinsic(self, rhs.into())
+                        crate::intrinsics::$intrinsic(self, rhs)
                     }
                 }
             }
         }
 
         impl_ref_ops! {
-            impl core::ops::$assign_trait<$rhs> for $type {
+            impl core::ops::$trait<$scalar> for $type {
+                type Output = $type;
+
                 #[inline]
-                fn $assign_trait_fn(&mut self, rhs: $rhs) {
+                fn $trait_fn(self, rhs: $scalar) -> Self::Output {
+                    core::ops::$trait::$trait_fn(self, <$type>::splat(rhs))
+                }
+            }
+        }
+
+        impl_ref_ops! {
+            impl core::ops::$trait<$type> for $scalar {
+                type Output = $type;
+
+                #[inline]
+                fn $trait_fn(self, rhs: $type) -> Self::Output {
+                    core::ops::$trait::$trait_fn(<$type>::splat(self), rhs)
+                }
+            }
+        }
+
+        impl_ref_ops! {
+            impl core::ops::$assign_trait<$type> for $type {
+                #[inline]
+                fn $assign_trait_fn(&mut self, rhs: $type) {
                     unsafe {
-                        *self = crate::intrinsics::$intrinsic(*self, rhs.into());
+                        *self = crate::intrinsics::$intrinsic(*self, rhs);
                     }
+                }
+            }
+        }
+
+        impl_ref_ops! {
+            impl core::ops::$assign_trait<$scalar> for $type {
+                #[inline]
+                fn $assign_trait_fn(&mut self, rhs: $scalar) {
+                    core::ops::$assign_trait::$assign_trait_fn(self, <$type>::splat(rhs));
                 }
             }
         }
@@ -253,16 +284,11 @@ macro_rules! impl_op_meta {
     { float: $($scalar:ty => $($vector:ty),*;)* } => {
         $( // scalar
             $( // vector
-                impl_op! { impl Add<$vector> for $vector }
-                impl_op! { impl Add<$scalar> for $vector }
-                impl_op! { impl Sub<$vector> for $vector }
-                impl_op! { impl Sub<$scalar> for $vector }
-                impl_op! { impl Mul<$vector> for $vector }
-                impl_op! { impl Mul<$scalar> for $vector }
-                impl_op! { impl Div<$vector> for $vector }
-                impl_op! { impl Div<$scalar> for $vector }
-                impl_op! { impl Rem<$vector> for $vector }
-                impl_op! { impl Rem<$scalar> for $vector }
+                impl_op! { impl Add for $vector, $scalar }
+                impl_op! { impl Sub for $vector, $scalar }
+                impl_op! { impl Mul for $vector, $scalar }
+                impl_op! { impl Div for $vector, $scalar }
+                impl_op! { impl Rem for $vector, $scalar }
                 impl_op! { impl Neg for $vector }
                 impl_op_meta! { @index $scalar => $vector }
             )*
@@ -271,12 +297,9 @@ macro_rules! impl_op_meta {
     { mask: $($scalar:ty => $($vector:ty),*;)* } => {
         $( // scalar
             $( // vector
-                impl_op! { impl BitAnd<$vector> for $vector }
-                impl_op! { impl BitAnd<$scalar> for $vector }
-                impl_op! { impl BitOr<$vector> for $vector }
-                impl_op! { impl BitOr<$scalar> for $vector }
-                impl_op! { impl BitXor<$vector> for $vector }
-                impl_op! { impl BitXor<$scalar> for $vector }
+                impl_op! { impl BitAnd for $vector, $scalar }
+                impl_op! { impl BitOr  for $vector, $scalar }
+                impl_op! { impl BitXor for $vector, $scalar }
                 impl_op! { impl Not for $vector }
                 impl_op_meta! { @index $scalar => $vector }
             )*
@@ -286,20 +309,12 @@ macro_rules! impl_op_meta {
 
         $( // scalar
             $( // vector
-                impl_op! { impl Add<$vector> for $vector }
-                impl_op! { impl Add<$scalar> for $vector }
-                impl_op! { impl Sub<$vector> for $vector }
-                impl_op! { impl Sub<$scalar> for $vector }
-                impl_op! { impl Mul<$vector> for $vector }
-                impl_op! { impl Mul<$scalar> for $vector }
-                impl_op! { impl Rem<$vector> for $vector }
-                impl_op! { impl Rem<$scalar> for $vector }
-                impl_op! { impl BitAnd<$vector> for $vector }
-                impl_op! { impl BitAnd<$scalar> for $vector }
-                impl_op! { impl BitOr<$vector> for $vector }
-                impl_op! { impl BitOr<$scalar> for $vector }
-                impl_op! { impl BitXor<$vector> for $vector }
-                impl_op! { impl BitXor<$scalar> for $vector }
+                impl_op! { impl Add for $vector, $scalar }
+                impl_op! { impl Sub for $vector, $scalar }
+                impl_op! { impl Mul for $vector, $scalar }
+                impl_op! { impl BitAnd for $vector, $scalar }
+                impl_op! { impl BitOr  for $vector, $scalar }
+                impl_op! { impl BitXor for $vector, $scalar }
                 impl_op! { impl Not for $vector }
                 impl_op_meta! { @index $scalar => $vector }
 
@@ -337,6 +352,16 @@ macro_rules! impl_op_meta {
                     }
                 }
 
+                impl_ref_ops! {
+                    impl core::ops::Div<$vector> for $scalar {
+                        type Output = $vector;
+
+                        #[inline]
+                        fn div(self, rhs: $vector) -> Self::Output {
+                            <$vector>::splat(self) / rhs
+                        }
+                    }
+                }
 
                 impl_ref_ops! {
                     impl core::ops::DivAssign<$vector> for $vector {
@@ -352,6 +377,69 @@ macro_rules! impl_op_meta {
                         #[inline]
                         fn div_assign(&mut self, rhs: $scalar) {
                             *self = *self / rhs;
+                        }
+                    }
+                }
+
+                // remainder panics on zero divisor
+                impl_ref_ops! {
+                    impl core::ops::Rem<$vector> for $vector {
+                        type Output = Self;
+
+                        #[inline]
+                        fn rem(self, rhs: $vector) -> Self::Output {
+                            // TODO there is probably a better way of doing this
+                            if AsRef::<[$scalar]>::as_ref(&rhs)
+                                .iter()
+                                .any(|x| *x == 0)
+                            {
+                                panic!("attempt to calculate the remainder with a divisor of zero");
+                            }
+                            unsafe { crate::intrinsics::simd_rem(self, rhs) }
+                        }
+                    }
+                }
+
+                impl_ref_ops! {
+                    impl core::ops::Rem<$scalar> for $vector {
+                        type Output = $vector;
+
+                        #[inline]
+                        fn rem(self, rhs: $scalar) -> Self::Output {
+                            if rhs == 0 {
+                                panic!("attempt to calculate the remainder with a divisor of zero");
+                            }
+                            let rhs = Self::splat(rhs);
+                            unsafe { crate::intrinsics::simd_rem(self, rhs) }
+                        }
+                    }
+                }
+
+                impl_ref_ops! {
+                    impl core::ops::Rem<$vector> for $scalar {
+                        type Output = $vector;
+
+                        #[inline]
+                        fn rem(self, rhs: $vector) -> Self::Output {
+                            <$vector>::splat(self) % rhs
+                        }
+                    }
+                }
+
+                impl_ref_ops! {
+                    impl core::ops::RemAssign<$vector> for $vector {
+                        #[inline]
+                        fn rem_assign(&mut self, rhs: Self) {
+                            *self = *self % rhs;
+                        }
+                    }
+                }
+
+                impl_ref_ops! {
+                    impl core::ops::RemAssign<$scalar> for $vector {
+                        #[inline]
+                        fn rem_assign(&mut self, rhs: $scalar) {
+                            *self = *self % rhs;
                         }
                     }
                 }
