@@ -95,6 +95,7 @@ macro_rules! impl_ref_ops {
     }
 }
 
+/// Implements op traits for masks
 macro_rules! impl_mask_ops {
     { $($mask:ty),* } => {
         $(
@@ -103,6 +104,14 @@ macro_rules! impl_mask_ops {
                     type Output = Self;
                     fn bitand(self, rhs: Self) -> Self::Output {
                         Self(self.0 & rhs.0)
+                    }
+                }
+            }
+
+            impl_ref_ops! {
+                impl core::ops::BitAndAssign<$mask> for $mask {
+                    fn bitand_assign(&mut self, rhs: Self) {
+                        *self = *self & rhs;
                     }
                 }
             }
@@ -117,10 +126,26 @@ macro_rules! impl_mask_ops {
             }
 
             impl_ref_ops! {
+                impl core::ops::BitOrAssign<$mask> for $mask {
+                    fn bitor_assign(&mut self, rhs: Self) {
+                        *self = *self | rhs;
+                    }
+                }
+            }
+
+            impl_ref_ops! {
                 impl core::ops::BitXor<$mask> for $mask {
                     type Output = Self;
                     fn bitxor(self, rhs: Self) -> Self::Output {
                         Self(self.0 ^ rhs.0)
+                    }
+                }
+            }
+
+            impl_ref_ops! {
+                impl core::ops::BitXorAssign<$mask> for $mask {
+                    fn bitxor_assign(&mut self, rhs: Self) {
+                        *self = *self ^ rhs;
                     }
                 }
             }
