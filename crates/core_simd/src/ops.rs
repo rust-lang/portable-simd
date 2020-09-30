@@ -196,25 +196,12 @@ macro_rules! impl_op {
         impl_op! { @binary $type, $scalar, BitXor::bitxor, BitXorAssign::bitxor_assign, simd_xor }
     };
 
-    // Neg and Not implementations
-    // TODO check that these optimize well
     { impl Not for $type:ty } => {
         impl_ref_ops! {
             impl core::ops::Not for $type {
                 type Output = Self;
                 fn not(self) -> Self::Output {
                     self ^ !<$type>::default()
-                }
-            }
-        }
-    };
-
-    { impl Neg for $type:ty } => {
-        impl_ref_ops! {
-            impl core::ops::Neg for $type {
-                type Output = Self;
-                fn neg(self) -> Self::Output {
-                    <$type>::default() - self
                 }
             }
         }
@@ -289,8 +276,16 @@ macro_rules! impl_op_meta {
                 impl_op! { impl Mul for $vector, $scalar }
                 impl_op! { impl Div for $vector, $scalar }
                 impl_op! { impl Rem for $vector, $scalar }
-                impl_op! { impl Neg for $vector }
                 impl_op_meta! { @index $scalar => $vector }
+
+                impl_ref_ops! {
+                    impl core::ops::Neg for $vector {
+                        type Output = Self;
+                        fn neg(self) -> Self::Output {
+                            -0. - self
+                        }
+                    }
+                }
             )*
         )*
     };
@@ -557,7 +552,14 @@ macro_rules! impl_op_meta {
         impl_op_meta! { unsigned integer: $($scalar => $($vector),*;)* }
         $( // scalar
             $( // vector
-                impl_op! { impl Neg for $vector }
+                impl_ref_ops! {
+                    impl core::ops::Neg for $vector {
+                        type Output = Self;
+                        fn neg(self) -> Self::Output {
+                            0 - self
+                        }
+                    }
+                }
             )*
         )*
     };
