@@ -207,6 +207,29 @@ macro_rules! impl_op {
         }
     };
 
+    { impl Index for $type:ty, $scalar:ty } => {
+        impl<I> core::ops::Index<I> for $type
+        where
+            I: core::slice::SliceIndex<[$scalar]>,
+        {
+            type Output = I::Output;
+            fn index(&self, index: I) -> &Self::Output {
+                let slice: &[_] = self.as_ref();
+                &slice[index]
+            }
+        }
+
+        impl<I> core::ops::IndexMut<I> for $type
+        where
+            I: core::slice::SliceIndex<[$scalar]>,
+        {
+            fn index_mut(&mut self, index: I) -> &mut Self::Output {
+                let slice: &mut [_] = self.as_mut();
+                &mut slice[index]
+            }
+        }
+    };
+
     // generic binary op with assignment when output is `Self`
     { @binary $type:ty, $scalar:ty, $trait:ident :: $trait_fn:ident, $assign_trait:ident :: $assign_trait_fn:ident, $intrinsic:ident } => {
         impl_ref_ops! {
@@ -266,9 +289,9 @@ macro_rules! impl_op {
     };
 }
 
-/// Implements relevant operators for the provided types.
-macro_rules! impl_op_meta {
-    { float: $($scalar:ty => $($vector:ty),*;)* } => {
+/// Implements floating-point operators for the provided types.
+macro_rules! impl_float_ops {
+    { $($scalar:ty => $($vector:ty),*;)* } => {
         $( // scalar
             $( // vector
                 impl_op! { impl Add for $vector, $scalar }
@@ -276,7 +299,7 @@ macro_rules! impl_op_meta {
                 impl_op! { impl Mul for $vector, $scalar }
                 impl_op! { impl Div for $vector, $scalar }
                 impl_op! { impl Rem for $vector, $scalar }
-                impl_op_meta! { @index $scalar => $vector }
+                impl_op! { impl Index for $vector, $scalar }
 
                 impl_ref_ops! {
                     impl core::ops::Neg for $vector {
@@ -289,19 +312,26 @@ macro_rules! impl_op_meta {
             )*
         )*
     };
-    { mask: $($scalar:ty => $($vector:ty),*;)* } => {
+}
+
+/// Implements mask operators for the provided types.
+macro_rules! impl_mask_ops {
+    { $($scalar:ty => $($vector:ty),*;)* } => {
         $( // scalar
             $( // vector
                 impl_op! { impl BitAnd for $vector, $scalar }
                 impl_op! { impl BitOr  for $vector, $scalar }
                 impl_op! { impl BitXor for $vector, $scalar }
                 impl_op! { impl Not for $vector }
-                impl_op_meta! { @index $scalar => $vector }
+                impl_op! { impl Index for $vector, $scalar }
             )*
         )*
     };
-    { unsigned integer: $($scalar:ty => $($vector:ty),*;)* } => {
+}
 
+/// Implements unsigned integer operators for the provided types.
+macro_rules! impl_unsigned_int_ops {
+    { $($scalar:ty => $($vector:ty),*;)* } => {
         $( // scalar
             $( // vector
                 impl_op! { impl Add for $vector, $scalar }
@@ -311,7 +341,7 @@ macro_rules! impl_op_meta {
                 impl_op! { impl BitOr  for $vector, $scalar }
                 impl_op! { impl BitXor for $vector, $scalar }
                 impl_op! { impl Not for $vector }
-                impl_op_meta! { @index $scalar => $vector }
+                impl_op! { impl Index for $vector, $scalar }
 
                 // Integers panic on divide by 0
                 impl_ref_ops! {
@@ -548,8 +578,12 @@ macro_rules! impl_op_meta {
             )*
         )*
     };
-    { signed integer: $($scalar:ty => $($vector:ty),*;)* } => {
-        impl_op_meta! { unsigned integer: $($scalar => $($vector),*;)* }
+}
+
+/// Implements unsigned integer operators for the provided types.
+macro_rules! impl_signed_int_ops {
+    { $($scalar:ty => $($vector:ty),*;)* } => {
+        impl_unsigned_int_ops! { $($scalar => $($vector),*;)* }
         $( // scalar
             $( // vector
                 impl_ref_ops! {
@@ -563,62 +597,36 @@ macro_rules! impl_op_meta {
             )*
         )*
     };
-    { @index $scalar:ty => $vector:ty } => {
-        impl<I> core::ops::Index<I> for $vector
-        where
-            I: core::slice::SliceIndex<[$scalar]>,
-        {
-            type Output = I::Output;
-            fn index(&self, index: I) -> &Self::Output {
-                let slice: &[_] = self.as_ref();
-                &slice[index]
-            }
-        }
-
-        impl<I> core::ops::IndexMut<I> for $vector
-        where
-            I: core::slice::SliceIndex<[$scalar]>,
-        {
-            fn index_mut(&mut self, index: I) -> &mut Self::Output {
-                let slice: &mut [_] = self.as_mut();
-                &mut slice[index]
-            }
-        }
-    }
 }
 
-impl_op_meta! {
-    unsigned integer:
-        u8    => crate::u8x8,    crate::u8x16,   crate::u8x32,   crate::u8x64;
-        u16   => crate::u16x4,   crate::u16x8,   crate::u16x16,  crate::u16x32;
-        u32   => crate::u32x2,   crate::u32x4,   crate::u32x8,   crate::u32x16;
-        u64   => crate::u64x2,   crate::u64x4,   crate::u64x8;
-        u128  => crate::u128x2,  crate::u128x4;
-        usize => crate::usizex2, crate::usizex4, crate::usizex8;
+impl_unsigned_int_ops! {
+    u8    => crate::u8x8,    crate::u8x16,   crate::u8x32,   crate::u8x64;
+    u16   => crate::u16x4,   crate::u16x8,   crate::u16x16,  crate::u16x32;
+    u32   => crate::u32x2,   crate::u32x4,   crate::u32x8,   crate::u32x16;
+    u64   => crate::u64x2,   crate::u64x4,   crate::u64x8;
+    u128  => crate::u128x2,  crate::u128x4;
+    usize => crate::usizex2, crate::usizex4, crate::usizex8;
 }
 
-impl_op_meta! {
-    signed integer:
-        i8    => crate::i8x8,    crate::i8x16,   crate::i8x32,   crate::i8x64;
-        i16   => crate::i16x4,   crate::i16x8,   crate::i16x16,  crate::i16x32;
-        i32   => crate::i32x2,   crate::i32x4,   crate::i32x8,   crate::i32x16;
-        i64   => crate::i64x2,   crate::i64x4,   crate::i64x8;
-        i128  => crate::i128x2,  crate::i128x4;
-        isize => crate::isizex2, crate::isizex4, crate::isizex8;
+impl_signed_int_ops! {
+    i8    => crate::i8x8,    crate::i8x16,   crate::i8x32,   crate::i8x64;
+    i16   => crate::i16x4,   crate::i16x8,   crate::i16x16,  crate::i16x32;
+    i32   => crate::i32x2,   crate::i32x4,   crate::i32x8,   crate::i32x16;
+    i64   => crate::i64x2,   crate::i64x4,   crate::i64x8;
+    i128  => crate::i128x2,  crate::i128x4;
+    isize => crate::isizex2, crate::isizex4, crate::isizex8;
 }
 
-impl_op_meta! {
-    float:
-        f32 => crate::f32x2, crate::f32x4, crate::f32x8, crate::f32x16;
-        f64 => crate::f64x2, crate::f64x4, crate::f64x8;
+impl_float_ops! {
+    f32 => crate::f32x2, crate::f32x4, crate::f32x8, crate::f32x16;
+    f64 => crate::f64x2, crate::f64x4, crate::f64x8;
 }
 
-impl_op_meta! {
-    mask:
-        crate::mask8    => crate::mask8x8,    crate::mask8x16,   crate::mask8x32,   crate::mask8x64;
-        crate::mask16   => crate::mask16x4,   crate::mask16x8,   crate::mask16x16,  crate::mask16x32;
-        crate::mask32   => crate::mask32x2,   crate::mask32x4,   crate::mask32x8,   crate::mask32x16;
-        crate::mask64   => crate::mask64x2,   crate::mask64x4,   crate::mask64x8;
-        crate::mask128  => crate::mask128x2,  crate::mask128x4;
-        crate::masksize => crate::masksizex2, crate::masksizex4, crate::masksizex8;
+impl_mask_ops! {
+    crate::mask8    => crate::mask8x8,    crate::mask8x16,   crate::mask8x32,   crate::mask8x64;
+    crate::mask16   => crate::mask16x4,   crate::mask16x8,   crate::mask16x16,  crate::mask16x32;
+    crate::mask32   => crate::mask32x2,   crate::mask32x4,   crate::mask32x8,   crate::mask32x16;
+    crate::mask64   => crate::mask64x2,   crate::mask64x4,   crate::mask64x8;
+    crate::mask128  => crate::mask128x2,  crate::mask128x4;
+    crate::masksize => crate::masksizex2, crate::masksizex4, crate::masksizex8;
 }

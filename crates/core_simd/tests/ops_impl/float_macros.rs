@@ -5,7 +5,7 @@ macro_rules! float_tests {
             use super::*;
             use helpers::lanewise::*;
 
-            // TODO change to read from slice
+            // TODO impl this as an associated fn on vectors
             fn from_slice(slice: &[$scalar]) -> core_simd::$vector {
                 let mut value = core_simd::$vector::default();
                 let value_slice: &mut [_] = value.as_mut();
