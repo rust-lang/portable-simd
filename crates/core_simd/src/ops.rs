@@ -196,12 +196,23 @@ macro_rules! impl_op {
         impl_op! { @binary $type, $scalar, BitXor::bitxor, BitXorAssign::bitxor_assign, simd_xor }
     };
 
-    { impl Not for $type:ty } => {
+    { impl Not for $type:ty, $scalar:ty } => {
         impl_ref_ops! {
             impl core::ops::Not for $type {
                 type Output = Self;
                 fn not(self) -> Self::Output {
-                    self ^ !<$type>::default()
+                    self ^ <$type>::splat(!<$scalar>::default())
+                }
+            }
+        }
+    };
+
+    { impl Neg for $type:ty, $scalar:ty } => {
+        impl_ref_ops! {
+            impl core::ops::Neg for $type {
+                type Output = Self;
+                fn neg(self) -> Self::Output {
+                    <$type>::splat(-<$scalar>::default()) - self
                 }
             }
         }
@@ -299,16 +310,8 @@ macro_rules! impl_float_ops {
                 impl_op! { impl Mul for $vector, $scalar }
                 impl_op! { impl Div for $vector, $scalar }
                 impl_op! { impl Rem for $vector, $scalar }
+                impl_op! { impl Neg for $vector, $scalar }
                 impl_op! { impl Index for $vector, $scalar }
-
-                impl_ref_ops! {
-                    impl core::ops::Neg for $vector {
-                        type Output = Self;
-                        fn neg(self) -> Self::Output {
-                            -0. - self
-                        }
-                    }
-                }
             )*
         )*
     };
@@ -322,7 +325,7 @@ macro_rules! impl_mask_ops {
                 impl_op! { impl BitAnd for $vector, $scalar }
                 impl_op! { impl BitOr  for $vector, $scalar }
                 impl_op! { impl BitXor for $vector, $scalar }
-                impl_op! { impl Not for $vector }
+                impl_op! { impl Not for $vector, $scalar }
                 impl_op! { impl Index for $vector, $scalar }
             )*
         )*
@@ -340,7 +343,7 @@ macro_rules! impl_unsigned_int_ops {
                 impl_op! { impl BitAnd for $vector, $scalar }
                 impl_op! { impl BitOr  for $vector, $scalar }
                 impl_op! { impl BitXor for $vector, $scalar }
-                impl_op! { impl Not for $vector }
+                impl_op! { impl Not for $vector, $scalar }
                 impl_op! { impl Index for $vector, $scalar }
 
                 // Integers panic on divide by 0
@@ -586,14 +589,7 @@ macro_rules! impl_signed_int_ops {
         impl_unsigned_int_ops! { $($scalar => $($vector),*;)* }
         $( // scalar
             $( // vector
-                impl_ref_ops! {
-                    impl core::ops::Neg for $vector {
-                        type Output = Self;
-                        fn neg(self) -> Self::Output {
-                            0 - self
-                        }
-                    }
-                }
+                impl_op! { impl Neg for $vector, $scalar }
             )*
         )*
     };
