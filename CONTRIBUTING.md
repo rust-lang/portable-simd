@@ -17,6 +17,10 @@ SIMD can be quite complex, and even a "simple" issue can be huge. If an issue is
 
 We currently have 2 CI matrices through Travis CI and GitHub Actions that will automatically build and test your change in order to verify that `std::simd`'s portable API is, in fact, portable. If your change builds locally, but does not build on either, this is likely due to a platform-specific concern that your code has not addressed. Please consult the build logs and address the error, or ask for help if you need it.
 
+## Beyond stdsimd
+
+A large amount of the core SIMD implementation is found in the rustc_codegen_* crates in the [main rustc repo](https://github.com/rust-lang/rust). In addition, actual platform-specific functions are implemented in [stdarch]. Not all changes to `std::simd` require interacting with either of these, but if you're wondering where something is and it doesn't seem to be in this repository, those might be where to start looking.
+
 ## Questions? Concerns? Need Help?
 
 Please feel free to ask in the [#project-portable-simd][zulip-portable-simd] stream on the [rust-lang Zulip][zulip] for help with making changes to `std::simd`!
@@ -25,3 +29,4 @@ If your changes include directly modifying the compiler, it might also be useful
 [zulip-portable-simd]: https://rust-lang.zulipchat.com/#narrow/stream/257879-project-portable-simd
 [zulip-compiler-help]: https://rust-lang.zulipchat.com/#narrow/stream/182449-t-compiler.2Fhelp
 [zulip]: https://rust-lang.zulipchat.com
+[stdarch]: https://github.com/rust-lang/stdarch
