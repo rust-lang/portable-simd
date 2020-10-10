@@ -4,7 +4,7 @@ Simple version:
 1. Fork it and `git clone` it
 2. Create your feature branch: `git checkout -b my-branch`
 3. Write your changes.
-4. Test it: `cargo test --features `. Remember to use appropriate SIMD features.
+4. Test it: `cargo test`. Remember to enable whatever SIMD features you intend to test by setting `RUSTFLAGS`.
 5. Commit your changes: `git commit add ./path/to/changes && git commit -m 'Fix some bug'`
 6. Push the branch: `git push --set-upstream origin my-branch`
 7. Submit a pull request!
