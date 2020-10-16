@@ -20,6 +20,12 @@ matrix:
       arch: arm64
       env: RUSTFLAGS=-Ctarget-cpu=native
 
+    # Linux (armv7)
+    - name: "armv7-unknown-linux-gnueabihf (neon)"
+      os: linux
+      arch: arm64
+      env: RUSTFLAGS=-Ctarget-feature=+neon
+
     # Linux (powerpc64le)
     - name: "powerpc64le-unknown-linux-gnu (altivec, vsx, power8-*)"
       os: linux
