@@ -39,4 +39,11 @@ extern "platform-intrinsic" {
 
     /// fptoui/fptosi/uitofp/sitofp
     pub(crate) fn simd_cast<T, U>(x: T) -> U;
+
+    pub(crate) fn simd_eq<T, U>(x: T, y: T) -> U;
+    pub(crate) fn simd_ne<T, U>(x: T, y: T) -> U;
+    pub(crate) fn simd_lt<T, U>(x: T, y: T) -> U;
+    pub(crate) fn simd_le<T, U>(x: T, y: T) -> U;
+    pub(crate) fn simd_gt<T, U>(x: T, y: T) -> U;
+    pub(crate) fn simd_ge<T, U>(x: T, y: T) -> U;
 }
