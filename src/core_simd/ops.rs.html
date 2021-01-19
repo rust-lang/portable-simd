@@ -550,98 +550,6 @@
 <span id="547">547</span>
 <span id="548">548</span>
 <span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
-<span id="589">589</span>
-<span id="590">590</span>
-<span id="591">591</span>
-<span id="592">592</span>
-<span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
-<span id="597">597</span>
-<span id="598">598</span>
-<span id="599">599</span>
-<span id="600">600</span>
-<span id="601">601</span>
-<span id="602">602</span>
-<span id="603">603</span>
-<span id="604">604</span>
-<span id="605">605</span>
-<span id="606">606</span>
-<span id="607">607</span>
-<span id="608">608</span>
-<span id="609">609</span>
-<span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
-<span id="626">626</span>
-<span id="627">627</span>
-<span id="628">628</span>
-<span id="629">629</span>
-<span id="630">630</span>
-<span id="631">631</span>
-<span id="632">632</span>
-<span id="633">633</span>
-<span id="634">634</span>
-<span id="635">635</span>
-<span id="636">636</span>
-<span id="637">637</span>
-<span id="638">638</span>
-<span id="639">639</span>
-<span id="640">640</span>
-<span id="641">641</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Checks if the right-hand side argument of a left- or right-shift would cause overflow.</span>
 <span class="kw">fn</span> <span class="ident">invalid_shift_rhs</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>
@@ -657,21 +565,21 @@
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_ref_ops</span> {
     <span class="comment">// binary op</span>
     {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">ty</span>;
 
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>:<span class="ident">ident</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>:<span class="ident">ty</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>
         }
     } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>;
 
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
         }
 
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span>::<span class="ident">Output</span>;
 
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
@@ -680,7 +588,7 @@
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span>::<span class="ident">Output</span>;
 
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
@@ -689,7 +597,7 @@
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span>::<span class="ident">Output</span>;
 
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
@@ -701,17 +609,17 @@
 
     <span class="comment">// binary assignment op</span>
     {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>:<span class="ident">ident</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>:<span class="ident">ty</span>) <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>
         }
     } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>) <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
         }
 
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>) {
                 <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="kw-2">*</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>)
@@ -721,17 +629,17 @@
 
     <span class="comment">// unary op</span>
     {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">ty</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>:<span class="ident">ident</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>
         }
     } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
         }
 
-        <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&gt;</span>::<span class="macro-nonterminal">Output</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                 <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="kw-2">*</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>)
@@ -740,146 +648,78 @@
     }
 }
 
-<span class="doccomment">/// Implements op traits for masks</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_mask_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>:<span class="ident">ty</span>),<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        $(
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitAnd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-                    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitAndAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">fn</span> <span class="ident">bitand_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="ident">rhs</span>;
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitOr</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-                    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">|</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitOrAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">fn</span> <span class="ident">bitor_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">|</span> <span class="ident">rhs</span>;
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitXor</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-                    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">^</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">BitXorAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">fn</span> <span class="ident">bitxor_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">^</span> <span class="ident">rhs</span>;
-                    }
-                }
-            }
-
-            <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span> {
-                    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-                    <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                        <span class="self">Self</span>(<span class="op">!</span><span class="self">self</span>.<span class="number">0</span>)
-                    }
-                }
-            }
-        )<span class="op">*</span>
-    }
-}
-<span class="macro">impl_mask_ops</span><span class="macro">!</span> { <span class="kw">crate</span>::<span class="ident">mask8</span>, <span class="kw">crate</span>::<span class="ident">mask16</span>, <span class="kw">crate</span>::<span class="ident">mask32</span>, <span class="kw">crate</span>::<span class="ident">mask64</span>, <span class="kw">crate</span>::<span class="ident">mask128</span>, <span class="kw">crate</span>::<span class="ident">masksize</span> }
-
 <span class="doccomment">/// Automatically implements operators over vectors and scalars for a particular vector.</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_op</span> {
-    { <span class="kw">impl</span> <span class="ident">Add</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Add</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Add</span>::<span class="ident">add</span>, <span class="ident">AddAssign</span>::<span class="ident">add_assign</span>, <span class="ident">simd_add</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Sub</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Sub</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Sub</span>::<span class="ident">sub</span>, <span class="ident">SubAssign</span>::<span class="ident">sub_assign</span>, <span class="ident">simd_sub</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Mul</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Mul</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Mul</span>::<span class="ident">mul</span>, <span class="ident">MulAssign</span>::<span class="ident">mul_assign</span>, <span class="ident">simd_mul</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Div</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Div</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Div</span>::<span class="ident">div</span>, <span class="ident">DivAssign</span>::<span class="ident">div_assign</span>, <span class="ident">simd_div</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Rem</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Rem</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Rem</span>::<span class="ident">rem</span>, <span class="ident">RemAssign</span>::<span class="ident">rem_assign</span>, <span class="ident">simd_rem</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Shl</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Shl</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Shl</span>::<span class="ident">shl</span>, <span class="ident">ShlAssign</span>::<span class="ident">shl_assign</span>, <span class="ident">simd_shl</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">Shr</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Shr</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">Shr</span>::<span class="ident">shr</span>, <span class="ident">ShrAssign</span>::<span class="ident">shr_assign</span>, <span class="ident">simd_shr</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">BitAnd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">BitAnd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">BitAnd</span>::<span class="ident">bitand</span>, <span class="ident">BitAndAssign</span>::<span class="ident">bitand_assign</span>, <span class="ident">simd_and</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">BitOr</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">BitOr</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">BitOr</span>::<span class="ident">bitor</span>, <span class="ident">BitOrAssign</span>::<span class="ident">bitor_assign</span>, <span class="ident">simd_or</span> }
     };
-    { <span class="kw">impl</span> <span class="ident">BitXor</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">BitXor</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_op</span><span class="macro">!</span> { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">BitXor</span>::<span class="ident">bitxor</span>, <span class="ident">BitXorAssign</span>::<span class="ident">bitxor_assign</span>, <span class="ident">simd_xor</span> }
     };
 
-    { <span class="kw">impl</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Not</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                    <span class="self">self</span> <span class="op">^</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="op">!</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span>::<span class="ident">default</span>())
+                    <span class="self">self</span> <span class="op">^</span> <span class="self">Self</span>::<span class="ident">splat</span>(<span class="op">!</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span>::<span class="ident">default</span>())
                 }
             }
         }
     };
 
-    { <span class="kw">impl</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Neg</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="number">0</span>) <span class="op">-</span> <span class="self">self</span>
+                    <span class="self">Self</span>::<span class="ident">splat</span>(<span class="number">0</span>) <span class="op">-</span> <span class="self">self</span>
                 }
             }
         }
     };
 
-    { <span class="kw">impl</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, @<span class="ident">float</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { <span class="kw">impl</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, @<span class="ident">float</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Neg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Neg</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                     <span class="comment">// FIXME: Replace this with fneg intrinsic once available.</span>
                     <span class="comment">// https://github.com/rust-lang/stdsimd/issues/32</span>
-                    <span class="self">Self</span>::<span class="ident">from_bits</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="op">-</span><span class="number">0.0</span>).<span class="ident">to_bits</span>() <span class="op">^</span> <span class="self">self</span>.<span class="ident">to_bits</span>())
+                    <span class="self">Self</span>::<span class="ident">from_bits</span>(<span class="self">Self</span>::<span class="ident">splat</span>(<span class="op">-</span><span class="number">0.0</span>).<span class="ident">to_bits</span>() <span class="op">^</span> <span class="self">self</span>.<span class="ident">to_bits</span>())
                 }
             }
         }
     };
 
-    { <span class="kw">impl</span> <span class="ident">Index</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Index</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
+    { <span class="kw">impl</span> <span class="ident">Index</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Index</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="macro-nonterminal">I</span>: <span class="ident">core</span>::<span class="ident">slice</span>::<span class="ident">SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
+            <span class="ident">I</span>: <span class="ident">core</span>::<span class="ident">slice</span>::<span class="ident">SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">I</span>::<span class="ident">Output</span>;
             <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Output</span> {
@@ -888,9 +728,9 @@
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">IndexMut</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">IndexMut</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="macro-nonterminal">I</span>: <span class="ident">core</span>::<span class="ident">slice</span>::<span class="ident">SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
+            <span class="ident">I</span>: <span class="ident">core</span>::<span class="ident">slice</span>::<span class="ident">SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
         {
             <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                 <span class="kw">let</span> <span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="kw">_</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_mut</span>();
@@ -900,13 +740,13 @@
     };
 
     <span class="comment">// generic binary op with assignment when output is `Self`</span>
-    { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span>:<span class="ident">ident</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { @<span class="ident">binary</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span>:<span class="ident">ident</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
-                <span class="attribute">#[<span class="macro-nonterminal">inline</span>]</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="macro-nonterminal">Output</span> {
+                <span class="attribute">#[<span class="ident">inline</span>]</span>
+                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                     <span class="kw">unsafe</span> {
                         <span class="kw">crate</span>::<span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="self">self</span>, <span class="ident">rhs</span>)
                     }
@@ -915,43 +755,43 @@
         }
 
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
-                <span class="attribute">#[<span class="macro-nonterminal">inline</span>]</span>
+                <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="ident">rhs</span>))
+                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="self">Self</span>::<span class="ident">splat</span>(<span class="ident">rhs</span>))
                 }
             }
         }
 
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
+                <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>;
 
-                <span class="attribute">#[<span class="macro-nonterminal">inline</span>]</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="macro-nonterminal">Output</span> {
-                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="self">self</span>), <span class="ident">rhs</span>)
+                <span class="attribute">#[<span class="ident">inline</span>]</span>
+                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span>::<span class="macro-nonterminal">splat</span>(<span class="self">self</span>), <span class="ident">rhs</span>)
                 }
             }
         }
 
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">inline</span>]</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="attribute">#[<span class="ident">inline</span>]</span>
+                <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                     <span class="kw">unsafe</span> {
-                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="kw-2">*</span><span class="self">self</span>, <span class="ident">rhs</span>);
+                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="kw-2">*</span><span class="self">self</span>, <span class="ident">rhs</span>);
                     }
                 }
             }
         }
 
         <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-            <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">inline</span>]</span>
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
+                <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
-                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="self">self</span>, <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>::<span class="macro-nonterminal">splat</span>(<span class="ident">rhs</span>));
+                    <span class="ident">core</span>::<span class="ident">ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="self">self</span>, <span class="self">Self</span>::<span class="ident">splat</span>(<span class="ident">rhs</span>));
                 }
             }
         }
@@ -960,7 +800,7 @@
 
 <span class="doccomment">/// Implements floating-point operators for the provided types.</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_float_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ty</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
         $( <span class="comment">// scalar</span>
             $( <span class="comment">// vector</span>
                 <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">Add</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
@@ -975,24 +815,9 @@
     };
 }
 
-<span class="doccomment">/// Implements mask operators for the provided types.</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_mask_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ty</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        $( <span class="comment">// scalar</span>
-            $( <span class="comment">// vector</span>
-                <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">BitAnd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
-                <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">BitOr</span>  <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
-                <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">BitXor</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
-                <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
-                <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">Index</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
-            )<span class="op">*</span>
-        )<span class="op">*</span>
-    };
-}
-
 <span class="doccomment">/// Implements unsigned integer operators for the provided types.</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_unsigned_int_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ty</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
         $( <span class="comment">// scalar</span>
             $( <span class="comment">// vector</span>
                 <span class="macro">impl_op</span><span class="macro">!</span> { <span class="kw">impl</span> <span class="ident">Add</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> }
@@ -1006,11 +831,11 @@
 
                 <span class="comment">// Integers panic on divide by 0</span>
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                        <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
                             <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
                                 .<span class="ident">iter</span>()
@@ -1024,8 +849,8 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
@@ -1039,18 +864,18 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Div</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                            <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span>::<span class="ident">splat</span>(<span class="self">self</span>) <span class="op">/</span> <span class="ident">rhs</span>
+                        <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>::<span class="ident">splat</span>(<span class="self">self</span>) <span class="op">/</span> <span class="ident">rhs</span>
                         }
                     }
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">DivAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">DivAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">/</span> <span class="ident">rhs</span>;
@@ -1059,7 +884,7 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">DivAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">DivAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">/</span> <span class="ident">rhs</span>;
@@ -1069,11 +894,11 @@
 
                 <span class="comment">// remainder panics on zero divisor</span>
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                        <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
                             <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
                                 .<span class="ident">iter</span>()
@@ -1087,8 +912,8 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
@@ -1102,18 +927,18 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Rem</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                            <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span>::<span class="ident">splat</span>(<span class="self">self</span>) <span class="op">%</span> <span class="ident">rhs</span>
+                        <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>::<span class="ident">splat</span>(<span class="self">self</span>) <span class="op">%</span> <span class="ident">rhs</span>
                         }
                     }
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">RemAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">RemAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">%</span> <span class="ident">rhs</span>;
@@ -1122,7 +947,7 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">RemAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">RemAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">%</span> <span class="ident">rhs</span>;
@@ -1132,11 +957,11 @@
 
                 <span class="comment">// shifts panic on overflow</span>
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shl</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                        <span class="kw">fn</span> <span class="ident">shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
                             <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
                                 .<span class="ident">iter</span>()
@@ -1151,8 +976,8 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
@@ -1167,7 +992,7 @@
 
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShlAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShlAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rhs</span>;
@@ -1176,7 +1001,7 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShlAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShlAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rhs</span>;
@@ -1185,13 +1010,13 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shr</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shr</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
-                        <span class="kw">fn</span> <span class="ident">shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+                        <span class="kw">fn</span> <span class="ident">shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
-                            <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">copied</span>()
                                 .<span class="ident">any</span>(<span class="ident">invalid_shift_rhs</span>)
@@ -1204,8 +1029,8 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shr</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
-                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>;
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Shr</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
+                        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
@@ -1220,7 +1045,7 @@
 
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShrAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShrAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">rhs</span>;
@@ -1229,7 +1054,7 @@
                 }
 
                 <span class="macro">impl_ref_ops</span><span class="macro">!</span> {
-                    <span class="kw">impl</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShrAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span> {
+                    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">ShrAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
                             <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">rhs</span>;
@@ -1243,7 +1068,7 @@
 
 <span class="doccomment">/// Implements unsigned integer operators for the provided types.</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_signed_int_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ty</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>;)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">impl_unsigned_int_ops</span><span class="macro">!</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>),<span class="kw-2">*</span>;)<span class="op">*</span> }
         $( <span class="comment">// scalar</span>
             $( <span class="comment">// vector</span>
@@ -1254,35 +1079,26 @@
 }
 
 <span class="macro">impl_unsigned_int_ops</span><span class="macro">!</span> {
-    <span class="ident">u8</span>    <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">u8x8</span>,    <span class="kw">crate</span>::<span class="ident">u8x16</span>,   <span class="kw">crate</span>::<span class="ident">u8x32</span>,   <span class="kw">crate</span>::<span class="ident">u8x64</span>;
-    <span class="ident">u16</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">u16x4</span>,   <span class="kw">crate</span>::<span class="ident">u16x8</span>,   <span class="kw">crate</span>::<span class="ident">u16x16</span>,  <span class="kw">crate</span>::<span class="ident">u16x32</span>;
-    <span class="ident">u32</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">u32x2</span>,   <span class="kw">crate</span>::<span class="ident">u32x4</span>,   <span class="kw">crate</span>::<span class="ident">u32x8</span>,   <span class="kw">crate</span>::<span class="ident">u32x16</span>;
-    <span class="ident">u64</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">u64x2</span>,   <span class="kw">crate</span>::<span class="ident">u64x4</span>,   <span class="kw">crate</span>::<span class="ident">u64x8</span>;
-    <span class="ident">u128</span>  <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">u128x2</span>,  <span class="kw">crate</span>::<span class="ident">u128x4</span>;
-    <span class="ident">usize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">usizex2</span>, <span class="kw">crate</span>::<span class="ident">usizex4</span>, <span class="kw">crate</span>::<span class="ident">usizex8</span>;
+    <span class="ident">u8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdU8</span>;
+    <span class="ident">u16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdU16</span>;
+    <span class="ident">u32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdU32</span>;
+    <span class="ident">u64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdU64</span>;
+    <span class="ident">u128</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdU128</span>;
+    <span class="ident">usize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdUsize</span>;
 }
 
 <span class="macro">impl_signed_int_ops</span><span class="macro">!</span> {
-    <span class="ident">i8</span>    <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">i8x8</span>,    <span class="kw">crate</span>::<span class="ident">i8x16</span>,   <span class="kw">crate</span>::<span class="ident">i8x32</span>,   <span class="kw">crate</span>::<span class="ident">i8x64</span>;
-    <span class="ident">i16</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">i16x4</span>,   <span class="kw">crate</span>::<span class="ident">i16x8</span>,   <span class="kw">crate</span>::<span class="ident">i16x16</span>,  <span class="kw">crate</span>::<span class="ident">i16x32</span>;
-    <span class="ident">i32</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">i32x2</span>,   <span class="kw">crate</span>::<span class="ident">i32x4</span>,   <span class="kw">crate</span>::<span class="ident">i32x8</span>,   <span class="kw">crate</span>::<span class="ident">i32x16</span>;
-    <span class="ident">i64</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">i64x2</span>,   <span class="kw">crate</span>::<span class="ident">i64x4</span>,   <span class="kw">crate</span>::<span class="ident">i64x8</span>;
-    <span class="ident">i128</span>  <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">i128x2</span>,  <span class="kw">crate</span>::<span class="ident">i128x4</span>;
-    <span class="ident">isize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">isizex2</span>, <span class="kw">crate</span>::<span class="ident">isizex4</span>, <span class="kw">crate</span>::<span class="ident">isizex8</span>;
+    <span class="ident">i8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdI8</span>;
+    <span class="ident">i16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdI16</span>;
+    <span class="ident">i32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdI32</span>;
+    <span class="ident">i64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdI64</span>;
+    <span class="ident">i128</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdI128</span>;
+    <span class="ident">isize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdIsize</span>;
 }
 
 <span class="macro">impl_float_ops</span><span class="macro">!</span> {
-    <span class="ident">f32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">f32x2</span>, <span class="kw">crate</span>::<span class="ident">f32x4</span>, <span class="kw">crate</span>::<span class="ident">f32x8</span>, <span class="kw">crate</span>::<span class="ident">f32x16</span>;
-    <span class="ident">f64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">f64x2</span>, <span class="kw">crate</span>::<span class="ident">f64x4</span>, <span class="kw">crate</span>::<span class="ident">f64x8</span>;
-}
-
-<span class="macro">impl_mask_ops</span><span class="macro">!</span> {
-    <span class="kw">crate</span>::<span class="ident">mask8</span>    <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">mask8x8</span>,    <span class="kw">crate</span>::<span class="ident">mask8x16</span>,   <span class="kw">crate</span>::<span class="ident">mask8x32</span>,   <span class="kw">crate</span>::<span class="ident">mask8x64</span>;
-    <span class="kw">crate</span>::<span class="ident">mask16</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">mask16x4</span>,   <span class="kw">crate</span>::<span class="ident">mask16x8</span>,   <span class="kw">crate</span>::<span class="ident">mask16x16</span>,  <span class="kw">crate</span>::<span class="ident">mask16x32</span>;
-    <span class="kw">crate</span>::<span class="ident">mask32</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">mask32x2</span>,   <span class="kw">crate</span>::<span class="ident">mask32x4</span>,   <span class="kw">crate</span>::<span class="ident">mask32x8</span>,   <span class="kw">crate</span>::<span class="ident">mask32x16</span>;
-    <span class="kw">crate</span>::<span class="ident">mask64</span>   <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">mask64x2</span>,   <span class="kw">crate</span>::<span class="ident">mask64x4</span>,   <span class="kw">crate</span>::<span class="ident">mask64x8</span>;
-    <span class="kw">crate</span>::<span class="ident">mask128</span>  <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">mask128x2</span>,  <span class="kw">crate</span>::<span class="ident">mask128x4</span>;
-    <span class="kw">crate</span>::<span class="ident">masksize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="ident">masksizex2</span>, <span class="kw">crate</span>::<span class="ident">masksizex4</span>, <span class="kw">crate</span>::<span class="ident">masksizex8</span>;
+    <span class="ident">f32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdF32</span>;
+    <span class="ident">f64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SimdF64</span>;
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "core_simd";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
