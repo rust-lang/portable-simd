@@ -574,7 +574,6 @@
 <span id="571">571</span>
 <span id="572">572</span>
 <span id="573">573</span>
-<span id="574">574</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Checks if the right-hand side argument of a left- or right-shift would cause overflow.</span>
 <span class="kw">fn</span> <span class="ident">invalid_shift_rhs</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>
@@ -936,8 +935,7 @@
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
-                            <span class="comment">// TODO there is probably a better way of doing this</span>
-                            <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span>)
                             {
@@ -1013,7 +1011,7 @@
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
-                            <span class="kw">if</span> <span class="ident">AsRef</span>::<span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>::<span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="ident">rhs</span>)
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">copied</span>()
                                 .<span class="ident">any</span>(<span class="ident">invalid_shift_rhs</span>)
