@@ -215,6 +215,8 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">from_transmute</span> {
@@ -366,6 +368,8 @@
                 <span class="self">Self</span>::<span class="macro-nonterminal">splat</span>(<span class="ident">value</span>)
             }
         }
+
+        <span class="macro">impl_shuffle_2pow_lanes</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> }
     }
 }
 
