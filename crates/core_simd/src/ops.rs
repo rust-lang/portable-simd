@@ -186,6 +186,30 @@ macro_rules! impl_op {
         }
     };
 
+    // trigonometric unary functions
+    { impl Sin for $type:ident, $scalar:ty } => {
+        impl_ref_ops! {
+            impl<const LANES: usize> core::ops::Sin for crate::$type<LANES> {
+                type Output = Self;
+                fn sin(self) -> Self::Output {
+                    Self::splat(self.sin())
+                }
+            }
+        }
+    };
+
+    { impl Cos for $type:ident, $scalar:ty } => {
+        impl_ref_ops! {
+            impl<const LANES: usize> core::ops::Cos for crate::$type<LANES> {
+                type Output = Self;
+                fn cos(self) -> Self::Output {
+                    Self::splat(self.cos())
+                }
+            }
+        }
+    };
+
+
     // generic binary op with assignment when output is `Self`
     { @binary $type:ident, $scalar:ty, $trait:ident :: $trait_fn:ident, $assign_trait:ident :: $assign_trait_fn:ident, $intrinsic:ident } => {
         impl_ref_ops! {
@@ -257,10 +281,13 @@ macro_rules! impl_float_ops {
                 impl_op! { impl Rem for $vector, $scalar }
                 impl_op! { impl Neg for $vector, $scalar, @float }
                 impl_op! { impl Index for $vector, $scalar }
+                impl_op! { impl Sin for $vector, $scalar }
+                impl_op! { impl Cos for $vector, $scalar }
             )*
         )*
     };
 }
+
 
 /// Implements unsigned integer operators for the provided types.
 macro_rules! impl_unsigned_int_ops {

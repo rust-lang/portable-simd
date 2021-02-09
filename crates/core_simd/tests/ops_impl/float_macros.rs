@@ -355,6 +355,24 @@ macro_rules! float_tests {
 
             #[test]
             #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+            fn sin() {
+                for v in slice_chunks(&C) {
+                    let expected = apply_unary_lanewise(v, <$scalar>::sin);
+                    assert_biteq!(v.sin(), expected);
+                }
+            }
+
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+            fn cos() {
+                for v in slice_chunks(&C) {
+                    let expected = apply_unary_lanewise(v, <$scalar>::cos);
+                    assert_biteq!(v.cos(), expected);
+                }
+            }
+
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
             fn to_int_unchecked() {
                 // The maximum integer that can be represented by the equivalently sized float has
                 // all of the mantissa digits set to 1, pushed up to the MSB.
