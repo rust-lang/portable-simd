@@ -213,24 +213,8 @@
 <span id="210">210</span>
 <span id="211">211</span>
 <span id="212">212</span>
-<span id="213">213</span>
-<span id="214">214</span>
-<span id="215">215</span>
-<span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">/// Implemented for bitmask sizes that are supported by the implementation.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">LanesAtMost64</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">1</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">4</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">8</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">16</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">32</span><span class="op">&gt;</span> {}
-<span class="kw">impl</span> <span class="ident">LanesAtMost64</span> <span class="kw">for</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="number">64</span><span class="op">&gt;</span> {}
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
 
 <span class="doccomment">/// A mask where each lane is represented by a single bit.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
