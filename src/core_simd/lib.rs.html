@@ -27,32 +27,6 @@
 <span id="24">24</span>
 <span id="25">25</span>
 <span id="26">26</span>
-<span id="27">27</span>
-<span id="28">28</span>
-<span id="29">29</span>
-<span id="30">30</span>
-<span id="31">31</span>
-<span id="32">32</span>
-<span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
-<span id="37">37</span>
-<span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
-<span id="42">42</span>
-<span id="43">43</span>
-<span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
-<span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">incomplete_features</span>)]</span>
@@ -61,9 +35,11 @@
 <span class="doccomment">//! Portable SIMD module.</span>
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">mod</span> <span class="ident">macros</span>;
+<span class="kw">mod</span> <span class="ident">first</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">permute</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">mod</span> <span class="ident">transmute</span>;
 
 <span class="kw">mod</span> <span class="ident">fmt</span>;
 <span class="kw">mod</span> <span class="ident">intrinsics</span>;
@@ -76,36 +52,8 @@
 <span class="kw">mod</span> <span class="ident">masks</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">masks</span>::<span class="kw-2">*</span>;
 
-<span class="kw">mod</span> <span class="ident">vectors_u8</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_u8</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_u16</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_u16</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_u32</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_u32</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_u64</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_u64</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_u128</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_u128</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_usize</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_usize</span>::<span class="kw-2">*</span>;
-
-<span class="kw">mod</span> <span class="ident">vectors_i8</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_i8</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_i16</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_i16</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_i32</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_i32</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_i64</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_i64</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_i128</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_i128</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_isize</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_isize</span>::<span class="kw-2">*</span>;
-
-<span class="kw">mod</span> <span class="ident">vectors_f32</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_f32</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">vectors_f64</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vectors_f64</span>::<span class="kw-2">*</span>;
+<span class="kw">mod</span> <span class="ident">vector</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vector</span>::<span class="kw-2">*</span>;
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
