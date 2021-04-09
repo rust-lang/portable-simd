@@ -174,25 +174,25 @@
 
 
 <span class="doccomment">/// Implements additional integer traits (Eq, Ord, Hash) on the specified vector `$name`, holding multiple `$lanes` of `$type`.</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_unsigned_vector</span> {
+<span class="macro">macro_rules!</span> <span class="ident">impl_unsigned_vector</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">impl_vector</span><span class="macro">!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span> }
+        <span class="macro">impl_vector!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span> }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span> {}
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {}
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span> {
+            <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core::cmp::Ordering</span> {
                 <span class="comment">// TODO use SIMD cmp</span>
                 <span class="self">self</span>.<span class="ident">to_array</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">as_ref</span>())
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core</span>::<span class="ident">hash</span>::<span class="ident">Hash</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::hash::Hash</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">H</span>)
             <span class="kw">where</span>
-                <span class="ident">H</span>: <span class="ident">core</span>::<span class="ident">hash</span>::<span class="ident">Hasher</span>
+                <span class="ident">H</span>: <span class="ident">core::hash::Hasher</span>
             {
                 <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">hash</span>(<span class="ident">state</span>)
             }
@@ -204,19 +204,19 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdUsize</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">usize</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdUsize</span>, <span class="ident">usize</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdUsize</span>, <span class="ident">usize</span> }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">usizex4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">usizex4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">usizex8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">usizex8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">usizex2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">usizex2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">usizex4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">usizex4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//#[cfg(target_pointer_width = &quot;64&quot;)]</span>
 <span class="comment">//from_transmute_x86! { unsafe usizex8 =&gt; __m512i }</span>
 
@@ -224,59 +224,59 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdU128</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">u128</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdU128</span>, <span class="ident">u128</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdU128</span>, <span class="ident">u128</span> }
 
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u128x2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u128x2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//from_transmute_x86! { unsafe u128x4 =&gt; __m512i }</span>
 
 <span class="doccomment">/// A SIMD vector of containing `LANES` `u16` values.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdU16</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">u16</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdU16</span>, <span class="ident">u16</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdU16</span>, <span class="ident">u16</span> }
 
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u16x8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u16x16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u16x8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u16x16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//from_transmute_x86! { unsafe u16x32 =&gt; __m512i }</span>
 
 <span class="doccomment">/// A SIMD vector of containing `LANES` `u32` values.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdU32</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">u32</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdU32</span>, <span class="ident">u32</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdU32</span>, <span class="ident">u32</span> }
 
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u32x4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u32x8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u32x4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u32x8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//from_transmute_x86! { unsafe u32x16 =&gt; __m512i }</span>
 
 <span class="doccomment">/// A SIMD vector of containing `LANES` `u64` values.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdU64</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">u64</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdU64</span>, <span class="ident">u64</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdU64</span>, <span class="ident">u64</span> }
 
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u64x2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u64x4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u64x2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u64x4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//from_transmute_x86! { unsafe u64x8 =&gt; __m512i }</span>
 
 <span class="doccomment">/// A SIMD vector of containing `LANES` `u8` values.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdU8</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">u8</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span>::<span class="ident">LanesAtMost64</span>;
+    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
-<span class="macro">impl_unsigned_vector</span><span class="macro">!</span> { <span class="ident">SimdU8</span>, <span class="ident">u8</span> }
+<span class="macro">impl_unsigned_vector!</span> { <span class="ident">SimdU8</span>, <span class="ident">u8</span> }
 
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u8x16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
-<span class="macro">from_transmute_x86</span><span class="macro">!</span> { <span class="kw">unsafe</span> <span class="ident">u8x32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u8x16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m128i</span> }
+<span class="macro">from_transmute_x86!</span> { <span class="kw">unsafe</span> <span class="ident">u8x32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">__m256i</span> }
 <span class="comment">//from_transmute_x86! { unsafe u8x64 =&gt; __m512i }</span>
 
 <span class="doccomment">/// Vector of two `usize` values</span>

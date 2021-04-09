@@ -386,6 +386,20 @@
 <span id="383">383</span>
 <span id="384">384</span>
 <span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">array</span>;
 
@@ -399,88 +413,88 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// This strategy should be what &quot;makes sense&quot; to test.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">DefaultStrategy</span> {
-    <span class="kw">type</span> <span class="ident">Strategy</span>: <span class="ident">proptest</span>::<span class="ident">strategy</span>::<span class="ident">Strategy</span><span class="op">&lt;</span><span class="ident">Value</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span>;
+    <span class="kw">type</span> <span class="ident">Strategy</span>: <span class="ident">proptest::strategy::Strategy</span><span class="op">&lt;</span><span class="ident">Value</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span>;
 }
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_num</span> {
+<span class="macro">macro_rules!</span> <span class="ident">impl_num</span> {
     { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">tt</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Strategy</span> <span class="op">=</span> <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span>::<span class="macro-nonterminal">Any</span>;
-            <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-                <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span>::<span class="macro-nonterminal">ANY</span>
+            <span class="kw">type</span> <span class="macro-nonterminal">Strategy</span> <span class="op">=</span> <span class="ident">proptest::num</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::Any</span>;
+            <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+                <span class="ident">proptest::num</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::ANY</span>
             }
         }
     }
 }
 
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">i8</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">i16</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">i32</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">i64</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">isize</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">u8</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">u16</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">u32</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">u64</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">usize</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">f32</span> }
-<span class="macro">impl_num</span><span class="macro">!</span> { <span class="ident">f64</span> }
+<span class="macro">impl_num!</span> { <span class="ident">i8</span> }
+<span class="macro">impl_num!</span> { <span class="ident">i16</span> }
+<span class="macro">impl_num!</span> { <span class="ident">i32</span> }
+<span class="macro">impl_num!</span> { <span class="ident">i64</span> }
+<span class="macro">impl_num!</span> { <span class="ident">isize</span> }
+<span class="macro">impl_num!</span> { <span class="ident">u8</span> }
+<span class="macro">impl_num!</span> { <span class="ident">u16</span> }
+<span class="macro">impl_num!</span> { <span class="ident">u32</span> }
+<span class="macro">impl_num!</span> { <span class="ident">u64</span> }
+<span class="macro">impl_num!</span> { <span class="ident">usize</span> }
+<span class="macro">impl_num!</span> { <span class="ident">f32</span> }
+<span class="macro">impl_num!</span> { <span class="ident">f64</span> }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> <span class="ident">u128</span> {
-    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">u128</span>::<span class="ident">Any</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-        <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">u128</span>::<span class="ident">ANY</span>
+    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="ident">proptest::num::u128::Any</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+        <span class="ident">proptest::num::u128::ANY</span>
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> <span class="ident">i128</span> {
-    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">i128</span>::<span class="ident">Any</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-        <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">i128</span>::<span class="ident">ANY</span>
+    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="ident">proptest::num::i128::Any</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+        <span class="ident">proptest::num::i128::ANY</span>
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
 <span class="kw">impl</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> <span class="ident">u128</span> {
-    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">wasm</span>::<span class="ident">u128</span>::<span class="ident">Any</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-        <span class="kw">crate</span>::<span class="ident">wasm</span>::<span class="ident">u128</span>::<span class="ident">ANY</span>
+    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::wasm::u128::Any</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+        <span class="kw">crate</span><span class="ident">::wasm::u128::ANY</span>
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
 <span class="kw">impl</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> <span class="ident">i128</span> {
-    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">wasm</span>::<span class="ident">i128</span>::<span class="ident">Any</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-        <span class="kw">crate</span>::<span class="ident">wasm</span>::<span class="ident">i128</span>::<span class="ident">ANY</span>
+    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::wasm::i128::Any</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+        <span class="kw">crate</span><span class="ident">::wasm::i128::ANY</span>
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> [<span class="ident">T</span>; <span class="ident">LANES</span>] {
-    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">array</span>::<span class="ident">UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Strategy</span>, <span class="self">Self</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Strategy</span> {
-        <span class="self">Self</span>::<span class="ident">Strategy</span>::<span class="ident">new</span>(<span class="ident">T</span>::<span class="ident">default_strategy</span>())
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">DefaultStrategy</span> <span class="kw">for</span> [<span class="ident">T</span>; <span class="ident">LANES</span>] {
+    <span class="kw">type</span> <span class="ident">Strategy</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::array::UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">T::Strategy</span>, <span class="self">Self</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">default_strategy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Strategy</span> {
+        <span class="self">Self</span><span class="ident">::Strategy::new</span>(<span class="ident">T::default_strategy</span>())
     }
 }
 
 <span class="doccomment">/// Test a function that takes a single value.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_1</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
-    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">proptest</span>::<span class="ident">test_runner</span>::<span class="ident">TestCaseResult</span>,
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_1</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
+    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">proptest::test_runner::TestCaseResult</span>,
 ) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest</span>::<span class="ident">test_runner</span>::<span class="ident">TestRunner</span>::<span class="ident">default</span>();
-    <span class="ident">runner</span>.<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">A</span>::<span class="ident">default_strategy</span>(), <span class="ident">f</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest::test_runner::TestRunner::default</span>();
+    <span class="ident">runner</span>.<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">A::default_strategy</span>(), <span class="ident">f</span>).<span class="ident">unwrap</span>();
 }
 
 <span class="doccomment">/// Test a function that takes two values.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_2</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>, <span class="ident">B</span>: <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
-    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>, <span class="ident">B</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">proptest</span>::<span class="ident">test_runner</span>::<span class="ident">TestCaseResult</span>,
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_2</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>, <span class="ident">B</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
+    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>, <span class="ident">B</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">proptest::test_runner::TestCaseResult</span>,
 ) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest</span>::<span class="ident">test_runner</span>::<span class="ident">TestRunner</span>::<span class="ident">default</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest::test_runner::TestRunner::default</span>();
     <span class="ident">runner</span>
-        .<span class="ident">run</span>(<span class="kw-2">&amp;</span>(<span class="ident">A</span>::<span class="ident">default_strategy</span>(), <span class="ident">B</span>::<span class="ident">default_strategy</span>()), <span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> {
+        .<span class="ident">run</span>(<span class="kw-2">&amp;</span>(<span class="ident">A::default_strategy</span>(), <span class="ident">B::default_strategy</span>()), <span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> {
             <span class="ident">f</span>(<span class="ident">a</span>, <span class="ident">b</span>)
         })
         .<span class="ident">unwrap</span>();
@@ -493,22 +507,48 @@
     <span class="ident">fs</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ScalarResult</span>,
     <span class="ident">check</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>([<span class="ident">Scalar</span>; <span class="ident">LANES</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
 ) <span class="kw">where</span>
-    <span class="ident">Scalar</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq</span>::<span class="ident">BitEq</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq::BitEq</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
     <span class="ident">Vector</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">VectorResult</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="ident">test_1</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
-        <span class="ident">proptest</span>::<span class="macro">prop_assume</span><span class="macro">!</span>(<span class="ident">check</span>(<span class="ident">x</span>));
+        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>));
         <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult</span>::<span class="ident">default</span>(); <span class="ident">LANES</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
                 <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i</span>);
             }
             <span class="ident">result</span>
         };
-        <span class="kw">crate</span>::<span class="macro">prop_assert_biteq</span><span class="macro">!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+        <span class="prelude-val">Ok</span>(())
+    });
+}
+
+<span class="doccomment">/// Test a unary vector function against a unary scalar function, applied elementwise.</span>
+<span class="attribute">#[<span class="ident">inline</span>(<span class="ident">never</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_unary_mask_elementwise</span><span class="op">&lt;</span><span class="ident">Scalar</span>, <span class="ident">Vector</span>, <span class="ident">Mask</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(
+    <span class="ident">fv</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Vector</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span>,
+    <span class="ident">fs</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
+    <span class="ident">check</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>([<span class="ident">Scalar</span>; <span class="ident">LANES</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
+) <span class="kw">where</span>
+    <span class="ident">Scalar</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Vector</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
+    <span class="ident">Mask</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">bool</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">bool</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
+{
+    <span class="ident">test_1</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
+        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>));
+        <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">bool</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">bool</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="bool-val">false</span>; <span class="ident">LANES</span>];
+            <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
+                <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i</span>);
+            }
+            <span class="ident">result</span>
+        };
+        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
         <span class="prelude-val">Ok</span>(())
     });
 }
@@ -528,24 +568,24 @@
     <span class="ident">fs</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar1</span>, <span class="ident">Scalar2</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ScalarResult</span>,
     <span class="ident">check</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>([<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
 ) <span class="kw">where</span>
-    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq</span>::<span class="ident">BitEq</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq::BitEq</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
     <span class="ident">Vector1</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar1</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar1</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">Vector2</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">VectorResult</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="ident">test_2</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], <span class="ident">y</span>: [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
-        <span class="ident">proptest</span>::<span class="macro">prop_assume</span><span class="macro">!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
+        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
         <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="ident">y</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult</span>::<span class="ident">default</span>(); <span class="ident">LANES</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
             <span class="kw">for</span> ((<span class="ident">i1</span>, <span class="ident">i2</span>), <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">y</span>.<span class="ident">iter</span>()).<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
                 <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i1</span>, <span class="kw-2">*</span><span class="ident">i2</span>);
             }
             <span class="ident">result</span>
         };
-        <span class="kw">crate</span>::<span class="macro">prop_assert_biteq</span><span class="macro">!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
         <span class="prelude-val">Ok</span>(())
     });
 }
@@ -564,23 +604,23 @@
     <span class="ident">fs</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar1</span>, <span class="ident">Scalar2</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ScalarResult</span>,
     <span class="ident">check</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>([<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], <span class="ident">Scalar2</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
 ) <span class="kw">where</span>
-    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq</span>::<span class="ident">BitEq</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq::BitEq</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
     <span class="ident">Vector</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar1</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar1</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">VectorResult</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="ident">test_2</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], <span class="ident">y</span>: <span class="ident">Scalar2</span><span class="op">|</span> {
-        <span class="ident">proptest</span>::<span class="macro">prop_assume</span><span class="macro">!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
+        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
         <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="ident">y</span>).<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult</span>::<span class="ident">default</span>(); <span class="ident">LANES</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
                 <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i</span>, <span class="ident">y</span>);
             }
             <span class="ident">result</span>
         };
-        <span class="kw">crate</span>::<span class="macro">prop_assert_biteq</span><span class="macro">!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
         <span class="prelude-val">Ok</span>(())
     });
 }
@@ -599,30 +639,30 @@
     <span class="ident">fs</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar1</span>, <span class="ident">Scalar2</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ScalarResult</span>,
     <span class="ident">check</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Scalar1</span>, [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
 ) <span class="kw">where</span>
-    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
-    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq</span>::<span class="ident">BitEq</span> <span class="op">+</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar1</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">Scalar2</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
+    <span class="ident">ScalarResult</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">biteq::BitEq</span> <span class="op">+</span> <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>,
     <span class="ident">Vector</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">VectorResult</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="ident">test_2</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: <span class="ident">Scalar1</span>, <span class="ident">y</span>: [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
-        <span class="ident">proptest</span>::<span class="macro">prop_assume</span><span class="macro">!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
+        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>));
         <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>, <span class="ident">y</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult</span>::<span class="ident">default</span>(); <span class="ident">LANES</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">y</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
                 <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="ident">x</span>, <span class="kw-2">*</span><span class="ident">i</span>);
             }
             <span class="ident">result</span>
         };
-        <span class="kw">crate</span>::<span class="macro">prop_assert_biteq</span><span class="macro">!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
         <span class="prelude-val">Ok</span>(())
     });
 }
 
 <span class="doccomment">/// Expand a const-generic test into separate tests for each possible lane count.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">test_lanes</span> {
+<span class="macro">macro_rules!</span> <span class="ident">test_lanes</span> {
     {
         $(<span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">test</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span>() <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>)<span class="op">*</span>
     } <span class="op">=</span><span class="op">&gt;</span> {
@@ -632,75 +672,69 @@
 
                 <span class="kw">fn</span> <span class="ident">implementation</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span>()
                 <span class="kw">where</span>
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdUsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
+                    <span class="ident">core_simd::SimdU8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdUsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
 
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
-                <span class="ident">wasm_bindgen_test</span>::<span class="macro">wasm_bindgen_test_configure</span><span class="macro">!</span>(<span class="ident">run_in_browser</span>);
+                <span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_1</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">1</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_2</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_4</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">4</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_8</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">8</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_16</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">16</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
                 <span class="kw">fn</span> <span class="ident">lanes_32</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">32</span><span class="op">&gt;</span>();
-                }
-
-                <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test</span>::<span class="ident">wasm_bindgen_test</span>)]</span>
-                <span class="kw">fn</span> <span class="ident">lanes_64</span>() {
-                    <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">64</span><span class="op">&gt;</span>();
                 }
             }
         )<span class="op">*</span>
     }
-}  
+}
 
 <span class="doccomment">/// Expand a const-generic `#[should_panic]` test into separate tests for each possible lane count.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">test_lanes_panic</span> {
+<span class="macro">macro_rules!</span> <span class="ident">test_lanes_panic</span> {
     {
         $(<span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">test</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span>() <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>)<span class="op">*</span>
     } <span class="op">=</span><span class="op">&gt;</span> {
@@ -710,21 +744,21 @@
 
                 <span class="kw">fn</span> <span class="ident">implementation</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span>()
                 <span class="kw">where</span>
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdU128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdUsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdI128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
-                    <span class="ident">core_simd</span>::<span class="ident">BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd</span>::<span class="ident">LanesAtMost64</span>,
+                    <span class="ident">core_simd::SimdU8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdU128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdUsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdI128</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -762,16 +796,10 @@
                 <span class="kw">fn</span> <span class="ident">lanes_32</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">32</span><span class="op">&gt;</span>();
                 }
-
-                <span class="attribute">#[<span class="ident">test</span>]</span>
-                <span class="attribute">#[<span class="ident">should_panic</span>]</span>
-                <span class="kw">fn</span> <span class="ident">lanes_64</span>() {
-                    <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">64</span><span class="op">&gt;</span>();
-                }
             }
         )<span class="op">*</span>
     }
-}  
+}
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-search-js="../../search-index.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>

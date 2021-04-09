@@ -29,9 +29,8 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
-<span id="29">29</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_shuffle_lane</span> {
+<span class="macro">macro_rules!</span> <span class="ident">impl_shuffle_lane</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>:<span class="ident">literal</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span><span class="op">&gt;</span> {
             <span class="doccomment">/// A const SIMD shuffle that takes 2 SIMD vectors and produces another vector, using</span>
@@ -44,20 +43,19 @@
             <span class="doccomment">/// than storing and reloading from memory.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">shuffle</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">IDX</span>: [<span class="ident">u32</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>]<span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span>::<span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="self">self</span>, <span class="macro-nonterminal">second</span>, <span class="ident">IDX</span>) }
+                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="self">self</span>, <span class="macro-nonterminal">second</span>, <span class="ident">IDX</span>) }
             }
         }
     }
 }
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_shuffle_2pow_lanes</span> {
+<span class="macro">macro_rules!</span> <span class="ident">impl_shuffle_2pow_lanes</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle2</span>, <span class="number">2</span> }
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle4</span>, <span class="number">4</span> }
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle8</span>, <span class="number">8</span> }
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle16</span>, <span class="number">16</span> }
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle32</span>, <span class="number">32</span> }
-        <span class="macro">impl_shuffle_lane</span><span class="macro">!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle64</span>, <span class="number">64</span> }
+        <span class="macro">impl_shuffle_lane!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle2</span>, <span class="number">2</span> }
+        <span class="macro">impl_shuffle_lane!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle4</span>, <span class="number">4</span> }
+        <span class="macro">impl_shuffle_lane!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle8</span>, <span class="number">8</span> }
+        <span class="macro">impl_shuffle_lane!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle16</span>, <span class="number">16</span> }
+        <span class="macro">impl_shuffle_lane!</span>{ <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="ident">simd_shuffle32</span>, <span class="number">32</span> }
     }
 }
 </pre></div>

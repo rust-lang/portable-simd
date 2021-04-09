@@ -30,6 +30,7 @@
 <span id="27">27</span>
 <span id="28">28</span>
 <span id="29">29</span>
+<span id="30">30</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">incomplete_features</span>)]</span>
@@ -45,6 +46,7 @@
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">transmute</span>;
 
+<span class="kw">mod</span> <span class="ident">comparisons</span>;
 <span class="kw">mod</span> <span class="ident">fmt</span>;
 <span class="kw">mod</span> <span class="ident">intrinsics</span>;
 <span class="kw">mod</span> <span class="ident">ops</span>;
@@ -53,7 +55,7 @@
 <span class="kw">mod</span> <span class="ident">math</span>;
 
 <span class="kw">mod</span> <span class="ident">lanes_at_most_64</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lanes_at_most_64</span>::<span class="ident">LanesAtMost64</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lanes_at_most_64::LanesAtMost32</span>;
 
 <span class="kw">mod</span> <span class="ident">masks</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">masks</span>::<span class="kw-2">*</span>;
