@@ -28,8 +28,10 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
+<span id="28">28</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>))]</span>
 <span class="macro">macro_rules!</span> <span class="ident">from_transmute</span> {
     { <span class="kw">unsafe</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> }
