@@ -217,7 +217,7 @@
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
 <span class="doccomment">/// A mask where each lane is represented by a single bit.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialOrd</span>, <span class="ident">PartialEq</span>, <span class="ident">Ord</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BitMask</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">u64</span>)
 <span class="kw">where</span>
@@ -230,7 +230,7 @@
     <span class="doccomment">/// Construct a mask by setting all lanes to the given value.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">if</span> <span class="ident">value</span> {
-            <span class="self">Self</span>(<span class="ident">u64::MAX</span>)
+            <span class="self">Self</span>(<span class="ident">u64::MAX</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">64</span> <span class="op">-</span> <span class="ident">LANES</span>))
         } <span class="kw">else</span> {
             <span class="self">Self</span>(<span class="ident">u64::MIN</span>)
         }
