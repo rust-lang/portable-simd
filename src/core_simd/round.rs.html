@@ -57,29 +57,69 @@
 <span id="54">54</span>
 <span id="55">55</span>
 <span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="macro">macro_rules!</span> <span class="ident">implement</span> {
     {
         <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int_type</span>:<span class="ident">ident</span>
     } <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
             <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
         {
-            <span class="doccomment">/// Returns the largest integer less than or equal to each lane.</span>
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+            <span class="doccomment">/// Returns the smallest integer greater than or equal to each lane.</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ceil</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_ceil</span>(<span class="self">self</span>) }
+            }
+
+            <span class="doccomment">/// Returns the largest integer value less than or equal to each lane.</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">floor</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_floor</span>(<span class="self">self</span>) }
             }
 
-            <span class="doccomment">/// Returns the smallest integer greater than or equal to each lane.</span>
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+            <span class="doccomment">/// Rounds to the nearest integer value. Ties round toward zero.</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ceil</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_ceil</span>(<span class="self">self</span>) }
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">round</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_round</span>(<span class="self">self</span>) }
+            }
+
+            <span class="doccomment">/// Returns the floating point&#39;s integer value, with its fractional part removed.</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trunc</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_trunc</span>(<span class="self">self</span>) }
+            }
+
+            <span class="doccomment">/// Returns the floating point&#39;s fractional value, with its integer part removed.</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fract</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="self">self</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">trunc</span>()
             }
         }
 
