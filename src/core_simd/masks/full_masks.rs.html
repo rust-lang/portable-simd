@@ -425,12 +425,6 @@
 <span id="422">422</span>
 <span id="423">423</span>
 <span id="424">424</span>
-<span id="425">425</span>
-<span id="426">426</span>
-<span id="427">427</span>
-<span id="428">428</span>
-<span id="429">429</span>
-<span id="430">430</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
@@ -849,12 +843,6 @@
     <span class="doccomment">/// A mask equivalent to [SimdI64](crate::SimdI64), where all bits in the lane must be either set</span>
     <span class="doccomment">/// or unset.</span>
     <span class="kw">struct</span> <span class="ident">SimdMask64</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI64</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdI128](crate::SimdI128), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">SimdMask128</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI128</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
 }
 
 <span class="macro">define_mask!</span> {
