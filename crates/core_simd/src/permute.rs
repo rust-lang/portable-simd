@@ -29,7 +29,7 @@ macro_rules! impl_shuffle_lane {
                 self.shuffle::<{ idx() }>(self)
             }
 
-            /// Rotate the vector to the left `N` times.
+            /// Rotate a vector to the left `N` times.
             ///
             /// # Examples
             ///
@@ -65,7 +65,7 @@ macro_rules! impl_shuffle_lane {
                 self.shuffle::<{ idx() }>(self)
             }
 
-            /// Rotate the vector to the right `N` times.
+            /// Rotate a vector to the right `N` times.
             ///
             /// # Examples
             ///
