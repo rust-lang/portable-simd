@@ -396,6 +396,14 @@
 <span id="393">393</span>
 <span id="394">394</span>
 <span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">array</span>;
 
@@ -680,7 +688,11 @@
                     <span class="ident">core_simd::SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                     <span class="ident">core_simd::SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                     <span class="ident">core_simd::SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
-                    <span class="ident">core_simd::BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::Mask8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::MaskSize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
 
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
@@ -750,7 +762,11 @@
                     <span class="ident">core_simd::SimdIsize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                     <span class="ident">core_simd::SimdF32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
                     <span class="ident">core_simd::SimdF64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
-                    <span class="ident">core_simd::BitMask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::LanesAtMost32</span>,
+                    <span class="ident">core_simd::Mask8</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask16</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask32</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::Mask64</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
+                    <span class="ident">core_simd::MaskSize</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="ident">core_simd::Mask</span>,
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>

@@ -80,28 +80,23 @@
 <span id="77">77</span>
 <span id="78">78</span>
 <span id="79">79</span>
-<span id="80">80</span>
-<span id="81">81</span>
-<span id="82">82</span>
-<span id="83">83</span>
-<span id="84">84</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
 
 <span class="macro">macro_rules!</span> <span class="ident">implement_mask_ops</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span>:<span class="ident">ident</span>),)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span>:<span class="ident">ident</span>),)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
         $(
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
                 <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
                 <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
             {
                 <span class="doccomment">/// Test if each lane is equal to the corresponding lane in `other`.</span>
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_eq</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_eq</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
 
@@ -109,8 +104,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ne</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_ne</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_ne</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
 
@@ -118,8 +112,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
 
@@ -127,8 +120,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
 
@@ -136,8 +128,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
 
@@ -145,8 +136,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_mask_ty::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>))
-                            .<span class="ident">into</span>()
+                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>))
                     }
                 }
             }
@@ -155,20 +145,20 @@
 }
 
 <span class="macro">implement_mask_ops!</span> {
-    <span class="ident">SimdI8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdMask8</span>, <span class="ident">SimdI8</span>),
-    <span class="ident">SimdI16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdMask16</span>, <span class="ident">SimdI16</span>),
-    <span class="ident">SimdI32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdMask32</span>, <span class="ident">SimdI32</span>),
-    <span class="ident">SimdI64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdMask64</span>, <span class="ident">SimdI64</span>),
-    <span class="ident">SimdIsize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdMaskSize</span>, <span class="ident">SimdIsize</span>),
+    <span class="ident">SimdI8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>),
+    <span class="ident">SimdI16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>),
+    <span class="ident">SimdI32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>),
+    <span class="ident">SimdI64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>),
+    <span class="ident">SimdIsize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>),
 
-    <span class="ident">SimdU8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdMask8</span>, <span class="ident">SimdI8</span>),
-    <span class="ident">SimdU16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdMask16</span>, <span class="ident">SimdI16</span>),
-    <span class="ident">SimdU32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdMask32</span>, <span class="ident">SimdI32</span>),
-    <span class="ident">SimdU64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdMask64</span>, <span class="ident">SimdI64</span>),
-    <span class="ident">SimdUsize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdMaskSize</span>, <span class="ident">SimdIsize</span>),
+    <span class="ident">SimdU8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>),
+    <span class="ident">SimdU16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>),
+    <span class="ident">SimdU32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>),
+    <span class="ident">SimdU64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>),
+    <span class="ident">SimdUsize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>),
 
-    <span class="ident">SimdF32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdMask32</span>, <span class="ident">SimdI32</span>),
-    <span class="ident">SimdF64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdMask64</span>, <span class="ident">SimdI64</span>),
+    <span class="ident">SimdF32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>),
+    <span class="ident">SimdF64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>),
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>

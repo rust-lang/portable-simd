@@ -168,6 +168,7 @@
 <span id="165">165</span>
 <span id="166">166</span>
 <span id="167">167</span>
+<span id="168">168</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
@@ -201,6 +202,7 @@
         <span class="kw">where</span>
             <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
             <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_impl_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
         {
             <span class="doccomment">/// Returns true for each positive lane and false if it is zero or negative.</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_positive</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> {

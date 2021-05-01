@@ -139,6 +139,7 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
@@ -184,6 +185,7 @@
             <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
             <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
             <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_impl_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
         {
             <span class="doccomment">/// Returns true for each lane if it has a positive sign, including</span>
             <span class="doccomment">/// `+0.0`, `NaN`s with positive sign bit and positive infinity.</span>
