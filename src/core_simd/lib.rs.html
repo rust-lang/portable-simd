@@ -33,6 +33,9 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">incomplete_features</span>)]</span>
@@ -49,6 +52,9 @@
 <span class="kw">mod</span> <span class="ident">transmute</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">reduction</span>;
+
+<span class="kw">mod</span> <span class="ident">select</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">select::Select</span>;
 
 <span class="kw">mod</span> <span class="ident">comparisons</span>;
 <span class="kw">mod</span> <span class="ident">fmt</span>;
