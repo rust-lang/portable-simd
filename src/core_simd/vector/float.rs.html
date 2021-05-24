@@ -140,6 +140,14 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
 </pre><pre class="rust">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
@@ -177,6 +185,14 @@
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">abs</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_fabs</span>(<span class="self">self</span>) }
+            }
+
+            <span class="doccomment">/// Produces a vector where every lane has the square root value</span>
+            <span class="doccomment">/// of the equivalently-indexed lane in `self`</span>
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_fsqrt</span>(<span class="self">self</span>) }
             }
         }
 
