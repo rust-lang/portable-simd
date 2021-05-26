@@ -3,26 +3,31 @@ macro_rules! impl_vector {
     { $name:ident, $type:ty } => {
         impl<const LANES: usize> $name<LANES> where Self: crate::LanesAtMost32 {
             /// Construct a SIMD vector by setting all lanes to the given value.
+            #[inline]
             pub const fn splat(value: $type) -> Self {
                 Self([value; LANES])
             }
 
             /// Returns a slice containing the entire SIMD vector.
+            #[inline]
             pub const fn as_slice(&self) -> &[$type] {
                 &self.0
             }
 
             /// Returns a mutable slice containing the entire SIMD vector.
+            #[inline]
             pub fn as_mut_slice(&mut self) -> &mut [$type] {
                 &mut self.0
             }
 
             /// Converts an array to a SIMD vector.
+            #[inline]
             pub const fn from_array(array: [$type; LANES]) -> Self {
                 Self(array)
             }
 
             /// Converts a SIMD vector to an array.
+            #[inline]
             pub const fn to_array(self) -> [$type; LANES] {
                 // workaround for rust-lang/rust#80108
                 // TODO fix this
@@ -41,6 +46,44 @@ macro_rules! impl_vector {
                 {
                     self.0
                 }
+            }
+
+            /// Loads a vector from a slice, without doing bounds checking
+            ///
+            /// # Safety
+            /// The length of `src` must be at least `LANES`.
+            #[inline]
+            pub unsafe fn load_from_slice_unchecked(src: &[$type]) -> Self {
+                (src.as_ptr() as *const Self).read_unaligned()
+            }
+
+            /// Loads a vector from a slice.
+            ///
+            /// # Panics
+            /// This function will panic if the length of `src` is not at least `LANES`.
+            #[inline]
+            pub fn load_from_slice(src: &[$type]) -> Self {
+                assert!(src.len() >= LANES, "slice must be at least as long as vector");
+                unsafe { Self::load_from_slice_unchecked(src) }
+            }
+
+            /// Stores a vector to a slice, without doing bounds checking
+            ///
+            /// # Safety
+            /// The length of `src` must be at least `LANES`.
+            #[inline]
+            pub unsafe fn store_to_slice_unchecked(self, src: &mut [$type]) {
+                (src.as_mut_ptr() as *mut Self).write_unaligned(self)
+            }
+
+            /// Stores a vector to a slice.
+            ///
+            /// # Panics
+            /// This function will panic if the length of `src` is not at least `LANES`.
+            #[inline]
+            pub fn store_to_slice(self, src: &mut [$type]) {
+                assert!(src.len() >= LANES, "slice must be at least as long as vector");
+                unsafe { self.store_to_slice_unchecked(src) }
             }
         }
 
