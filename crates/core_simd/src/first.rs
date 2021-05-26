@@ -70,20 +70,20 @@ macro_rules! impl_vector {
             /// Stores a vector to a slice, without doing bounds checking
             ///
             /// # Safety
-            /// The length of `src` must be at least `LANES`.
+            /// The length of `dst` must be at least `LANES`.
             #[inline]
-            pub unsafe fn store_to_slice_unchecked(self, src: &mut [$type]) {
-                (src.as_mut_ptr() as *mut Self).write_unaligned(self)
+            pub unsafe fn store_to_slice_unchecked(self, dst: &mut [$type]) {
+                (dst.as_mut_ptr() as *mut Self).write_unaligned(self)
             }
 
             /// Stores a vector to a slice.
             ///
             /// # Panics
-            /// This function will panic if the length of `src` is not at least `LANES`.
+            /// This function will panic if the length of `dst` is not at least `LANES`.
             #[inline]
-            pub fn store_to_slice(self, src: &mut [$type]) {
-                assert!(src.len() >= LANES, "slice must be at least as long as vector");
-                unsafe { self.store_to_slice_unchecked(src) }
+            pub fn store_to_slice(self, dst: &mut [$type]) {
+                assert!(dst.len() >= LANES, "slice must be at least as long as vector");
+                unsafe { self.store_to_slice_unchecked(dst) }
             }
         }
 
