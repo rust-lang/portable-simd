@@ -1,9 +1,6 @@
 //! 4x4 matrix inverse
 // Code ported from the `packed_simd` crate
 // Run this code with `cargo test --example matrix_inversion`
-#![feature(custom_inner_attributes)]
-#![deny(rust_2018_idioms)]
-#![allow(clippy::must_use_candidate)]
 #![feature(array_chunks)]
 use core_simd::*;
 
