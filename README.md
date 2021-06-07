@@ -14,12 +14,13 @@ If you are interested in support for a specific architecture, you may want [stda
 
 ## Hello World
 
-Now we're gonna dip our toes into this world with a small SIMD "Hello, World!" example. Make sure your compiler is up to date by running 
+Now we're gonna dip our toes into this world with a small SIMD "Hello, World!" example. Make sure your compiler is up to date and using `nightly`. We can do that by running 
 
 ```bash
-rustup update
+rustup update -- nightly
 ```
-Then, run 
+
+or by setting up `rustup default nightly` or else with `cargo +nihgtly {build,test, run}`. After updating, run 
 ```bash
 cargo new hellosimd
 ```
