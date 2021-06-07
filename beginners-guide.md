@@ -13,6 +13,41 @@ This might seem a tiny bit weird at first, but there's a good reason for it. Bac
 * One of them you're probably familiar with: Multi-core processors. By giving a processor more than one core, each core can do its own work, and because they're physically distant (at least on the CPU's scale) the heat can still be managed. Unfortunately, not all tasks can just be split up across cores in an efficient way.
 * The second strategy is SIMD. If you can't make the register go any faster, you can still make the register *wider*. This lets you process more data at a time, which is *almost* as good as just having a faster CPU. As with multi-core programming, SIMD doesn't fit every kind of task, so you have to know when it will improve your program.
 
+## Hello World
+
+Now we're gonna dip our toes into this world with a small SIMD "Hello, World!" example. Make sure your compiler is up to date by running 
+
+```bash
+rustup update
+```
+Then, run 
+```bash
+cargo new hellosimd
+```
+to create a new crate. Edit `hellosimd/Cargo.toml` to be 
+```toml
+[package]
+name = "hellosimd"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+core_simd = { git = "https://github.com/rust-lang/stdsimd" }
+```
+
+and finally write this in `src/main.rs`:
+```rust
+use core_simd::*;
+
+fn main() {
+    let a = f32x4::splat(10.0);
+    let b = f32x4::from_array([1.0, 2.0, 3.0, 4.0]);
+    println!("{:?}", a + b);
+}
+```
+
+Explanation: We import all the bindings from the crate with the first line. Then, we construct our SIMD vectors with methods like `splat` or `from_array`. Finally, we can use operators on them like `+` and the appropriate SIMD instructions will be carried out. When we run `cargo run` you should get `[11.0, 12.0, 13.0, 14.0]`. That's it! To build more interesting programs, we'll need to clarify a what we call the specific things we're using.
+
 ## Terms
 
 SIMD has a few special vocabulary terms you should know:
