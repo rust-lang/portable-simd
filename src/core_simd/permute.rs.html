@@ -137,6 +137,15 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
 </pre><pre class="rust">
 <span class="macro">macro_rules!</span> <span class="ident">impl_shuffle_lane</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>:<span class="ident">literal</span> } <span class="op">=</span><span class="op">&gt;</span> {
@@ -149,6 +158,15 @@
             <span class="doccomment">/// Some SIMD shuffle instructions can be quite slow, so avoiding them by loading data</span>
             <span class="doccomment">/// into the desired patterns in advance is preferred, but shuffles are still faster</span>
             <span class="doccomment">/// than storing and reloading from memory.</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// ```</span>
+            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="comment">// let a = f32x4::from_array([1.0, 2.0, 3.0, 4.0]);</span>
+            <span class="comment">// let b = f32x4::from_array([5.0, 6.0, 7.0, 8.0]);</span>
+            <span class="comment">// const IDXS: [u32; 4] = [4,0,3,7];</span>
+            <span class="comment">// let c = f32x4::shuffle::&lt;IDXS&gt;(a,b);</span>
+            <span class="comment">// assert_eq!(f32x4::from_array([5.0, 1.0, 4.0, 8.0]), c);</span>
+            <span class="doccomment">/// ```</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">shuffle</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">IDX</span>: [<span class="ident">u32</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>]<span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="self">self</span>, <span class="macro-nonterminal">second</span>, <span class="ident">IDX</span>) }
