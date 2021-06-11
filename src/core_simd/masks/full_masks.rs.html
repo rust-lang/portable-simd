@@ -214,6 +214,33 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
@@ -429,5 +456,32 @@
     <span class="doccomment">/// or unset.</span>
     <span class="kw">struct</span> <span class="ident">MaskSize</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdIsize</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
 }
+
+<span class="macro">macro_rules!</span> <span class="ident">impl_from</span> {
+    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_inner</span>:<span class="ident">ident</span>) <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_inner</span>:<span class="ident">ident</span>)),<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
+        $(
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span>, <span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+        <span class="kw">where</span>
+            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_inner</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_inner</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+            <span class="ident">T</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
+            <span class="ident">U</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
+        {
+            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new</span> <span class="op">=</span> <span class="self">Self</span><span class="ident">::splat</span>(<span class="bool-val">false</span>);
+                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">LANES</span> {
+                    <span class="kw">unsafe</span> { <span class="ident">new</span>.<span class="ident">set_unchecked</span>(<span class="ident">i</span>, <span class="ident">value</span>.<span class="ident">test_unchecked</span>(<span class="ident">i</span>)) }
+                }
+                <span class="ident">new</span>
+            }
+        }
+        )<span class="op">*</span>
+    }
+}
+<span class="macro">impl_from!</span> { <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>) }
+<span class="macro">impl_from!</span> { <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>) }
+<span class="macro">impl_from!</span> { <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>) }
+<span class="macro">impl_from!</span> { <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>) }
+<span class="macro">impl_from!</span> { <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>) }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
