@@ -569,6 +569,11 @@
 <span id="567">567</span>
 <span id="568">568</span>
 <span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
@@ -749,6 +754,11 @@
             <span class="doccomment">/// Convert this mask to a bitmask, with one bit set per lane.</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Mask</span><span class="op">&gt;</span><span class="ident">::BitMask</span> {
                 <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_bitmask</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>()
+            }
+
+            <span class="doccomment">/// Convert a bitmask to a mask.</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Mask</span><span class="op">&gt;</span><span class="ident">::BitMask</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="self">Self</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span><span class="op">&gt;</span><span class="ident">::from_bitmask</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(<span class="ident">bitmask</span>))
             }
         }
 
