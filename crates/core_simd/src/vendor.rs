@@ -1,5 +1,4 @@
 /// Provides implementations of `From<$a> for $b` and `From<$b> for $a` that transmutes the value.
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 macro_rules! from_transmute {
     { unsafe $a:ty => $b:ty } => {
         from_transmute!{ @impl $a => $b }
@@ -15,5 +14,8 @@ macro_rules! from_transmute {
     };
 }
 
-#[cfg(any(target_arch = "x86", target_arch = "x86_64", doc))]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod x86;
+
+#[cfg(any(target_arch = "wasm32"))]
+mod wasm32;
