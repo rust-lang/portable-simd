@@ -37,11 +37,11 @@ from_transmute! { unsafe u64x2 => poly64x2_t }
 
 #[cfg(target_arch = "arm")]
 mod arm {
-    from_transmute! { unsafe u8x4 => unt8x4_t }
-    from_transmute! { unsafe i8x4 => int8x4_t }
+    from_transmute! { unsafe SimdU8<4> => uint8x4_t }
+    from_transmute! { unsafe SimdI8<4> => iint8x4_t }
 
-    from_transmute! { unsafe u16x2 => unt16x2_t }
-    from_transmute! { unsafe i16x2 => int16x2_t }
+    from_transmute! { unsafe SimdU16<2> => uint16x2_t }
+    from_transmute! { unsafe SimdI16<2> => int16x2_t }
 }
 
 #[cfg(target_arch = "aarch64")]
