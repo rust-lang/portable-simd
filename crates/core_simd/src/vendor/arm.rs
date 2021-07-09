@@ -37,6 +37,7 @@ from_transmute! { unsafe u64x2 => poly64x2_t }
 
 #[cfg(target_arch = "arm")]
 mod arm {
+    use super::*;
     from_transmute! { unsafe SimdU8<4> => uint8x4_t }
     from_transmute! { unsafe SimdI8<4> => iint8x4_t }
 
