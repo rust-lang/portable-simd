@@ -22,3 +22,6 @@ mod wasm32;
 
 #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
 mod arm;
+
+#[cfg(any(target_arch = "powerpc", target_arch = "powerpc64"))]
+mod powerpc;
