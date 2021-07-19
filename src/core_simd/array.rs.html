@@ -246,6 +246,11 @@
 <span id="246">246</span>
 <span id="247">247</span>
 <span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::intrinsics</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::masks</span>::<span class="kw-2">*</span>;
@@ -274,6 +279,7 @@
     <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
     <span class="doccomment">/// If an index is out of bounds, that lane instead selects the value from the &quot;or&quot; vector.</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core_simd::*;</span>
     <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = SimdUsize::&lt;4&gt;::from_array([9, 3, 0, 5]);</span>
@@ -291,6 +297,7 @@
     <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
     <span class="doccomment">/// Out-of-bounds indices instead use the default value for that lane (0).</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core_simd::*;</span>
     <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = SimdUsize::&lt;4&gt;::from_array([9, 3, 0, 5]);</span>
@@ -310,6 +317,7 @@
     <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
     <span class="doccomment">/// Out-of-bounds or masked indices instead select the value from the &quot;or&quot; vector.</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core_simd::*;</span>
     <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = SimdUsize::&lt;4&gt;::from_array([9, 3, 0, 5]);</span>
@@ -339,6 +347,7 @@
     <span class="doccomment">/// Out-of-bounds indices are not written.</span>
     <span class="doccomment">/// `scatter` writes &quot;in order&quot;, so if an index receives two writes, only the last is guaranteed.</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core_simd::*;</span>
     <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = SimdUsize::&lt;4&gt;::from_array([9, 3, 0, 0]);</span>
@@ -356,6 +365,7 @@
     <span class="doccomment">/// Out-of-bounds or masked indices are not written.</span>
     <span class="doccomment">/// `scatter_select` writes &quot;in order&quot;, so if an index receives two writes, only the last is guaranteed.</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core_simd::*;</span>
     <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = SimdUsize::&lt;4&gt;::from_array([9, 3, 0, 0]);</span>
