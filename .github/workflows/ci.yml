@@ -21,6 +21,7 @@ jobs:
         run: |
           rustup update nightly --no-self-update
           rustup default nightly
+          rustup component add rustfmt
       - name: Run rustfmt
         run: cargo fmt --all -- --check
 
@@ -53,6 +54,7 @@ jobs:
           rustup update nightly --no-self-update
           rustup default nightly
           rustup target add ${{ matrix.target }}
+          rustup component add clippy
       - name: Run Clippy
         run: cargo clippy --all --target ${{ matrix.target }}
 
