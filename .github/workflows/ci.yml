@@ -27,7 +27,7 @@ jobs:
 
   clippy:
     name: "clippy on ${{ matrix.target }}"
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
