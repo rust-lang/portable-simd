@@ -56,7 +56,7 @@ jobs:
           rustup target add ${{ matrix.target }}
           rustup component add clippy
       - name: Run Clippy
-        run: cargo clippy --all --target ${{ matrix.target }}
+        run: cargo clippy --all-targets --target ${{ matrix.target }}
 
   x86-tests:
     name: "${{ matrix.target_feature }} on ${{ matrix.target }}"
