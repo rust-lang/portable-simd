@@ -55,7 +55,7 @@
 <span id="55">55</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Private implementation details of public gather/scatter APIs.</span>
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::SimdUsize</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">SimdUsize</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::mem</span>;
 
 <span class="doccomment">/// A vector of *const T.</span>
@@ -65,7 +65,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdConstPtr</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">SimdUsize</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
     <span class="ident">T</span>: <span class="ident">Sized</span>,
 {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -91,7 +91,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdMutPtr</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">SimdUsize</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
     <span class="ident">T</span>: <span class="ident">Sized</span>,
 {
     <span class="attribute">#[<span class="ident">inline</span>]</span>

@@ -141,13 +141,12 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
-<span id="144">144</span>
 </pre><pre class="rust">
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_reductions</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>
+            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
         {
             <span class="doccomment">/// Horizontal wrapping add.  Returns the sum of the lanes of the vector, with wrapping addition.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -201,7 +200,7 @@
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>
+            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
         {
 
             <span class="doccomment">/// Horizontal add.  Returns the sum of the lanes of the vector.</span>
@@ -209,7 +208,7 @@
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_sum</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
                 <span class="comment">// LLVM sum is inaccurate on i586</span>
                 <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
-                    <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>().<span class="ident">sum</span>()
+                    <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">sum</span>()
                 } <span class="kw">else</span> {
                     <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0.</span>) }
                 }
@@ -220,7 +219,7 @@
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_product</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
                 <span class="comment">// LLVM product is inaccurate on i586</span>
                 <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
-                    <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>().<span class="ident">product</span>()
+                    <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">product</span>()
                 } <span class="kw">else</span> {
                     <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1.</span>) }
                 }
@@ -249,9 +248,9 @@
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_full_mask_reductions</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="kw">crate</span><span class="ident">::Mask</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>
+            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
         {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
@@ -270,8 +269,7 @@
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
+            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
         {
             <span class="doccomment">/// Returns true if any lane is set, or false otherwise.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>

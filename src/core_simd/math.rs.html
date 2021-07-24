@@ -152,7 +152,7 @@
 </pre><pre class="rust">
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint_arith</span> {
     ($((<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>:<span class="ident">ident</span>)),<span class="op">+</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        $( <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
+        $( <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span> {
 
             <span class="doccomment">/// Lanewise saturating add.</span>
             <span class="doccomment">///</span>
@@ -196,7 +196,7 @@
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_int_arith</span> {
     ($((<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>:<span class="ident">ident</span>)),<span class="op">+</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        $( <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
+        $( <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span> {
 
             <span class="doccomment">/// Lanewise saturating add.</span>
             <span class="doccomment">///</span>

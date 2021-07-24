@@ -158,8 +158,13 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="doccomment">/// Implements additional integer traits (Eq, Ord, Hash) on the specified vector `$name`, holding multiple `$lanes` of `$type`.</span>
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_vector</span> {
@@ -167,31 +172,32 @@
         <span class="macro">impl_vector!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span> }
         <span class="macro">impl_integer_reductions!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span> }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {}
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span> {}
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core::cmp::Ordering</span> {
                 <span class="comment">// TODO use SIMD cmp</span>
-                <span class="self">self</span>.<span class="ident">to_array</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">as_ref</span>())
+                <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">as_ref</span>())
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::hash::Hash</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::hash::Hash</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
+        <span class="kw">where</span>
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">H</span>)
             <span class="kw">where</span>
                 <span class="ident">H</span>: <span class="ident">core::hash::Hasher</span>
             {
-                <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">hash</span>(<span class="ident">state</span>)
+                <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">hash</span>(<span class="ident">state</span>)
             }
         }
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_impl_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="doccomment">/// Returns true for each positive lane and false if it is zero or negative.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -224,7 +230,7 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdIsize</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">isize</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
 <span class="macro">impl_integer_vector!</span> { <span class="ident">SimdIsize</span>, <span class="ident">isize</span>, <span class="ident">MaskSize</span>, <span class="ident">SimdIsize</span> }
 
@@ -232,7 +238,7 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdI16</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">i16</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
 <span class="macro">impl_integer_vector!</span> { <span class="ident">SimdI16</span>, <span class="ident">i16</span>, <span class="ident">Mask16</span>, <span class="ident">SimdI16</span> }
 
@@ -240,7 +246,7 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdI32</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">i32</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
 <span class="macro">impl_integer_vector!</span> { <span class="ident">SimdI32</span>, <span class="ident">i32</span>, <span class="ident">Mask32</span>, <span class="ident">SimdI32</span> }
 
@@ -248,7 +254,7 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdI64</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">i64</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
 <span class="macro">impl_integer_vector!</span> { <span class="ident">SimdI64</span>, <span class="ident">i64</span>, <span class="ident">Mask64</span>, <span class="ident">SimdI64</span> }
 
@@ -256,7 +262,7 @@
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">simd</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimdI8</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>([<span class="ident">i8</span>; <span class="ident">LANES</span>])
 <span class="kw">where</span>
-    <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
 <span class="macro">impl_integer_vector!</span> { <span class="ident">SimdI8</span>, <span class="ident">i8</span>, <span class="ident">Mask8</span>, <span class="ident">SimdI8</span> }
 

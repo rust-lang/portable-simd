@@ -8,7 +8,32 @@
 <span id="8"> 8</span>
 <span id="9"> 9</span>
 <span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
 </pre><pre class="rust">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">mod</span> <span class="ident">vector_impl</span>;
+
 <span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -19,6 +44,25 @@
 
 <span class="comment">// Vectors of pointers are not for public use at the current time.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">ptr</span>;
+
+<span class="kw">mod</span> <span class="ident">sealed</span> {
+    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {}
+}
+
+<span class="doccomment">/// A representation of a vector as an &quot;array&quot; with indices, implementing</span>
+<span class="doccomment">/// operations applicable to any vector type based solely on &quot;having lanes&quot;,</span>
+<span class="doccomment">/// and describing relationships between vector and scalar types.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Vector</span>: <span class="ident">sealed::Sealed</span> {
+    <span class="doccomment">/// The scalar type in every lane of this vector type.</span>
+    <span class="kw">type</span> <span class="ident">Scalar</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Sized</span>;
+
+    <span class="doccomment">/// The number of lanes for this vector.</span>
+    <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span>;
+
+    <span class="doccomment">/// Generates a SIMD vector with the same value in every lane.</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">val</span>: <span class="self">Self</span><span class="ident">::Scalar</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+}
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>

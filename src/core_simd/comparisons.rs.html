@@ -75,19 +75,15 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
 </pre><pre class="rust">
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="macro">macro_rules!</span> <span class="ident">implement_mask_ops</span> {
     { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">ident</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span>:<span class="ident">ident</span>),)<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
         $(
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">inner_ty</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::Mask</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="doccomment">/// Test if each lane is equal to the corresponding lane in `other`.</span>
                 <span class="attribute">#[<span class="ident">inline</span>]</span>

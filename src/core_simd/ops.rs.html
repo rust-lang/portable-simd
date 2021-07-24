@@ -669,7 +669,7 @@
 <span id="669">669</span>
 <span id="670">670</span>
 </pre><pre class="rust">
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="doccomment">/// Checks if the right-hand side argument of a left- or right-shift would cause overflow.</span>
 <span class="kw">fn</span> <span class="ident">invalid_shift_rhs</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>
@@ -687,7 +687,7 @@
     {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>:<span class="ident">path</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span>:<span class="ident">ident</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">ty</span>;
 
@@ -697,7 +697,7 @@
     } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>;
 
@@ -707,7 +707,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::Output</span>;
 
@@ -719,7 +719,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::Output</span>;
 
@@ -731,7 +731,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::Output</span>;
 
@@ -746,7 +746,7 @@
     {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>:<span class="ident">path</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span>:<span class="ident">ident</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>:<span class="ident">ident</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>:<span class="ident">ty</span>) <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>
@@ -754,7 +754,7 @@
     } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>) <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
@@ -762,7 +762,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>]</span>)<span class="op">*</span>
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs_arg_ty</span>) {
@@ -775,7 +775,7 @@
     {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>:<span class="ident">path</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span>:<span class="ident">ident</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">ty</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>:<span class="ident">ident</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">tt</span>
@@ -783,7 +783,7 @@
     } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>
@@ -791,7 +791,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
         <span class="kw">where</span>
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bound</span>: <span class="ident">LanesAtMost32</span>,)<span class="op">*</span>
+            <span class="macro-nonterminal">LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="kw">as</span> <span class="macro-nonterminal">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&gt;</span><span class="macro-nonterminal">::Output</span>;
             <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_tok</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
@@ -838,7 +838,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Not</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
@@ -852,7 +852,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Neg</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
@@ -865,7 +865,7 @@
     { <span class="kw">impl</span> <span class="ident">Index</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Index</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="ident">LanesAtMost32</span>,
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             <span class="ident">I</span>: <span class="ident">core::slice::SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
         {
             <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">I::Output</span>;
@@ -877,7 +877,7 @@
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::IndexMut</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="ident">LanesAtMost32</span>,
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             <span class="ident">I</span>: <span class="ident">core::slice::SliceIndex</span><span class="op">&lt;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>]<span class="op">&gt;</span>,
         {
             <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span><span class="ident">::Output</span> {
@@ -892,7 +892,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -908,7 +908,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -922,7 +922,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>;
 
@@ -936,7 +936,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
@@ -950,7 +950,7 @@
         <span class="macro">impl_ref_ops!</span> {
             <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
             <span class="kw">where</span>
-                <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
             {
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
@@ -996,13 +996,13 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Div</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_array</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span>)
                             {
@@ -1011,8 +1011,8 @@
 
                             <span class="comment">// Guards for div(MIN, -1),</span>
                             <span class="comment">// this check only applies to signed ints</span>
-                            <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>()
-                                    .<span class="ident">zip</span>(<span class="ident">rhs</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>())
+                            <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>()
+                                    .<span class="ident">zip</span>(<span class="ident">rhs</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>())
                                     .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">x</span>,<span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>) {
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to divide with overflow&quot;</span>);
                             }
@@ -1024,7 +1024,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Div</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -1034,7 +1034,7 @@
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to divide by zero&quot;</span>);
                             }
                             <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
-                                <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span>) <span class="op">&amp;&amp;</span>
+                                <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span>) <span class="op">&amp;&amp;</span>
                                 <span class="ident">rhs</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span> {
                                     <span class="macro">panic!</span>(<span class="string">&quot;attempt to divide with overflow&quot;</span>);
                             }
@@ -1047,7 +1047,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Div</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>;
 
@@ -1061,7 +1061,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::DivAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
@@ -1073,7 +1073,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::DivAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">div_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
@@ -1086,13 +1086,13 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Rem</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_array</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span>)
                             {
@@ -1101,8 +1101,8 @@
 
                             <span class="comment">// Guards for rem(MIN, -1)</span>
                             <span class="comment">// this branch applies the check only to signed ints</span>
-                            <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>()
-                                    .<span class="ident">zip</span>(<span class="ident">rhs</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>())
+                            <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>()
+                                    .<span class="ident">zip</span>(<span class="ident">rhs</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>())
                                     .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">x</span>,<span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>) {
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to calculate the remainder with overflow&quot;</span>);
                             }
@@ -1114,7 +1114,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Rem</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -1124,7 +1124,7 @@
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to calculate the remainder with a divisor of zero&quot;</span>);
                             }
                             <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
-                                <span class="self">self</span>.<span class="ident">as_slice</span>().<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span>) <span class="op">&amp;&amp;</span>
+                                <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span>) <span class="op">&amp;&amp;</span>
                                 <span class="ident">rhs</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span> {
                                     <span class="macro">panic!</span>(<span class="string">&quot;attempt to calculate the remainder with overflow&quot;</span>);
                             }
@@ -1137,7 +1137,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Rem</span><span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>;
 
@@ -1151,7 +1151,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::RemAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
@@ -1163,7 +1163,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::RemAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">rem_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
@@ -1176,14 +1176,14 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Shl</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
-                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_array</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">copied</span>()
                                 .<span class="ident">any</span>(<span class="ident">invalid_shift_rhs</span>)
@@ -1198,7 +1198,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Shl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -1217,7 +1217,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::ShlAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
@@ -1229,7 +1229,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::ShlAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shl_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {
@@ -1241,14 +1241,14 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Shr</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
                             <span class="comment">// TODO there is probably a better way of doing this</span>
-                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_slice</span>()
+                            <span class="kw">if</span> <span class="ident">rhs</span>.<span class="ident">as_array</span>()
                                 .<span class="ident">iter</span>()
                                 .<span class="ident">copied</span>()
                                 .<span class="ident">any</span>(<span class="ident">invalid_shift_rhs</span>)
@@ -1263,7 +1263,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Shr</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
 
@@ -1282,7 +1282,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::ShrAssign</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
@@ -1294,7 +1294,7 @@
                 <span class="macro">impl_ref_ops!</span> {
                     <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::ShrAssign</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
                     <span class="kw">where</span>
-                        <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">LanesAtMost32</span>,
+                        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
                     {
                         <span class="attribute">#[<span class="ident">inline</span>]</span>
                         <span class="kw">fn</span> <span class="ident">shr_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>) {

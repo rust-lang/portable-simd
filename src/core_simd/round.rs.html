@@ -68,12 +68,6 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
-<span id="71">71</span>
-<span id="72">72</span>
-<span id="73">73</span>
-<span id="74">74</span>
-<span id="75">75</span>
-<span id="76">76</span>
 </pre><pre class="rust">
 <span class="macro">macro_rules!</span> <span class="ident">implement</span> {
     {
@@ -82,7 +76,7 @@
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
+            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
         {
             <span class="doccomment">/// Returns the smallest integer greater than or equal to each lane.</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
@@ -118,13 +112,7 @@
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fract</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="self">self</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">trunc</span>()
             }
-        }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">int_type</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::LanesAtMost32</span>,
-        {
             <span class="doccomment">/// Rounds toward zero and converts to the same-width integer type, assuming that</span>
             <span class="doccomment">/// the value is finite and fits in that type.</span>
             <span class="doccomment">///</span>
