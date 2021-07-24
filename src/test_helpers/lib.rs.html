@@ -463,6 +463,10 @@
 <span id="463">463</span>
 <span id="464">464</span>
 <span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
 </pre><pre class="rust">
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">array</span>;
 
@@ -770,19 +774,23 @@
     <span class="ident">Vector3</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">Scalar3</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">Scalar3</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
     <span class="ident">VectorResult</span>: <span class="ident">Into</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
-    <span class="ident">test_3</span>(<span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], <span class="ident">y</span>: [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>], <span class="ident">z</span>: [<span class="ident">Scalar3</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
-        <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">z</span>));
-        <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="ident">y</span>.<span class="ident">into</span>(), <span class="ident">z</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
-            <span class="kw">for</span> ((<span class="ident">i1</span>, (<span class="ident">i2</span>, <span class="ident">i3</span>)), <span class="ident">o</span>) <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">y</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">z</span>.<span class="ident">iter</span>())).<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>()) {
-                <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i1</span>, <span class="kw-2">*</span><span class="ident">i2</span>, <span class="kw-2">*</span><span class="ident">i3</span>);
-            }
-            <span class="ident">result</span>
-        };
-        <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
-        <span class="prelude-val">Ok</span>(())
-    });
+    <span class="ident">test_3</span>(
+        <span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">x</span>: [<span class="ident">Scalar1</span>; <span class="ident">LANES</span>], <span class="ident">y</span>: [<span class="ident">Scalar2</span>; <span class="ident">LANES</span>], <span class="ident">z</span>: [<span class="ident">Scalar3</span>; <span class="ident">LANES</span>]<span class="op">|</span> {
+            <span class="macro">proptest::prop_assume!</span>(<span class="ident">check</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">z</span>));
+            <span class="kw">let</span> <span class="ident">result_1</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">fv</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="ident">y</span>.<span class="ident">into</span>(), <span class="ident">z</span>.<span class="ident">into</span>()).<span class="ident">into</span>();
+            <span class="kw">let</span> <span class="ident">result_2</span>: [<span class="ident">ScalarResult</span>; <span class="ident">LANES</span>] <span class="op">=</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> [<span class="ident">ScalarResult::default</span>(); <span class="ident">LANES</span>];
+                <span class="kw">for</span> ((<span class="ident">i1</span>, (<span class="ident">i2</span>, <span class="ident">i3</span>)), <span class="ident">o</span>) <span class="kw">in</span>
+                    <span class="ident">x</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">y</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">z</span>.<span class="ident">iter</span>())).<span class="ident">zip</span>(<span class="ident">result</span>.<span class="ident">iter_mut</span>())
+                {
+                    <span class="kw-2">*</span><span class="ident">o</span> <span class="op">=</span> <span class="ident">fs</span>(<span class="kw-2">*</span><span class="ident">i1</span>, <span class="kw-2">*</span><span class="ident">i2</span>, <span class="kw-2">*</span><span class="ident">i3</span>);
+                }
+                <span class="ident">result</span>
+            };
+            <span class="kw">crate</span><span class="macro">::prop_assert_biteq!</span>(<span class="ident">result_1</span>, <span class="ident">result_2</span>);
+            <span class="prelude-val">Ok</span>(())
+        },
+    );
 }
 
 <span class="doccomment">/// Expand a const-generic test into separate tests for each possible lane count.</span>
