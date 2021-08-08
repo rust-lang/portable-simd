@@ -1,7 +1,6 @@
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![allow(incomplete_features)]
 #![feature(
-    const_evaluatable_checked,
     const_fn_trait_bound,
     const_generics,
     platform_intrinsics,
@@ -9,6 +8,10 @@
     simd_ffi,
     staged_api,
     stdsimd
+)]
+#![cfg_attr(
+    feature = "const_evaluatable_checked",
+    feature(const_evaluatable_checked)
 )]
 #![warn(missing_docs)]
 #![unstable(feature = "portable_simd", issue = "86656")]

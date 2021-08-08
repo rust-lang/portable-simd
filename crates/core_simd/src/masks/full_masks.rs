@@ -101,6 +101,7 @@ where
         unsafe { Mask(crate::intrinsics::simd_cast(self.0)) }
     }
 
+    #[cfg(feature = "const_evaluatable_checked")]
     #[inline]
     pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
         unsafe {
@@ -127,6 +128,7 @@ where
         }
     }
 
+    #[cfg(feature = "const_evaluatable_checked")]
     #[inline]
     pub fn from_bitmask(mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
         unsafe {
