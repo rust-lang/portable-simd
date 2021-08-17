@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates&#x2F;core_simd&#x2F;src&#x2F;masks&#x2F;full_masks.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>full_masks.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../core_simd/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates&#x2F;core_simd&#x2F;src&#x2F;masks&#x2F;full_masks.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>full_masks.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../core_simd/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -223,310 +223,232 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
-<span id="226">226</span>
-<span id="227">227</span>
-<span id="228">228</span>
-<span id="229">229</span>
-<span id="230">230</span>
-<span id="231">231</span>
-<span id="232">232</span>
-<span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
-<span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
-<span id="261">261</span>
-<span id="262">262</span>
-<span id="263">263</span>
-<span id="264">264</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
-<span class="macro">macro_rules!</span> <span class="ident">define_mask</span> {
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw-2">*</span><span class="self">self</span>
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialOrd</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">core::cmp::Ordering</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">Eq</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">Ord</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core::cmp::Ordering</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>(<span class="ident">Simd::splat</span>(<span class="kw">if</span> <span class="ident">value</span> { <span class="ident">T::TRUE</span> } <span class="kw">else</span> { <span class="ident">T::FALSE</span> }))
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="ident">T::eq</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>], <span class="ident">T::TRUE</span>)
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
+        <span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span> { <span class="ident">T::TRUE</span> } <span class="kw">else</span> { <span class="ident">T::FALSE</span> }
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_int</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>(<span class="ident">value</span>)
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">convert</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">U</span>: <span class="ident">MaskElement</span>,
     {
-        $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span>
-        <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">ident</span>: <span class="ident">usize</span><span class="op">&gt;</span>(
-            <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes2</span>:<span class="ident">ident</span><span class="op">&gt;</span>
-        );
-    } <span class="op">=</span><span class="op">&gt;</span> {
-        $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span>
-        <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>)
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>;
+        <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
+    }
 
-        <span class="macro">impl_full_mask_reductions!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span> }
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
+        <span class="kw">unsafe</span> {
+            <span class="comment">// TODO remove the transmute when rustc can use arrays of u8 as bitmasks</span>
+            <span class="macro">assert_eq!</span>(
+                <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span><span class="op">&gt;</span>(),
+                <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>,
+            );
+            <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span>
+                <span class="ident"><span class="kw">crate</span>::intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] <span class="op">=</span>
+                <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="macro-nonterminal">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {}
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw-2">*</span><span class="self">self</span>
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">0</span>
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">core::cmp::Ordering</span><span class="op">&gt;</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {}
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">core::cmp::Ordering</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="self">Self</span>(
-                    <span class="op">&lt;</span><span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::splat</span>(
-                        <span class="kw">if</span> <span class="ident">value</span> {
-                            <span class="op">-</span><span class="number">1</span>
-                        } <span class="kw">else</span> {
-                            <span class="number">0</span>
-                        }
-                    ),
-                )
-            }
-
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>] <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span>
-            }
-
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
-                <span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span> {
-                    <span class="op">-</span><span class="number">1</span>
-                } <span class="kw">else</span> {
-                    <span class="number">0</span>
+            <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
+            <span class="comment">// bit order.</span>
+            <span class="comment">// TODO fix this in a better way</span>
+            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>)) {
+                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
+                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
                 }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_int</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
-                <span class="self">self</span>.<span class="number">0</span>
-            }
+            <span class="ident">bitmask</span>
+        }
+    }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="ident">value</span>)
-            }
-
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> [<span class="ident">u8</span>; <span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
-                <span class="kw">unsafe</span> {
-                    <span class="comment">// TODO remove the transmute when rustc can use arrays of u8 as bitmasks</span>
-                    <span class="macro">assert_eq!</span>(
-                        <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span><span class="op">&gt;</span>(),
-                        <span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>,
-                    );
-                    <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] <span class="op">=</span> <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
-
-                    <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
-                    <span class="comment">// bit order.</span>
-                    <span class="comment">// TODO fix this in a better way</span>
-                    <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>)) {
-                        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                            <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
-                        }
-                    }
-
-                    <span class="ident">bitmask</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> {
+            <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
+            <span class="comment">// bit order.</span>
+            <span class="comment">// TODO fix this in a better way</span>
+            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>)) {
+                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
+                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
                 }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> {
-                    <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
-                    <span class="comment">// bit order.</span>
-                    <span class="comment">// TODO fix this in a better way</span>
-                    <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>)) {
-                        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                            <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
-                        }
-                    }
+            <span class="comment">// TODO remove the transmute when rustc can use arrays of u8 as bitmasks</span>
+            <span class="macro">assert_eq!</span>(
+                <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span><span class="op">&gt;</span>(),
+                <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>,
+            );
+            <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span>
+                <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
 
-                    <span class="comment">// TODO remove the transmute when rustc can use arrays of u8 as bitmasks</span>
-                    <span class="macro">assert_eq!</span>(
-                        <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span><span class="op">&gt;</span>(),
-                        <span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>,
-                    );
-                    <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="kw">crate</span><span class="ident">::LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span> <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
-
-                    <span class="self">Self</span><span class="ident">::from_int_unchecked</span>(<span class="kw">crate</span><span class="ident">::intrinsics::simd_select_bitmask</span>(
-                        <span class="ident">bitmask</span>,
-                        <span class="self">Self</span><span class="ident">::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
-                        <span class="self">Self</span><span class="ident">::splat</span>(<span class="bool-val">false</span>).<span class="ident">to_int</span>(),
-                    ))
-                }
-            }
+            <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_select_bitmask</span>(
+                <span class="ident">bitmask</span>,
+                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
+                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">false</span>).<span class="ident">to_int</span>(),
+            ))
         }
+    }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&lt;</span><span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="ident">value</span>.<span class="number">0</span>
-            }
-        }
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
+    }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">|</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-                <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">^</span> <span class="ident">rhs</span>.<span class="number">0</span>)
-            }
-        }
-
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Not</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-                <span class="self">Self</span>(<span class="op">!</span><span class="self">self</span>.<span class="number">0</span>)
-            }
-        }
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
     }
 }
 
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdI8](crate::SimdI8), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">Mask8</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI8</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdI16](crate::SimdI16), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">Mask16</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI16</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdI32](crate::SimdI32), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">Mask32</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI32</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdI64](crate::SimdI64), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">Mask64</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdI64</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">define_mask!</span> {
-    <span class="doccomment">/// A mask equivalent to [SimdIsize](crate::SimdIsize), where all bits in the lane must be either set</span>
-    <span class="doccomment">/// or unset.</span>
-    <span class="kw">struct</span> <span class="ident">MaskSize</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw">crate</span><span class="ident">::SimdIsize</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>);
-}
-
-<span class="macro">macro_rules!</span> <span class="ident">impl_from</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_inner</span>:<span class="ident">ident</span>) <span class="op">=</span><span class="op">&gt;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ident</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_inner</span>:<span class="ident">ident</span>)),<span class="op">*</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new</span> <span class="op">=</span> <span class="self">Self</span><span class="ident">::splat</span>(<span class="bool-val">false</span>);
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">LANES</span> {
-                    <span class="kw">unsafe</span> { <span class="ident">new</span>.<span class="ident">set_unchecked</span>(<span class="ident">i</span>, <span class="ident">value</span>.<span class="ident">test_unchecked</span>(<span class="ident">i</span>)) }
-                }
-                <span class="ident">new</span>
-            }
-        }
-        )<span class="op">*</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="ident">value</span>.<span class="number">0</span>
     }
 }
-<span class="macro">impl_from!</span> { <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>) }
-<span class="macro">impl_from!</span> { <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>) }
-<span class="macro">impl_from!</span> { <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>), <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>) }
-<span class="macro">impl_from!</span> { <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>), <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>) }
-<span class="macro">impl_from!</span> { <span class="ident">MaskSize</span> (<span class="ident">SimdIsize</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Mask8</span> (<span class="ident">SimdI8</span>), <span class="ident">Mask16</span> (<span class="ident">SimdI16</span>), <span class="ident">Mask32</span> (<span class="ident">SimdI32</span>), <span class="ident">Mask64</span> (<span class="ident">SimdI64</span>) }
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_and</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_or</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_xor</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Not</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Output</span> {
+        <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>) <span class="op">^</span> <span class="self">self</span>
+    }
+}
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>

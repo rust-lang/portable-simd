@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates&#x2F;core_simd&#x2F;src&#x2F;reduction.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>reduction.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../core_simd/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates&#x2F;core_simd&#x2F;src&#x2F;reduction.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>reduction.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../core_simd/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -117,90 +117,79 @@
 <span id="117">117</span>
 <span id="118">118</span>
 <span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
 </pre><pre class="rust">
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_reductions</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
+    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
             <span class="doccomment">/// Horizontal wrapping add.  Returns the sum of the lanes of the vector, with wrapping addition.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_sum</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0</span>) }
             }
 
             <span class="doccomment">/// Horizontal wrapping multiply.  Returns the product of the lanes of the vector, with wrapping multiplication.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_product</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1</span>) }
             }
 
             <span class="doccomment">/// Horizontal bitwise &quot;and&quot;.  Returns the cumulative bitwise &quot;and&quot; across the lanes of</span>
             <span class="doccomment">/// the vector.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_and</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_and</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_and</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Horizontal bitwise &quot;or&quot;.  Returns the cumulative bitwise &quot;or&quot; across the lanes of</span>
             <span class="doccomment">/// the vector.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_or</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_or</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_or</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Horizontal bitwise &quot;xor&quot;.  Returns the cumulative bitwise &quot;xor&quot; across the lanes of</span>
             <span class="doccomment">/// the vector.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_xor</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_xor</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_xor</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Horizontal maximum.  Returns the maximum lane in the vector.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_max</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Horizontal minimum.  Returns the minimum lane in the vector.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_min</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
             }
         }
     }
 }
 
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">i8</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">i16</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">i32</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">i64</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">isize</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">u8</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">u16</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">u32</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">u64</span> }
+<span class="macro">impl_integer_reductions!</span> { <span class="ident">usize</span> }
+
 <span class="macro">macro_rules!</span> <span class="ident">impl_float_reductions</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
+    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
+            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
 
             <span class="doccomment">/// Horizontal add.  Returns the sum of the lanes of the vector.</span>
@@ -210,7 +199,7 @@
                 <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
                     <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">sum</span>()
                 } <span class="kw">else</span> {
-                    <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0.</span>) }
+                    <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0.</span>) }
                 }
             }
 
@@ -221,7 +210,7 @@
                 <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
                     <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">product</span>()
                 } <span class="kw">else</span> {
-                    <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1.</span>) }
+                    <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1.</span>) }
                 }
             }
 
@@ -231,7 +220,7 @@
             <span class="doccomment">/// return either.  This function will not return `NaN` unless all lanes are `NaN`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_max</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Horizontal minimum.  Returns the minimum lane in the vector.</span>
@@ -240,51 +229,14 @@
             <span class="doccomment">/// return either.  This function will not return `NaN` unless all lanes are `NaN`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">horizontal_min</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
             }
         }
     }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_full_mask_reductions</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
-            }
-
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="kw">unsafe</span> { <span class="kw">crate</span><span class="ident">::intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
-            }
-        }
-    }
-}
-
-<span class="macro">macro_rules!</span> <span class="ident">impl_opaque_mask_reductions</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>:<span class="ident">ident</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="kw">crate</span><span class="ident">::LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="kw">crate</span><span class="ident">::SupportedLaneCount</span>,
-        {
-            <span class="doccomment">/// Returns true if any lane is set, or false otherwise.</span>
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">any</span>()
-            }
-
-            <span class="doccomment">/// Returns true if all lanes are set, or false otherwise.</span>
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">all</span>()
-            }
-        }
-    }
-}
+<span class="macro">impl_float_reductions!</span> { <span class="ident">f32</span> }
+<span class="macro">impl_float_reductions!</span> { <span class="ident">f64</span> }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
