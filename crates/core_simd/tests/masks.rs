@@ -68,7 +68,7 @@ macro_rules! test_mask_api {
                 assert_eq!(core_simd::Mask::<$type, 8>::from_int(int), mask);
             }
 
-            #[cfg(feature = "const_evaluatable_checked")]
+            #[cfg(feature = "generic_const_exprs")]
             #[test]
             fn roundtrip_bitmask_conversion() {
                 let values = [

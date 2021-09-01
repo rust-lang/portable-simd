@@ -119,14 +119,14 @@ where
         Self(core::mem::transmute_copy(&mask), PhantomData)
     }
 
-    #[cfg(feature = "const_evaluatable_checked")]
+    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
         // Safety: these are the same type and we are laundering the generic
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
-    #[cfg(feature = "const_evaluatable_checked")]
+    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     pub fn from_bitmask(bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
         // Safety: these are the same type and we are laundering the generic

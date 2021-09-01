@@ -1,8 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(incomplete_features)]
 #![feature(
+    adt_const_params,
     const_fn_trait_bound,
-    const_generics,
     platform_intrinsics,
     repr_simd,
     simd_ffi,
@@ -10,8 +10,8 @@
     stdsimd
 )]
 #![cfg_attr(
-    feature = "const_evaluatable_checked",
-    feature(const_evaluatable_checked)
+    feature = "generic_const_exprs",
+    feature(generic_const_exprs)
 )]
 #![warn(missing_docs)]
 #![unstable(feature = "portable_simd", issue = "86656")]
@@ -25,7 +25,7 @@ mod reduction;
 mod select;
 pub use select::Select;
 
-#[cfg(feature = "const_evaluatable_checked")]
+#[cfg(feature = "generic_const_exprs")]
 mod to_bytes;
 
 mod comparisons;

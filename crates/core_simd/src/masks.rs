@@ -178,13 +178,13 @@ where
     }
 
     /// Convert this mask to a bitmask, with one bit set per lane.
-    #[cfg(feature = "const_evaluatable_checked")]
+    #[cfg(feature = "generic_const_exprs")]
     pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
         self.0.to_bitmask()
     }
 
     /// Convert a bitmask to a mask.
-    #[cfg(feature = "const_evaluatable_checked")]
+    #[cfg(feature = "generic_const_exprs")]
     pub fn from_bitmask(bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
         Self(mask_impl::Mask::from_bitmask(bitmask))
     }
