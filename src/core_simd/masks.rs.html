@@ -525,8 +525,9 @@
 <span id="525">525</span>
 <span id="526">526</span>
 <span id="527">527</span>
-</pre><pre class="rust">
-<span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
+<span id="528">528</span>
+<span id="529">529</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
@@ -706,11 +707,13 @@
     }
 
     <span class="doccomment">/// Convert this mask to a bitmask, with one bit set per lane.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_bitmask</span>()
     }
 
     <span class="doccomment">/// Convert a bitmask to a mask.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_bitmask</span>(<span class="ident">bitmask</span>))
     }
@@ -1053,7 +1056,7 @@
 <span class="macro">impl_from!</span> { <span class="ident">i32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">i64</span>, <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span> }
 <span class="macro">impl_from!</span> { <span class="ident">i64</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span> }
 <span class="macro">impl_from!</span> { <span class="ident">isize</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span> }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>

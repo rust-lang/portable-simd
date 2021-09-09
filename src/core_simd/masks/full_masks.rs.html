@@ -223,8 +223,9 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
-</pre><pre class="rust">
-<span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
+<span id="226">226</span>
+<span id="227">227</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
@@ -327,6 +328,7 @@
         <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
         <span class="kw">unsafe</span> {
@@ -353,6 +355,7 @@
         }
     }
 
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
@@ -449,7 +452,7 @@
         <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>) <span class="op">^</span> <span class="self">self</span>
     }
 }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
 </body></html>

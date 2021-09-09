@@ -37,8 +37,7 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
-</pre><pre class="rust">
-<span class="macro">macro_rules!</span> <span class="ident">impl_to_bytes</span> {
+</pre><pre class="rust"><code><span class="macro">macro_rules!</span> <span class="ident">impl_to_bytes</span> {
     { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>:<span class="ident">literal</span> } <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident"><span class="kw">crate</span>::Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
@@ -77,7 +76,7 @@
 <span class="macro">impl_to_bytes!</span> { <span class="ident">isize</span>, <span class="number">4</span> }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
 <span class="macro">impl_to_bytes!</span> { <span class="ident">isize</span>, <span class="number">8</span> }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>
