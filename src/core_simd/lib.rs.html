@@ -17,31 +17,6 @@
 <span id="17">17</span>
 <span id="18">18</span>
 <span id="19">19</span>
-<span id="20">20</span>
-<span id="21">21</span>
-<span id="22">22</span>
-<span id="23">23</span>
-<span id="24">24</span>
-<span id="25">25</span>
-<span id="26">26</span>
-<span id="27">27</span>
-<span id="28">28</span>
-<span id="29">29</span>
-<span id="30">30</span>
-<span id="31">31</span>
-<span id="32">32</span>
-<span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
-<span id="37">37</span>
-<span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
-<span id="42">42</span>
-<span id="43">43</span>
-<span id="44">44</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">incomplete_features</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(
@@ -58,34 +33,9 @@
 <span class="attribute">#![<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;portable_simd&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;86656&quot;</span>)]</span>
 <span class="doccomment">//! Portable SIMD module.</span>
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">mod</span> <span class="ident">permute</span>;
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">mod</span> <span class="ident">reduction</span>;
-
-<span class="kw">mod</span> <span class="ident">select</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">select::Select</span>;
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">to_bytes</span>;
-
-<span class="kw">mod</span> <span class="ident">comparisons</span>;
-<span class="kw">mod</span> <span class="ident">fmt</span>;
-<span class="kw">mod</span> <span class="ident">intrinsics</span>;
-<span class="kw">mod</span> <span class="ident">iter</span>;
-<span class="kw">mod</span> <span class="ident">math</span>;
-<span class="kw">mod</span> <span class="ident">ops</span>;
-<span class="kw">mod</span> <span class="ident">round</span>;
-<span class="kw">mod</span> <span class="ident">vendor</span>;
-
-<span class="kw">mod</span> <span class="ident">lane_count</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lane_count</span>::<span class="kw-2">*</span>;
-
-<span class="kw">mod</span> <span class="ident">masks</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">masks</span>::<span class="kw-2">*</span>;
-
-<span class="kw">mod</span> <span class="ident">vector</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vector</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod.rs&quot;</span>]</span>
+<span class="kw">mod</span> <span class="ident">core_simd</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::core_simd::simd</span>::<span class="kw-2">*</span>;
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>

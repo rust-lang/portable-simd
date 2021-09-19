@@ -206,9 +206,11 @@
 <span id="206">206</span>
 <span id="207">207</span>
 <span id="208">208</span>
+<span id="209">209</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="doccomment">/// Implements inherent methods for a float vector containing multiple</span>
 <span class="doccomment">/// `$lanes` of float `$type`, which uses `$bits_ty` as its binary</span>
@@ -239,7 +241,7 @@
             <span class="doccomment">/// equivalently-indexed lane in `self`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">abs</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_fabs</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fabs</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Fused multiply-add.  Computes `(self * a) + b` with only one rounding error,</span>
@@ -251,7 +253,7 @@
             <span class="doccomment">/// hardware in mind.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mul_add</span>(<span class="self">self</span>, <span class="ident">a</span>: <span class="self">Self</span>, <span class="ident">b</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_fma</span>(<span class="self">self</span>, <span class="ident">a</span>, <span class="ident">b</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fma</span>(<span class="self">self</span>, <span class="ident">a</span>, <span class="ident">b</span>) }
             }
 
             <span class="doccomment">/// Produces a vector where every lane has the square root value</span>
@@ -259,7 +261,7 @@
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_fsqrt</span>(<span class="self">self</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fsqrt</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Takes the reciprocal (inverse) of each lane, `1/x`.</span>

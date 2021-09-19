@@ -225,10 +225,12 @@
 <span id="225">225</span>
 <span id="226">226</span>
 <span id="227">227</span>
+<span id="228">228</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
@@ -325,7 +327,7 @@
     <span class="kw">where</span>
         <span class="ident">U</span>: <span class="ident">MaskElement</span>,
     {
-        <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
+        <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
@@ -338,7 +340,7 @@
                 <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>,
             );
             <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span>
-                <span class="ident"><span class="kw">crate</span>::intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
+                <span class="ident">intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] <span class="op">=</span>
                 <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
 
@@ -376,7 +378,7 @@
             <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="op">&lt;</span><span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">SupportedLaneCount</span><span class="op">&gt;</span><span class="ident">::IntBitMask</span> <span class="op">=</span>
                 <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
 
-            <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_select_bitmask</span>(
+            <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_select_bitmask</span>(
                 <span class="ident">bitmask</span>,
                 <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
                 <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">false</span>).<span class="ident">to_int</span>(),
@@ -386,12 +388,12 @@
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
+        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
+        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
     }
 }
 
@@ -413,7 +415,7 @@
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_and</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_and</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }
 
@@ -425,7 +427,7 @@
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_or</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_or</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }
 
@@ -437,7 +439,7 @@
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident"><span class="kw">crate</span>::intrinsics::simd_xor</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_xor</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }
 

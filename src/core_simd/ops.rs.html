@@ -641,7 +641,9 @@
 <span id="641">641</span>
 <span id="642">642</span>
 <span id="643">643</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
+<span id="644">644</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Index</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
@@ -851,7 +853,7 @@
             {
                 <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
                 <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Output</span> {
-                    <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_neg</span>(<span class="self">self</span>) }
+                    <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_neg</span>(<span class="self">self</span>) }
                 }
             }
         }
@@ -869,7 +871,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">trait_fn</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Output</span> {
                     <span class="kw">unsafe</span> {
-                        <span class="ident"><span class="kw">crate</span>::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="self">self</span>, <span class="ident">rhs</span>)
+                        <span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="self">self</span>, <span class="ident">rhs</span>)
                     }
                 }
             }
@@ -911,7 +913,7 @@
                 <span class="attribute">#[<span class="ident">inline</span>]</span>
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_trait_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
                     <span class="kw">unsafe</span> {
-                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="kw-2">*</span><span class="self">self</span>, <span class="ident">rhs</span>);
+                        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">intrinsic</span>(<span class="kw-2">*</span><span class="self">self</span>, <span class="ident">rhs</span>);
                     }
                 }
             }
@@ -981,7 +983,7 @@
                                 .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">x</span>,<span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>) {
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to divide with overflow&quot;</span>);
                         }
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1004,7 +1006,7 @@
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to divide with overflow&quot;</span>);
                         }
                         <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1071,7 +1073,7 @@
                                 .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">x</span>,<span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>) {
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to calculate the remainder with overflow&quot;</span>);
                         }
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1094,7 +1096,7 @@
                                 <span class="macro">panic!</span>(<span class="string">&quot;attempt to calculate the remainder with overflow&quot;</span>);
                         }
                         <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1155,7 +1157,7 @@
                         {
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to shift left with overflow&quot;</span>);
                         }
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1173,7 +1175,7 @@
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to shift left with overflow&quot;</span>);
                         }
                         <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shl</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1220,7 +1222,7 @@
                         {
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to shift with overflow&quot;</span>);
                         }
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }
@@ -1238,7 +1240,7 @@
                             <span class="macro">panic!</span>(<span class="string">&quot;attempt to shift with overflow&quot;</span>);
                         }
                         <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
-                        <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
+                        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shr</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }
                     }
                 }
             }

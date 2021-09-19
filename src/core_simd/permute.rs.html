@@ -146,11 +146,17 @@
 <span id="146">146</span>
 <span id="147">147</span>
 <span id="148">148</span>
-</pre><pre class="rust"><code><span class="macro">macro_rules!</span> <span class="ident">impl_shuffle_lane</span> {
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">Simd</span>, <span class="ident">SimdElement</span>};
+
+<span class="macro">macro_rules!</span> <span class="ident">impl_shuffle_lane</span> {
     { <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>:<span class="ident">literal</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident"><span class="kw">crate</span>::Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span><span class="op">&gt;</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span><span class="op">&gt;</span>
         <span class="kw">where</span>
-            <span class="ident">T</span>: <span class="ident"><span class="kw">crate</span>::SimdElement</span>,
+            <span class="ident">T</span>: <span class="ident">SimdElement</span>,
         {
             <span class="doccomment">/// A const SIMD shuffle that takes 2 SIMD vectors and produces another vector, using</span>
             <span class="doccomment">/// the indices in the const parameter. The first or &quot;self&quot; vector will have its lanes</span>
@@ -172,7 +178,7 @@
             <span class="doccomment">/// ```</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">shuffle</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">IDX</span>: [<span class="ident">u32</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">n</span>]<span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>, <span class="ident">second</span>, <span class="ident">IDX</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>, <span class="ident">second</span>, <span class="ident">IDX</span>) }
             }
 
             <span class="doccomment">/// Reverse the order of the lanes in the vector.</span>

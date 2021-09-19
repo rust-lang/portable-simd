@@ -149,7 +149,9 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span id="152">152</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>::{<span class="ident">simd_saturating_add</span>, <span class="ident">simd_saturating_sub</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint_arith</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>),<span class="op">+</span>) <span class="op">=</span><span class="op">&gt;</span> {
@@ -171,7 +173,7 @@
             <span class="doccomment">/// ```</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">simd_saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>) }
             }
 
             <span class="doccomment">/// Lanewise saturating subtract.</span>
@@ -189,7 +191,7 @@
             <span class="doccomment">/// assert_eq!(sat, Simd::splat(0));</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">simd_saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>) }
             }
         })<span class="op">+</span>
     }
@@ -215,7 +217,7 @@
             <span class="doccomment">/// ```</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">simd_saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>) }
             }
 
             <span class="doccomment">/// Lanewise saturating subtract.</span>
@@ -233,7 +235,7 @@
             <span class="doccomment">/// assert_eq!(sat, Simd::from_array([MIN, MIN, MIN, 0]));</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">unsafe</span> { <span class="ident"><span class="kw">crate</span>::intrinsics::simd_saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+                <span class="kw">unsafe</span> { <span class="ident">simd_saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>) }
             }
 
             <span class="doccomment">/// Lanewise absolute value, implemented in Rust.</span>

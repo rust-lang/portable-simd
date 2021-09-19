@@ -103,7 +103,7 @@
 <span id="103">103</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="doccomment">/// Implements additional integer traits (Eq, Ord, Hash) on the specified vector `$name`, holding multiple `$lanes` of `$type`.</span>
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_vector</span> {
