@@ -150,6 +150,13 @@
 <span id="150">150</span>
 <span id="151">151</span>
 <span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>::{<span class="ident">simd_saturating_add</span>, <span class="ident">simd_saturating_sub</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -162,7 +169,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::MAX;&quot;</span>)]</span>
             <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
             <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -181,7 +189,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::MAX;&quot;</span>)]</span>
             <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
             <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -206,7 +215,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::{MIN, MAX};&quot;</span>)]</span>
             <span class="doccomment">/// let x = Simd::from_array([MIN, 0, 1, MAX]);</span>
             <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -225,7 +235,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::{MIN, MAX};&quot;</span>)]</span>
             <span class="doccomment">/// let x = Simd::from_array([MIN, -2, -1, MAX]);</span>
             <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -244,7 +255,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::{MIN, MAX};&quot;</span>)]</span>
             <span class="doccomment">/// let xs = Simd::from_array([MIN, MIN +1, -5, 0]);</span>
             <span class="doccomment">/// assert_eq!(xs.abs(), Simd::from_array([MIN, MAX, 5, 0]));</span>
@@ -262,7 +274,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::{MIN, MAX};&quot;</span>)]</span>
             <span class="doccomment">/// let xs = Simd::from_array([MIN, -2, 0, 3]);</span>
             <span class="doccomment">/// let unsat = xs.abs();</span>
@@ -284,7 +297,8 @@
             <span class="doccomment">/// # Examples</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// # #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::*;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro">concat!</span>(<span class="string">&quot;# use core::&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>), <span class="string">&quot;::{MIN, MAX};&quot;</span>)]</span>
             <span class="doccomment">/// let x = Simd::from_array([MIN, -2, 3, MAX]);</span>
             <span class="doccomment">/// let unsat = -x;</span>

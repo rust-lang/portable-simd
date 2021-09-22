@@ -84,6 +84,8 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -147,7 +149,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core_simd::{Mask, Simd};</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::{Simd, Mask};</span>
     <span class="doccomment">/// let a = Simd::from_array([0, 1, 2, 3]);</span>
     <span class="doccomment">/// let b = Simd::from_array([4, 5, 6, 7]);</span>
     <span class="doccomment">/// let mask = Mask::from_array([true, false, false, true]);</span>
@@ -158,7 +161,8 @@
     <span class="doccomment">/// `select` can also be used on masks:</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core_simd::Mask;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Mask;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Mask;</span>
     <span class="doccomment">/// let a = Mask::&lt;i32, 4&gt;::from_array([true, true, false, false]);</span>
     <span class="doccomment">/// let b = Mask::&lt;i32, 4&gt;::from_array([false, false, true, true]);</span>
     <span class="doccomment">/// let mask = Mask::&lt;i32, 4&gt;::from_array([true, false, false, true]);</span>

@@ -149,6 +149,9 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">Simd</span>, <span class="ident">SimdElement</span>};
 
@@ -169,7 +172,8 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="doccomment">/// let a = Simd::from_array([1.0, 2.0, 3.0, 4.0]);</span>
             <span class="doccomment">/// let b = Simd::from_array([5.0, 6.0, 7.0, 8.0]);</span>
             <span class="doccomment">/// const IDXS: [u32; 4] = [4,0,3,7];</span>
@@ -210,7 +214,8 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="doccomment">/// let a = Simd::from_array([0, 1, 2, 3]);</span>
             <span class="doccomment">/// let b = Simd::from_array([4, 5, 6, 7]);</span>
             <span class="doccomment">/// let (x, y) = a.interleave(b);</span>
@@ -262,7 +267,8 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// ```</span>
             <span class="doccomment">/// #![feature(portable_simd)]</span>
-            <span class="doccomment">/// # use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+            <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
             <span class="doccomment">/// let a = Simd::from_array([0, 4, 1, 5]);</span>
             <span class="doccomment">/// let b = Simd::from_array([2, 6, 3, 7]);</span>
             <span class="doccomment">/// let (x, y) = a.deinterleave(b);</span>
