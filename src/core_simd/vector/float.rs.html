@@ -207,6 +207,7 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
+<span id="210">210</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
@@ -251,6 +252,7 @@
             <span class="doccomment">/// architecture has a dedicated `fma` CPU instruction.  However, this is not always</span>
             <span class="doccomment">/// true, and will be heavily dependent on designing algorithms with specific target</span>
             <span class="doccomment">/// hardware in mind.</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mul_add</span>(<span class="self">self</span>, <span class="ident">a</span>: <span class="self">Self</span>, <span class="ident">b</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fma</span>(<span class="self">self</span>, <span class="ident">a</span>, <span class="ident">b</span>) }
