@@ -17,5 +17,5 @@
 
 #[path = "mod.rs"]
 mod core_simd;
-use self::core_simd::simd;
+pub use self::core_simd::simd;
 pub use simd::*;
