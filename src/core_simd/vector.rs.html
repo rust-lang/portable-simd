@@ -411,6 +411,14 @@
 <span id="411">411</span>
 <span id="412">412</span>
 <span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -437,6 +445,14 @@
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
     <span class="ident">T</span>: <span class="ident">SimdElement</span>,
 {
+    <span class="doccomment">/// Number of lanes in this vector.</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">LANES</span>;
+
+    <span class="doccomment">/// Get the number of lanes in this vector.</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">lanes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="ident">LANES</span>
+    }
+
     <span class="doccomment">/// Construct a SIMD vector by setting all lanes to the given value.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>([<span class="ident">value</span>; <span class="ident">LANES</span>])
