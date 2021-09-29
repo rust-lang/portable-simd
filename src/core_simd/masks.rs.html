@@ -529,6 +529,8 @@
 <span id="529">529</span>
 <span id="530">530</span>
 <span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -649,7 +651,7 @@
     <span class="doccomment">/// All lanes must be either 0 or -1.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_int_unchecked</span>(<span class="ident">value</span>))
+        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_int_unchecked</span>(<span class="ident">value</span>)) }
     }
 
     <span class="doccomment">/// Converts a vector of integers to a mask, where 0 represents `false` and -1</span>
@@ -676,7 +678,7 @@
     <span class="doccomment">/// `lane` must be less than `LANES`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>)
+        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>) }
     }
 
     <span class="doccomment">/// Tests the value of the specified lane.</span>
@@ -695,7 +697,9 @@
     <span class="doccomment">/// `lane` must be less than `LANES`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
+        <span class="kw">unsafe</span> {
+            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
+        }
     }
 
     <span class="doccomment">/// Sets the value of the specified lane.</span>

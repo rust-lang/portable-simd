@@ -139,7 +139,7 @@
             <span class="doccomment">/// * Be representable in the return type, after truncating off its fractional part</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_int_unchecked</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int_type</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-                <span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>)
+                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>) }
             }
 
             <span class="doccomment">/// Creates a floating-point vector from an integer vector.  Rounds values that are</span>
