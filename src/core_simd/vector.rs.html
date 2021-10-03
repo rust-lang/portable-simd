@@ -419,6 +419,95 @@
 <span id="419">419</span>
 <span id="420">420</span>
 <span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -478,8 +567,10 @@
         <span class="self">self</span>.<span class="number">0</span>
     }
 
-    <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
-    <span class="doccomment">/// If an index is out of bounds, that lane instead selects the value from the &quot;or&quot; vector.</span>
+    <span class="doccomment">/// Reads from  potentially discontiguous indices in `slice` to construct a SIMD vector.</span>
+    <span class="doccomment">/// If an index is out-of-bounds, the lane is instead selected from the `or` vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
@@ -497,8 +588,10 @@
         <span class="ident"><span class="self">Self</span>::gather_select</span>(<span class="ident">slice</span>, <span class="ident">Mask::splat</span>(<span class="bool-val">true</span>), <span class="ident">idxs</span>, <span class="ident">or</span>)
     }
 
-    <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
-    <span class="doccomment">/// Out-of-bounds indices instead use the default value for that lane (0).</span>
+    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.</span>
+    <span class="doccomment">/// If an index is out-of-bounds, the lane is set to the default value for the type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
@@ -518,8 +611,11 @@
         <span class="ident"><span class="self">Self</span>::gather_or</span>(<span class="ident">slice</span>, <span class="ident">idxs</span>, <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">T::default</span>()))
     }
 
-    <span class="doccomment">/// SIMD gather: construct a SIMD vector by reading from a slice, using potentially discontiguous indices.</span>
-    <span class="doccomment">/// Out-of-bounds or masked indices instead select the value from the &quot;or&quot; vector.</span>
+    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.</span>
+    <span class="doccomment">/// The mask `enable`s all `true` lanes and disables all `false` lanes.</span>
+    <span class="doccomment">/// If an index is disabled or is out-of-bounds, the lane is selected from the `or` vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
@@ -527,30 +623,70 @@
     <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 5]);</span>
     <span class="doccomment">/// let alt = Simd::from_array([-5, -4, -3, -2]);</span>
-    <span class="doccomment">/// let mask = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.</span>
+    <span class="doccomment">/// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let result = Simd::gather_select(&amp;vec, mask, idxs, alt); // Note the lane that is out-of-bounds.</span>
+    <span class="doccomment">/// let result = Simd::gather_select(&amp;vec, enable, idxs, alt); // Note the lane that is out-of-bounds.</span>
     <span class="doccomment">/// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gather_select</span>(
         <span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
-        <span class="ident">mask</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+        <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
         <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
         <span class="ident">or</span>: <span class="self">Self</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> (<span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()))).<span class="ident">to_int</span>();
+        <span class="kw">let</span> <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">enable</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()));
+        <span class="comment">// SAFETY: We have masked-off out-of-bounds lanes.</span>
+        <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::gather_select_unchecked</span>(<span class="ident">slice</span>, <span class="ident">enable</span>, <span class="ident">idxs</span>, <span class="ident">or</span>) }
+    }
+
+    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.</span>
+    <span class="doccomment">/// The mask `enable`s all `true` lanes and disables all `false` lanes.</span>
+    <span class="doccomment">/// If an index is disabled, the lane is selected from the `or` vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Safety</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Calling this function with an `enable`d out-of-bounds index is *[undefined behavior]*</span>
+    <span class="doccomment">/// even if the resulting value is not used.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::{Simd, Mask};</span>
+    <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
+    <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 5]);</span>
+    <span class="doccomment">/// let alt = Simd::from_array([-5, -4, -3, -2]);</span>
+    <span class="doccomment">/// let enable = Mask::from_array([true, true, true, false]); // Note the final mask lane.</span>
+    <span class="doccomment">/// // If this mask was used to gather, it would be unsound. Let&#39;s fix that.</span>
+    <span class="doccomment">/// let enable = enable &amp; idxs.lanes_lt(Simd::splat(vec.len()));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // We have masked the OOB lane, so it&#39;s safe to gather now.</span>
+    <span class="doccomment">/// let result = unsafe { Simd::gather_select_unchecked(&amp;vec, enable, idxs, alt) };</span>
+    <span class="doccomment">/// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">gather_select_unchecked</span>(
+        <span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
+        <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+        <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+        <span class="ident">or</span>: <span class="self">Self</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">base_ptr</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::simd::ptr::SimdConstPtr::splat</span>(<span class="ident">slice</span>.<span class="ident">as_ptr</span>());
         <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.</span>
         <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="ident">base_ptr</span>.<span class="ident">wrapping_add</span>(<span class="ident">idxs</span>);
         <span class="comment">// SAFETY: The ptrs have been bounds-masked to prevent memory-unsafe reads insha&#39;allah</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_gather</span>(<span class="ident">or</span>, <span class="ident">ptrs</span>, <span class="ident">mask</span>) }
+        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_gather</span>(<span class="ident">or</span>, <span class="ident">ptrs</span>, <span class="ident">enable</span>.<span class="ident">to_int</span>()) }
     }
 
-    <span class="doccomment">/// SIMD scatter: write a SIMD vector&#39;s values into a slice, using potentially discontiguous indices.</span>
-    <span class="doccomment">/// Out-of-bounds indices are not written.</span>
-    <span class="doccomment">/// `scatter` writes &quot;in order&quot;, so if an index receives two writes, only the last is guaranteed.</span>
+    <span class="doccomment">/// Writes the values in a SIMD vector to potentially discontiguous indices in `slice`.</span>
+    <span class="doccomment">/// If two lanes in the scattered vector would write to the same index</span>
+    <span class="doccomment">/// only the last lane is guaranteed to actually be written.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
@@ -567,9 +703,13 @@
         <span class="self">self</span>.<span class="ident">scatter_select</span>(<span class="ident">slice</span>, <span class="ident">Mask::splat</span>(<span class="bool-val">true</span>), <span class="ident">idxs</span>)
     }
 
-    <span class="doccomment">/// SIMD scatter: write a SIMD vector&#39;s values into a slice, using potentially discontiguous indices.</span>
-    <span class="doccomment">/// Out-of-bounds or masked indices are not written.</span>
-    <span class="doccomment">/// `scatter_select` writes &quot;in order&quot;, so if an index receives two writes, only the last is guaranteed.</span>
+    <span class="doccomment">/// Writes the values in a SIMD vector to multiple potentially discontiguous indices in `slice`.</span>
+    <span class="doccomment">/// The mask `enable`s all `true` lanes and disables all `false` lanes.</span>
+    <span class="doccomment">/// If an enabled index is out-of-bounds, the lane is not written.</span>
+    <span class="doccomment">/// If two enabled lanes in the scattered vector would write to the same index,</span>
+    <span class="doccomment">/// only the last lane is guaranteed to actually be written.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
@@ -577,28 +717,66 @@
     <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 0]);</span>
     <span class="doccomment">/// let vals = Simd::from_array([-27, 82, -41, 124]);</span>
-    <span class="doccomment">/// let mask = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.</span>
+    <span class="doccomment">/// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// vals.scatter_select(&amp;mut vec, mask, idxs); // index 0&#39;s second write is masked, thus omitted.</span>
+    <span class="doccomment">/// vals.scatter_select(&amp;mut vec, enable, idxs); // index 0&#39;s second write is masked, thus omitted.</span>
     <span class="doccomment">/// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">scatter_select</span>(
         <span class="self">self</span>,
         <span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>],
-        <span class="ident">mask</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+        <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
         <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
     ) {
-        <span class="comment">// We must construct our scatter mask before we derive a pointer!</span>
-        <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> (<span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()))).<span class="ident">to_int</span>();
+        <span class="kw">let</span> <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">enable</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()));
+        <span class="comment">// SAFETY: We have masked-off out-of-bounds lanes.</span>
+        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">scatter_select_unchecked</span>(<span class="ident">slice</span>, <span class="ident">enable</span>, <span class="ident">idxs</span>) }
+    }
+
+    <span class="doccomment">/// Writes the values in a SIMD vector to multiple potentially discontiguous indices in `slice`.</span>
+    <span class="doccomment">/// The mask `enable`s all `true` lanes and disables all `false` lanes.</span>
+    <span class="doccomment">/// If two enabled lanes in the scattered vector would write to the same index,</span>
+    <span class="doccomment">/// only the last lane is guaranteed to actually be written.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Safety</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Calling this function with an enabled out-of-bounds index is *[undefined behavior]*,</span>
+    <span class="doccomment">/// and may lead to memory corruption.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::{Simd, Mask};</span>
+    <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
+    <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 0]);</span>
+    <span class="doccomment">/// let vals = Simd::from_array([-27, 82, -41, 124]);</span>
+    <span class="doccomment">/// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.</span>
+    <span class="doccomment">/// // If this mask was used to scatter, it would be unsound. Let&#39;s fix that.</span>
+    <span class="doccomment">/// let enable = enable &amp; idxs.lanes_lt(Simd::splat(vec.len()));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // We have masked the OOB lane, so it&#39;s safe to scatter now.</span>
+    <span class="doccomment">/// unsafe { vals.scatter_select_unchecked(&amp;mut vec, enable, idxs); }</span>
+    <span class="doccomment">/// // index 0&#39;s second write is masked, thus was omitted.</span>
+    <span class="doccomment">/// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">scatter_select_unchecked</span>(
+        <span class="self">self</span>,
+        <span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>],
+        <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+        <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
+    ) {
         <span class="comment">// SAFETY: This block works with *mut T derived from &amp;mut &#39;a [T],</span>
         <span class="comment">// which means it is delicate in Rust&#39;s borrowing model, circa 2021:</span>
         <span class="comment">// &amp;mut &#39;a [T] asserts uniqueness, so deriving &amp;&#39;a [T] invalidates live *mut Ts!</span>
-        <span class="comment">// Even though this block is largely safe methods, it must be almost exactly this way</span>
+        <span class="comment">// Even though this block is largely safe methods, it must be exactly this way</span>
         <span class="comment">// to prevent invalidating the raw ptrs while they&#39;re live.</span>
         <span class="comment">// Thus, entering this block requires all values to use being already ready:</span>
         <span class="comment">// 0. idxs we want to write to, which are used to construct the mask.</span>
-        <span class="comment">// 1. mask, which depends on an initial &amp;&#39;a [T] and the idxs.</span>
+        <span class="comment">// 1. enable, which depends on an initial &amp;&#39;a [T] and the idxs.</span>
         <span class="comment">// 2. actual values to scatter (self).</span>
         <span class="comment">// 3. &amp;mut [T] which will become our base ptr.</span>
         <span class="kw">unsafe</span> {
@@ -607,7 +785,7 @@
             <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.</span>
             <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="ident">base_ptr</span>.<span class="ident">wrapping_add</span>(<span class="ident">idxs</span>);
             <span class="comment">// The ptrs have been bounds-masked to prevent memory-unsafe writes insha&#39;allah</span>
-            <span class="ident">intrinsics::simd_scatter</span>(<span class="self">self</span>, <span class="ident">ptrs</span>, <span class="ident">mask</span>)
+            <span class="ident">intrinsics::simd_scatter</span>(<span class="self">self</span>, <span class="ident">ptrs</span>, <span class="ident">enable</span>.<span class="ident">to_int</span>())
             <span class="comment">// Cleared ☢️ *mut T Zone</span>
         }
     }
