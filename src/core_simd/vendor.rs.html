@@ -27,14 +27,14 @@
 <span id="27">27</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.</span>
 <span class="macro">macro_rules!</span> <span class="ident">from_transmute</span> {
-    { <span class="kw">unsafe</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> }
-        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> }
+    { <span class="kw">unsafe</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ty</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span>:<span class="ident">ty</span> } =&gt; {
+        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> }
+        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> }
     };
-    { @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ty</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ty</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    { @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ty</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ty</span> } =&gt; {
         <span class="kw">impl</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
+            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
                 <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute</span>(<span class="ident">value</span>) }
             }
         }

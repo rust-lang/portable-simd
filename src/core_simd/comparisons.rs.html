@@ -58,13 +58,13 @@
 {
     <span class="doccomment">/// Test if each lane is equal to the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_eq</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 
     <span class="doccomment">/// Test if each lane is not equal to the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ne</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ne</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_ne</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 }
@@ -76,25 +76,25 @@
 {
     <span class="doccomment">/// Test if each lane is less than the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 
     <span class="doccomment">/// Test if each lane is greater than the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 
     <span class="doccomment">/// Test if each lane is less than or equal to the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 
     <span class="doccomment">/// Test if each lane is greater than or equal to the corresponding lane in `other`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lanes_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
     }
 }

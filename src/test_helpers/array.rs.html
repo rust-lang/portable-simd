@@ -114,7 +114,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">strategy</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">strategy</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">strategy</span>,
             <span class="ident">_marker</span>: <span class="ident">PhantomData</span>,
@@ -136,7 +136,7 @@
     <span class="kw">type</span> <span class="ident">Tree</span> <span class="op">=</span> <span class="ident">ArrayValueTree</span><span class="op">&lt;</span>[<span class="ident">S::Tree</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span>;
     <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> [<span class="ident">T</span>; <span class="ident">LANES</span>];
 
-    <span class="kw">fn</span> <span class="ident">new_tree</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">runner</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">TestRunner</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NewTree</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new_tree</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">runner</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">TestRunner</span>) -&gt; <span class="ident">NewTree</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">tree</span>: [<span class="ident">S::Tree</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span>: [<span class="ident">MaybeUninit</span><span class="op">&lt;</span><span class="ident">S::Tree</span><span class="op">&gt;</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">MaybeUninit::uninit</span>().<span class="ident">assume_init</span>();
             <span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">tree</span>.<span class="ident">iter_mut</span>() {
@@ -155,7 +155,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ValueTree</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">ValueTree</span> <span class="kw">for</span> <span class="ident">ArrayValueTree</span><span class="op">&lt;</span>[<span class="ident">T</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> [<span class="ident">T::Value</span>; <span class="ident">LANES</span>];
 
-    <span class="kw">fn</span> <span class="ident">current</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Value</span> {
+    <span class="kw">fn</span> <span class="ident">current</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Value</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value</span>: [<span class="ident">MaybeUninit</span><span class="op">&lt;</span><span class="ident">T::Value</span><span class="op">&gt;</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">MaybeUninit::uninit</span>().<span class="ident">assume_init</span>();
             <span class="kw">for</span> (<span class="ident">tree_elem</span>, <span class="ident">value_elem</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">value</span>.<span class="ident">iter_mut</span>()) {
@@ -165,7 +165,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">simplify</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">simplify</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">while</span> <span class="self">self</span>.<span class="ident">shrinker</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tree</span>[<span class="self">self</span>.<span class="ident">shrinker</span>].<span class="ident">simplify</span>() {
                 <span class="self">self</span>.<span class="ident">last_shrinker</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">shrinker</span>);
@@ -178,7 +178,7 @@
         <span class="bool-val">false</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">complicate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">complicate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">shrinker</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">last_shrinker</span> {
             <span class="self">self</span>.<span class="ident">shrinker</span> <span class="op">=</span> <span class="ident">shrinker</span>;
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tree</span>[<span class="ident">shrinker</span>].<span class="ident">complicate</span>() {
