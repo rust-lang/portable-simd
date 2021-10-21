@@ -417,10 +417,10 @@
 <span class="doccomment">/// assert_eq!(r.to_array(), [0., 4.]);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_macros</span>)]</span>
-<span class="macro">macro_rules!</span> <span class="ident">simd_swizzle</span> {
-    {
+<span class="kw">pub</span> <span class="kw">macro</span> <span class="ident">simd_swizzle</span> {
+    (
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>:<span class="ident">expr</span> $(,)<span class="question-mark">?</span>
-    } =&gt; {
+    ) =&gt; {
         {
             <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::Swizzle</span>;
             <span class="kw">struct</span> <span class="ident">Impl</span>;
@@ -429,10 +429,10 @@
             }
             <span class="ident">Impl::swizzle</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>)
         }
-    };
-    {
+    },
+    (
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">first</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">second</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>:<span class="ident">expr</span> $(,)<span class="question-mark">?</span>
-    } =&gt; {
+    ) =&gt; {
         {
             <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd</span>::{<span class="ident">Which</span>, <span class="ident">Swizzle2</span>};
             <span class="kw">struct</span> <span class="ident">Impl</span>;
