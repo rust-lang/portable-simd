@@ -531,6 +531,10 @@
 <span id="531">531</span>
 <span id="532">532</span>
 <span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -551,18 +555,22 @@
 
 <span class="doccomment">/// Marker trait for types that may be used as SIMD mask elements.</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">trait</span> <span class="ident">MaskElement</span>: <span class="ident">SimdElement</span> {
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="doccomment">/// This is supposed to be a hidden helper function. Before stabilizing</span>
+    <span class="doccomment">/// this trait, it should be erased from public access.</span>
     <span class="kw">fn</span> <span class="ident">valid</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span>
     <span class="kw">where</span>
         <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="doccomment">/// This is supposed to be a hidden helper function. Before stabilizing</span>
+    <span class="doccomment">/// this trait, it should be erased from public access.</span>
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">bool</span>;
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="doccomment">/// This is supposed to be a hidden helper const. Before stabilizing</span>
+    <span class="doccomment">/// this trait, it should be erased from public access.</span>
     <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="self">Self</span>;
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="doccomment">/// This is supposed to be a hidden helper const. Before stabilizing</span>
+    <span class="doccomment">/// this trait, it should be erased from public access.</span>
     <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="self">Self</span>;
 }
 
