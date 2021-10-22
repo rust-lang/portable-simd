@@ -84,30 +84,20 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
-<span id="87">87</span>
-<span id="88">88</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="kw">mod</span> <span class="ident">sealed</span> {
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {}
+    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="ident">Mask</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    }
 }
 <span class="kw">use</span> <span class="ident">sealed::Sealed</span>;
 
 <span class="doccomment">/// Supporting trait for vector `select` function</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Select</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&gt;</span>: <span class="ident">Sealed</span> {
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="ident">Mask</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
-}
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Select</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&gt;</span>: <span class="ident">Sealed</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&gt;</span> {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">SimdElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-{
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Select</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">SimdElement</span>,
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
@@ -118,11 +108,22 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Select</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">SimdElement</span>,
+    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+{
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">MaskElement</span>,
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
 {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="self">Self</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">true_values</span> <span class="op">|</span> <span class="op">!</span><span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">false_values</span>
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Select</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
@@ -130,11 +131,6 @@
     <span class="ident">T</span>: <span class="ident">MaskElement</span>,
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
 {
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="self">Self</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">true_values</span> <span class="op">|</span> <span class="op">!</span><span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">false_values</span>
-    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
