@@ -57,7 +57,10 @@ where
         self.0
     }
 
+    /// # Panics
+    /// this will panic if the value is not aligned properly
     pub const fn from_slice(slice: &[T]) -> Self {
+        assert_eq!(slice.as_ptr() as usize & (core::mem::align_of::<T>()*LANES - 1), 0);
         let mut array = [slice[0]; LANES];
         let mut i = 1;
         while i < LANES {
