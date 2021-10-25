@@ -57,6 +57,15 @@ where
         self.0
     }
 
+    pub const fn from_slice(slice: &[T]) -> Self {
+        let mut array = [slice[0]; LANES];
+        for i in 1..LANES {
+            array[i] = slice[i];
+        }
+        Self::from_array(array)
+    }
+
+
     /// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
     /// If an index is out-of-bounds, the lane is instead selected from the `or` vector.
     ///
