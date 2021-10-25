@@ -59,8 +59,10 @@ where
 
     pub const fn from_slice(slice: &[T]) -> Self {
         let mut array = [slice[0]; LANES];
-        for i in 1..LANES {
+        let mut i = 1;
+        while i < LANES {
             array[i] = slice[i];
+            i += 1;
         }
         Self::from_array(array)
     }
