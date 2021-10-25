@@ -57,16 +57,20 @@ where
         self.0
     }
 
+    /// Converts a slice to a SIMD vector
     /// # Panics
-    /// this will panic if the value is not aligned properly
-    pub fn from_slice(slice: &[T]) -> Self {
-        assert_eq!(slice.as_ptr() as usize & (core::mem::align_of::<T>()*LANES - 1), 0);
+    /// this will panic if the slice does not have enough elements to fill the whole vector 
+    pub const fn from_slice(slice: &[T]) -> Self {
+        assert!(slice.len() >= LANES, "Not enough elements in slice to convert to Simd");
+
         let mut array = [slice[0]; LANES];
         let mut i = 1;
+
         while i < LANES {
             array[i] = slice[i];
             i += 1;
         }
+
         Self::from_array(array)
     }
 
