@@ -70,7 +70,6 @@ where
 
         for i in 0..LANES {
             array[i] = slice[i];
-            i += 1;
         }
 
         Self::from_array(array)
