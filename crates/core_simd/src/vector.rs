@@ -63,8 +63,8 @@ where
     #[must_use]
     pub const fn from_slice(slice: &[T]) -> Self {
         assert!(slice.len() >= LANES,
-                "slice's `len` is {}, but `Simd::<T, {N}>::from_slice` requires at least {N} elements", 
-                slice.len(), N = LANES);
+                "slice's `len` is {}, but `Simd::<T, {1}>::from_slice` requires at least {1} elements", 
+                slice.len(), LANES);
 
         let mut array = [slice[0]; LANES];
         let mut i = 1;
