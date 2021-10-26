@@ -57,7 +57,7 @@ where
         self.0
     }
 
-    /// Converts a slice to a SIMD vector
+    /// Converts a slice to a SIMD vector containing `slice[..LANES]`
     /// # Panics
     /// `from_slice` will panic if the slice's `len` is less than the vector's `Simd::LANES`.
     #[must_use]
