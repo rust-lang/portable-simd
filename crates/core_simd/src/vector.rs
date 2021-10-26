@@ -59,7 +59,8 @@ where
 
     /// Converts a slice to a SIMD vector
     /// # Panics
-    /// this will panic if the slice does not have enough elements to fill the whole vector 
+    /// `from_slice` will panic if the slice's `len` is less than the vector's `Simd::LANES`.
+    #[must_use]
     pub const fn from_slice(slice: &[T]) -> Self {
         assert!(slice.len() >= LANES, "Not enough elements in slice to convert to Simd");
 
