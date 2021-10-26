@@ -62,7 +62,9 @@ where
     /// `from_slice` will panic if the slice's `len` is less than the vector's `Simd::LANES`.
     #[must_use]
     pub const fn from_slice(slice: &[T]) -> Self {
-        assert!(slice.len() >= LANES, "Not enough elements in slice to convert to Simd");
+        assert!(slice.len() >= LANES,
+                "slice's `len` is {}, but `Simd::<T, {N}>::from_slice` requires at least {N} elements", 
+                "{}", slice.len(), N = LANES);
 
         let mut array = [slice[0]; LANES];
         let mut i = 1;
