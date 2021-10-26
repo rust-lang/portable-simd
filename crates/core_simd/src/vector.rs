@@ -66,10 +66,9 @@ where
                 "slice's `len` is {}, but `Simd::<T, {1}>::from_slice` requires at least {1} elements", 
                 slice.len(), LANES);
 
-        let mut array = [slice[0]; LANES];
-        let mut i = 1;
+        let mut array: [T; LANES] = unsafe { core::mem::zeroed() };
 
-        while i < LANES {
+        for i in 0..LANES {
             array[i] = slice[i];
             i += 1;
         }
