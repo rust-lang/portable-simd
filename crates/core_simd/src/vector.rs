@@ -61,7 +61,7 @@ where
     /// # Panics
     /// `from_slice` will panic if the slice's `len` is less than the vector's `Simd::LANES`.
     #[must_use]
-    pub fn from_slice(slice: &[T]) -> Self {
+    pub const fn from_slice(slice: &[T]) -> Self {
         assert!(slice.len() >= LANES,
                 "slice's `len` is {}, but `Simd::<T, {1}>::from_slice` requires at least {1} elements", 
                 slice.len(), LANES);
