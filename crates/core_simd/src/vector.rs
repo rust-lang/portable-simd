@@ -62,12 +62,14 @@ where
     /// `from_slice` will panic if the slice's `len` is less than the vector's `Simd::LANES`.
     #[must_use]
     pub const fn from_slice(slice: &[T]) -> Self {
-        assert!(slice.len() >= LANES,
-                "slice's `len` is {}, but `Simd::<T, {1}>::from_slice` requires at least {1} elements", 
-                slice.len(), LANES);
-
-        
-        Self::from_array(slice[..LANES].try_into().unwrap())
+        assert!(slice.len() >= LANES, "slice length must be at least the number of lanes");
+        let mut array = [slice[0]; LANES];
+        let mut i = 0;
+        while i < LANES {
+            array[i] = slice[i];
+            i += 1;
+        }
+        Self(array)
     }
 
 
