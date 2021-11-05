@@ -41,6 +41,9 @@ mod sealed {
 use sealed::Sealed;
 
 /// Marker trait for types that may be used as SIMD mask elements.
+///
+/// # Safety
+/// Type must be a signed integer.
 pub unsafe trait MaskElement: SimdElement + Sealed {}
 
 macro_rules! impl_element {
