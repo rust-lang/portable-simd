@@ -14,6 +14,7 @@ macro_rules! implement {
             #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn ceil(self) -> Self {
+                // Safety: `self` is a vector
                 unsafe { intrinsics::simd_ceil(self) }
             }
 
@@ -21,6 +22,7 @@ macro_rules! implement {
             #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn floor(self) -> Self {
+                // Safety: `self` is a vector
                 unsafe { intrinsics::simd_floor(self) }
             }
 
@@ -28,6 +30,7 @@ macro_rules! implement {
             #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn round(self) -> Self {
+                // Safety: `self` is a vector
                 unsafe { intrinsics::simd_round(self) }
             }
 
@@ -35,6 +38,7 @@ macro_rules! implement {
             #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn trunc(self) -> Self {
+                // Safety: `self` is a vector
                 unsafe { intrinsics::simd_trunc(self) }
             }
 
@@ -61,6 +65,7 @@ macro_rules! implement {
             /// * Be representable in the return type, after truncating off its fractional part
             #[inline]
             pub unsafe fn to_int_unchecked(self) -> Simd<$int_type, LANES> {
+                // Safety: the caller must check the invariants
                 unsafe { intrinsics::simd_cast(self) }
             }
 
@@ -68,6 +73,7 @@ macro_rules! implement {
             /// not exactly representable.
             #[inline]
             pub fn round_from_int(value: Simd<$int_type, LANES>) -> Self {
+                // Safety: conversion from integer to float vectors is safe
                 unsafe { intrinsics::simd_cast(value) }
             }
         }

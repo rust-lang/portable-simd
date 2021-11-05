@@ -99,12 +99,14 @@ where
     where
         U: MaskElement,
     {
+        // Safety: masks are simply integer vectors of 0 and -1, and we can cast the element type.
         unsafe { Mask(intrinsics::simd_cast(self.0)) }
     }
 
     #[cfg(feature = "generic_const_exprs")]
     #[inline]
     pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
+        // Safety: IntBitMask is the integer equivalent of the return type.
         unsafe {
             // TODO remove the transmute when rustc can use arrays of u8 as bitmasks
             assert_eq!(
@@ -132,6 +134,7 @@ where
     #[cfg(feature = "generic_const_exprs")]
     #[inline]
     pub fn from_bitmask(mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
+        // Safety: IntBitMask is the integer equivalent of the input type.
         unsafe {
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -160,11 +163,13 @@ where
 
     #[inline]
     pub fn any(self) -> bool {
+        // Safety: use `self` as an integer vector
         unsafe { intrinsics::simd_reduce_any(self.to_int()) }
     }
 
     #[inline]
     pub fn all(self) -> bool {
+        // Safety: use `self` as an integer vector
         unsafe { intrinsics::simd_reduce_all(self.to_int()) }
     }
 }
@@ -187,6 +192,7 @@ where
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
+        // Safety: `self` is an integer vector
         unsafe { Self(intrinsics::simd_and(self.0, rhs.0)) }
     }
 }
@@ -199,6 +205,7 @@ where
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
+        // Safety: `self` is an integer vector
         unsafe { Self(intrinsics::simd_or(self.0, rhs.0)) }
     }
 }
@@ -211,6 +218,7 @@ where
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self {
+        // Safety: `self` is an integer vector
         unsafe { Self(intrinsics::simd_xor(self.0, rhs.0)) }
     }
 }

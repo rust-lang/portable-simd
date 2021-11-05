@@ -100,7 +100,14 @@ where
 
     #[inline]
     pub fn to_int(self) -> Simd<T, LANES> {
+        // TODO remove the transmute when rustc is more flexible
+        // Safety: IntBitMask is the integer equivalent to `self`, and matches the output vector
+        // lane count.
         unsafe {
+            assert_eq!(
+                core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::BitMask>(),
+                core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::IntBitMask>(),
+            );
             let mask: <LaneCount<LANES> as SupportedLaneCount>::IntBitMask =
                 core::mem::transmute_copy(&self);
             intrinsics::simd_select_bitmask(mask, Simd::splat(T::TRUE), Simd::splat(T::FALSE))
@@ -110,11 +117,13 @@ where
     #[inline]
     pub unsafe fn from_int_unchecked(value: Simd<T, LANES>) -> Self {
         // TODO remove the transmute when rustc is more flexible
-        assert_eq!(
-            core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::BitMask>(),
-            core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::IntBitMask>(),
-        );
+        // Safety: IntBitMask is the integer equivalent to `self`, and matches the output vector
+        // lane count.
         unsafe {
+            assert_eq!(
+                core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::BitMask>(),
+                core::mem::size_of::<<LaneCount::<LANES> as SupportedLaneCount>::IntBitMask>(),
+            );
             let mask: <LaneCount<LANES> as SupportedLaneCount>::IntBitMask =
                 intrinsics::simd_bitmask(value);
             Self(core::mem::transmute_copy(&mask), PhantomData)
@@ -140,6 +149,7 @@ where
     where
         U: MaskElement,
     {
+        // Safety: bitmask layout does not depend on the element width
         unsafe { core::mem::transmute_copy(&self) }
     }
 

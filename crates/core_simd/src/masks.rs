@@ -133,6 +133,7 @@ where
     /// All lanes must be either 0 or -1.
     #[inline]
     pub unsafe fn from_int_unchecked(value: Simd<T, LANES>) -> Self {
+        // Safety: the caller must confirm this invariant
         unsafe { Self(mask_impl::Mask::from_int_unchecked(value)) }
     }
 
@@ -144,6 +145,7 @@ where
     #[inline]
     pub fn from_int(value: Simd<T, LANES>) -> Self {
         assert!(T::valid(value), "all values must be either 0 or -1",);
+        // Safety: the validity has been checked
         unsafe { Self::from_int_unchecked(value) }
     }
 
@@ -160,6 +162,7 @@ where
     /// `lane` must be less than `LANES`.
     #[inline]
     pub unsafe fn test_unchecked(&self, lane: usize) -> bool {
+        // Safety: the caller must confirm this invariant
         unsafe { self.0.test_unchecked(lane) }
     }
 
@@ -170,6 +173,7 @@ where
     #[inline]
     pub fn test(&self, lane: usize) -> bool {
         assert!(lane < LANES, "lane index out of range");
+        // Safety: the lane index has been checked
         unsafe { self.test_unchecked(lane) }
     }
 
@@ -179,6 +183,7 @@ where
     /// `lane` must be less than `LANES`.
     #[inline]
     pub unsafe fn set_unchecked(&mut self, lane: usize, value: bool) {
+        // Safety: the caller must confirm this invariant
         unsafe {
             self.0.set_unchecked(lane, value);
         }
@@ -191,6 +196,7 @@ where
     #[inline]
     pub fn set(&mut self, lane: usize, value: bool) {
         assert!(lane < LANES, "lane index out of range");
+        // Safety: the lane index has been checked
         unsafe {
             self.set_unchecked(lane, value);
         }

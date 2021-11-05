@@ -18,6 +18,7 @@ where
 {
     #[inline]
     fn select(mask: Mask<T::Mask, LANES>, true_values: Self, false_values: Self) -> Self {
+        // Safety: `mask` and `Self` are vectors
         unsafe { intrinsics::simd_select(mask.to_int(), true_values, false_values) }
     }
 }

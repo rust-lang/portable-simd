@@ -17,6 +17,7 @@ macro_rules! impl_float_vector {
             #[inline]
             pub fn to_bits(self) -> Simd<$bits_ty, LANES> {
                 assert_eq!(core::mem::size_of::<Self>(), core::mem::size_of::<Simd<$bits_ty, LANES>>());
+                // Safety: transmuting vectors is safe
                 unsafe { core::mem::transmute_copy(&self) }
             }
 
@@ -25,6 +26,7 @@ macro_rules! impl_float_vector {
             #[inline]
             pub fn from_bits(bits: Simd<$bits_ty, LANES>) -> Self {
                 assert_eq!(core::mem::size_of::<Self>(), core::mem::size_of::<Simd<$bits_ty, LANES>>());
+                // Safety: transmuting vectors is safe
                 unsafe { core::mem::transmute_copy(&bits) }
             }
 
@@ -32,6 +34,7 @@ macro_rules! impl_float_vector {
             /// equivalently-indexed lane in `self`.
             #[inline]
             pub fn abs(self) -> Self {
+                // Safety: `self` is a float vector
                 unsafe { intrinsics::simd_fabs(self) }
             }
 
@@ -45,6 +48,7 @@ macro_rules! impl_float_vector {
             #[cfg(feature = "std")]
             #[inline]
             pub fn mul_add(self, a: Self, b: Self) -> Self {
+                // Safety: `self` is a float vector
                 unsafe { intrinsics::simd_fma(self, a, b) }
             }
 
@@ -53,6 +57,7 @@ macro_rules! impl_float_vector {
             #[inline]
             #[cfg(feature = "std")]
             pub fn sqrt(self) -> Self {
+                // Safety: `self` is a float vector
                 unsafe { intrinsics::simd_fsqrt(self) }
             }
 
