@@ -577,10 +577,10 @@
     }
 
     <span class="doccomment">/// Rotates the vector such that the first `OFFSET` elements of the slice move to the end</span>
-    <span class="doccomment">/// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_left`, the</span>
-    <span class="doccomment">/// element previously in lane `OFFSET` will become the first element in the slice.</span>
+    <span class="doccomment">/// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_lanes_left`,</span>
+    <span class="doccomment">/// the element previously in lane `OFFSET` will become the first element in the slice.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_left</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_left</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
@@ -602,10 +602,10 @@
     }
 
     <span class="doccomment">/// Rotates the vector such that the first `LANES - OFFSET` elements of the vector move to</span>
-    <span class="doccomment">/// the end while the last `OFFSET` elements move to the front. After calling `rotate_right`, the</span>
-    <span class="doccomment">/// element previously at index `LANES - OFFSET` will become the first element in the slice.</span>
+    <span class="doccomment">/// the end while the last `OFFSET` elements move to the front. After calling `rotate_lanes_right`,</span>
+    <span class="doccomment">/// the element previously at index `LANES - OFFSET` will become the first element in the slice.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_right</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_right</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">LANES</span> <span class="op">-</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
