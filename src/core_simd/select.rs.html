@@ -84,6 +84,9 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -103,6 +106,7 @@
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
 {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_select</span>(<span class="ident">mask</span>.<span class="ident">to_int</span>(), <span class="ident">true_values</span>, <span class="ident">false_values</span>) }
     }
@@ -121,6 +125,7 @@
     <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
 {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">select</span>(<span class="ident">mask</span>: <span class="self">Self</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">true_values</span> <span class="op">|</span> <span class="op">!</span><span class="ident">mask</span> <span class="op">&amp;</span> <span class="ident">false_values</span>
     }
@@ -166,6 +171,7 @@
     <span class="doccomment">/// assert_eq!(c.to_array(), [true, false, true, false]);</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Select</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">true_values</span>: <span class="ident">S</span>, <span class="ident">false_values</span>: <span class="ident">S</span>) -&gt; <span class="ident">S</span> {
         <span class="ident">S::select</span>(<span class="self">self</span>, <span class="ident">true_values</span>, <span class="ident">false_values</span>)
     }

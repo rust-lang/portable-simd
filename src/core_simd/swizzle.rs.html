@@ -372,6 +372,15 @@
 <span id="372">372</span>
 <span id="373">373</span>
 <span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -461,6 +470,8 @@
     <span class="doccomment">/// Create a new vector from the lanes of `vector`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Lane `i` of the output is `vector[Self::INDEX[i]]`.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">swizzle</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">vector</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">SimdElement</span>,
@@ -480,6 +491,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Lane `i` is `first[j]` when `Self::INDEX[i]` is `First(j)`, or `second[j]` when it is</span>
     <span class="doccomment">/// `Second(j)`.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">swizzle2</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
         <span class="ident">first</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>,
         <span class="ident">second</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>,
@@ -556,6 +569,7 @@
 {
     <span class="doccomment">/// Reverse the order of the lanes in the vector.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reverse</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">reverse_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
@@ -580,6 +594,7 @@
     <span class="doccomment">/// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_lanes_left`,</span>
     <span class="doccomment">/// the element previously in lane `OFFSET` will become the first element in the slice.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_left</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
@@ -605,6 +620,7 @@
     <span class="doccomment">/// the end while the last `OFFSET` elements move to the front. After calling `rotate_lanes_right`,</span>
     <span class="doccomment">/// the element previously at index `LANES - OFFSET` will become the first element in the slice.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_right</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">LANES</span> <span class="op">-</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
@@ -647,6 +663,7 @@
     <span class="doccomment">/// assert_eq!(y.to_array(), [2, 6, 3, 7]);</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">lo</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
@@ -710,6 +727,7 @@
     <span class="doccomment">/// assert_eq!(y.to_array(), [4, 5, 6, 7]);</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deinterleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">even</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];

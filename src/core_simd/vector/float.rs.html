@@ -208,6 +208,26 @@
 <span id="208">208</span>
 <span id="209">209</span>
 <span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
@@ -225,6 +245,7 @@
             <span class="doccomment">/// Raw transmutation to an unsigned integer vector type with the</span>
             <span class="doccomment">/// same size and number of lanes.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bits</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="macro">assert_eq!</span>(<span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(), <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span>());
                 <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) }
@@ -233,6 +254,7 @@
             <span class="doccomment">/// Raw transmutation from an unsigned integer vector type with the</span>
             <span class="doccomment">/// same size and number of lanes.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
                 <span class="macro">assert_eq!</span>(<span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(), <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span>());
                 <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bits</span>) }
@@ -241,6 +263,7 @@
             <span class="doccomment">/// Produces a vector where every lane has the absolute value of the</span>
             <span class="doccomment">/// equivalently-indexed lane in `self`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">abs</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fabs</span>(<span class="self">self</span>) }
             }
@@ -254,6 +277,7 @@
             <span class="doccomment">/// hardware in mind.</span>
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mul_add</span>(<span class="self">self</span>, <span class="ident">a</span>: <span class="self">Self</span>, <span class="ident">b</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fma</span>(<span class="self">self</span>, <span class="ident">a</span>, <span class="ident">b</span>) }
             }
@@ -261,6 +285,7 @@
             <span class="doccomment">/// Produces a vector where every lane has the square root value</span>
             <span class="doccomment">/// of the equivalently-indexed lane in `self`</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fsqrt</span>(<span class="self">self</span>) }
@@ -268,12 +293,14 @@
 
             <span class="doccomment">/// Takes the reciprocal (inverse) of each lane, `1/x`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recip</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">1.0</span>) <span class="op">/</span> <span class="self">self</span>
             }
 
             <span class="doccomment">/// Converts each lane from radians to degrees.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_degrees</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="comment">// to_degrees uses a special constant for better precision, so extract that constant</span>
                 <span class="self">self</span> <span class="op">*</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::to_degrees</span>(<span class="number">1.</span>))
@@ -281,6 +308,7 @@
 
             <span class="doccomment">/// Converts each lane from degrees to radians.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_radians</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="self">self</span> <span class="op">*</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::to_radians</span>(<span class="number">1.</span>))
             }
@@ -288,6 +316,7 @@
             <span class="doccomment">/// Returns true for each lane if it has a positive sign, including</span>
             <span class="doccomment">/// `+0.0`, `NaN`s with positive sign bit and positive infinity.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sign_positive</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="op">!</span><span class="self">self</span>.<span class="ident">is_sign_negative</span>()
             }
@@ -295,6 +324,7 @@
             <span class="doccomment">/// Returns true for each lane if it has a negative sign, including</span>
             <span class="doccomment">/// `-0.0`, `NaN`s with negative sign bit and negative infinity.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sign_negative</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">sign_bits</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident">Simd::splat</span>((<span class="op">!</span><span class="number">0</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>);
                 <span class="ident">sign_bits</span>.<span class="ident">lanes_gt</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span>))
@@ -302,24 +332,28 @@
 
             <span class="doccomment">/// Returns true for each lane if its value is `NaN`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_nan</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">lanes_ne</span>(<span class="self">self</span>)
             }
 
             <span class="doccomment">/// Returns true for each lane if its value is positive infinity or negative infinity.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_infinite</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">lanes_eq</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::INFINITY</span>))
             }
 
             <span class="doccomment">/// Returns true for each lane if its value is neither infinite nor `NaN`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_finite</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">lanes_lt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::INFINITY</span>))
             }
 
             <span class="doccomment">/// Returns true for each lane if its value is subnormal.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_subnormal</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">lanes_ne</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0.0</span>)) <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::INFINITY</span>).<span class="ident">to_bits</span>()).<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span>))
             }
@@ -327,6 +361,7 @@
             <span class="doccomment">/// Returns true for each lane if its value is neither neither zero, infinite,</span>
             <span class="doccomment">/// subnormal, or `NaN`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_normal</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
                 <span class="op">!</span>(<span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">lanes_eq</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0.0</span>)) <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_nan</span>() <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_subnormal</span>() <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_infinite</span>())
             }
@@ -337,6 +372,7 @@
             <span class="doccomment">/// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`</span>
             <span class="doccomment">/// * `NAN` if the number is `NAN`</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">signum</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="self">self</span>.<span class="ident">is_nan</span>().<span class="ident">select</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::NAN</span>), <span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">1.0</span>).<span class="ident">copysign</span>(<span class="self">self</span>))
             }
@@ -345,6 +381,7 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// If any lane is a `NAN`, then a `NAN` with the sign of `sign` is returned.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copysign</span>(<span class="self">self</span>, <span class="ident">sign</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">sign_bit</span> <span class="op">=</span> <span class="ident">sign</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">-</span><span class="number">0.</span>).<span class="ident">to_bits</span>();
                 <span class="kw">let</span> <span class="ident">magnitude</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="op">!</span><span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">-</span><span class="number">0.</span>).<span class="ident">to_bits</span>();
@@ -355,6 +392,7 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// If one of the values is `NAN`, then the other value is returned.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="comment">// TODO consider using an intrinsic</span>
                 <span class="self">self</span>.<span class="ident">is_nan</span>().<span class="ident">select</span>(
@@ -367,6 +405,7 @@
             <span class="doccomment">///</span>
             <span class="doccomment">/// If one of the values is `NAN`, then the other value is returned.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="comment">// TODO consider using an intrinsic</span>
                 <span class="self">self</span>.<span class="ident">is_nan</span>().<span class="ident">select</span>(
@@ -381,6 +420,7 @@
             <span class="doccomment">/// greater than `max`, and the corresponding lane in `min` if the lane is less</span>
             <span class="doccomment">/// than `min`.  Otherwise returns the lane in `self`.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="macro">assert!</span>(
                     <span class="ident">min</span>.<span class="ident">lanes_le</span>(<span class="ident">max</span>).<span class="ident">all</span>(),
