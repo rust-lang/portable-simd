@@ -1,14 +1,14 @@
 #![allow(non_camel_case_types)]
 
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Mask, Simd, SupportedLaneCount};
+use crate::simd::{LaneCount, Mask, Simd, SimdAbs, SimdSignum, SupportedLaneCount};
 
 /// Implements inherent methods for a float vector containing multiple
 /// `$lanes` of float `$type`, which uses `$bits_ty` as its binary
 /// representation.
 macro_rules! impl_float_vector {
-    { $type:ty, $bits_ty:ty, $mask_ty:ty } => {
-        impl<const LANES: usize> Simd<$type, LANES>
+    { $float:ty, $bits_ty:ty, $mask_ty:ty } => {
+        impl<const LANES: usize> Simd<$float, LANES>
         where
             LaneCount<LANES>: SupportedLaneCount,
         {
@@ -28,14 +28,6 @@ macro_rules! impl_float_vector {
             pub fn from_bits(bits: Simd<$bits_ty, LANES>) -> Self {
                 assert_eq!(core::mem::size_of::<Self>(), core::mem::size_of::<Simd<$bits_ty, LANES>>());
                 unsafe { core::mem::transmute_copy(&bits) }
-            }
-
-            /// Produces a vector where every lane has the absolute value of the
-            /// equivalently-indexed lane in `self`.
-            #[inline]
-            #[must_use = "method returns a new vector and does not mutate the original value"]
-            pub fn abs(self) -> Self {
-                unsafe { intrinsics::simd_fabs(self) }
             }
 
             /// Fused multiply-add.  Computes `(self * a) + b` with only one rounding error,
@@ -73,14 +65,14 @@ macro_rules! impl_float_vector {
             #[must_use = "method returns a new vector and does not mutate the original value"]
             pub fn to_degrees(self) -> Self {
                 // to_degrees uses a special constant for better precision, so extract that constant
-                self * Self::splat(<$type>::to_degrees(1.))
+                self * Self::splat(<$float>::to_degrees(1.))
             }
 
             /// Converts each lane from degrees to radians.
             #[inline]
             #[must_use = "method returns a new vector and does not mutate the original value"]
             pub fn to_radians(self) -> Self {
-                self * Self::splat(<$type>::to_radians(1.))
+                self * Self::splat(<$float>::to_radians(1.))
             }
 
             /// Returns true for each lane if it has a positive sign, including
@@ -111,21 +103,21 @@ macro_rules! impl_float_vector {
             #[inline]
             #[must_use = "method returns a new mask and does not mutate the original value"]
             pub fn is_infinite(self) -> Mask<$mask_ty, LANES> {
-                self.abs().lanes_eq(Self::splat(<$type>::INFINITY))
+                self.abs().lanes_eq(Self::splat(<$float>::INFINITY))
             }
 
             /// Returns true for each lane if its value is neither infinite nor `NaN`.
             #[inline]
             #[must_use = "method returns a new mask and does not mutate the original value"]
             pub fn is_finite(self) -> Mask<$mask_ty, LANES> {
-                self.abs().lanes_lt(Self::splat(<$type>::INFINITY))
+                self.abs().lanes_lt(Self::splat(<$float>::INFINITY))
             }
 
             /// Returns true for each lane if its value is subnormal.
             #[inline]
             #[must_use = "method returns a new mask and does not mutate the original value"]
             pub fn is_subnormal(self) -> Mask<$mask_ty, LANES> {
-                self.abs().lanes_ne(Self::splat(0.0)) & (self.to_bits() & Self::splat(<$type>::INFINITY).to_bits()).lanes_eq(Simd::splat(0))
+                self.abs().lanes_ne(Self::splat(0.0)) & (self.to_bits() & Self::splat(<$float>::INFINITY).to_bits()).lanes_eq(Simd::splat(0))
             }
 
             /// Returns true for each lane if its value is neither neither zero, infinite,
@@ -134,17 +126,6 @@ macro_rules! impl_float_vector {
             #[must_use = "method returns a new mask and does not mutate the original value"]
             pub fn is_normal(self) -> Mask<$mask_ty, LANES> {
                 !(self.abs().lanes_eq(Self::splat(0.0)) | self.is_nan() | self.is_subnormal() | self.is_infinite())
-            }
-
-            /// Replaces each lane with a number that represents its sign.
-            ///
-            /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
-            /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
-            /// * `NAN` if the number is `NAN`
-            #[inline]
-            #[must_use = "method returns a new vector and does not mutate the original value"]
-            pub fn signum(self) -> Self {
-                self.is_nan().select(Self::splat(<$type>::NAN), Self::splat(1.0).copysign(self))
             }
 
             /// Returns each lane with the magnitude of `self` and the sign of `sign`.
@@ -202,7 +183,46 @@ macro_rules! impl_float_vector {
                 x
             }
         }
+            impl<const LANES: usize> SimdSignum for Simd<$float, LANES>
+            where
+            LaneCount<LANES>: SupportedLaneCount,
+            {
+                /// Replaces each lane with a number that represents its sign.
+                ///
+                /// For floats:
+                /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
+                /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
+                /// * `NAN` if the number is `NAN`
+                #[inline]
+                fn signum(self) -> Self {
+                    self.is_nan().select(Self::splat(<$float>::NAN), Self::splat(1.0).copysign(self))
+                }
+            }
     };
+}
+
+impl<const LANES: usize> SimdAbs for Simd<f32, LANES>
+where
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Returns a vector where every lane has the absolute value of the
+    /// equivalent index in `self`.
+    #[inline]
+    fn abs(self) -> Self {
+        unsafe { intrinsics::simd_fabs(self) }
+    }
+}
+
+impl<const LANES: usize> SimdAbs for Simd<f64, LANES>
+where
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Returns a vector where every lane has the absolute value of the
+    /// equivalent index in `self`.
+    #[inline]
+    fn abs(self) -> Self {
+        unsafe { intrinsics::simd_fabs(self) }
+    }
 }
 
 impl_float_vector! { f32, u32, i32 }

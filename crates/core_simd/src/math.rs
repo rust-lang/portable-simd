@@ -1,159 +1,156 @@
-use crate::simd::intrinsics::{simd_saturating_add, simd_saturating_sub};
-use crate::simd::{LaneCount, Simd, SupportedLaneCount};
+use crate::simd::intrinsics;
+use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
 
-macro_rules! impl_uint_arith {
-    ($($ty:ty),+) => {
-        $( impl<const LANES: usize> Simd<$ty, LANES> where LaneCount<LANES>: SupportedLaneCount {
+mod sealed {
+    pub trait Sealed {}
+}
+use sealed::Sealed;
+impl<T, const LANES: usize> Sealed for Simd<T, LANES>
+where
+    T: SimdElement,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+}
 
-            /// Lanewise saturating add.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::MAX;")]
-            /// let x = Simd::from_array([2, 1, 0, MAX]);
-            /// let max = Simd::splat(MAX);
-            /// let unsat = x + max;
-            /// let sat = x.saturating_add(max);
-            /// assert_eq!(x - 1, unsat);
-            /// assert_eq!(sat, max);
-            /// ```
-            #[inline]
-            pub fn saturating_add(self, second: Self) -> Self {
-                unsafe { simd_saturating_add(self, second) }
-            }
+impl<T, const LANES: usize> Simd<T, LANES>
+where
+    T: Int,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Lanewise saturating add.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::Simd;
+    /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
+    /// let x = Simd::from_array([i32::MIN, 0, 1, i32::MAX]);
+    /// let max = Simd::splat(i32::MAX);
+    /// let unsat = x + max;
+    /// let sat = x.saturating_add(max);
+    /// assert_eq!(unsat, Simd::from_array([-1, i32::MAX, i32::MIN, -2]));
+    /// assert_eq!(sat, Simd::from_array([-1, i32::MAX, i32::MAX, i32::MAX]));
+    /// ```
+    #[inline]
+    pub fn saturating_add(self, other: Self) -> Self {
+        unsafe { intrinsics::simd_saturating_add(self, other) }
+    }
 
-            /// Lanewise saturating subtract.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::MAX;")]
-            /// let x = Simd::from_array([2, 1, 0, MAX]);
-            /// let max = Simd::splat(MAX);
-            /// let unsat = x - max;
-            /// let sat = x.saturating_sub(max);
-            /// assert_eq!(unsat, x + 1);
-            /// assert_eq!(sat, Simd::splat(0));
-            #[inline]
-            pub fn saturating_sub(self, second: Self) -> Self {
-                unsafe { simd_saturating_sub(self, second) }
-            }
-        })+
+    /// Lanewise saturating subtract.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::Simd;
+    /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
+    /// let x = Simd::from_array([i32::MIN, -2, -1, i32::MAX]);
+    /// let max = Simd::splat(i32::MAX);
+    /// let unsat = x - max;
+    /// let sat = x.saturating_sub(max);
+    /// assert_eq!(unsat, Simd::from_array([1, i32::MAX, i32::MIN, 0]));
+    /// assert_eq!(sat, Simd::from_array([i32::MIN, i32::MIN, i32::MIN, 0]));
+    #[inline]
+    pub fn saturating_sub(self, other: Self) -> Self {
+        unsafe { intrinsics::simd_saturating_sub(self, other) }
     }
 }
 
-macro_rules! impl_int_arith {
-    ($($ty:ty),+) => {
-        $( impl<const LANES: usize> Simd<$ty, LANES> where LaneCount<LANES>: SupportedLaneCount {
+pub trait Int: SimdElement + PartialOrd {
+    const BITS: u32;
+}
 
-            /// Lanewise saturating add.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::{MIN, MAX};")]
-            /// let x = Simd::from_array([MIN, 0, 1, MAX]);
-            /// let max = Simd::splat(MAX);
-            /// let unsat = x + max;
-            /// let sat = x.saturating_add(max);
-            /// assert_eq!(unsat, Simd::from_array([-1, MAX, MIN, -2]));
-            /// assert_eq!(sat, Simd::from_array([-1, MAX, MAX, MAX]));
-            /// ```
-            #[inline]
-            pub fn saturating_add(self, second: Self) -> Self {
-                unsafe { simd_saturating_add(self, second) }
-            }
+impl Int for u8 {
+    const BITS: u32 = 8;
+}
 
-            /// Lanewise saturating subtract.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::{MIN, MAX};")]
-            /// let x = Simd::from_array([MIN, -2, -1, MAX]);
-            /// let max = Simd::splat(MAX);
-            /// let unsat = x - max;
-            /// let sat = x.saturating_sub(max);
-            /// assert_eq!(unsat, Simd::from_array([1, MAX, MIN, 0]));
-            /// assert_eq!(sat, Simd::from_array([MIN, MIN, MIN, 0]));
-            #[inline]
-            pub fn saturating_sub(self, second: Self) -> Self {
-                unsafe { simd_saturating_sub(self, second) }
-            }
+impl Int for i8 {
+    const BITS: u32 = 8;
+}
 
-            /// Lanewise absolute value, implemented in Rust.
-            /// Every lane becomes its absolute value.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::{MIN, MAX};")]
-            /// let xs = Simd::from_array([MIN, MIN +1, -5, 0]);
-            /// assert_eq!(xs.abs(), Simd::from_array([MIN, MAX, 5, 0]));
-            /// ```
-            #[inline]
-            pub fn abs(self) -> Self {
-                const SHR: $ty = <$ty>::BITS as $ty - 1;
-                let m = self >> SHR;
-                (self^m) - m
-            }
+impl Int for u16 {
+    const BITS: u32 = 16;
+}
 
-            /// Lanewise saturating absolute value, implemented in Rust.
-            /// As abs(), except the MIN value becomes MAX instead of itself.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::{MIN, MAX};")]
-            /// let xs = Simd::from_array([MIN, -2, 0, 3]);
-            /// let unsat = xs.abs();
-            /// let sat = xs.saturating_abs();
-            /// assert_eq!(unsat, Simd::from_array([MIN, 2, 0, 3]));
-            /// assert_eq!(sat, Simd::from_array([MAX, 2, 0, 3]));
-            /// ```
-            #[inline]
-            pub fn saturating_abs(self) -> Self {
-                // arith shift for -1 or 0 mask based on sign bit, giving 2s complement
-                const SHR: $ty = <$ty>::BITS as $ty - 1;
-                let m = self >> SHR;
-                (self^m).saturating_sub(m)
-            }
+impl Int for i16 {
+    const BITS: u32 = 16;
+}
 
-            /// Lanewise saturating negation, implemented in Rust.
-            /// As neg(), except the MIN value becomes MAX instead of itself.
-            ///
-            /// # Examples
-            /// ```
-            /// # #![feature(portable_simd)]
-            /// # #[cfg(feature = "std")] use core_simd::Simd;
-            /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
-            #[doc = concat!("# use core::", stringify!($ty), "::{MIN, MAX};")]
-            /// let x = Simd::from_array([MIN, -2, 3, MAX]);
-            /// let unsat = -x;
-            /// let sat = x.saturating_neg();
-            /// assert_eq!(unsat, Simd::from_array([MIN, 2, -3, MIN + 1]));
-            /// assert_eq!(sat, Simd::from_array([MAX, 2, -3, MIN + 1]));
-            /// ```
-            #[inline]
-            pub fn saturating_neg(self) -> Self {
-                Self::splat(0).saturating_sub(self)
-            }
-        })+
+impl Int for u32 {
+    const BITS: u32 = 32;
+}
+
+impl Int for i32 {
+    const BITS: u32 = 32;
+}
+
+impl Int for u64 {
+    const BITS: u32 = 64;
+}
+
+impl Int for i64 {
+    const BITS: u32 = 64;
+}
+
+impl Int for usize {
+    const BITS: u32 = usize::BITS;
+}
+
+impl Int for isize {
+    const BITS: u32 = isize::BITS;
+}
+
+pub trait SimdSignum: Sealed {
+    fn signum(self) -> Self;
+}
+
+impl<T, const LANES: usize> Simd<T, LANES>
+where
+    Self: SimdSignum,
+    T: SimdElement,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Replaces each lane with a number that represents its sign.
+    ///
+    /// For floats:
+    /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
+    /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
+    /// * `NAN` if the number is `NAN`
+    ///
+    /// For signed integers:
+    /// * `0` if the number is zero
+    /// * `1` if the number is positive
+    /// * `-1` if the number is negative
+    #[inline]
+    pub fn signum(self) -> Self {
+        <Self as SimdSignum>::signum(self)
     }
 }
 
-impl_uint_arith! { u8, u16, u32, u64, usize }
-impl_int_arith! { i8, i16, i32, i64, isize }
+pub trait SimdAbs: Sealed {
+    /// Returns a vector where every lane has the absolute value of the
+    /// equivalent index in `self`.
+    fn abs(self) -> Self;
+}
+
+impl<T, const LANES: usize> Simd<T, LANES>
+where
+    Self: SimdAbs,
+    T: SimdElement,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Returns a vector where every lane has the absolute value of the
+    /// equivalent index in `self`.
+    ///
+    /// # Examples
+    /// ```rust
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::Simd;
+    /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
+    /// let xs = Simd::from_array([i32::MIN, i32::MIN +1, -5, 0]);
+    /// assert_eq!(xs.abs(), Simd::from_array([i32::MIN, i32::MAX, 5, 0]));
+    /// ```
+    #[inline]
+    pub fn abs(self) -> Self {
+        <Self as SimdAbs>::abs(self)
+    }
+}

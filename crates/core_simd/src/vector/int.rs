@@ -1,46 +1,123 @@
 #![allow(non_camel_case_types)]
+use crate::simd::intrinsics;
+use crate::simd::{Int, LaneCount, Mask, Simd, SimdAbs, SimdSignum, SupportedLaneCount};
+use core::ops::Shr;
 
-use crate::simd::{LaneCount, Mask, Simd, SupportedLaneCount};
+impl<T, const LANES: usize> Simd<T, LANES>
+where
+    T: SInt,
+    Self: Default,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Returns true for each positive lane and false if it is zero or negative.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn is_positive(self) -> Mask<T::Mask, LANES> {
+        self.lanes_gt(Self::default())
+    }
 
-/// Implements additional integer traits (Eq, Ord, Hash) on the specified vector `$name`, holding multiple `$lanes` of `$type`.
-macro_rules! impl_integer_vector {
-    { $type:ty } => {
-        impl<const LANES: usize> Simd<$type, LANES>
-        where
-            LaneCount<LANES>: SupportedLaneCount,
-        {
-            /// Returns true for each positive lane and false if it is zero or negative.
-            #[inline]
-            pub fn is_positive(self) -> Mask<$type, LANES> {
-                self.lanes_gt(Self::splat(0))
+    /// Returns true for each negative lane and false if it is zero or positive.
+    #[inline]
+    pub fn is_negative(self) -> Mask<T::Mask, LANES> {
+        self.lanes_lt(Self::default())
+    }
+
+    /// Lanewise saturating absolute value, implemented in Rust.
+    /// As abs(), except the Scalar::MIN value becomes Scalar::MAX instead of itself.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::Simd;
+    /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
+    /// let xs = Simd::from_array([i32::MIN, -2, 0, 3]);
+    /// let unsat = xs.abs();
+    /// let sat = xs.saturating_abs();
+    /// assert_eq!(unsat, Simd::from_array([i32::MIN, 2, 0, 3]));
+    /// assert_eq!(sat, Simd::from_array([i32::MAX, 2, 0, 3]));
+    /// ```
+    #[inline]
+    pub fn saturating_abs(self) -> Self {
+        // arith shift for -1 or 0 mask based on sign bit, giving 2s complement
+        let shr = T::BITS - 1;
+        let m = self >> shr;
+        unsafe { intrinsics::simd_xor(self, m).saturating_sub(m) }
+    }
+
+    /// Lanewise saturating negation, implemented in Rust.
+    /// As neg(), except the Scalar::MIN value becomes Scalar::MAX instead of itself.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::Simd;
+    /// # #[cfg(not(feature = "std"))] use core::simd::Simd;
+    /// let x = Simd::from_array([i32::MIN, -2, 3, i32::MAX]);
+    /// let unsat = -x;
+    /// let sat = x.saturating_neg();
+    /// assert_eq!(unsat, Simd::from_array([i32::MIN, 2, -3, i32::MIN + 1]));
+    /// assert_eq!(sat, Simd::from_array([i32::MAX, 2, -3, i32::MIN + 1]));
+    /// ```
+    #[inline]
+    pub fn saturating_neg(self) -> Self {
+        Self::default().saturating_sub(self)
+    }
+}
+
+macro_rules! impl_int_abs {
+    ($($ty:ty),+) => {
+        $( impl<const LANES: usize> SimdAbs for Simd<$ty, LANES> where LaneCount<LANES>: SupportedLaneCount {
+
+                #[inline]
+                fn abs(self) -> Self {
+                    const SHR: u32 = <$ty>::BITS - 1;
+                    let m = self >> SHR;
+                    (self^m) - m
+                }
             }
-
-            /// Returns true for each negative lane and false if it is zero or positive.
-            #[inline]
-            pub fn is_negative(self) -> Mask<$type, LANES> {
-                self.lanes_lt(Self::splat(0))
-            }
-
+            impl<const LANES: usize> SimdSignum for Simd<$ty, LANES> where LaneCount<LANES>: SupportedLaneCount {
             /// Returns numbers representing the sign of each lane.
             /// * `0` if the number is zero
             /// * `1` if the number is positive
             /// * `-1` if the number is negative
             #[inline]
-            pub fn signum(self) -> Self {
+            fn signum(self) -> Self {
                 self.is_positive().select(
                     Self::splat(1),
-                    self.is_negative().select(Self::splat(-1), Self::splat(0))
+                    self.is_negative().select(
+                        unsafe { intrinsics::simd_neg(Self::splat(1)) },
+                        Self::default(),
+                    ),
                 )
             }
-        }
+        })+
+    }
+}
+/// A 2s complement signed integer type.
+pub trait SInt: Int {}
+impl SInt for isize {}
+
+impl SInt for i8 {}
+
+impl SInt for i16 {}
+
+impl SInt for i32 {}
+
+impl SInt for i64 {}
+
+impl<T, const LANES: usize> Shr<u32> for Simd<T, LANES>
+where
+    T: SInt,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    type Output = Self;
+
+    fn shr(self, rhs: u32) -> Self::Output {
+        unsafe { intrinsics::simd_shr(self, intrinsics::simd_cast(Simd::splat(rhs))) }
     }
 }
 
-impl_integer_vector! { isize }
-impl_integer_vector! { i16 }
-impl_integer_vector! { i32 }
-impl_integer_vector! { i64 }
-impl_integer_vector! { i8 }
+impl_int_abs! { i8, i16, i32, i64, isize }
 
 /// Vector of two `isize` values
 pub type isizex2 = Simd<isize, 2>;

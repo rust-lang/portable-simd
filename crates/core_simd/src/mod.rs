@@ -5,6 +5,7 @@ mod reduction;
 mod swizzle;
 
 pub(crate) mod intrinsics;
+pub(crate) mod math;
 
 #[cfg(feature = "generic_const_exprs")]
 mod to_bytes;
@@ -14,7 +15,6 @@ mod fmt;
 mod iter;
 mod lane_count;
 mod masks;
-mod math;
 mod ops;
 mod round;
 mod select;
@@ -24,6 +24,7 @@ mod vendor;
 #[doc = include_str!("core_simd_docs.md")]
 pub mod simd {
     pub(crate) use crate::core_simd::intrinsics;
+    pub(crate) use crate::core_simd::math::*;
 
     pub use crate::core_simd::lane_count::{LaneCount, SupportedLaneCount};
     pub use crate::core_simd::masks::*;

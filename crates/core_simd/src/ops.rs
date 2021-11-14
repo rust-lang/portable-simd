@@ -174,9 +174,9 @@ macro_rules! impl_op {
     { impl Shl for $scalar:ty } => {
         impl_op! { @binary $scalar, Shl::shl, ShlAssign::shl_assign, simd_shl }
     };
-    { impl Shr for $scalar:ty } => {
-        impl_op! { @binary $scalar, Shr::shr, ShrAssign::shr_assign, simd_shr }
-    };
+    // { impl Shr for $scalar:ty } => {
+    //     impl_op! { @binary $scalar, Shr::shr, ShrAssign::shr_assign, simd_shr }
+    // };
     { impl BitAnd for $scalar:ty } => {
         impl_op! { @binary $scalar, BitAnd::bitand, BitAndAssign::bitand_assign, simd_and }
     };
@@ -561,70 +561,70 @@ macro_rules! impl_unsigned_int_ops {
                 }
             }
 
-            impl_ref_ops! {
-                impl<const LANES: usize> core::ops::Shr<Self> for Simd<$scalar, LANES>
-                where
-                    LaneCount<LANES>: SupportedLaneCount,
-                {
-                    type Output = Self;
+            // impl_ref_ops! {
+            //     impl<const LANES: usize> core::ops::Shr<Self> for Simd<$scalar, LANES>
+            //     where
+            //         LaneCount<LANES>: SupportedLaneCount,
+            //     {
+            //         type Output = Self;
 
-                    #[inline]
-                    fn shr(self, rhs: Self) -> Self::Output {
-                        // TODO there is probably a better way of doing this
-                        if rhs.as_array()
-                            .iter()
-                            .copied()
-                            .any(invalid_shift_rhs)
-                        {
-                            panic!("attempt to shift with overflow");
-                        }
-                        unsafe { intrinsics::simd_shr(self, rhs) }
-                    }
-                }
-            }
+            //         #[inline]
+            //         fn shr(self, rhs: Self) -> Self::Output {
+            //             // TODO there is probably a better way of doing this
+            //             if rhs.as_array()
+            //                 .iter()
+            //                 .copied()
+            //                 .any(invalid_shift_rhs)
+            //             {
+            //                 panic!("attempt to shift with overflow");
+            //             }
+            //             unsafe { intrinsics::simd_shr(self, rhs) }
+            //         }
+            //     }
+            // }
 
-            impl_ref_ops! {
-                impl<const LANES: usize> core::ops::Shr<$scalar> for Simd<$scalar, LANES>
-                where
-                    LaneCount<LANES>: SupportedLaneCount,
-                {
-                    type Output = Self;
+            // impl_ref_ops! {
+            //     impl<const LANES: usize> core::ops::Shr<$scalar> for Simd<$scalar, LANES>
+            //     where
+            //         LaneCount<LANES>: SupportedLaneCount,
+            //     {
+            //         type Output = Self;
 
-                    #[inline]
-                    fn shr(self, rhs: $scalar) -> Self::Output {
-                        if invalid_shift_rhs(rhs) {
-                            panic!("attempt to shift with overflow");
-                        }
-                        let rhs = Self::splat(rhs);
-                        unsafe { intrinsics::simd_shr(self, rhs) }
-                    }
-                }
-            }
+            //         #[inline]
+            //         fn shr(self, rhs: $scalar) -> Self::Output {
+            //             if invalid_shift_rhs(rhs) {
+            //                 panic!("attempt to shift with overflow");
+            //             }
+            //             let rhs = Self::splat(rhs);
+            //             unsafe { intrinsics::simd_shr(self, rhs) }
+            //         }
+            //     }
+            // }
 
 
-            impl_ref_ops! {
-                impl<const LANES: usize> core::ops::ShrAssign<Self> for Simd<$scalar, LANES>
-                where
-                    LaneCount<LANES>: SupportedLaneCount,
-                {
-                    #[inline]
-                    fn shr_assign(&mut self, rhs: Self) {
-                        *self = *self >> rhs;
-                    }
-                }
-            }
+            // impl_ref_ops! {
+            //     impl<const LANES: usize> core::ops::ShrAssign<Self> for Simd<$scalar, LANES>
+            //     where
+            //         LaneCount<LANES>: SupportedLaneCount,
+            //     {
+            //         #[inline]
+            //         fn shr_assign(&mut self, rhs: Self) {
+            //             *self = *self >> rhs;
+            //         }
+            //     }
+            // }
 
-            impl_ref_ops! {
-                impl<const LANES: usize> core::ops::ShrAssign<$scalar> for Simd<$scalar, LANES>
-                where
-                    LaneCount<LANES>: SupportedLaneCount,
-                {
-                    #[inline]
-                    fn shr_assign(&mut self, rhs: $scalar) {
-                        *self = *self >> rhs;
-                    }
-                }
-            }
+            // impl_ref_ops! {
+            //     impl<const LANES: usize> core::ops::ShrAssign<$scalar> for Simd<$scalar, LANES>
+            //     where
+            //         LaneCount<LANES>: SupportedLaneCount,
+            //     {
+            //         #[inline]
+            //         fn shr_assign(&mut self, rhs: $scalar) {
+            //             *self = *self >> rhs;
+            //         }
+            //     }
+            // }
         )*
     };
 }
