@@ -12,6 +12,7 @@ where
     /// Horizontal bitwise "and".  Returns the cumulative bitwise "and" across the lanes of
     /// the vector.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_and(self) -> T {
         unsafe { simd_reduce_and(self) }
     }
@@ -19,6 +20,7 @@ where
     /// Horizontal bitwise "or".  Returns the cumulative bitwise "or" across the lanes of
     /// the vector.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_or(self) -> T {
         unsafe { simd_reduce_or(self) }
     }
@@ -26,6 +28,7 @@ where
     /// Horizontal bitwise "xor".  Returns the cumulative bitwise "xor" across the lanes of
     /// the vector.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_xor(self) -> T {
         unsafe { simd_reduce_xor(self) }
     }
@@ -41,6 +44,7 @@ where
     /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
     /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_max(self) -> T {
         unsafe { simd_reduce_max(self) }
     }
@@ -50,6 +54,7 @@ where
     /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
     /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_min(self) -> T {
         unsafe { simd_reduce_min(self) }
     }
@@ -63,12 +68,14 @@ where
 {
     /// Horizontal add.  Returns the sum of the lanes of the vector.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_sum(self) -> T {
         <Self as HorizontalArith>::horizontal_sum(self)
     }
 
     /// Horizontal multiply.  Returns the product of the lanes of the vector.
     #[inline]
+    #[must_use = "method returns a new value and does not mutate the original vector"]
     pub fn horizontal_product(self) -> T {
         <Self as HorizontalArith>::horizontal_product(self)
     }

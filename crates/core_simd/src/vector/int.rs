@@ -18,6 +18,7 @@ where
 
     /// Returns true for each negative lane and false if it is zero or positive.
     #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn is_negative(self) -> Mask<T::Mask, LANES> {
         self.lanes_lt(Self::default())
     }
@@ -37,6 +38,7 @@ where
     /// assert_eq!(sat, Simd::from_array([i32::MAX, 2, 0, 3]));
     /// ```
     #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original value"]
     pub fn saturating_abs(self) -> Self {
         // arith shift for -1 or 0 mask based on sign bit, giving 2s complement
         let shr = T::BITS - 1;
@@ -59,6 +61,7 @@ where
     /// assert_eq!(sat, Simd::from_array([i32::MAX, 2, -3, i32::MIN + 1]));
     /// ```
     #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original value"]
     pub fn saturating_neg(self) -> Self {
         Self::default().saturating_sub(self)
     }
