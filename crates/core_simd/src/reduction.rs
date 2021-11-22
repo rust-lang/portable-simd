@@ -22,18 +22,6 @@ macro_rules! impl_integer_reductions {
             pub fn horizontal_product(self) -> $scalar {
                 unsafe { simd_reduce_mul_ordered(self, 1) }
             }
-
-            /// Horizontal maximum.  Returns the maximum lane in the vector.
-            #[inline]
-            pub fn horizontal_max(self) -> $scalar {
-                unsafe { simd_reduce_max(self) }
-            }
-
-            /// Horizontal minimum.  Returns the minimum lane in the vector.
-            #[inline]
-            pub fn horizontal_min(self) -> $scalar {
-                unsafe { simd_reduce_min(self) }
-            }
         }
     }
 }
@@ -77,25 +65,31 @@ macro_rules! impl_float_reductions {
                     unsafe { simd_reduce_mul_ordered(self, 1.) }
                 }
             }
-
-            /// Horizontal maximum.  Returns the maximum lane in the vector.
-            ///
-            /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
-            /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
-            #[inline]
-            pub fn horizontal_max(self) -> $scalar {
-                unsafe { simd_reduce_max(self) }
-            }
-
-            /// Horizontal minimum.  Returns the minimum lane in the vector.
-            ///
-            /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
-            /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
-            #[inline]
-            pub fn horizontal_min(self) -> $scalar {
-                unsafe { simd_reduce_min(self) }
-            }
         }
+    }
+}
+
+impl<T, const LANES: usize> Simd<T, LANES>
+where
+    T: SimdElement + PartialOrd,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    /// Horizontal maximum.  Returns the maximum lane in the vector.
+    ///
+    /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
+    /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
+    #[inline]
+    pub fn horizontal_max(self) -> T {
+        unsafe { simd_reduce_max(self) }
+    }
+
+    /// Horizontal minimum.  Returns the minimum lane in the vector.
+    ///
+    /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
+    /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
+    #[inline]
+    pub fn horizontal_min(self) -> T {
+        unsafe { simd_reduce_min(self) }
     }
 }
 
