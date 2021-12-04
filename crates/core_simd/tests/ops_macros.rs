@@ -163,6 +163,40 @@ macro_rules! impl_common_integer_tests {
                     Ok(())
                 });
             }
+
+            fn min<const LANES: usize>() {
+                test_helpers::test_binary_elementwise(
+                    &Vector::<LANES>::min,
+                    &std::cmp::Ord::min,
+                    &|_, _| true,
+                )
+            }
+
+            fn max<const LANES: usize>() {
+                test_helpers::test_binary_elementwise(
+                    &Vector::<LANES>::max,
+                    &std::cmp::Ord::max,
+                    &|_, _| true,
+                )
+            }
+
+            fn clamp<const LANES: usize>() {
+                test_helpers::test_3(&|value: [Scalar; LANES], mut min: [Scalar; LANES], mut max: [Scalar; LANES]| {
+                    for (min, max) in min.iter_mut().zip(max.iter_mut()) {
+                        if max < min {
+                            core::mem::swap(min, max);
+                        }
+                    }
+
+                    let mut result_scalar = [Scalar::default(); LANES];
+                    for i in 0..LANES {
+                        result_scalar[i] = value[i].clamp(min[i], max[i]);
+                    }
+                    let result_vector = Vector::from_array(value).clamp(min.into(), max.into()).to_array();
+                    test_helpers::prop_assert_biteq!(result_scalar, result_vector);
+                    Ok(())
+                })
+            }
         }
     }
 }

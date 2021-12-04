@@ -25,6 +25,7 @@ mod vendor;
 pub mod simd {
     pub(crate) use crate::core_simd::intrinsics;
 
+    pub use crate::core_simd::comparisons::{SimdEq, SimdOrd};
     pub use crate::core_simd::lane_count::{LaneCount, SupportedLaneCount};
     pub use crate::core_simd::masks::*;
     pub use crate::core_simd::select::Select;

@@ -1,6 +1,6 @@
 use crate::simd::intrinsics::{
-    simd_reduce_add_ordered, simd_reduce_and, simd_reduce_max, simd_reduce_min,
-    simd_reduce_mul_ordered, simd_reduce_or, simd_reduce_xor,
+    simd_reduce_add_ordered, simd_reduce_and, simd_reduce_mul_ordered, simd_reduce_or,
+    simd_reduce_xor,
 };
 use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
 use core::ops::{BitAnd, BitOr, BitXor};
@@ -21,18 +21,6 @@ macro_rules! impl_integer_reductions {
             #[inline]
             pub fn horizontal_product(self) -> $scalar {
                 unsafe { simd_reduce_mul_ordered(self, 1) }
-            }
-
-            /// Horizontal maximum.  Returns the maximum lane in the vector.
-            #[inline]
-            pub fn horizontal_max(self) -> $scalar {
-                unsafe { simd_reduce_max(self) }
-            }
-
-            /// Horizontal minimum.  Returns the minimum lane in the vector.
-            #[inline]
-            pub fn horizontal_min(self) -> $scalar {
-                unsafe { simd_reduce_min(self) }
             }
         }
     }
@@ -76,24 +64,6 @@ macro_rules! impl_float_reductions {
                 } else {
                     unsafe { simd_reduce_mul_ordered(self, 1.) }
                 }
-            }
-
-            /// Horizontal maximum.  Returns the maximum lane in the vector.
-            ///
-            /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
-            /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
-            #[inline]
-            pub fn horizontal_max(self) -> $scalar {
-                unsafe { simd_reduce_max(self) }
-            }
-
-            /// Horizontal minimum.  Returns the minimum lane in the vector.
-            ///
-            /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
-            /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
-            #[inline]
-            pub fn horizontal_min(self) -> $scalar {
-                unsafe { simd_reduce_min(self) }
             }
         }
     }
