@@ -334,8 +334,9 @@ where
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        // TODO use SIMD equality
-        self.to_array() == other.to_array()
+         unsafe {
+             instrinsics::simd_eq(*self, *other) == [true; LANES]
+         }
     }
 }
 
