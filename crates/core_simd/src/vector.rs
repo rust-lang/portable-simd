@@ -330,12 +330,12 @@ where
 impl<T, const LANES: usize> PartialEq for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + PartialEq,
+    T: SimdElement,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
          unsafe {
-             intrinsics::simd_reduce_all(intrinsics::simd_eq::<Self, [u8; LANES]>(*self, *other))
+             intrinsics::simd_reduce_all(intrinsics::simd_eq::<Self, Simd<u8, LANES>>(*self, *other))
          }
     }
 }
