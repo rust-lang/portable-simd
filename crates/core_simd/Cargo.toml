@@ -12,6 +12,17 @@ license = "MIT OR Apache-2.0"
 default = ["std", "generic_const_exprs"]
 std = []
 generic_const_exprs = []
+rustc_dep_of_std = rustc-dep-of-std = [
+    "core",
+    "compiler_builtins",
+    "alloc",
+]
+
+[dependencies]
+# The extremely cursed dependency hack that allows building core::simd into std in a featureful way.
+core = { version = "1.0.0", optional = true, package = "rustc-std-workspace-core" }
+compiler_builtins = { version = "0.1.55", optional = true }
+alloc = { version = "1.0.0", optional = true, package = "rustc-std-workspace-alloc" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies.wasm-bindgen]
 version = "0.2"
