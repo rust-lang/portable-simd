@@ -347,7 +347,7 @@ where
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        // TODO use SIMD equality
+        // TODO: use SIMD comparsion
         self.to_array().partial_cmp(other.as_ref())
     }
 }
@@ -366,7 +366,7 @@ where
 {
     #[inline]
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        // TODO use SIMD equality
+        // TODO: use SIMD comparsion
         self.to_array().cmp(other.as_ref())
     }
 }
