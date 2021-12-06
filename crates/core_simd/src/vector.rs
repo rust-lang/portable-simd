@@ -335,7 +335,7 @@ where
     #[inline]
     fn eq(&self, other: &Self) -> bool {
          unsafe {
-             instrinsics::simd_eq(*self, *other) == [true; LANES]
+             intrinsics::simd_eq(*self, *other) == [true; LANES]
          }
     }
 }
