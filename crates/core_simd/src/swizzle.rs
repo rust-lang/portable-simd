@@ -1,5 +1,5 @@
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 
 /// Constructs a new vector by selecting values from the lanes of the source vector or vectors to use.
 ///
@@ -91,7 +91,7 @@ pub trait Swizzle<const INPUT_LANES: usize, const OUTPUT_LANES: usize> {
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     fn swizzle<T>(vector: Simd<T, INPUT_LANES>) -> Simd<T, OUTPUT_LANES>
     where
-        T: SimdElement,
+        T: MachScalar,
         LaneCount<INPUT_LANES>: SupportedLaneCount,
         LaneCount<OUTPUT_LANES>: SupportedLaneCount,
     {
@@ -115,7 +115,7 @@ pub trait Swizzle2<const INPUT_LANES: usize, const OUTPUT_LANES: usize> {
         second: Simd<T, INPUT_LANES>,
     ) -> Simd<T, OUTPUT_LANES>
     where
-        T: SimdElement,
+        T: MachScalar,
         LaneCount<INPUT_LANES>: SupportedLaneCount,
         LaneCount<OUTPUT_LANES>: SupportedLaneCount,
     {
@@ -181,7 +181,7 @@ where
 
 impl<T, const LANES: usize> Simd<T, LANES>
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount,
 {
     /// Reverse the order of the lanes in the vector.

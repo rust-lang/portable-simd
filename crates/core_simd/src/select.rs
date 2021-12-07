@@ -1,5 +1,5 @@
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Mask, MaskElement, Simd, MachScalar, SupportedLaneCount};
 
 impl<T, const LANES: usize> Mask<T, LANES>
 where
@@ -29,7 +29,7 @@ where
         false_values: Simd<U, LANES>,
     ) -> Simd<U, LANES>
     where
-        U: SimdElement<Mask = T>,
+        U: MachScalar<Mask = T>,
     {
         unsafe { intrinsics::simd_select(self.to_int(), true_values, false_values) }
     }

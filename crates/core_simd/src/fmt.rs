@@ -1,4 +1,4 @@
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 use core::fmt;
 
 macro_rules! impl_fmt_trait {
@@ -7,7 +7,7 @@ macro_rules! impl_fmt_trait {
             impl<T, const LANES: usize> fmt::$trait for Simd<T, LANES>
             where
                 LaneCount<LANES>: SupportedLaneCount,
-                T: SimdElement + fmt::$trait,
+                T: MachScalar + fmt::$trait,
             {
                 fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                     #[repr(transparent)]

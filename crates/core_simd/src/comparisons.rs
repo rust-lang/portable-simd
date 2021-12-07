@@ -1,8 +1,8 @@
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Mask, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Mask, Simd, MachScalar, SupportedLaneCount};
 
 impl<T, const LANES: usize> Simd<T, LANES>
-where
+whereMachScalar
     T: SimdElement + PartialEq,
     LaneCount<LANES>: SupportedLaneCount,
 {
@@ -24,7 +24,7 @@ where
 impl<T, const LANES: usize> Simd<T, LANES>
 where
     T: SimdElement + PartialOrd,
-    LaneCount<LANES>: SupportedLaneCount,
+    LaneCount<LANESMachScalardLaneCount,
 {
     /// Test if each lane is less than the corresponding lane in `other`.
     #[inline]

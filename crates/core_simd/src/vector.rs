@@ -16,13 +16,13 @@ use crate::simd::{LaneCount, Mask, MaskElement, SupportedLaneCount};
 #[repr(simd)]
 pub struct Simd<T, const LANES: usize>([T; LANES])
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount;
 
 impl<T, const LANES: usize> Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     /// Number of lanes in this vector.
     pub const LANES: usize = LANES;
@@ -301,14 +301,14 @@ where
 
 impl<T, const LANES: usize> Copy for Simd<T, LANES>
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount,
 {
 }
 
 impl<T, const LANES: usize> Clone for Simd<T, LANES>
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount,
 {
     fn clone(&self) -> Self {
@@ -319,7 +319,7 @@ where
 impl<T, const LANES: usize> Default for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + Default,
+    T: MachScalar + Default,
 {
     #[inline]
     fn default() -> Self {
@@ -330,7 +330,7 @@ where
 impl<T, const LANES: usize> PartialEq for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + PartialEq,
+    T: MachScalar + PartialEq,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -342,7 +342,7 @@ where
 impl<T, const LANES: usize> PartialOrd for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + PartialOrd,
+    T: MachScalar + PartialOrd,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
@@ -354,14 +354,14 @@ where
 impl<T, const LANES: usize> Eq for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + Eq,
+    T: MachScalar + Eq,
 {
 }
 
 impl<T, const LANES: usize> Ord for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + Ord,
+    T: MachScalar + Ord,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -373,7 +373,7 @@ where
 impl<T, const LANES: usize> core::hash::Hash for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement + core::hash::Hash,
+    T: MachScalar + core::hash::Hash,
 {
     #[inline]
     fn hash<H>(&self, state: &mut H)
@@ -388,7 +388,7 @@ where
 impl<T, const LANES: usize> AsRef<[T; LANES]> for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     #[inline]
     fn as_ref(&self) -> &[T; LANES] {
@@ -399,7 +399,7 @@ where
 impl<T, const LANES: usize> AsMut<[T; LANES]> for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut [T; LANES] {
@@ -411,7 +411,7 @@ where
 impl<T, const LANES: usize> AsRef<[T]> for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     #[inline]
     fn as_ref(&self) -> &[T] {
@@ -422,7 +422,7 @@ where
 impl<T, const LANES: usize> AsMut<[T]> for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut [T] {
@@ -434,7 +434,7 @@ where
 impl<T, const LANES: usize> From<[T; LANES]> for Simd<T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     fn from(array: [T; LANES]) -> Self {
         Self(array)
@@ -444,7 +444,7 @@ where
 impl<T, const LANES: usize> From<Simd<T, LANES>> for [T; LANES]
 where
     LaneCount<LANES>: SupportedLaneCount,
-    T: SimdElement,
+    T: MachScalar,
 {
     fn from(vector: Simd<T, LANES>) -> Self {
         vector.to_array()
@@ -462,67 +462,67 @@ use sealed::Sealed;
 /// Strictly, it is valid to impl if the vector will not be miscompiled.
 /// Practically, it is user-unfriendly to impl it if the vector won't compile,
 /// even when no soundness guarantees are broken by allowing the user to try.
-pub unsafe trait SimdElement: Sealed + Copy {
+pub unsafe trait MachScalar: Sealed + Copy {
     /// The mask element type corresponding to this element type.
     type Mask: MaskElement;
 }
 
 impl Sealed for u8 {}
-unsafe impl SimdElement for u8 {
+unsafe impl MachScalar for u8 {
     type Mask = i8;
 }
 
 impl Sealed for u16 {}
-unsafe impl SimdElement for u16 {
+unsafe impl MachScalar for u16 {
     type Mask = i16;
 }
 
 impl Sealed for u32 {}
-unsafe impl SimdElement for u32 {
+unsafe impl MachScalar for u32 {
     type Mask = i32;
 }
 
 impl Sealed for u64 {}
-unsafe impl SimdElement for u64 {
+unsafe impl MachScalar for u64 {
     type Mask = i64;
 }
 
 impl Sealed for usize {}
-unsafe impl SimdElement for usize {
+unsafe impl MachScalar for usize {
     type Mask = isize;
 }
 
 impl Sealed for i8 {}
-unsafe impl SimdElement for i8 {
+unsafe impl MachScalar for i8 {
     type Mask = i8;
 }
 
 impl Sealed for i16 {}
-unsafe impl SimdElement for i16 {
+unsafe impl MachScalar for i16 {
     type Mask = i16;
 }
 
 impl Sealed for i32 {}
-unsafe impl SimdElement for i32 {
+unsafe impl MachScalar for i32 {
     type Mask = i32;
 }
 
 impl Sealed for i64 {}
-unsafe impl SimdElement for i64 {
+unsafe impl MachScalar for i64 {
     type Mask = i64;
 }
 
 impl Sealed for isize {}
-unsafe impl SimdElement for isize {
+unsafe impl MachScalar for isize {
     type Mask = isize;
 }
 
 impl Sealed for f32 {}
-unsafe impl SimdElement for f32 {
+unsafe impl MachScalar for f32 {
     type Mask = i32;
 }
 
 impl Sealed for f64 {}
-unsafe impl SimdElement for f64 {
+unsafe impl MachScalar for f64 {
     type Mask = i64;
 }

@@ -10,7 +10,7 @@ macro_rules! deref_lhs {
         }) => {
         impl<T, const LANES: usize> $trait<$simd> for &$simd
         where
-            T: SimdElement,
+            T: MachScalar,
             $simd: $trait<$simd, Output = $simd>,
             LaneCount<LANES>: SupportedLaneCount,
         {
@@ -31,7 +31,7 @@ macro_rules! deref_rhs {
         }) => {
         impl<T, const LANES: usize> $trait<&$simd> for $simd
         where
-            T: SimdElement,
+            T: MachScalar,
             $simd: $trait<$simd, Output = $simd>,
             LaneCount<LANES>: SupportedLaneCount,
         {
@@ -63,7 +63,7 @@ macro_rules! deref_ops {
             }
             impl<'lhs, 'rhs, T, const LANES: usize> $trait<&'rhs $simd> for &'lhs $simd
             where
-                T: SimdElement,
+                T: MachScalar,
                 $simd: $trait<$simd, Output = $simd>,
                 LaneCount<LANES>: SupportedLaneCount,
             {

@@ -1,12 +1,12 @@
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 use core::ops::{Neg, Not}; // unary ops
 
 macro_rules! neg {
     ($(impl<const LANES: usize> Neg for Simd<$scalar:ty, LANES>)*) => {
         $(impl<const LANES: usize> Neg for Simd<$scalar, LANES>
         where
-            $scalar: SimdElement,
+            $scalar: MachScalar,
             LaneCount<LANES>: SupportedLaneCount,
         {
             type Output = Self;
@@ -40,7 +40,7 @@ macro_rules! not {
     ($(impl<const LANES: usize> Not for Simd<$scalar:ty, LANES>)*) => {
         $(impl<const LANES: usize> Not for Simd<$scalar, LANES>
         where
-            $scalar: SimdElement,
+            $scalar: MachScalar,
             LaneCount<LANES>: SupportedLaneCount,
         {
             type Output = Self;

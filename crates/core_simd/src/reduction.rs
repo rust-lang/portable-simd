@@ -2,7 +2,7 @@ use crate::simd::intrinsics::{
     simd_reduce_add_ordered, simd_reduce_and, simd_reduce_max, simd_reduce_min,
     simd_reduce_mul_ordered, simd_reduce_or, simd_reduce_xor,
 };
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 use core::ops::{BitAnd, BitOr, BitXor};
 
 macro_rules! impl_integer_reductions {
@@ -75,7 +75,7 @@ macro_rules! impl_float_reductions {
                     self.as_array().iter().product()
                 } else {
                     unsafe { simd_reduce_mul_ordered(self, 1.) }
-                }
+       MachScalar
             }
 
             /// Horizontal maximum.  Returns the maximum lane in the vector.
@@ -89,7 +89,7 @@ macro_rules! impl_float_reductions {
 
             /// Horizontal minimum.  Returns the minimum lane in the vector.
             ///
-            /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
+       MachScalarturns values based on equality, so a vector containing both `0.` and `-0.` may
             /// return either.  This function will not return `NaN` unless all lanes are `NaN`.
             #[inline]
             pub fn horizontal_min(self) -> $scalar {
@@ -103,7 +103,7 @@ impl_float_reductions! { f32 }
 impl_float_reductions! { f64 }
 
 impl<T, const LANES: usize> Simd<T, LANES>
-where
+whereMachScalar
     Self: BitAnd<Self, Output = Self>,
     T: SimdElement + BitAnd<T, Output = T>,
     LaneCount<LANES>: SupportedLaneCount,

@@ -19,7 +19,7 @@ macro_rules! assign_ops {
         $(impl<T, U, const LANES: usize> $assignTrait<U> for Simd<T, LANES>
         where
             Self: $trait<U, Output = Self>,
-            T: SimdElement,
+            T: MachScalar,
             LaneCount<LANES>: SupportedLaneCount,
         {
             #[inline]

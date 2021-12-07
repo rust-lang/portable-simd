@@ -1,5 +1,5 @@
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 use core::ops::{Add, Mul};
 use core::ops::{BitAnd, BitOr, BitXor};
 use core::ops::{Div, Rem, Sub};
@@ -11,7 +11,7 @@ mod unary;
 
 impl<I, T, const LANES: usize> core::ops::Index<I> for Simd<T, LANES>
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount,
     I: core::slice::SliceIndex<[T]>,
 {
@@ -23,7 +23,7 @@ where
 
 impl<I, T, const LANES: usize> core::ops::IndexMut<I> for Simd<T, LANES>
 where
-    T: SimdElement,
+    T: MachScalar,
     LaneCount<LANES>: SupportedLaneCount,
     I: core::slice::SliceIndex<[T]>,
 {

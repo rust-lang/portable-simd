@@ -12,7 +12,7 @@
 )]
 mod mask_impl;
 
-use crate::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, MachScalar, SupportedLaneCount};
 use core::cmp::Ordering;
 use core::fmt;
 
@@ -29,7 +29,7 @@ mod sealed {
         fn valid<const LANES: usize>(values: Simd<Self, LANES>) -> bool
         where
             LaneCount<LANES>: SupportedLaneCount,
-            Self: SimdElement;
+            Self: MachScalar;
 
         fn eq(self, other: Self) -> bool;
 
@@ -41,7 +41,7 @@ mod sealed {
 use sealed::Sealed;
 
 /// Marker trait for types that may be used as SIMD mask elements.
-pub unsafe trait MaskElement: SimdElement + Sealed {}
+pub unsafe trait MaskElement: MachScalar + Sealed {}
 
 macro_rules! impl_element {
     { $ty:ty } => {
