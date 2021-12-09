@@ -1,106 +1,125 @@
 use crate::simd::intrinsics;
 use crate::simd::{LaneCount, Mask, Simd, SimdElement, SupportedLaneCount};
 
-/// SIMD vector element types that can be compared for equality.
-pub trait SimdEq: SimdElement {
-    /// Implementation detail of [`Simd::lanes_eq`].
-    fn lanes_eq<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
+mod eq {
+    use super::*;
 
-    /// Implementation detail of [`Simd::lanes_ne`].
-    fn lanes_ne<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-}
+    pub trait Sealed: SimdElement {
+        /// Implementation detail of [`Simd::lanes_eq`].
+        fn lanes_eq<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
 
-/// SIMD vector element types that can be compared for order.
-///
-/// Note that this trait has less strict requirements than [`Ord`].  The type does not need to form a
-/// total order, but it does need to have a defined behavior for computing the minimum and maximum.
-pub trait SimdOrd: SimdElement {
-    /// Implementation detail of [`Simd::lanes_lt`].
-    fn lanes_lt<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::lanes_gt`].
-    fn lanes_gt<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::lanes_le`].
-    fn lanes_le<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::lanes_ge`].
-    fn lanes_ge<const LANES: usize>(
-        lhs: Simd<Self, LANES>,
-        rhs: Simd<Self, LANES>,
-    ) -> Mask<Self::Mask, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::min`].
-    fn min<const LANES: usize>(lhs: Simd<Self, LANES>, rhs: Simd<Self, LANES>) -> Simd<Self, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::max`].
-    fn max<const LANES: usize>(lhs: Simd<Self, LANES>, rhs: Simd<Self, LANES>) -> Simd<Self, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::horizontal_min`].
-    fn horizontal_min<const LANES: usize>(x: Simd<Self, LANES>) -> Self
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::horizontal_max`].
-    fn horizontal_max<const LANES: usize>(x: Simd<Self, LANES>) -> Self
-    where
-        LaneCount<LANES>: SupportedLaneCount;
-
-    /// Implementation detail of [`Simd::clamp`].
-    #[inline]
-    fn clamp<const LANES: usize>(
-        mut x: Simd<Self, LANES>,
-        min: Simd<Self, LANES>,
-        max: Simd<Self, LANES>,
-    ) -> Simd<Self, LANES>
-    where
-        LaneCount<LANES>: SupportedLaneCount,
-    {
-        assert!(
-            min.lanes_le(max).all(),
-            "each lane in `min` must be less than or equal to the corresponding lane in `max`",
-        );
-        x = x.lanes_lt(min).select(min, x);
-        x = x.lanes_gt(max).select(max, x);
-        x
+        /// Implementation detail of [`Simd::lanes_ne`].
+        fn lanes_ne<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
     }
 }
 
+mod ord {
+    use super::*;
+
+    pub trait Sealed: SimdElement {
+        /// Implementation detail of [`Simd::lanes_lt`].
+        fn lanes_lt<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::lanes_gt`].
+        fn lanes_gt<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::lanes_le`].
+        fn lanes_le<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::lanes_ge`].
+        fn lanes_ge<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Mask<Self::Mask, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+        /// Implementation detail of [`Simd::min`].
+        fn min<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Simd<Self, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::max`].
+        fn max<const LANES: usize>(
+            lhs: Simd<Self, LANES>,
+            rhs: Simd<Self, LANES>,
+        ) -> Simd<Self, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::horizontal_min`].
+        fn horizontal_min<const LANES: usize>(x: Simd<Self, LANES>) -> Self
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::horizontal_max`].
+        fn horizontal_max<const LANES: usize>(x: Simd<Self, LANES>) -> Self
+        where
+            LaneCount<LANES>: SupportedLaneCount;
+
+        /// Implementation detail of [`Simd::clamp`].
+        #[inline]
+        fn clamp<const LANES: usize>(
+            mut x: Simd<Self, LANES>,
+            min: Simd<Self, LANES>,
+            max: Simd<Self, LANES>,
+        ) -> Simd<Self, LANES>
+        where
+            LaneCount<LANES>: SupportedLaneCount,
+        {
+            assert!(
+                Self::lanes_le(min, max).all(),
+                "each lane in `min` must be less than or equal to the corresponding lane in `max`",
+            );
+            x = Self::lanes_lt(x, min).select(min, x);
+            x = Self::lanes_gt(x, max).select(max, x);
+            x
+        }
+    }
+}
+
+/// SIMD vector element types that implement [`PartialEq`].
+pub trait SimdPartialEq: SimdElement + PartialEq + eq::Sealed {}
+
+/// SIMD vector element types that implement [`PartialOrd`] and can always be compared.
+///
+/// Note that this trait is has one additional requirement beyond [`PartialOrd`]: all values can be
+/// compared with all other values.
+/// This is similar to [`Ord`], but without the requirement that comparisons are symmetric
+/// (e.g. `a < b` and `a > b` can both be true for some values).
+pub trait SimdPartialOrd: SimdElement + PartialOrd + ord::Sealed {}
+
 macro_rules! impl_integer {
-    { $($type:ty),* } => {
+    { unsafe { $($type:ty),* } } => {
         $(
-        impl SimdEq for $type {
+        impl eq::Sealed for $type {
             #[inline]
             fn lanes_eq<const LANES: usize>(
                 lhs: Simd<Self, LANES>,
@@ -124,7 +143,9 @@ macro_rules! impl_integer {
             }
         }
 
-        impl SimdOrd for $type {
+        impl SimdPartialEq for $type {}
+
+        impl ord::Sealed for $type {
             #[inline]
             fn lanes_lt<const LANES: usize>(
                 lhs: Simd<Self, LANES>,
@@ -208,15 +229,18 @@ macro_rules! impl_integer {
             {
                 unsafe { intrinsics::simd_reduce_max(x) }
             }
+
         }
+
+        impl SimdPartialOrd for $type {}
         )*
     }
 }
 
 macro_rules! impl_float {
-    { $($type:ty),* } => {
+    { unsafe { $($type:ty),* } } => {
         $(
-        impl SimdEq for $type {
+        impl eq::Sealed for $type {
             #[inline]
             fn lanes_eq<const LANES: usize>(
                 lhs: Simd<Self, LANES>,
@@ -240,7 +264,9 @@ macro_rules! impl_float {
             }
         }
 
-        impl SimdOrd for $type {
+        impl SimdPartialEq for $type {}
+
+        impl ord::Sealed for $type {
             #[inline]
             fn lanes_lt<const LANES: usize>(
                 lhs: Simd<Self, LANES>,
@@ -327,16 +353,18 @@ macro_rules! impl_float {
                 unsafe { intrinsics::simd_reduce_max(x) }
             }
         }
+
+        impl SimdPartialOrd for $type {}
         )*
     }
 }
 
-impl_integer! { u8, u16, u32, u64, usize, i8, i16, i32, i64, isize }
-impl_float! { f32, f64 }
+impl_integer! { unsafe { u8, u16, u32, u64, usize, i8, i16, i32, i64, isize } }
+impl_float! { unsafe { f32, f64 } }
 
 impl<T, const LANES: usize> Simd<T, LANES>
 where
-    T: SimdEq,
+    T: SimdPartialEq,
     LaneCount<LANES>: SupportedLaneCount,
 {
     /// Test if each lane is equal to the corresponding lane in `other`.
@@ -356,7 +384,7 @@ where
 
 impl<T, const LANES: usize> Simd<T, LANES>
 where
-    T: SimdOrd,
+    T: SimdPartialOrd,
     LaneCount<LANES>: SupportedLaneCount,
 {
     /// Test if each lane is less than the corresponding lane in `other`.
