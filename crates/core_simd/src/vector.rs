@@ -1,3 +1,5 @@
+use core::mem::MaybeUninit;
+
 mod float;
 mod int;
 mod uint;
@@ -319,6 +321,44 @@ where
             intrinsics::simd_scatter(self, ptrs, enable.to_int())
             // Cleared ☢️ *mut T Zone
         }
+    }
+
+    /// Writes the values in a SIMD vector to potentially discontiguous indices in `slice`.
+    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
+    /// If an enabled index is out-of-bounds, the lane is not written.
+    /// If two enabled lanes in the scattered vector would write to the same index,
+    /// only the last lane is guaranteed to actually be written.
+    ///
+    /// # Examples
+    /// ```
+    /// #![feature(maybe_uninit_array_assume_init, maybe_uninit_uninit_array, portable_simd)]
+    /// # #[cfg(feature = "std")] use core_simd::{Simd, Mask};
+    /// # #[cfg(not(feature = "std"))] use core::simd::{Simd, Mask};
+    /// # use core::mem::MaybeUninit;
+    /// let mut uninit: [MaybeUninit<i32>; 9] = MaybeUninit::uninit_array();
+    /// let idxs = Simd::<usize, 4>::from_array([9, 3, 0, 0]);
+    /// let vals = Simd::<i32, 4>::from_array([-27, 82, -41, 124]);
+    /// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.
+    ///
+    /// vals.scatter_uninit(&mut uninit, enable, idxs);
+    /// for i in 0..uninit.len() {
+    ///     // Let's give all the other indices we haven't scattered to a value.
+    ///     if !idxs.lanes_eq(Simd::splat(i)).any() {
+    ///         uninit[i].write(1);
+    ///     }
+    /// }
+    /// assert_eq!(unsafe { MaybeUninit::array_assume_init(uninit) }, [-41, 1, 1, 82, 1, 1, 1, 1, 1]);
+    /// ```
+    #[inline]
+    pub fn scatter_uninit(
+        self,
+        slice: &mut [MaybeUninit<T>],
+        enable: Mask<isize, LANES>,
+        idxs: Simd<usize, LANES>,
+    ) {
+        let enable: Mask<isize, LANES> = enable & idxs.lanes_lt(Simd::splat(slice.len()));
+        // SAFETY: OOB lanes have been masked, and this call immediately materializes the ptr.
+        unsafe { self.scatter_select_unchecked(MaybeUninit::slice_as_mut_ptr(slice), enable, idxs) }
     }
 }
 

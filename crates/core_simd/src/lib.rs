@@ -1,12 +1,19 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-#![feature(
-    const_fn_trait_bound,
-    decl_macro,
+#![feature( // rustc internals
     platform_intrinsics,
     repr_simd,
-    simd_ffi,
     staged_api,
-    stdsimd
+)]
+#![feature( // lang features
+    const_fn_trait_bound,
+    decl_macro,
+    simd_ffi,
+)]
+#![feature( // library features
+    maybe_uninit_slice,
+    maybe_uninit_array_assume_init,
+    maybe_uninit_uninit_array,
+    stdsimd,
 )]
 #![cfg_attr(feature = "generic_const_exprs", feature(generic_const_exprs))]
 #![cfg_attr(feature = "generic_const_exprs", allow(incomplete_features))]
