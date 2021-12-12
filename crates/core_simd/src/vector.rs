@@ -238,19 +238,42 @@ where
         idxs: Simd<usize, LANES>,
     ) {
         let enable: Mask<isize, LANES> = enable & idxs.lanes_lt(Simd::splat(slice.len()));
-        // SAFETY: We have masked-off out-of-bounds lanes.
-        unsafe { self.scatter_select_unchecked(slice, enable, idxs) }
+        // SAFETY: Out-of-bounds lanes have been masked, and the ptr is immediately materialized.
+        unsafe { self.scatter_select_unchecked(slice.as_mut_ptr(), enable, idxs) }
     }
 
-    /// Writes the values in a SIMD vector to multiple potentially discontiguous indices in `slice`.
+    /// Writes the values in a SIMD vector to multiple potentially discontiguous locations,
+    /// offset from the `ptr` provided by indices, assuming it is a base ptr to `[T]`.
     /// The mask `enable`s all `true` lanes and disables all `false` lanes.
     /// If two enabled lanes in the scattered vector would write to the same index,
     /// only the last lane is guaranteed to actually be written.
     ///
     /// # Safety
     ///
-    /// Calling this function with an enabled out-of-bounds index is *[undefined behavior]*,
-    /// and may lead to memory corruption.
+    /// - Calling this function with any `*mut T` that is not a base pointer to `[T]` or a type
+    ///   with equivalent layout (such as arrays or SIMD types) results in *[undefined behavior]*.
+    /// - Calling this function with an `enable`d out-of-bounds index results in *[undefined behavior]*.
+    /// - If using `&mut [T]` or similar, such as `Vec<T>` or `&mut [T; N]`, it is safest to
+    /// construct the bounds mask first if applicable and then use `fn as_mut_ptr(&mut self)`
+    /// to obtain *mut T` immediately as part of this method call, with nothing else between,
+    /// as even deriving `&[T]` from by calling `fn len` creates an `&[T]` which,
+    /// as an immutable borrow derived from a mutable (and therefore unique) borrow,
+    /// interacts in a way that invalidates then-live raw `*mut T`s according to the
+    /// rules of "Stacked Borrows", which can lead to *[undefined behavior]*.
+    ///
+    /// The last safety clause does not apply directly to raw pointers like `*mut T`, but
+    /// involves the semantics of borrows like `&mut [T]` and `&[T]`, so it does not apply
+    /// to instances of `*mut T` that are never converted to or from `&mut [T]`.
+    /// This includes `*mut T` only used in FFI with languages which lack borrow semantics.
+    ///
+    /// Undefined behavior allows memory corruption and invalidates the safety assumptions
+    /// safe Rust code and optimizing compilers may rely on.
+    ///
+    /// The guidelines for using this unstable, unsafe function may change in the future,
+    /// as the precise semantics of unsafe code in Rust are underspecified.
+    /// The caveats here are expressed restrictively to allow calling this function
+    /// with minimal likelihood that callers have to be rewritten in the future,
+    /// **IF** they are correct according to these guidelines.
     ///
     /// # Examples
     /// ```
@@ -265,7 +288,7 @@ where
     /// let enable = enable & idxs.lanes_lt(Simd::splat(vec.len()));
     ///
     /// // We have masked the OOB lane, so it's safe to scatter now.
-    /// unsafe { vals.scatter_select_unchecked(&mut vec, enable, idxs); }
+    /// unsafe { vals.scatter_select_unchecked(vec.as_mut_ptr(), enable, idxs); }
     /// // index 0's second write is masked, thus was omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
@@ -273,23 +296,23 @@ where
     #[inline]
     pub unsafe fn scatter_select_unchecked(
         self,
-        slice: &mut [T],
+        ptr: *mut T,
         enable: Mask<isize, LANES>,
         idxs: Simd<usize, LANES>,
     ) {
-        // SAFETY: This block works with *mut T derived from &mut 'a [T],
+        // SAFETY: This block works with a *mut T that may be from &mut 'a [T],
         // which means it is delicate in Rust's borrowing model, circa 2021:
-        // &mut 'a [T] asserts uniqueness, so deriving &'a [T] invalidates live *mut Ts!
-        // Even though this block is largely safe methods, it must be exactly this way
-        // to prevent invalidating the raw ptrs while they're live.
+        // &mut 'a [T] asserts uniqueness, so deriving &'a [T] invalidates live *mut T!
         // Thus, entering this block requires all values to use being already ready:
         // 0. idxs we want to write to, which are used to construct the mask.
         // 1. enable, which depends on an initial &'a [T] and the idxs.
         // 2. actual values to scatter (self).
-        // 3. &mut [T] which will become our base ptr.
+        // 3. a *mut T which is our base ptr.
+        // The user is warned about this in the documentation for this function, and hopefully
+        // is either playing entirely with raw ptrs or calls `as_mut_ptr` immediately before.
         unsafe {
             // Now Entering ☢️ *mut T Zone
-            let base_ptr = crate::simd::ptr::SimdMutPtr::splat(slice.as_mut_ptr());
+            let base_ptr = crate::simd::ptr::SimdMutPtr::splat(ptr);
             // Ferris forgive me, I have done pointer arithmetic here.
             let ptrs = base_ptr.wrapping_add(idxs);
             // The ptrs have been bounds-masked to prevent memory-unsafe writes insha'allah
