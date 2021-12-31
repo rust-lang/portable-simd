@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["core_simd","test_helpers"];
+window.ALL_CRATES = ["core_simd","std_float","test_helpers"];
