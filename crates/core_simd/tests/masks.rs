@@ -69,7 +69,7 @@ macro_rules! test_mask_api {
             }
 
             #[test]
-            fn roundtrip_bitmask_array_conversion() {
+            fn roundtrip_bitmask_conversion() {
                 use core_simd::ToBitMask;
                 let values = [
                     true, false, false, true, false, false, true, false,
