@@ -112,9 +112,9 @@ where
     #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
+    pub fn to_bitmask(self) -> [u8; super::bitmask_len(LANES)] {
         unsafe {
-            let mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN] =
+            let mut bitmask: [u8; super::bitmask_len(LANES)] =
                 intrinsics::simd_bitmask(self.0);
 
             // There is a bug where LLVM appears to implement this operation with the wrong
@@ -133,7 +133,7 @@ where
     #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
+    pub fn from_bitmask(mut bitmask: [u8; super::bitmask_len(LANES)]) -> Self {
         unsafe {
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -144,6 +144,24 @@ where
                 }
             }
 
+            Self::from_int_unchecked(intrinsics::simd_select_bitmask(
+                bitmask,
+                Self::splat(true).to_int(),
+                Self::splat(false).to_int(),
+            ))
+        }
+    }
+
+    #[inline]
+    pub unsafe fn to_bitmask_intrinsic<U>(self) -> U {
+        // Safety: caller must only return bitmask types
+        unsafe { intrinsics::simd_bitmask(self.0) }
+    }
+
+    #[inline]
+    pub unsafe fn from_bitmask_intrinsic<U>(bitmask: U) -> Self {
+        // Safety: caller must only pass bitmask types
+        unsafe {
             Self::from_int_unchecked(intrinsics::simd_select_bitmask(
                 bitmask,
                 Self::splat(true).to_int(),
