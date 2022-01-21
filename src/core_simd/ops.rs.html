@@ -240,6 +240,11 @@
 <span id="234">234</span>
 <span id="235">235</span>
 <span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">Add</span>, <span class="ident">Mul</span>};
 <span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">BitAnd</span>, <span class="ident">BitOr</span>, <span class="ident">BitXor</span>};
@@ -275,7 +280,7 @@
 
 <span class="macro">macro_rules!</span> <span class="ident">unsafe_base</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ident</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>:<span class="ident">ident</span>}, $(<span class="macro-nonterminal">$</span><span class="kw">_</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>) }
+        <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>) }
     };
 }
 
@@ -291,7 +296,10 @@
 <span class="macro">macro_rules!</span> <span class="ident">wrap_bitshift</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ident</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>:<span class="ident">ident</span>}, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ident</span>) =&gt; {
         <span class="kw">unsafe</span> {
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>.<span class="ident">bitand</span>(<span class="ident">Simd::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::BITS</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> <span class="op">-</span> <span class="number">1</span>)))
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>,
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>.<span class="ident">bitand</span>(<span class="ident">Simd::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::BITS</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> <span class="op">-</span> <span class="number">1</span>)),
+            )
         }
     };
 }
@@ -312,11 +320,13 @@
         <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>.<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span>)).<span class="ident">any</span>() {
             <span class="macro">panic!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">zero</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::MIN</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
-            <span class="op">&amp;&amp;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>.<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::MIN</span>)) <span class="op">&amp;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>.<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>))).<span class="ident">any</span>()
+            <span class="op">&amp;&amp;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>.<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::MIN</span>))
+                <span class="comment">// type inference can break here, so cut an SInt to size</span>
+                <span class="op">&amp;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>.<span class="ident">lanes_eq</span>(<span class="ident">Simd::splat</span>(<span class="op">-</span><span class="number">1i64</span> <span class="kw">as</span> <span class="kw">_</span>))).<span class="ident">any</span>()
         {
             <span class="macro">panic!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">overflow</span>);
         } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>) }
+            <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>) }
         }
     };
 }
@@ -477,5 +487,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (5e57faa78 2022-01-19)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (777bb86bc 2022-01-20)" ></div>
 </body></html>
