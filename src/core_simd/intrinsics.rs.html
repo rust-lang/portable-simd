@@ -99,6 +99,7 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
+<span id="97">97</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the LLVM intrinsics bindings that provide the functionality for this</span>
 <span class="doccomment">//! crate.</span>
 <span class="doccomment">//!</span>
@@ -142,6 +143,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_cast</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
     <span class="doccomment">/// follows Rust&#39;s `T as U` semantics, including saturating float casts</span>
     <span class="doccomment">/// which amounts to the same as `simd_cast` for many cases</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">bootstrap</span>))]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_as</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
 
     <span class="doccomment">/// neg/fneg</span>

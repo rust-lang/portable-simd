@@ -560,6 +560,7 @@
 <span id="555">555</span>
 <span id="556">556</span>
 <span id="557">557</span>
+<span id="558">558</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -662,6 +663,7 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">bootstrap</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cast</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">SimdElement</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_as</span>(<span class="self">self</span>) }
     }
