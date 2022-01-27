@@ -531,6 +531,35 @@
 <span id="526">526</span>
 <span id="527">527</span>
 <span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -606,6 +635,35 @@
             <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         }
         <span class="self">Self</span>(<span class="ident">array</span>)
+    }
+
+    <span class="doccomment">/// Performs lanewise conversion of a SIMD vector&#39;s elements to another SIMD-valid type.</span>
+    <span class="doccomment">/// This follows the semantics of Rust&#39;s `as` conversion for casting</span>
+    <span class="doccomment">/// integers to unsigned integers (interpreting as the other type, so `-1` to `MAX`),</span>
+    <span class="doccomment">/// and from floats to integers (truncating, or saturating at the limits) for each lane,</span>
+    <span class="doccomment">/// or vice versa.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;std&quot;))] use core::simd::Simd;</span>
+    <span class="doccomment">/// let floats: Simd&lt;f32, 4&gt; = Simd::from_array([1.9, -4.5, f32::INFINITY, f32::NAN]);</span>
+    <span class="doccomment">/// let ints = floats.cast::&lt;i32&gt;();</span>
+    <span class="doccomment">/// assert_eq!(ints, Simd::from_array([1, -4, i32::MAX, 0]));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // Formally equivalent, but `Simd::cast` can optimize better.</span>
+    <span class="doccomment">/// assert_eq!(ints, Simd::from_array(floats.to_array().map(|x| x as i32)));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // The float conversion does not round-trip.</span>
+    <span class="doccomment">/// let floats_again = ints.cast();</span>
+    <span class="doccomment">/// assert_ne!(floats, floats_again);</span>
+    <span class="doccomment">/// assert_eq!(floats_again, Simd::from_array([1.0, -4.0, 2147483647.0, 0.0]));</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cast</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">SimdElement</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
+        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_as</span>(<span class="self">self</span>) }
     }
 
     <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.</span>
@@ -1060,5 +1118,5 @@
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (51126be1b 2022-01-24)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (6abb6385b 2022-01-26)" ></div>
 </body></html>
