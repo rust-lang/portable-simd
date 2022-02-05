@@ -109,12 +109,11 @@ where
         unsafe { Mask(intrinsics::simd_cast(self.0)) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
+    pub fn to_bitmask(self) -> <LaneCount<LANES> as SupportedLaneCount>::BitMask {
         unsafe {
-            let mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN] =
+            let mut bitmask: <LaneCount<LANES> as SupportedLaneCount>::BitMask =
                 intrinsics::simd_bitmask(self.0);
 
             // There is a bug where LLVM appears to implement this operation with the wrong
@@ -130,10 +129,9 @@ where
         }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(mut bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
+    pub fn from_bitmask(mut bitmask: <LaneCount<LANES> as SupportedLaneCount>::BitMask) -> Self {
         unsafe {
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.

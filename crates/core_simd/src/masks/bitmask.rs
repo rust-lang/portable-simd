@@ -115,18 +115,16 @@ where
         unsafe { Self(intrinsics::simd_bitmask(value), PhantomData) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
+    pub fn to_bitmask(self) -> <LaneCount<LANES> as SupportedLaneCount>::BitMask {
         // Safety: these are the same type and we are laundering the generic
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
+    pub fn from_bitmask(bitmask: <LaneCount<LANES> as SupportedLaneCount>::BitMask) -> Self {
         // Safety: these are the same type and we are laundering the generic
         Self(unsafe { core::mem::transmute_copy(&bitmask) }, PhantomData)
     }

@@ -217,18 +217,16 @@ where
     }
 
     /// Convert this mask to a bitmask, with one bit set per lane.
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; LaneCount::<LANES>::BITMASK_LEN] {
+    pub fn to_bitmask(self) -> <LaneCount<LANES> as SupportedLaneCount>::BitMask {
         self.0.to_bitmask()
     }
 
     /// Convert a bitmask to a mask.
-    #[cfg(feature = "generic_const_exprs")]
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(bitmask: [u8; LaneCount::<LANES>::BITMASK_LEN]) -> Self {
+    pub fn from_bitmask(bitmask: <LaneCount<LANES> as SupportedLaneCount>::BitMask) -> Self {
         Self(mask_impl::Mask::from_bitmask(bitmask))
     }
 
