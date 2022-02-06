@@ -81,7 +81,6 @@ macro_rules! test_mask_api {
                 assert_eq!(core_simd::Mask::<$type, 16>::from_bitmask(bitmask), mask);
             }
 
-            /*
             #[cfg(feature = "generic_const_exprs")]
             #[test]
             fn roundtrip_bitmask_array_conversion() {
@@ -95,7 +94,6 @@ macro_rules! test_mask_api {
                 assert_eq!(bitmask, [0b01001001, 0b10000011]);
                 assert_eq!(core_simd::Mask::<$type, 16>::from_bitmask(bitmask), mask);
             }
-            */
         }
     }
 }

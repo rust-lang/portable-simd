@@ -114,8 +114,7 @@ where
     #[must_use = "method returns a new array and does not mutate the original value"]
     pub fn to_bitmask(self) -> [u8; super::bitmask_len(LANES)] {
         unsafe {
-            let mut bitmask: [u8; super::bitmask_len(LANES)] =
-                intrinsics::simd_bitmask(self.0);
+            let mut bitmask: [u8; super::bitmask_len(LANES)] = intrinsics::simd_bitmask(self.0);
 
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
