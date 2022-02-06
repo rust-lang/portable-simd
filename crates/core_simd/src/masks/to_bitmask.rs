@@ -1,5 +1,4 @@
 use super::{mask_impl, Mask, MaskElement};
-use crate::{LaneCount, SupportedLaneCount};
 
 /// Converts masks to and from bitmasks.
 ///
