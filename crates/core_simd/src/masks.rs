@@ -13,7 +13,7 @@
 mod mask_impl;
 
 mod to_bitmask;
-pub use to_bitmask::ToBitMask;
+pub use to_bitmask::{ToBitMask, ToBitMaskArray};
 
 #[cfg(feature = "generic_const_exprs")]
 pub use to_bitmask::bitmask_len;
