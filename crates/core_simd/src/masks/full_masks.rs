@@ -109,12 +109,12 @@ where
         unsafe { Mask(intrinsics::simd_cast(self.0)) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
+    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; super::bitmask_len(LANES)] {
+    pub unsafe fn to_bitmask_array<const N: usize>(self) -> [u8; N] {
         unsafe {
-            let mut bitmask: [u8; super::bitmask_len(LANES)] = intrinsics::simd_bitmask(self.0);
+            let mut bitmask: [u8; N] = intrinsics::simd_bitmask(self.0);
 
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -129,10 +129,10 @@ where
         }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
+    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(mut bitmask: [u8; super::bitmask_len(LANES)]) -> Self {
+    pub unsafe fn from_bitmask_array<const N: usize>(mut bitmask: [u8; N]) -> Self {
         unsafe {
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -151,14 +151,18 @@ where
         }
     }
 
+    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
+    // this mask
     #[inline]
-    pub unsafe fn to_bitmask_intrinsic<U>(self) -> U {
+    pub unsafe fn to_bitmask_integer<U>(self) -> U {
         // Safety: caller must only return bitmask types
         unsafe { intrinsics::simd_bitmask(self.0) }
     }
 
+    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
+    // this mask
     #[inline]
-    pub unsafe fn from_bitmask_intrinsic<U>(bitmask: U) -> Self {
+    pub unsafe fn from_bitmask_integer<U>(bitmask: U) -> Self {
         // Safety: caller must only pass bitmask types
         unsafe {
             Self::from_int_unchecked(intrinsics::simd_select_bitmask(

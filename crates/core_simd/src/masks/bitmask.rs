@@ -115,29 +115,31 @@ where
         unsafe { Self(intrinsics::simd_bitmask(value), PhantomData) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
+    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub fn to_bitmask(self) -> [u8; super::bitmask_len(LANES)] {
+    pub unsafe fn to_bitmask_array<const N: usize>(self) -> [u8; N] {
         // Safety: these are the same type and we are laundering the generic
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
-    #[cfg(feature = "generic_const_exprs")]
+    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_bitmask(bitmask: [u8; super::bitmask_len(LANES)]) -> Self {
+    pub unsafe fn from_bitmask_array<const N: usize>(bitmask: [u8; N]) -> Self {
         // Safety: these are the same type and we are laundering the generic
         Self(unsafe { core::mem::transmute_copy(&bitmask) }, PhantomData)
     }
 
+    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     #[inline]
-    pub unsafe fn to_bitmask_intrinsic<U>(self) -> U {
+    pub unsafe fn to_bitmask_integer<U>(self) -> U {
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
+    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     #[inline]
-    pub unsafe fn from_bitmask_intrinsic<U>(bitmask: U) -> Self {
+    pub unsafe fn from_bitmask_integer<U>(bitmask: U) -> Self {
         unsafe { Self(core::mem::transmute_copy(&bitmask), PhantomData) }
     }
 
