@@ -66,6 +66,23 @@ where
     }
 }
 
+// Used for bitmask bit order workaround
+pub(crate) trait ReverseBits {
+    fn reverse_bits(self) -> Self;
+}
+
+macro_rules! impl_reverse_bits {
+    { $($int:ty),* } => {
+        $(
+        impl ReverseBits for $int {
+            fn reverse_bits(self) -> Self { <$int>::reverse_bits(self) }
+        }
+        )*
+    }
+}
+
+impl_reverse_bits! { u8, u16, u32, u64 }
+
 impl<T, const LANES: usize> Mask<T, LANES>
 where
     T: MaskElement,
@@ -154,15 +171,33 @@ where
     // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     // this mask
     #[inline]
-    pub unsafe fn to_bitmask_integer<U>(self) -> U {
+    pub(crate) unsafe fn to_bitmask_integer<U: ReverseBits>(self) -> U {
         // Safety: caller must only return bitmask types
-        unsafe { intrinsics::simd_bitmask(self.0) }
+        let bitmask: U = unsafe { intrinsics::simd_bitmask(self.0) };
+
+        // There is a bug where LLVM appears to implement this operation with the wrong
+        // bit order.
+        // TODO fix this in a better way
+        if cfg!(target_endian = "big") {
+            bitmask.reverse_bits()
+        } else {
+            bitmask
+        }
     }
 
     // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     // this mask
     #[inline]
-    pub unsafe fn from_bitmask_integer<U>(bitmask: U) -> Self {
+    pub(crate) unsafe fn from_bitmask_integer<U: ReverseBits>(bitmask: U) -> Self {
+        // There is a bug where LLVM appears to implement this operation with the wrong
+        // bit order.
+        // TODO fix this in a better way
+        let bitmask = if cfg!(target_endian = "big") {
+            bitmask.reverse_bits()
+        } else {
+            bitmask
+        };
+
         // Safety: caller must only pass bitmask types
         unsafe {
             Self::from_int_unchecked(intrinsics::simd_select_bitmask(
