@@ -60,6 +60,10 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -73,6 +77,7 @@
     <span class="doccomment">/// For each lane in the mask, choose the corresponding lane from `true_values` if</span>
     <span class="doccomment">/// that lane mask is true, and `false_values` if that lane mask is false.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::{Simd, Mask};</span>
@@ -93,6 +98,8 @@
     <span class="kw">where</span>
         <span class="ident">U</span>: <span class="ident">SimdElement</span><span class="op">&lt;</span><span class="ident">Mask</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
     {
+        <span class="comment">// Safety: The mask has been cast to a vector of integers,</span>
+        <span class="comment">// and the operands to select between are vectors of the same type and length.</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_select</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">true_values</span>, <span class="ident">false_values</span>) }
     }
 
@@ -101,6 +108,7 @@
     <span class="doccomment">/// For each lane in the mask, choose the corresponding lane from `true_values` if</span>
     <span class="doccomment">/// that lane mask is true, and `false_values` if that lane mask is false.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)] use core_simd::Mask;</span>
@@ -118,5 +126,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (0c292c966 2022-02-08)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (e7aca8959 2022-02-09)" ></div>
 </body></html>
