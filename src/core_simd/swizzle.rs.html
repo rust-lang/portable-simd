@@ -386,6 +386,8 @@
 <span id="381">381</span>
 <span id="382">382</span>
 <span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -483,6 +485,7 @@
         <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
     {
+        <span class="comment">// Safety: `vector` is a vector, and `INDEX_IMPL` is a const array of u32.</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shuffle</span>(<span class="ident">vector</span>, <span class="ident">vector</span>, <span class="ident"><span class="self">Self</span>::INDEX_IMPL</span>) }
     }
 }
@@ -507,6 +510,7 @@
         <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
     {
+        <span class="comment">// Safety: `first` and `second` are vectors, and `INDEX_IMPL` is a const array of u32.</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shuffle</span>(<span class="ident">first</span>, <span class="ident">second</span>, <span class="ident"><span class="self">Self</span>::INDEX_IMPL</span>) }
     }
 }

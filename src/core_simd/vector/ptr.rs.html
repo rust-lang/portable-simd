@@ -58,6 +58,10 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Private implementation details of public gather/scatter APIs.</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::mem</span>;
@@ -81,6 +85,8 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wrapping_add</span>(<span class="self">self</span>, <span class="ident">addend</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: converting pointers to usize and vice-versa is safe</span>
+        <span class="comment">// (even if using that pointer is not)</span>
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>);
             <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span>{ <span class="ident">x</span> <span class="op">+</span> (<span class="ident">addend</span> <span class="op">*</span> <span class="ident">Simd::splat</span>(<span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>())) })
@@ -107,6 +113,8 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wrapping_add</span>(<span class="self">self</span>, <span class="ident">addend</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: converting pointers to usize and vice-versa is safe</span>
+        <span class="comment">// (even if using that pointer is not)</span>
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>);
             <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span>{ <span class="ident">x</span> <span class="op">+</span> (<span class="ident">addend</span> <span class="op">*</span> <span class="ident">Simd::splat</span>(<span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>())) })

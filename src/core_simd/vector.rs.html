@@ -592,6 +592,8 @@
 <span id="587">587</span>
 <span id="588">588</span>
 <span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -800,7 +802,7 @@
         <span class="ident">or</span>: <span class="self">Self</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">enable</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()));
-        <span class="comment">// SAFETY: We have masked-off out-of-bounds lanes.</span>
+        <span class="comment">// Safety: We have masked-off out-of-bounds lanes.</span>
         <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::gather_select_unchecked</span>(<span class="ident">slice</span>, <span class="ident">enable</span>, <span class="ident">idxs</span>, <span class="ident">or</span>) }
     }
 
@@ -841,7 +843,7 @@
         <span class="kw">let</span> <span class="ident">base_ptr</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::simd::ptr::SimdConstPtr::splat</span>(<span class="ident">slice</span>.<span class="ident">as_ptr</span>());
         <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.</span>
         <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="ident">base_ptr</span>.<span class="ident">wrapping_add</span>(<span class="ident">idxs</span>);
-        <span class="comment">// SAFETY: The ptrs have been bounds-masked to prevent memory-unsafe reads insha&#39;allah</span>
+        <span class="comment">// Safety: The ptrs have been bounds-masked to prevent memory-unsafe reads insha&#39;allah</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_gather</span>(<span class="ident">or</span>, <span class="ident">ptrs</span>, <span class="ident">enable</span>.<span class="ident">to_int</span>()) }
     }
 
@@ -893,7 +895,7 @@
         <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
     ) {
         <span class="kw">let</span> <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">enable</span> <span class="op">&amp;</span> <span class="ident">idxs</span>.<span class="ident">lanes_lt</span>(<span class="ident">Simd::splat</span>(<span class="ident">slice</span>.<span class="ident">len</span>()));
-        <span class="comment">// SAFETY: We have masked-off out-of-bounds lanes.</span>
+        <span class="comment">// Safety: We have masked-off out-of-bounds lanes.</span>
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">scatter_select_unchecked</span>(<span class="ident">slice</span>, <span class="ident">enable</span>, <span class="ident">idxs</span>) }
     }
 
@@ -932,7 +934,7 @@
         <span class="ident">enable</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
         <span class="ident">idxs</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
     ) {
-        <span class="comment">// SAFETY: This block works with *mut T derived from &amp;mut &#39;a [T],</span>
+        <span class="comment">// Safety: This block works with *mut T derived from &amp;mut &#39;a [T],</span>
         <span class="comment">// which means it is delicate in Rust&#39;s borrowing model, circa 2021:</span>
         <span class="comment">// &amp;mut &#39;a [T] asserts uniqueness, so deriving &amp;&#39;a [T] invalidates live *mut Ts!</span>
         <span class="comment">// Even though this block is largely safe methods, it must be exactly this way</span>
@@ -1112,7 +1114,9 @@
 <span class="kw">use</span> <span class="ident">sealed::Sealed</span>;
 
 <span class="doccomment">/// Marker trait for types that may be used as SIMD vector elements.</span>
-<span class="doccomment">/// SAFETY: This trait, when implemented, asserts the compiler can monomorphize</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Safety</span>
+<span class="doccomment">/// This trait, when implemented, asserts the compiler can monomorphize</span>
 <span class="doccomment">/// `#[repr(simd)]` structs with the marked type as an element.</span>
 <span class="doccomment">/// Strictly, it is valid to impl if the vector will not be miscompiled.</span>
 <span class="doccomment">/// Practically, it is user-unfriendly to impl it if the vector won&#39;t compile,</span>

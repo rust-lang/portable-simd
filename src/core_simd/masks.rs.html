@@ -590,6 +590,15 @@
 <span id="585">585</span>
 <span id="586">586</span>
 <span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -634,6 +643,9 @@
 <span class="kw">use</span> <span class="ident">sealed::Sealed</span>;
 
 <span class="doccomment">/// Marker trait for types that may be used as SIMD mask elements.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Safety</span>
+<span class="doccomment">/// Type must be a signed integer.</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">trait</span> <span class="ident">MaskElement</span>: <span class="ident">SimdElement</span> <span class="op">+</span> <span class="ident">Sealed</span> {}
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_element</span> {
@@ -741,6 +753,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: the caller must confirm this invariant</span>
         <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_int_unchecked</span>(<span class="ident">value</span>)) }
     }
 
@@ -753,6 +766,7 @@
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_int</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="macro">assert!</span>(<span class="ident">T::valid</span>(<span class="ident">value</span>), <span class="string">&quot;all values must be either 0 or -1&quot;</span>,);
+        <span class="comment">// Safety: the validity has been checked</span>
         <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">value</span>) }
     }
 
@@ -771,6 +785,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
+        <span class="comment">// Safety: the caller must confirm this invariant</span>
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>) }
     }
 
@@ -782,6 +797,7 @@
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
         <span class="macro">assert!</span>(<span class="ident">lane</span> <span class="op">&lt;</span> <span class="ident">LANES</span>, <span class="string">&quot;lane index out of range&quot;</span>);
+        <span class="comment">// Safety: the lane index has been checked</span>
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>) }
     }
 
@@ -791,6 +807,7 @@
     <span class="doccomment">/// `lane` must be less than `LANES`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
+        <span class="comment">// Safety: the caller must confirm this invariant</span>
         <span class="kw">unsafe</span> {
             <span class="self">self</span>.<span class="number">0</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
         }
@@ -803,6 +820,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
         <span class="macro">assert!</span>(<span class="ident">lane</span> <span class="op">&lt;</span> <span class="ident">LANES</span>, <span class="string">&quot;lane index out of range&quot;</span>);
+        <span class="comment">// Safety: the lane index has been checked</span>
         <span class="kw">unsafe</span> {
             <span class="self">self</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
         }

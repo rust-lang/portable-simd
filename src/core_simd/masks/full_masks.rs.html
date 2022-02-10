@@ -231,6 +231,12 @@
 <span id="226">226</span>
 <span id="227">227</span>
 <span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
@@ -339,6 +345,7 @@
     <span class="kw">where</span>
         <span class="ident">U</span>: <span class="ident">MaskElement</span>,
     {
+        <span class="comment">// Safety: masks are simply integer vectors of 0 and -1, and we can cast the element type.</span>
         <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
@@ -388,12 +395,14 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="comment">// Safety: use `self` as an integer vector</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="comment">// Safety: use `self` as an integer vector</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
     }
 }
@@ -417,6 +426,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: `self` is an integer vector</span>
         <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_and</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }
@@ -430,6 +440,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: `self` is an integer vector</span>
         <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_or</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }
@@ -443,6 +454,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
     <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// Safety: `self` is an integer vector</span>
         <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_xor</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
     }
 }

@@ -32,6 +32,8 @@
 <span id="27">27</span>
 <span id="28">28</span>
 <span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
 <span class="macro">macro_rules!</span> <span class="ident">from_transmute</span> {
@@ -43,6 +45,8 @@
         <span class="kw">impl</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
+                <span class="comment">// Safety: transmuting between vectors is safe, but the caller of this macro</span>
+                <span class="comment">// checks the invariants</span>
                 <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute</span>(<span class="ident">value</span>) }
             }
         }
