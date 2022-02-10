@@ -44,6 +44,39 @@ use crate::simd::{LaneCount, Mask, MaskElement, SupportedLaneCount};
 ///
 /// [`Wrapping<T>`]: core::num::Wrapping
 ///
+/// # Layout
+/// `Simd<T, N>` has a layout similar to `[T; N]` (identical "shapes"), but with a higher alignment.
+/// `[T; N]` is aligned to `T`, but `Simd<T, N>` will have an alignment based on both `T` and `N`.
+/// It is thus sound to transmute from `Simd<T, N>` into `[T; N]` but not vice versa.
+///
+/// # ABI Bugs
+/// Due to an unfortunate bug in the Rust ABI, `Simd<T, N>` does not participate in argument-passing in SIMD registers,
+/// except as an optimization. `#[inline]` hints are recommended on functions that accept `Simd<T, N>` or return it.
+/// This may be corrected in the future.
+///
+/// # Safe SIMD with Unsafe Rust
+///
+/// `Simd<T, N>` has a higher alignment requirement than an array. It is aligned based on the size of the entire vector,
+/// not individual elements. This means it may be sound to [`transmute`] `Simd<T, N>` to `[T; N]` but **not** vice versa.
+/// When using `unsafe` Rust to read and write `Simd<T, N>` through [raw pointers], it is usually best to use
+/// [`read_unaligned`] and [`write_unaligned`]. This is because:
+/// - [`read`] and [`write`] require full alignment (in this case, `Simd<T, N>`'s alignment)
+/// - the likely source for reading or destination for writing `Simd<T, N>` is [`[T]`](slice) or similar types, aligned to `T`
+/// - combining these actions would violate the `unsafe` contract and explode the program into a puff of **undefined behavior**
+/// - the compiler can implicitly adjust layouts to make unaligned reads or writes fully aligned if it sees the optimization
+/// - most contemporary processors suffer no performance penalty for "unaligned" reads and writes that are aligned at runtime
+///
+/// If neither the compiler nor the CPU correct for this, it is best to design data structures to be aligned to the `Simd<T, N>`
+/// you wish to use before using `unsafe` Rust to read or write. Otherwise, the common ways to compensate for these facts,
+/// like materializing `Simd<T, N>` to or from an array first, are handled by safe methods like [`Simd::from_array`] and
+/// [`Simd::from_slice`].
+///
+/// [`transmute`]: core::mem::transmute
+/// [raw pointers]: pointer
+/// [`read_unaligned`]: pointer::read_unaligned
+/// [`write_unaligned`]: pointer::write_unaligned
+/// [`read`]: pointer::read
+/// [`write`]: pointer::write
 #[repr(simd)]
 pub struct Simd<T, const LANES: usize>([T; LANES])
 where
@@ -133,6 +166,7 @@ where
     #[inline]
     #[cfg(not(bootstrap))]
     pub fn cast<U: SimdElement>(self) -> Simd<U, LANES> {
+        // Safety: The input argument is a vector of a known SIMD type.
         unsafe { intrinsics::simd_as(self) }
     }
 
