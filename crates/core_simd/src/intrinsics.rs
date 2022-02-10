@@ -10,7 +10,9 @@
 //! - undef: "a value that is every value". functionally like poison, insofar as Rust is concerned. poison may become this. note:
 //!   this means that division by poison or undef is like division by zero, which means it inflicts...
 //! - "UB": poison and undef cover most of what people call "UB". "UB" means this operation immediately invalidates the program:
-//!   in particular, LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception.
+//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the "good end".
+//!   The "bad end" is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,
+//!   and destroy the other branch, potentially deleting safe code and violating Rust's `unsafe` contract.
 //!
 //! Note that according to LLVM, vectors are not arrays, but they are equivalent when stored to and loaded from memory.
 //!
@@ -100,7 +102,7 @@ extern "platform-intrinsic" {
     /// ptr: vector of pointers to read from
     /// mask: a "wide" mask of integers, selects as if simd_select(mask, read(ptr), val)
     /// note, the LLVM intrinsic accepts a mask vector of <N x i1>
-    /// FIXME: consider reconciling this somehow if/when we fix up our mask story in general?
+    /// FIXME: review this if/when we fix up our mask story in general?
     pub(crate) fn simd_gather<T, U, V>(val: T, ptr: U, mask: V) -> T;
     /// llvm.masked.scatter
     /// like gather, but more spicy, as it writes instead of reads
