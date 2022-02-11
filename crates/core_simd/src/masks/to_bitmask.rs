@@ -1,9 +1,26 @@
 use super::{mask_impl, Mask, MaskElement};
+use crate::simd::{LaneCount, SupportedLaneCount};
+
+mod sealed {
+    pub trait Sealed {}
+}
+pub use sealed::Sealed;
+
+impl<T, const LANES: usize> Sealed for Mask<T, LANES>
+where
+    T: MaskElement,
+    LaneCount<LANES>: SupportedLaneCount,
+{
+}
 
 /// Converts masks to and from integer bitmasks.
 ///
 /// Each bit of the bitmask corresponds to a mask lane, starting with the LSB.
-pub trait ToBitMask {
+///
+/// # Safety
+/// This trait is `unsafe` and sealed, since the `BitMask` type must match the number of lanes in
+/// the mask.
+pub unsafe trait ToBitMask: Sealed {
     /// The integer bitmask type.
     type BitMask;
 
@@ -17,7 +34,11 @@ pub trait ToBitMask {
 /// Converts masks to and from byte array bitmasks.
 ///
 /// Each bit of the bitmask corresponds to a mask lane, starting with the LSB of the first byte.
-pub trait ToBitMaskArray {
+///
+/// # Safety
+/// This trait is `unsafe` and sealed, since the `BYTES` value must match the number of lanes in
+/// the mask.
+pub unsafe trait ToBitMaskArray: Sealed {
     /// The length of the bitmask array.
     const BYTES: usize;
 
@@ -31,15 +52,15 @@ pub trait ToBitMaskArray {
 macro_rules! impl_integer_intrinsic {
     { $(unsafe impl ToBitMask<BitMask=$int:ty> for Mask<_, $lanes:literal>)* } => {
         $(
-        impl<T: MaskElement> ToBitMask for Mask<T, $lanes> {
+        unsafe impl<T: MaskElement> ToBitMask for Mask<T, $lanes> {
             type BitMask = $int;
 
             fn to_bitmask(self) -> $int {
-                unsafe { self.0.to_bitmask_integer() }
+                self.0.to_bitmask_integer()
             }
 
             fn from_bitmask(bitmask: $int) -> Self {
-                unsafe { Self(mask_impl::Mask::from_bitmask_integer(bitmask)) }
+                Self(mask_impl::Mask::from_bitmask_integer(bitmask))
             }
         }
         )*
@@ -59,20 +80,18 @@ pub const fn bitmask_len(lanes: usize) -> usize {
 }
 
 macro_rules! impl_array_bitmask {
-    { $(impl ToBitMask<[u8; _]> for Mask<_, $lanes:literal>)* } => {
+    { $(impl ToBitMaskArray<[u8; _]> for Mask<_, $lanes:literal>)* } => {
         $(
-        impl<T: MaskElement> ToBitMaskArray for Mask<T, $lanes>
+        unsafe impl<T: MaskElement> ToBitMaskArray for Mask<T, $lanes>
         {
              const BYTES: usize = bitmask_len($lanes);
 
              fn to_bitmask_array(self) -> [u8; Self::BYTES] {
-                 // Safety: BYTES is the exact size required
-                 unsafe { self.0.to_bitmask_array() }
+                 self.0.to_bitmask_array()
              }
 
              fn from_bitmask_array(bitmask: [u8; Self::BYTES]) -> Self {
-                 // Safety: BYTES is the exact size required
-                 unsafe { Mask(mask_impl::Mask::from_bitmask_array(bitmask)) }
+                 Mask(mask_impl::Mask::from_bitmask_array(bitmask))
              }
         }
         )*
@@ -81,11 +100,11 @@ macro_rules! impl_array_bitmask {
 
 // FIXME this should be specified generically, but it doesn't seem to work with rustc, yet
 impl_array_bitmask! {
-    impl ToBitMask<[u8; _]> for Mask<_, 1>
-    impl ToBitMask<[u8; _]> for Mask<_, 2>
-    impl ToBitMask<[u8; _]> for Mask<_, 4>
-    impl ToBitMask<[u8; _]> for Mask<_, 8>
-    impl ToBitMask<[u8; _]> for Mask<_, 16>
-    impl ToBitMask<[u8; _]> for Mask<_, 32>
-    impl ToBitMask<[u8; _]> for Mask<_, 64>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 1>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 2>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 4>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 8>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 16>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 32>
+    impl ToBitMaskArray<[u8; _]> for Mask<_, 64>
 }

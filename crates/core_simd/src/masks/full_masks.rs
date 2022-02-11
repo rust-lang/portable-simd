@@ -2,7 +2,7 @@
 
 use super::MaskElement;
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Simd, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask, ToBitMaskArray};
 
 #[repr(transparent)]
 pub struct Mask<T, const LANES: usize>(Simd<T, LANES>)
@@ -126,12 +126,26 @@ where
         unsafe { Mask(intrinsics::simd_cast(self.0)) }
     }
 
-    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub unsafe fn to_bitmask_array<const N: usize>(self) -> [u8; N] {
+    pub fn to_bitmask_array<const N: usize>(self) -> [u8; N]
+    where
+        super::Mask<T, LANES>: ToBitMaskArray,
+        [(); <super::Mask<T, LANES> as ToBitMaskArray>::BYTES]: Sized,
+    {
+        assert_eq!(<super::Mask<T, LANES> as ToBitMaskArray>::BYTES, N);
+
+        // Safety: N is the correct bitmask size
+        //
+        // The transmute below allows this function to be marked safe, since it will prevent
+        // monomorphization errors in the case of an incorrect size.
         unsafe {
-            let mut bitmask: [u8; N] = intrinsics::simd_bitmask(self.0);
+            // Compute the bitmask
+            let bitmask: [u8; <super::Mask<T, LANES> as ToBitMaskArray>::BYTES] =
+                intrinsics::simd_bitmask(self.0);
+
+            // Transmute to the return type, previously asserted to be the same size
+            let mut bitmask: [u8; N] = core::mem::transmute_copy(&bitmask);
 
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -146,10 +160,19 @@ where
         }
     }
 
-    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub unsafe fn from_bitmask_array<const N: usize>(mut bitmask: [u8; N]) -> Self {
+    pub fn from_bitmask_array<const N: usize>(mut bitmask: [u8; N]) -> Self
+    where
+        super::Mask<T, LANES>: ToBitMaskArray,
+        [(); <super::Mask<T, LANES> as ToBitMaskArray>::BYTES]: Sized,
+    {
+        assert_eq!(<super::Mask<T, LANES> as ToBitMaskArray>::BYTES, N);
+
+        // Safety: N is the correct bitmask size
+        //
+        // The transmute below allows this function to be marked safe, since it will prevent
+        // monomorphization errors in the case of an incorrect size.
         unsafe {
             // There is a bug where LLVM appears to implement this operation with the wrong
             // bit order.
@@ -160,6 +183,11 @@ where
                 }
             }
 
+            // Transmute to the bitmask type, previously asserted to be the same size
+            let bitmask: [u8; <super::Mask<T, LANES> as ToBitMaskArray>::BYTES] =
+                core::mem::transmute_copy(&bitmask);
+
+            // Compute the regular mask
             Self::from_int_unchecked(intrinsics::simd_select_bitmask(
                 bitmask,
                 Self::splat(true).to_int(),
@@ -168,11 +196,12 @@ where
         }
     }
 
-    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
-    // this mask
     #[inline]
-    pub(crate) unsafe fn to_bitmask_integer<U: ReverseBits>(self) -> U {
-        // Safety: caller must only return bitmask types
+    pub(crate) fn to_bitmask_integer<U: ReverseBits>(self) -> U
+    where
+        super::Mask<T, LANES>: ToBitMask<BitMask = U>,
+    {
+        // Safety: U is required to be the appropriate bitmask type
         let bitmask: U = unsafe { intrinsics::simd_bitmask(self.0) };
 
         // There is a bug where LLVM appears to implement this operation with the wrong
@@ -188,7 +217,10 @@ where
     // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     // this mask
     #[inline]
-    pub(crate) unsafe fn from_bitmask_integer<U: ReverseBits>(bitmask: U) -> Self {
+    pub(crate) fn from_bitmask_integer<U: ReverseBits>(bitmask: U) -> Self
+    where
+        super::Mask<T, LANES>: ToBitMask<BitMask = U>,
+    {
         // There is a bug where LLVM appears to implement this operation with the wrong
         // bit order.
         // TODO fix this in a better way
@@ -198,7 +230,7 @@ where
             bitmask
         };
 
-        // Safety: caller must only pass bitmask types
+        // Safety: U is required to be the appropriate bitmask type
         unsafe {
             Self::from_int_unchecked(intrinsics::simd_select_bitmask(
                 bitmask,

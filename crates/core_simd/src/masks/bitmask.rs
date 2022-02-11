@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 use super::MaskElement;
 use crate::simd::intrinsics;
-use crate::simd::{LaneCount, Simd, SupportedLaneCount};
+use crate::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask, ToBitMaskArray};
 use core::marker::PhantomData;
 
 /// A mask where each lane is represented by a single bit.
@@ -115,31 +115,40 @@ where
         unsafe { Self(intrinsics::simd_bitmask(value), PhantomData) }
     }
 
-    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new array and does not mutate the original value"]
-    pub unsafe fn to_bitmask_array<const N: usize>(self) -> [u8; N] {
-        // Safety: these are the same type and we are laundering the generic
+    pub fn to_bitmask_array<const N: usize>(self) -> [u8; N] {
+        assert!(core::mem::size_of::<Self>() == N);
+
+        // Safety: converting an integer to an array of bytes of the same size is safe
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
     // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub unsafe fn from_bitmask_array<const N: usize>(bitmask: [u8; N]) -> Self {
-        // Safety: these are the same type and we are laundering the generic
+    pub fn from_bitmask_array<const N: usize>(bitmask: [u8; N]) -> Self {
+        assert!(core::mem::size_of::<Self>() == N);
+
+        // Safety: converting an array of bytes to an integer of the same size is safe
         Self(unsafe { core::mem::transmute_copy(&bitmask) }, PhantomData)
     }
 
-    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     #[inline]
-    pub unsafe fn to_bitmask_integer<U>(self) -> U {
+    pub fn to_bitmask_integer<U>(self) -> U
+    where
+        super::Mask<T, LANES>: ToBitMask<BitMask = U>,
+    {
+        // Safety: these are the same types
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
-    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
     #[inline]
-    pub unsafe fn from_bitmask_integer<U>(bitmask: U) -> Self {
+    pub fn from_bitmask_integer<U>(bitmask: U) -> Self
+    where
+        super::Mask<T, LANES>: ToBitMask<BitMask = U>,
+    {
+        // Safety: these are the same types
         unsafe { Self(core::mem::transmute_copy(&bitmask), PhantomData) }
     }
 
