@@ -124,7 +124,6 @@ where
         unsafe { core::mem::transmute_copy(&self.0) }
     }
 
-    // Safety: N must be the exact number of bytes required to hold the bitmask for this mask
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn from_bitmask_array<const N: usize>(bitmask: [u8; N]) -> Self {

@@ -214,8 +214,6 @@ where
         }
     }
 
-    // Safety: U must be the integer with the exact number of bits required to hold the bitmask for
-    // this mask
     #[inline]
     pub(crate) fn from_bitmask_integer<U: ReverseBits>(bitmask: U) -> Self
     where
