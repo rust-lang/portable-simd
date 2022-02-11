@@ -147,9 +147,7 @@ where
             // Transmute to the return type, previously asserted to be the same size
             let mut bitmask: [u8; N] = core::mem::transmute_copy(&bitmask);
 
-            // There is a bug where LLVM appears to implement this operation with the wrong
-            // bit order.
-            // TODO fix this in a better way
+            // LLVM assumes bit order should match endianness
             if cfg!(target_endian = "big") {
                 for x in bitmask.as_mut() {
                     *x = x.reverse_bits();
@@ -174,9 +172,7 @@ where
         // The transmute below allows this function to be marked safe, since it will prevent
         // monomorphization errors in the case of an incorrect size.
         unsafe {
-            // There is a bug where LLVM appears to implement this operation with the wrong
-            // bit order.
-            // TODO fix this in a better way
+            // LLVM assumes bit order should match endianness
             if cfg!(target_endian = "big") {
                 for x in bitmask.as_mut() {
                     *x = x.reverse_bits();
@@ -204,9 +200,7 @@ where
         // Safety: U is required to be the appropriate bitmask type
         let bitmask: U = unsafe { intrinsics::simd_bitmask(self.0) };
 
-        // There is a bug where LLVM appears to implement this operation with the wrong
-        // bit order.
-        // TODO fix this in a better way
+        // LLVM assumes bit order should match endianness
         if cfg!(target_endian = "big") {
             bitmask.reverse_bits()
         } else {
@@ -219,9 +213,7 @@ where
     where
         super::Mask<T, LANES>: ToBitMask<BitMask = U>,
     {
-        // There is a bug where LLVM appears to implement this operation with the wrong
-        // bit order.
-        // TODO fix this in a better way
+        // LLVM assumes bit order should match endianness
         let bitmask = if cfg!(target_endian = "big") {
             bitmask.reverse_bits()
         } else {
