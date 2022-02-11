@@ -79,32 +79,17 @@ pub const fn bitmask_len(lanes: usize) -> usize {
     (lanes + 7) / 8
 }
 
-macro_rules! impl_array_bitmask {
-    { $(impl ToBitMaskArray<[u8; _]> for Mask<_, $lanes:literal>)* } => {
-        $(
-        unsafe impl<T: MaskElement> ToBitMaskArray for Mask<T, $lanes>
-        {
-             const BYTES: usize = bitmask_len($lanes);
+unsafe impl<T: MaskElement, const LANES: usize> ToBitMaskArray for Mask<T, LANES>
+where
+    LaneCount<LANES>: SupportedLaneCount,
+{
+    const BYTES: usize = bitmask_len(LANES);
 
-             fn to_bitmask_array(self) -> [u8; Self::BYTES] {
-                 self.0.to_bitmask_array()
-             }
-
-             fn from_bitmask_array(bitmask: [u8; Self::BYTES]) -> Self {
-                 Mask(mask_impl::Mask::from_bitmask_array(bitmask))
-             }
-        }
-        )*
+    fn to_bitmask_array(self) -> [u8; Self::BYTES] {
+        self.0.to_bitmask_array()
     }
-}
 
-// FIXME this should be specified generically, but it doesn't seem to work with rustc, yet
-impl_array_bitmask! {
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 1>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 2>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 4>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 8>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 16>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 32>
-    impl ToBitMaskArray<[u8; _]> for Mask<_, 64>
+    fn from_bitmask_array(bitmask: [u8; Self::BYTES]) -> Self {
+        Mask(mask_impl::Mask::from_bitmask_array(bitmask))
+    }
 }
