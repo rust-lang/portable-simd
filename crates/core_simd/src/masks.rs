@@ -13,7 +13,7 @@
 mod mask_impl;
 
 mod to_bitmask;
-pub use to_bitmask::ToBitMask;
+pub use to_bitmask::{ToBitMask, ToBitMaskArray};
 
 use crate::simd::{intrinsics, LaneCount, Simd, SimdElement, SupportedLaneCount};
 use core::cmp::Ordering;
