@@ -11,6 +11,10 @@ use core_simd::simd;
 
 use simd::{LaneCount, Simd, SupportedLaneCount};
 
+mod libm32;
+#[cfg(test)]
+mod test_libm32;
+
 #[cfg(feature = "as_crate")]
 mod experimental {
     pub trait Sealed {}
@@ -117,6 +121,31 @@ pub trait StdFloat: Sealed + Sized {
     fn fract(self) -> Self;
 }
 
+pub trait StdLibm : StdFloat {
+    type IntType;
+    type UintType;
+
+    fn sin(self) -> Self;
+
+    fn cos(self) -> Self;
+
+    fn tan(self) -> Self;
+
+    fn asin(self) -> Self;
+
+    fn acos(self) -> Self;
+
+    fn atan(self) -> Self;
+
+    fn atan2(self, x: Self) -> Self;
+
+    fn exp2(self) -> Self;
+
+    fn exp(self) -> Self;
+
+    fn log2(self) -> Self;
+}
+
 impl<const N: usize> Sealed for Simd<f32, N> where LaneCount<N>: SupportedLaneCount {}
 impl<const N: usize> Sealed for Simd<f64, N> where LaneCount<N>: SupportedLaneCount {}
 
@@ -161,5 +190,6 @@ mod tests {
         let _xfma = x.mul_add(x, x);
         let _xsqrt = x.sqrt();
         let _ = x2.abs() * x2;
+        let _ = x.sin();
     }
 }
