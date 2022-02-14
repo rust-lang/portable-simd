@@ -280,7 +280,7 @@ fn exp_f32() {
 }
 
 #[test]
-fn log_f32() {
+fn log2_f32() {
     use core_simd::f32x4;
     use crate::StdLibm;
 
@@ -297,11 +297,21 @@ fn log_f32() {
     );
 
     test_range!(
-        min: 0.0,
-        max: 2.0,
-        limit: one_ulp * 8.0,
-        scalar_fn: |x : f32| x.exp(),
-        vector_fn: |x : f32x4| x.exp(),
+        min: 2.0,
+        max: 4.0,
+        limit: one_ulp * 2.0,
+        scalar_fn: |x : f32| x.log2(),
+        vector_fn: |x : f32x4| x.log2(),
+        scalar_type: f32,
+        vector_type: f32x4,
+    );
+
+    test_range!(
+        min: 4.0,
+        max: 8.0,
+        limit: one_ulp * 2.0,
+        scalar_fn: |x : f32| x.log2(),
+        vector_fn: |x : f32x4| x.log2(),
         scalar_type: f32,
         vector_type: f32x4,
     );
