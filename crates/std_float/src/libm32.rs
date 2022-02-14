@@ -130,20 +130,14 @@ where
         let arg_bits = arg.to_bits();
         let exponent = (arg_bits.cast::<i32>() >> LOG2_SHIFT) - LOG2_OFFSET;
         let x = Self::from_bits((arg_bits & ONE_MASK) | ONE_BITS) - Self::splat(1.5);
-        let y = (Self::splat(0.00033940058f32))
-            .mul_add(x, -Self::splat(0.0005435155f32))
-            .mul_add(x, Self::splat(0.00051382656f32))
-            .mul_add(x, -Self::splat(0.0008369385f32))
-            .mul_add(x, Self::splat(0.0015296092f32))
-            .mul_add(x, -Self::splat(0.0025230509f32))
-            .mul_add(x, Self::splat(0.0041680275f32))
-            .mul_add(x, -Self::splat(0.007033716f32))
-            .mul_add(x, Self::splat(0.012062632f32))
-            .mul_add(x, -Self::splat(0.021109587f32))
-            .mul_add(x, Self::splat(0.037996903f32))
-            .mul_add(x, -Self::splat(0.071244195f32))
-            .mul_add(x, Self::splat(0.1424884f32))
-            .mul_add(x, -Self::splat(0.3205989f32))
+        let y = (Self::splat(0.005413892f32))
+            .mul_add(x, -Self::splat(0.009083694f32))
+            .mul_add(x, Self::splat(0.011741556f32))
+            .mul_add(x, -Self::splat(0.020581678f32))
+            .mul_add(x, Self::splat(0.038030382f32))
+            .mul_add(x, -Self::splat(0.07129922f32))
+            .mul_add(x, Self::splat(0.14248715f32))
+            .mul_add(x, -Self::splat(0.32059687f32))
             .mul_add(x, Self::splat(0.9617967f32))
             .mul_add(x, Self::splat(0.5849625f32));
         y + (exponent.cast::<f32>())
