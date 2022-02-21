@@ -143,7 +143,33 @@ pub trait StdLibm : StdFloat {
 
     fn exp(self) -> Self;
 
+    fn exp_m1(self) -> Self;
+
     fn log2(self) -> Self;
+
+    fn ln_1p(self) -> Self;
+    
+    fn ln(self) -> Self;
+    
+    fn log10(self) -> Self;
+    
+    fn log(self, base: Self) -> Self;
+    
+    fn powf(self, y: Self) -> Self;
+    
+    fn powi(self, y: Self::IntType) -> Self;
+
+    fn sinh(self) -> Self;
+
+    fn cosh(self) -> Self;
+
+    fn tanh(self) -> Self;
+
+    fn asinh(self) -> Self;
+
+    fn acosh(self) -> Self;
+
+    fn atanh(self) -> Self;
 }
 
 impl<const N: usize> Sealed for Simd<f32, N> where LaneCount<N>: SupportedLaneCount {}
