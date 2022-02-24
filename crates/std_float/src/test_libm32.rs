@@ -28,7 +28,6 @@ macro_rules! test_vec {
     });
 }
 
-
 macro_rules! test_range {
     (
         min: $min: expr,
@@ -38,7 +37,7 @@ macro_rules! test_range {
         vector_fn: $vector_fn: expr,
         scalar_type: $scalar_type: ty,
         vector_type: $vector_type: ty,
-    ) => ({
+    ) => {{
         let limit = <$vector_type>::splat($limit);
         let b = (($max) - ($min)) * (1.0 / NUM_ITER as $scalar_type);
         let a = $min;
@@ -58,7 +57,7 @@ macro_rules! test_range {
                 x: x,
             )
         }
-    });
+    }};
     (
         value: $value: expr,
         limit: $limit: expr,
@@ -66,7 +65,7 @@ macro_rules! test_range {
         vector_fn: $vector_fn: expr,
         scalar_type: $scalar_type: ty,
         vector_type: $vector_type: ty,
-    ) => ({
+    ) => {{
         let limit = <$vector_type>::splat($value);
         let x = <$vector_type>::splat($value);
         test_vec!(
@@ -76,7 +75,7 @@ macro_rules! test_range {
             limit: limit,
             x: x,
         )
-    });
+    }};
 }
 
 #[test]

@@ -121,7 +121,7 @@ pub trait StdFloat: Sealed + Sized {
     fn fract(self) -> Self;
 }
 
-pub trait StdLibm : StdFloat {
+pub trait StdLibm: StdFloat {
     type IntType;
     type UintType;
 
@@ -148,15 +148,15 @@ pub trait StdLibm : StdFloat {
     fn log2(self) -> Self;
 
     fn ln_1p(self) -> Self;
-    
+
     fn ln(self) -> Self;
-    
+
     fn log10(self) -> Self;
-    
+
     fn log(self, base: Self) -> Self;
-    
+
     fn powf(self, y: Self) -> Self;
-    
+
     fn powi(self, y: Self::IntType) -> Self;
 
     fn sinh(self) -> Self;
