@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-#![doc("This code is automatically generated, do not edit.")]
+//! This code is automatically generated, do not edit.
 use super::StdLibm;
 
 use super::StdFloat;
@@ -152,7 +152,7 @@ where
             .mul_add(x, Self::splat(0.009617995f32))
             .mul_add(x, Self::splat(0.05550411f32))
             .mul_add(x, Self::splat(0.24022652f32))
-            .mul_add(x, Self::splat(0.6931472f32))
+            .mul_add(x, Self::splat(core::f32::consts::LN_2))
             .mul_add(x, Self::splat(1f32))
             * mul;
         let y1 = ((arg).lanes_gt(EXP2_MAX)).select(INFINITY, y);
@@ -180,7 +180,7 @@ where
             .mul_add(x, Self::splat(0.009617995f32))
             .mul_add(x, Self::splat(0.05550411f32))
             .mul_add(x, Self::splat(0.24022652f32))
-            .mul_add(x, Self::splat(0.6931472f32))
+            .mul_add(x, Self::splat(core::f32::consts::LN_2))
             .mul_add(x, -Self::splat(0.00000000008090348f32))
             * mul
             + (mul - Self::splat(1.0))
@@ -285,7 +285,7 @@ where
             .mul_add(x * x, Self::splat(0.05285888f32))
             .mul_add(x * x, Self::splat(0.13475448f32))
             .mul_add(x * x, Self::splat(0.55773664f32))
-            .mul_add(x * x, -Self::splat(0.7853982f32))
+            .mul_add(x * x, -Self::splat(core::f32::consts::FRAC_PI_4))
             * x;
         y * recip
     }
