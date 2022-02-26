@@ -1,26 +1,14 @@
 use super::*;
 
-impl<T, const N: usize> Add<T> for Simd<T, N>
-where
-    Self: Add,
-    LaneCount<LANES>: SupportedLaneCount,
-{
-    type Output = Self;
-    
-    #[inline]
-    fn add(self, rhs: T) -> Self::Output {
-        self.add(Self::splat(rhs))
-    }
-}
-
-macro_rules! splat_ops {
+macro_rules! autosplat_rhs {
     (
         type Lhs = Simd<T, N>;
         type Rhs = T;
-        $(impl $op:ident::$call:ident;$)*) => {$(
+
+        $(impl $op:ident::$call:ident;)*) => {$(
             impl<T, const N: usize> $op<T> for Simd<T, N>
             where
-                Self: $op,
+                Self: $op<Self, Output=Self>,
                 T: SimdElement,
                 LaneCount<N>: SupportedLaneCount,
             {
@@ -28,14 +16,14 @@ macro_rules! splat_ops {
 
                 #[inline]
                 #[must_use = "operator returns a new vector without mutating the inputs"]
-                fn $call(&mut self, rhs: T) -> Self::Output {
+                fn $call(self, rhs: T) -> Self::Output {
                     self.$call(Self::splat(rhs))
                 }
             })*
     }
 }
 
-splat_ops!{
+autosplat_rhs!{
     type Lhs = Simd<T, N>;
     type Rhs = T;
 
@@ -50,6 +38,46 @@ splat_ops!{
     impl Shl::shl;
     impl Shr::shr;
 }
+
+macro_rules! autosplat_lhs {
+    (
+        type Lhs = T;
+        type Rhs = Simd<T, N>;
+
+        $(impl $op:ident::$call:ident;)*) => {$(
+            impl<T, const N: usize> $op<<T as Vectorize>::Vector> for T
+            where
+                T: SimdElement,
+                <T as Vectorize>::Vector: $op<Self, Output=Self>,
+                LaneCount<N>: SupportedLaneCount,
+            {
+                type Output = Simd<T, N>;
+
+                #[inline]
+                #[must_use = "operator returns a new vector without mutating the inputs"]
+                fn $call(self, rhs: Simd<T, N>) -> Self::Output {
+                    self.splat().$call(rhs)
+                }
+            })*
+    }
+}
+
+autosplat_lhs!{
+    type Lhs = T;
+    type Rhs = Simd<T, N>;
+
+    impl Add::add;
+    impl Mul::mul;
+    impl Sub::sub;
+    impl BitAnd::bitand;
+    impl BitOr::bitor;
+    impl BitXor::bitxor;
+    impl Div::div;
+    impl Rem::rem;
+    impl Shl::shl;
+    impl Shr::shr;
+}
+
 
 // // Integers can always accept add, mul, sub, bitand, bitor, and bitxor.
 // // For all of these operations, simd_* intrinsics apply wrapping logic.

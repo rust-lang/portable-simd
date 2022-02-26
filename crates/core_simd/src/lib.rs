@@ -3,6 +3,7 @@
     const_fn_trait_bound,
     convert_float_to_int,
     decl_macro,
+    generic_associated_types,
     intra_doc_pointers,
     platform_intrinsics,
     repr_simd,

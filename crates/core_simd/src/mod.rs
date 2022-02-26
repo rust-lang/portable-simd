@@ -19,6 +19,7 @@ mod ops;
 mod round;
 mod select;
 mod vector;
+mod vectorize;
 mod vendor;
 
 #[doc = include_str!("core_simd_docs.md")]
