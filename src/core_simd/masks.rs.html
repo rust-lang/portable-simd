@@ -585,20 +585,6 @@
 <span id="580">580</span>
 <span id="581">581</span>
 <span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
-<span id="589">589</span>
-<span id="590">590</span>
-<span id="591">591</span>
-<span id="592">592</span>
-<span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -613,8 +599,10 @@
 )]</span>
 <span class="kw">mod</span> <span class="ident">mask_impl</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">mod</span> <span class="ident">to_bitmask</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">to_bitmask::ToBitMask</span>;
+
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::cmp::Ordering</span>;
 <span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">fmt</span>, <span class="ident">mem</span>};
 
@@ -824,22 +812,6 @@
         <span class="kw">unsafe</span> {
             <span class="self">self</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
         }
-    }
-
-    <span class="doccomment">/// Convert this mask to a bitmask, with one bit set per lane.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_bitmask</span>()
-    }
-
-    <span class="doccomment">/// Convert a bitmask to a mask.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_bitmask</span>(<span class="ident">bitmask</span>))
     }
 
     <span class="doccomment">/// Returns true if any lane is set, or false otherwise.</span>
@@ -1196,5 +1168,5 @@
 <span class="macro">impl_from!</span> { <span class="ident">i64</span> =&gt; <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span> }
 <span class="macro">impl_from!</span> { <span class="ident">isize</span> =&gt; <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span> }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (e7aca8959 2022-02-09)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (d3ad51b48 2022-02-25)" ></div>
 </body></html>

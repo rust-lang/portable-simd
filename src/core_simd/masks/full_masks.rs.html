@@ -237,11 +237,23 @@
 <span id="232">232</span>
 <span id="233">233</span>
 <span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>, <span class="ident">ToBitMask</span>};
 
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
@@ -305,6 +317,23 @@
     }
 }
 
+<span class="comment">// Used for bitmask bit order workaround</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ReverseBits</span> {
+    <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+}
+
+<span class="macro">macro_rules!</span> <span class="ident">impl_reverse_bits</span> {
+    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+        $(
+        <span class="kw">impl</span> <span class="ident">ReverseBits</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> {
+            <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> { <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::reverse_bits</span>(<span class="self">self</span>) }
+        }
+        )<span class="op">*</span>
+    }
+}
+
+<span class="macro">impl_reverse_bits!</span> { <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span> }
+
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">MaskElement</span>,
@@ -349,41 +378,36 @@
         <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>] <span class="op">=</span>
-                <span class="ident">intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">to_bitmask_integer</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">ReverseBits</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">U</span>
+    <span class="kw">where</span>
+        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span>,
+    {
+        <span class="comment">// Safety: U is required to be the appropriate bitmask type</span>
+        <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="ident">U</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>) };
 
-            <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
-            <span class="comment">// bit order.</span>
-            <span class="comment">// TODO fix this in a better way</span>
-            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
-                }
-            }
-
+        <span class="comment">// LLVM assumes bit order should match endianness</span>
+        <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
+            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>()
+        } <span class="kw">else</span> {
             <span class="ident">bitmask</span>
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">LaneCount</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span><span class="ident">::BITMASK_LEN</span>]) -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="comment">// There is a bug where LLVM appears to implement this operation with the wrong</span>
-            <span class="comment">// bit order.</span>
-            <span class="comment">// TODO fix this in a better way</span>
-            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
-                }
-            }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_bitmask_integer</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">ReverseBits</span><span class="op">&gt;</span>(<span class="ident">bitmask</span>: <span class="ident">U</span>) -&gt; <span class="self">Self</span>
+    <span class="kw">where</span>
+        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span>,
+    {
+        <span class="comment">// LLVM assumes bit order should match endianness</span>
+        <span class="kw">let</span> <span class="ident">bitmask</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
+            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>()
+        } <span class="kw">else</span> {
+            <span class="ident">bitmask</span>
+        };
 
+        <span class="comment">// Safety: U is required to be the appropriate bitmask type</span>
+        <span class="kw">unsafe</span> {
             <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_select_bitmask</span>(
                 <span class="ident">bitmask</span>,
                 <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
@@ -472,5 +496,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (e7aca8959 2022-02-09)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (d3ad51b48 2022-02-25)" ></div>
 </body></html>
