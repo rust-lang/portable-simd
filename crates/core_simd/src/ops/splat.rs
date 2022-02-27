@@ -1,4 +1,5 @@
 use super::*;
+use crate::simd::Vectorize;
 
 macro_rules! autosplat_rhs {
     (
@@ -39,44 +40,44 @@ autosplat_rhs!{
     impl Shr::shr;
 }
 
-macro_rules! autosplat_lhs {
-    (
-        type Lhs = T;
-        type Rhs = Simd<T, N>;
+// macro_rules! autosplat_lhs {
+//     (
+//         type Lhs = T;
+//         type Rhs = Simd<T, N>;
 
-        $(impl $op:ident::$call:ident;)*) => {$(
-            impl<T, const N: usize> $op<<T as Vectorize>::Vector> for T
-            where
-                T: SimdElement,
-                <T as Vectorize>::Vector: $op<Self, Output=Self>,
-                LaneCount<N>: SupportedLaneCount,
-            {
-                type Output = Simd<T, N>;
+//         $(impl $op:ident::$call:ident;)*) => {$(
+//             impl<T, const N: usize> $op<Simd<T, N>> for T
+//             where
+//                 T: SimdElement + Vectorize<Vector<{ VL }> = Simd<T, N>>,
+//                 LaneCount<{ N }>: SupportedLaneCount,
+//             {
+//                 type Output = <T as Vectorize>::Vector<{ N }>;
 
-                #[inline]
-                #[must_use = "operator returns a new vector without mutating the inputs"]
-                fn $call(self, rhs: Simd<T, N>) -> Self::Output {
-                    self.splat().$call(rhs)
-                }
-            })*
-    }
-}
+//                 #[inline]
+//                 #[must_use = "operator returns a new vector without mutating the inputs"]
+//                 fn $call(self, rhs: <T as Vectorize>::Vector<{ N }>) -> Self::Output {
+//                     self.splat().$call(rhs)
+//                 }
+//             }
+//         )*
+//     }
+// }
 
-autosplat_lhs!{
-    type Lhs = T;
-    type Rhs = Simd<T, N>;
+// autosplat_lhs!{
+//     type Lhs = T;
+//     type Rhs = Simd<T, N>;
 
-    impl Add::add;
-    impl Mul::mul;
-    impl Sub::sub;
-    impl BitAnd::bitand;
-    impl BitOr::bitor;
-    impl BitXor::bitxor;
-    impl Div::div;
-    impl Rem::rem;
-    impl Shl::shl;
-    impl Shr::shr;
-}
+//     impl Add::add;
+//     impl Mul::mul;
+//     impl Sub::sub;
+//     impl BitAnd::bitand;
+//     impl BitOr::bitor;
+//     impl BitXor::bitxor;
+//     impl Div::div;
+//     impl Rem::rem;
+//     impl Shl::shl;
+//     impl Shr::shr;
+// }
 
 
 // // Integers can always accept add, mul, sub, bitand, bitor, and bitxor.

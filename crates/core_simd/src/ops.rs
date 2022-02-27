@@ -6,6 +6,7 @@ use core::ops::{Shl, Shr};
 
 mod assign;
 mod deref;
+mod splat;
 mod unary;
 
 impl<I, T, const LANES: usize> core::ops::Index<I> for Simd<T, LANES>
