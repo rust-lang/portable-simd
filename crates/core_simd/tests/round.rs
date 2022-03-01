@@ -2,7 +2,6 @@
 
 macro_rules! float_rounding_test {
     { $scalar:tt, $int_scalar:tt } => {
-        #[cfg(feature = "std")]
         mod $scalar {
             use std_float::StdFloat;
 
@@ -10,7 +9,6 @@ macro_rules! float_rounding_test {
             type Scalar = $scalar;
             type IntScalar = $int_scalar;
 
-            #[cfg(feature = "std")]
             test_helpers::test_lanes! {
                 fn ceil<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
