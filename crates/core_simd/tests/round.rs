@@ -2,6 +2,7 @@
 
 macro_rules! float_rounding_test {
     { $scalar:tt, $int_scalar:tt } => {
+        #[cfg(feature = "std")]
         mod $scalar {
             use std_float::StdFloat;
 
