@@ -9,10 +9,11 @@
 //!   poison is neither true nor false, and LLVM may also convert it to undef (at which point it is both). so, it can't be conditioned on, either.
 //! - undef: "a value that is every value". functionally like poison, insofar as Rust is concerned. poison may become this. note:
 //!   this means that division by poison or undef is like division by zero, which means it inflicts...
-//! - "UB": poison and undef cover most of what people call "UB". "UB" means this operation immediately invalidates the program:
-//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the "good end".
+//! - UB: poison and undef cover most of what people call "UB", so any remaining mention of "UB" means it invalidates the program:
+//!   If you reach UB, the "good end" is that LLVM is allowed to lower it to `ud2` or other illegal instruction exceptions.
 //!   The "bad end" is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,
 //!   and destroy the other branch, potentially deleting safe code and violating Rust's `unsafe` contract.
+//! - freeze: an LLVM-level operation that "freezes poison" into an arbitrary value
 //!
 //! Note that according to LLVM, vectors are not arrays, but they are equivalent when stored to and loaded from memory.
 //!
@@ -119,9 +120,11 @@ extern "platform-intrinsic" {
     pub(crate) fn simd_reduce_add_ordered<T, U>(x: T, y: U) -> U;
     // llvm.vector.reduce.{mul,fmul}
     pub(crate) fn simd_reduce_mul_ordered<T, U>(x: T, y: U) -> U;
-    #[allow(unused)]
+    // Takes an integer vector and reduces it to a final boolean.
+    // Not intended to be called on a vector containing values other than 0 or -1.
     pub(crate) fn simd_reduce_all<T>(x: T) -> bool;
-    #[allow(unused)]
+    // Takes an integer vector and reduces it to a final boolean.
+    // Not intended to be called on a vector containing values other than 0 or -1.
     pub(crate) fn simd_reduce_any<T>(x: T) -> bool;
     pub(crate) fn simd_reduce_max<T, U>(x: T) -> U;
     pub(crate) fn simd_reduce_min<T, U>(x: T) -> U;
@@ -130,14 +133,24 @@ extern "platform-intrinsic" {
     pub(crate) fn simd_reduce_xor<T, U>(x: T) -> U;
 
     // truncate integer vector to bitmask
-    #[allow(unused)]
+    // `fn simd_bitmask(vector) -> unsigned integer` takes a vector mask and
+    // returns the most significant bit (MSB) of each lane in the form
+    // of either:
+    // * an unsigned integer
+    // * an array of `u8`
+    // If the vector has less than 8 lanes, a u8 is returned with zeroed trailing bits.
+    //
+    // The bit order of the result depends on the byte endianness, LSB-first for little
+    // endian and MSB-first for big endian.
+    // Not intended to be called on a vector with values other than 0 and -1, however.
     pub(crate) fn simd_bitmask<T, U>(x: T) -> U;
 
     // select
     // first argument is a vector of integers, -1 (all bits 1) is "true"
-    // logically equivalent to (yes & m) | (no & (m^-1),
-    // but you can use it on floats.
+    // for a fully-initialized vector, logically equivalent to (yes & m) | (no & (m^-1)
+    // but you can use it on floats
     pub(crate) fn simd_select<M, T>(m: M, yes: T, no: T) -> T;
-    #[allow(unused)]
+
+    // like simd_select if you expanded the bitmask into a vector.
     pub(crate) fn simd_select_bitmask<M, T>(m: M, yes: T, no: T) -> T;
 }
