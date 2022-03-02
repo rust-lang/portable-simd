@@ -146,6 +146,14 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the LLVM intrinsics bindings that provide the functionality for this</span>
 <span class="doccomment">//! crate.</span>
 <span class="doccomment">//!</span>
@@ -278,6 +286,14 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_xor</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
 
     <span class="comment">// truncate integer vector to bitmask</span>
+    <span class="comment">// `fn simd_bitmask(vector) -&gt; unsigned integer` takes a vector of integers and</span>
+    <span class="comment">// returns either an unsigned integer or array of `u8`.</span>
+    <span class="comment">// Every element in the vector becomes a single bit in the returned bitmask.</span>
+    <span class="comment">// If the vector has less than 8 lanes, a u8 is returned with zeroed trailing bits.</span>
+    <span class="comment">// The bit order of the result depends on the byte endianness. LSB-first for little</span>
+    <span class="comment">// endian and MSB-first for big endian.</span>
+    <span class="comment">//</span>
+    <span class="comment">// UB if called on a vector with values other than 0 and -1.</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_bitmask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
 
