@@ -123,7 +123,7 @@ pub trait StdFloat: Sealed + Sized {
     fn fract(self) -> Self;
 }
 
-pub trait StdLibm : StdFloat {
+pub trait StdLibm: StdFloat {
     /// Signed integer type with the same number of bits as this floating point type.
     type IntType;
 
@@ -186,10 +186,10 @@ pub trait StdLibm : StdFloat {
 
     /// Returns the logarithm of the number with respect to an arbitrary base.
     fn log(self, base: Self) -> Self;
-    
+
     /// Raises a number to a floating point power.
     fn powf(self, y: Self) -> Self;
-    
+
     /// Raises a number to an integer power.
     fn powi(self, y: Self::IntType) -> Self;
 

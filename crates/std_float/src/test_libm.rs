@@ -36,7 +36,6 @@ macro_rules! test_vec {
     });
 }
 
-
 macro_rules! test_range {
     (
         min: $min: expr,
@@ -44,75 +43,73 @@ macro_rules! test_range {
         limit: $limit: expr,
         scalar_fn: $scalar_fn: expr,
         vector_fn: $vector_fn: expr,
-    ) => (
-        {
-            #![allow(non_camel_case_types)]
-            #![allow(dead_code)]
-            type scalar_type = f32;
-            type vector_type = core_simd::f32x4;
-            type int_vector_type = core_simd::i32x4;
-            const PI : scalar_type = 3.1415926535897932384626433832795028841972;
-            
-            let limit = vector_type::splat($limit);
-            let b = (($max) - ($min)) * (1.0 / NUM_ITER as scalar_type);
-            let a = $min;
-            for i in (0..NUM_ITER / 4) {
-                let fi = (i * 4) as scalar_type;
-                let x = vector_type::from_array([
-                    (fi + 0.0) * b + a,
-                    (fi + 1.0) * b + a,
-                    (fi + 2.0) * b + a,
-                    (fi + 3.0) * b + a,
-                ]);
-                test_vec!(
-                    scalar_type: f32,
-                    vector_type: core_simd::f32x4,
-                    int_vector_type: core_simd::i32x4,
-                    scalar_fn: $scalar_fn,
-                    vector_fn: $vector_fn,
-                    limit: limit,
-                    x: x,
-                )
-            }
+    ) => {{
+        #![allow(non_camel_case_types)]
+        #![allow(dead_code)]
+        type scalar_type = f32;
+        type vector_type = core_simd::f32x4;
+        type int_vector_type = core_simd::i32x4;
+        const PI: scalar_type = 3.1415926535897932384626433832795028841972;
+
+        let limit = vector_type::splat($limit);
+        let b = (($max) - ($min)) * (1.0 / NUM_ITER as scalar_type);
+        let a = $min;
+        for i in (0..NUM_ITER / 4) {
+            let fi = (i * 4) as scalar_type;
+            let x = vector_type::from_array([
+                (fi + 0.0) * b + a,
+                (fi + 1.0) * b + a,
+                (fi + 2.0) * b + a,
+                (fi + 3.0) * b + a,
+            ]);
+            test_vec!(
+                scalar_type: f32,
+                vector_type: core_simd::f32x4,
+                int_vector_type: core_simd::i32x4,
+                scalar_fn: $scalar_fn,
+                vector_fn: $vector_fn,
+                limit: limit,
+                x: x,
+            )
         }
-        {
-            #![allow(non_camel_case_types)]
-            #![allow(dead_code)]
-            #![allow(unused)]
-            type scalar_type = f64;
-            type vector_type = core_simd::f64x4;
-            type int_vector_type = core_simd::i64x4;
-            const PI : scalar_type = 3.1415926535897932384626433832795028841972;
-            
-            let limit = vector_type::splat($limit);
-            let b = (($max) - ($min)) * (1.0 / NUM_ITER as scalar_type);
-            let a = $min;
-            for i in (0..NUM_ITER / 4) {
-                let fi = (i * 4) as scalar_type;
-                let x = vector_type::from_array([
-                    (fi + 0.0) * b + a,
-                    (fi + 1.0) * b + a,
-                    (fi + 2.0) * b + a,
-                    (fi + 3.0) * b + a,
-                ]);
-                test_vec!(
-                    scalar_type: f64,
-                    vector_type: core_simd::f64x4,
-                    int_vector_type: core_simd::i64x4,
-                    scalar_fn: $scalar_fn,
-                    vector_fn: $vector_fn,
-                    limit: limit,
-                    x: x,
-                )
-            }
+    }
+    {
+        #![allow(non_camel_case_types)]
+        #![allow(dead_code)]
+        #![allow(unused)]
+        type scalar_type = f64;
+        type vector_type = core_simd::f64x4;
+        type int_vector_type = core_simd::i64x4;
+        const PI: scalar_type = 3.1415926535897932384626433832795028841972;
+
+        let limit = vector_type::splat($limit);
+        let b = (($max) - ($min)) * (1.0 / NUM_ITER as scalar_type);
+        let a = $min;
+        for i in (0..NUM_ITER / 4) {
+            let fi = (i * 4) as scalar_type;
+            let x = vector_type::from_array([
+                (fi + 0.0) * b + a,
+                (fi + 1.0) * b + a,
+                (fi + 2.0) * b + a,
+                (fi + 3.0) * b + a,
+            ]);
+            test_vec!(
+                scalar_type: f64,
+                vector_type: core_simd::f64x4,
+                int_vector_type: core_simd::i64x4,
+                scalar_fn: $scalar_fn,
+                vector_fn: $vector_fn,
+                limit: limit,
+                x: x,
+            )
         }
-    );
+    }};
     (
         value: $value: expr,
         limit: $limit: expr,
         scalar_fn: $scalar_fn: expr,
         vector_fn: $vector_fn: expr,
-    ) => ({
+    ) => {{
         #![allow(non_camel_case_types)]
         #![allow(dead_code)]
         {
@@ -145,7 +142,7 @@ macro_rules! test_range {
                 x: x,
             )
         }
-    });
+    }};
 }
 
 #[test]
