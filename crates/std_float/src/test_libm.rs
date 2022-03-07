@@ -46,6 +46,7 @@ macro_rules! test_range {
     ) => {{
         #![allow(non_camel_case_types)]
         #![allow(dead_code)]
+        #![allow(clippy::approx_constant)]
         type scalar_type = f32;
         type vector_type = core_simd::f32x4;
         type int_vector_type = core_simd::i32x4;
@@ -77,6 +78,7 @@ macro_rules! test_range {
         #![allow(non_camel_case_types)]
         #![allow(dead_code)]
         #![allow(unused)]
+        #![allow(clippy::approx_constant)]
         type scalar_type = f64;
         type vector_type = core_simd::f64x4;
         type int_vector_type = core_simd::i64x4;

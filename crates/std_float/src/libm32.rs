@@ -1,4 +1,6 @@
 #![allow(non_snake_case)]
+#![allow(clippy::excessive_precision)]
+#![allow(clippy::approx_constant)]
 use super::StdLibm;
 
 use super::StdFloat;
