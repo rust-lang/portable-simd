@@ -113,28 +113,31 @@ where
     }
     #[inline]
     fn atan2(self, x: Self) -> Self {
+        let PI_BY_8 = Self::splat(0.39269908169872415481);
+        let TAN_PI_BY_8 =Self ::splat (0.4142135623730950488038860984269714564297583406547512313284044241429748710410687354958479747260924362);
         let PI_BY_2 = Self::splat(1.57079632679489661923);
         let PI = Self::splat(3.14159265358979323846);
         let y = self;
-        let offset180 = ((y).lanes_lt(Self::splat(0.0))).select(-PI, PI);
-        let x1 = ((x).lanes_lt(Self::splat(0.0))).select(-x, x);
-        let y1 = ((x).lanes_lt(Self::splat(0.0))).select(-y, y);
-        let offset1 = ((x).lanes_lt(Self::splat(0.0))).select(offset180, Self::splat(0.0));
-        let offset90 = ((y).lanes_lt(Self::splat(0.0))).select(-PI_BY_2, PI_BY_2);
-        let x2 = ((y1.abs()).lanes_gt(x1)).select(y1, x1);
-        let y2 = ((y1.abs()).lanes_gt(x1)).select(-x1, y1);
-        let offset2 = ((y1.abs()).lanes_gt(x1)).select(offset1 + offset90, offset1);
-        let x3 = y2 / x2;
-        let y3 = (-Self::splat(0.0039602574f32))
-            .mul_add(x3 * x3, Self::splat(0.021659138f32))
-            .mul_add(x3 * x3, -Self::splat(0.05587457f32))
-            .mul_add(x3 * x3, Self::splat(0.09664151f32))
-            .mul_add(x3 * x3, -Self::splat(0.13930209f32))
-            .mul_add(x3 * x3, Self::splat(0.19954468f32))
-            .mul_add(x3 * x3, -Self::splat(0.33331004f32))
-            .mul_add(x3 * x3, Self::splat(0.9999998f32))
-            * x3;
-        y3 + offset2
+        let x1 = x.abs();
+        let y1 = y.abs();
+        let x2 = ((x1).lanes_gt(y1)).select(x1, y1);
+        let y2 = ((x1).lanes_gt(y1)).select(y1, x1);
+        let x3 = TAN_PI_BY_8 * y2 + x2;
+        let y3 = (-TAN_PI_BY_8) * x2 + y2;
+        let z = y3 / x3;
+        let a = (-Self::splat(0.036384862f32))
+            .mul_add(z * z, Self::splat(0.06897726f32))
+            .mul_add(z * z, -Self::splat(0.08974458f32))
+            .mul_add(z * z, Self::splat(0.11101332f32))
+            .mul_add(z * z, -Self::splat(0.14285259f32))
+            .mul_add(z * z, Self::splat(0.1999999f32))
+            .mul_add(z * z, -Self::splat(0.33333334f32))
+            .mul_add(z * z, Self::splat(1f32))
+            * z
+            + PI_BY_8;
+        let q1 = ((x1).lanes_gt(y1)).select(a, PI_BY_2 - a);
+        let q12 = ((x).lanes_ge(Self::splat(0.0))).select(q1, PI - q1);
+        ((y).lanes_ge(Self::splat(0.0))).select(q12, -q12)
     }
     #[inline]
     fn exp2(self) -> Self {

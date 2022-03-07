@@ -654,11 +654,63 @@ fn hypot() {
         vector_fn: |x : vector_type| x.cos().hypot(x.sin()),
     );
 
-    // Large values will not overflow.
+    // Large values will mostly not overflow.
+    test_range!(
+        value: scalar_type::MAX/2.0,
+        limit: scalar_type::MAX * scalar_type::EPSILON * 6.0,
+        scalar_fn: |x : scalar_type| x.hypot(x),
+        vector_fn: |x : vector_type| x.hypot(x),
+    );
+
+    // Except for MAX.
     test_range!(
         value: scalar_type::MAX,
         limit: scalar_type::EPSILON * 6.0,
         scalar_fn: |x : scalar_type| x.hypot(x),
         vector_fn: |x : vector_type| x.hypot(x),
+    );
+}
+
+#[test]
+fn atan2() {
+    // Studiously ignore -PI and PI where signs change erraticly.
+    test_range!(
+        min: -3.141,
+        max: 3.141,
+        limit: scalar_type::EPSILON * 4.0,
+        scalar_fn: |x : scalar_type| x.sin().atan2(x.cos()),
+        vector_fn: |x : vector_type| x.sin().atan2(x.cos()),
+    );
+
+    // East
+    test_range!(
+        value: 0.0,
+        limit: scalar_type::EPSILON * 6.0,
+        scalar_fn: |x : scalar_type| x.atan2(scalar_type::from(1.0)),
+        vector_fn: |x : vector_type| x.atan2(vector_type::splat(1.0)),
+    );
+
+    // West
+    test_range!(
+        value: 0.0,
+        limit: scalar_type::EPSILON * 6.0,
+        scalar_fn: |x : scalar_type| x.atan2(scalar_type::from(-1.0)),
+        vector_fn: |x : vector_type| x.atan2(vector_type::splat(-1.0)),
+    );
+
+    // North
+    test_range!(
+        value: 1.0,
+        limit: scalar_type::EPSILON * 6.0,
+        scalar_fn: |x : scalar_type| x.atan2(scalar_type::from(0.0)),
+        vector_fn: |x : vector_type| x.atan2(vector_type::splat(0.0)),
+    );
+
+    // South
+    test_range!(
+        value: -1.0,
+        limit: scalar_type::EPSILON * 6.0,
+        scalar_fn: |x : scalar_type| x.atan2(scalar_type::from(0.0)),
+        vector_fn: |x : vector_type| x.atan2(vector_type::splat(0.0)),
     );
 }
