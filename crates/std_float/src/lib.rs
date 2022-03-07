@@ -12,8 +12,10 @@ use core_simd::simd;
 use simd::{LaneCount, Simd, SupportedLaneCount};
 
 mod libm32;
+mod libm64;
+
 #[cfg(test)]
-mod test_libm32;
+mod test_libm;
 
 #[cfg(feature = "as_crate")]
 mod experimental {
@@ -122,54 +124,99 @@ pub trait StdFloat: Sealed + Sized {
 }
 
 pub trait StdLibm : StdFloat {
+    /// Signed integer type with the same number of bits as this floating point type.
     type IntType;
+
+    /// Unsigned integer type with the same number of bits as this floating point type.
     type UintType;
 
+    /// Computes the sine of a number (in radians).
     fn sin(self) -> Self;
 
+    /// Computes the cosine of a number (in radians).
     fn cos(self) -> Self;
 
+    /// Computes the tangent of a number (in radians).
     fn tan(self) -> Self;
 
+    /// Computes the arcsine of a number. Return value is in radians in
+    /// the range [-pi/2, pi/2] or NaN if the number is outside the range
+    /// [-1, 1].
     fn asin(self) -> Self;
 
+    /// Computes the arccosine of a number. Return value is in radians in
+    /// the range [0, pi] or NaN if the number is outside the range
+    /// [-1, 1].
     fn acos(self) -> Self;
 
+    /// Computes the arctangent of a number. Return value is in radians in the
+    /// range [-pi/2, pi/2];
     fn atan(self) -> Self;
 
+    /// Computes the four quadrant arctangent of `self` (`y`) and `other` (`x`) in radians.
+    ///
+    /// * `x = 0`, `y = 0`: `0`
+    /// * `x >= 0`: `arctan(y/x)` -> `[-pi/2, pi/2]`
+    /// * `y >= 0`: `arctan(y/x) + pi` -> `(pi/2, pi]`
+    /// * `y < 0`: `arctan(y/x) - pi` -> `(-pi, -pi/2)`
     fn atan2(self, x: Self) -> Self;
 
+    /// Returns `2^(self)`.
     fn exp2(self) -> Self;
 
+    /// Returns `e^(self)`, (the exponential function).
     fn exp(self) -> Self;
 
+    /// Returns `e^(self) - 1` in a way that is accurate even if the
+    /// number is close to zero.
     fn exp_m1(self) -> Self;
 
+    /// Returns the base 2 logarithm of the number.
     fn log2(self) -> Self;
 
+    /// Returns `ln(1+n)` (natural logarithm) more accurately than if
+    /// the operations were performed separately.
     fn ln_1p(self) -> Self;
-    
+
+    /// Returns the natural logarithm of the number.
     fn ln(self) -> Self;
-    
+
+    /// Returns the base 10 logarithm of the number.
     fn log10(self) -> Self;
-    
+
+    /// Returns the logarithm of the number with respect to an arbitrary base.
     fn log(self, base: Self) -> Self;
     
+    /// Raises a number to a floating point power.
     fn powf(self, y: Self) -> Self;
     
+    /// Raises a number to an integer power.
     fn powi(self, y: Self::IntType) -> Self;
 
+    /// Hyperbolic sine function.
     fn sinh(self) -> Self;
 
+    /// Hyperbolic cosine function.
     fn cosh(self) -> Self;
 
+    /// Hyperbolic tangent function.
     fn tanh(self) -> Self;
 
+    /// Inverse hyperbolic sine function.
     fn asinh(self) -> Self;
 
+    /// Inverse hyperbolic cosine function.
     fn acosh(self) -> Self;
 
+    /// Inverse hyperbolic tangent function.
     fn atanh(self) -> Self;
+
+    /// Returns the cube root of a number.
+    fn cbrt(self) -> Self;
+
+    /// Calculates the length of the hypotenuse of a right-angle triangle given
+    /// legs of length `x` and `y`.
+    fn hypot(self, other: Self) -> Self;
 }
 
 impl<const N: usize> Sealed for Simd<f32, N> where LaneCount<N>: SupportedLaneCount {}

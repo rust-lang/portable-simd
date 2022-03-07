@@ -1,5 +1,4 @@
 #![allow(non_snake_case)]
-#![doc("This code is automatically generated, do not edit.")]
 use super::StdLibm;
 
 use super::StdFloat;
@@ -244,6 +243,34 @@ where
     fn powi(self, y: Self::IntType) -> Self {
         let x = self;
         (x).powf(y.cast::<f32>())
+    }
+    #[inline]
+    fn cbrt(self) -> Self {
+        let TWO_THIRDS = Self::splat(0.66666667f32);
+        let ONE_THIRD = Self::splat(0.33333333f32);
+        let EXP2_ONE = Self::splat(1065353216.0f32);
+        let x = self;
+        let r = Self::from_bits(
+            ((x.abs().to_bits().cast::<f32>()).mul_add(ONE_THIRD, EXP2_ONE * TWO_THIRDS))
+                .cast::<u32>(),
+        );
+        let r = r + (x.abs() - r * r * r) / (Self::splat(3.0) * r * r);
+        let r = r + (x.abs() - r * r * r) / (Self::splat(3.0) * r * r);
+        let r = r + (x.abs() - r * r * r) / (Self::splat(3.0) * r * r);
+        let r = r + (x.abs() - r * r * r) / (Self::splat(3.0) * r * r);
+        r.copysign(x)
+    }
+    #[inline]
+    fn hypot(self, y: Self) -> Self {
+        let MIN_POSITIVE = Self::splat(f32::MIN_POSITIVE);
+        let x = self;
+        let xgty = (x.abs()).lanes_gt(y.abs());
+        let x2 = (xgty).select(x, y);
+        let y2 = (xgty).select(y, x);
+        ((x2.abs()).lanes_le(MIN_POSITIVE)).select(
+            x2,
+            x2.abs() * (Self::splat(1.0) + (y2 / x2) * (y2 / x2)).sqrt(),
+        )
     }
     #[inline]
     fn sin(self) -> Self {
