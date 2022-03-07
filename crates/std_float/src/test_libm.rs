@@ -649,7 +649,7 @@ fn hypot() {
     test_range!(
         min: 0.0,
         max: 8.0,
-        limit: scalar_type::EPSILON * 5.0,
+        limit: scalar_type::EPSILON * 6.0,
         scalar_fn: |x : scalar_type| x.cos().hypot(x.sin()),
         vector_fn: |x : vector_type| x.cos().hypot(x.sin()),
     );
@@ -657,7 +657,7 @@ fn hypot() {
     // Large values will not overflow.
     test_range!(
         value: scalar_type::MAX,
-        limit: scalar_type::EPSILON * 5.0,
+        limit: scalar_type::EPSILON * 6.0,
         scalar_fn: |x : scalar_type| x.hypot(x),
         vector_fn: |x : vector_type| x.hypot(x),
     );
