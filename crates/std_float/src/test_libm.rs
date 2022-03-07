@@ -359,14 +359,16 @@ fn exp() {
 
 #[test]
 fn log2() {
-    // Unix gives -NaN, windows gives +NaN.
-    #[cfg(not(target_os = "windows"))]
-    test_range!(
-        value: -1.0,
-        limit: scalar_type::EPSILON * 2.0,
-        scalar_fn: |x : scalar_type| x.log2(),
-        vector_fn: |x : vector_type| x.log2(),
-    );
+    // Not possible to do this cross platform!
+    // Unix gives -NaN, Windows gives +NaN, MIPS gives a signalling Nan
+
+    // #[cfg(not(target_os = "windows"))]
+    // test_range!(
+    //     value: -1.0,
+    //     limit: scalar_type::EPSILON * 2.0,
+    //     scalar_fn: |x : scalar_type| x.log2(),
+    //     vector_fn: |x : vector_type| x.log2(),
+    // );
 
     // Both should give Inf.
     test_range!(
