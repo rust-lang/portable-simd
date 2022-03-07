@@ -152,7 +152,7 @@ fn sin() {
     test_range!(
         min: -PI/4.0,
         max: PI/4.0,
-        limit: scalar_type::EPSILON * 2.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.sin(),
         vector_fn: |x : vector_type| x.sin(),
     );
@@ -160,7 +160,7 @@ fn sin() {
     test_range!(
         min: -PI/2.0,
         max: PI/2.0,
-        limit: scalar_type::EPSILON * 2.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.sin(),
         vector_fn: |x : vector_type| x.sin(),
     );
@@ -168,7 +168,7 @@ fn sin() {
     test_range!(
         min: -PI,
         max: PI,
-        limit: scalar_type::EPSILON * 8.0,
+        limit: scalar_type::EPSILON * 10.0,
         scalar_fn: |x : scalar_type| x.sin(),
         vector_fn: |x : vector_type| x.sin(),
     );
@@ -180,7 +180,7 @@ fn cos() {
     test_range!(
         min: -PI/4.0,
         max: PI/4.0,
-        limit: scalar_type::EPSILON * 1.0,
+        limit: scalar_type::EPSILON * 2.0,
         scalar_fn: |x : scalar_type| x.cos(),
         vector_fn: |x : vector_type| x.cos(),
     );
@@ -189,7 +189,7 @@ fn cos() {
     test_range!(
         min: -PI/2.0,
         max: PI/2.0,
-        limit: scalar_type::EPSILON * 2.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.cos(),
         vector_fn: |x : vector_type| x.cos(),
     );
@@ -200,7 +200,7 @@ fn cos() {
     test_range!(
         min: -PI,
         max: PI,
-        limit: scalar_type::EPSILON * 8.0,
+        limit: scalar_type::EPSILON * 10.0,
         scalar_fn: |x : scalar_type| x.cos(),
         vector_fn: |x : vector_type| x.cos(),
     );
@@ -677,7 +677,7 @@ fn atan2() {
     test_range!(
         min: -3.141,
         max: 3.141,
-        limit: scalar_type::EPSILON * 4.0,
+        limit: scalar_type::EPSILON * 8.0,
         scalar_fn: |x : scalar_type| x.sin().atan2(x.cos()),
         vector_fn: |x : vector_type| x.sin().atan2(x.cos()),
     );
