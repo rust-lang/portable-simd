@@ -152,7 +152,7 @@ fn sin() {
     test_range!(
         min: -PI/4.0,
         max: PI/4.0,
-        limit: scalar_type::EPSILON * 1.0,
+        limit: scalar_type::EPSILON * 2.0,
         scalar_fn: |x : scalar_type| x.sin(),
         vector_fn: |x : vector_type| x.sin(),
     );
@@ -214,7 +214,7 @@ fn tan() {
     test_range!(
         min: -PI/2.0 + 0.00001,
         max: -PI/4.0,
-        limit: scalar_type::EPSILON * 3.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.tan().recip(),
         vector_fn: |x : vector_type| x.tan().recip(),
     );
@@ -223,7 +223,7 @@ fn tan() {
     test_range!(
         min: -PI/4.0,
         max: PI/4.0,
-        limit: scalar_type::EPSILON * 2.0,
+        limit: scalar_type::EPSILON * 3.0,
         scalar_fn: |x : scalar_type| x.tan(),
         vector_fn: |x : vector_type| x.tan(),
     );
@@ -231,7 +231,7 @@ fn tan() {
     test_range!(
         min: PI/4.0,
         max: PI/2.0 - 0.00001,
-        limit: scalar_type::EPSILON * 3.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.tan().recip(),
         vector_fn: |x : vector_type| x.tan().recip(),
     );
