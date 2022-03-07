@@ -20,7 +20,7 @@ macro_rules! test_vec {
             let yref = <$vector_type>::from_array([sf($x[0]), sf($x[1]), sf($x[2]), sf($x[3])]);
             let y = vf($x);
             let e = (y - yref);
-            let bit_match = y.to_bits().lanes_eq(yref.to_bits());
+            let bit_match = y.abs().to_bits().lanes_eq(yref.abs().to_bits());
             let val_ok = bit_match | e.abs().lanes_le($limit);
             if !val_ok.all() || y.is_nan() != yref.is_nan() {
                 panic!("\nx     ={:20.16?}\ne     ={:20.16?}\nlimit ={:20.16?}\nvector={:20.16?}\nscalar={:20.16?}\nvector={:020x?}\nscalar={:020x?}\nvector_fn={}",
