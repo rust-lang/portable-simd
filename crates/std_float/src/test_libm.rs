@@ -328,10 +328,11 @@ fn exp2() {
     );
 
     // Accuracy is good over the entire range.
+    // (Range expanded because windows exp->log is less accurate)
     test_range!(
         min: -126.0,
         max: 126.0,
-        limit: scalar_type::EPSILON * 2.0,
+        limit: scalar_type::EPSILON * 4.0,
         scalar_fn: |x : scalar_type| x.exp2().log2(),
         vector_fn: |x : vector_type| x.exp2().log2(),
     );
@@ -358,6 +359,8 @@ fn exp() {
 
 #[test]
 fn log2() {
+    // Unix gives -NaN, windows gives +NaN.
+    #[cfg(not(target_os = "windows"))]
     test_range!(
         value: -1.0,
         limit: scalar_type::EPSILON * 2.0,
@@ -365,6 +368,7 @@ fn log2() {
         vector_fn: |x : vector_type| x.log2(),
     );
 
+    // Both should give Inf.
     test_range!(
         value: 0.0,
         limit: scalar_type::EPSILON * 2.0,
