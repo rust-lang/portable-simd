@@ -20,9 +20,9 @@ macro_rules! test_vec {
             let yref = <$vector_type>::from_array([sf($x[0]), sf($x[1]), sf($x[2]), sf($x[3])]);
             let y = vf($x);
             let e = (y - yref);
-            let bit_match = y.abs().to_bits().lanes_eq(yref.abs().to_bits());
-            let val_ok = bit_match | e.abs().lanes_le($limit);
-            if !val_ok.all() || y.is_nan() != yref.is_nan() {
+            // Note: is e is NaN then the comparison will fail.
+            let bad_val = e.abs().lanes_gt($limit).any();
+            if bad_val || y.is_nan() != yref.is_nan() || y.is_infinite() != yref.is_infinite() {
                 panic!("\nx     ={:20.16?}\ne     ={:20.16?}\nlimit ={:20.16?}\nvector={:20.16?}\nscalar={:20.16?}\nvector={:020x?}\nscalar={:020x?}\nvector_fn={}",
                     $x,
                     e,
@@ -359,16 +359,14 @@ fn exp() {
 
 #[test]
 fn log2() {
-    // Not possible to do this cross platform!
-    // Unix gives -NaN, Windows gives +NaN, MIPS gives a signalling Nan
 
-    // #[cfg(not(target_os = "windows"))]
-    // test_range!(
-    //     value: -1.0,
-    //     limit: scalar_type::EPSILON * 2.0,
-    //     scalar_fn: |x : scalar_type| x.log2(),
-    //     vector_fn: |x : vector_type| x.log2(),
-    // );
+    // Both should give NaN.
+    test_range!(
+        value: -1.0,
+        limit: scalar_type::EPSILON * 2.0,
+        scalar_fn: |x : scalar_type| x.log2(),
+        vector_fn: |x : vector_type| x.log2(),
+    );
 
     // Both should give Inf.
     test_range!(
