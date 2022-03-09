@@ -452,6 +452,20 @@
 <span id="447">447</span>
 <span id="448">448</span>
 <span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
 </pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">array</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
@@ -531,11 +545,21 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span>
+<span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
+    <span class="ident">Default::default</span>()
+}
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">miri</span>)]</span>
+<span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
+    <span class="comment">// Only run a few tests on Miri</span>
+    <span class="ident">proptest::test_runner::TestRunner::new</span>(<span class="ident">proptest::test_runner::Config::with_cases</span>(<span class="number">4</span>))
+}
+
 <span class="doccomment">/// Test a function that takes a single value.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_1</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>) -&gt; <span class="ident">proptest::test_runner::TestCaseResult</span>,
 ) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest::test_runner::TestRunner::default</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">make_runner</span>();
     <span class="ident">runner</span>.<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">A::default_strategy</span>(), <span class="ident">f</span>).<span class="ident">unwrap</span>();
 }
 
@@ -543,7 +567,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_2</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span>, <span class="ident">B</span>: <span class="ident">core::fmt::Debug</span> <span class="op">+</span> <span class="ident">DefaultStrategy</span><span class="op">&gt;</span>(
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>, <span class="ident">B</span>) -&gt; <span class="ident">proptest::test_runner::TestCaseResult</span>,
 ) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest::test_runner::TestRunner::default</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">make_runner</span>();
     <span class="ident">runner</span>
         .<span class="ident">run</span>(<span class="kw-2">&amp;</span>(<span class="ident">A::default_strategy</span>(), <span class="ident">B::default_strategy</span>()), <span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> {
             <span class="ident">f</span>(<span class="ident">a</span>, <span class="ident">b</span>)
@@ -559,7 +583,7 @@
 <span class="op">&gt;</span>(
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">A</span>, <span class="ident">B</span>, <span class="ident">C</span>) -&gt; <span class="ident">proptest::test_runner::TestCaseResult</span>,
 ) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">proptest::test_runner::TestRunner::default</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">runner</span> <span class="op">=</span> <span class="ident">make_runner</span>();
     <span class="ident">runner</span>
         .<span class="ident">run</span>(
             <span class="kw-2">&amp;</span>(
@@ -815,24 +839,28 @@
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
                 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow</span>
                 <span class="kw">fn</span> <span class="ident">lanes_8</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">8</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
                 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow</span>
                 <span class="kw">fn</span> <span class="ident">lanes_16</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">16</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
                 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow</span>
                 <span class="kw">fn</span> <span class="ident">lanes_32</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">32</span><span class="op">&gt;</span>();
                 }
 
                 <span class="attribute">#[<span class="ident">test</span>]</span>
                 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>, <span class="ident">wasm_bindgen_test::wasm_bindgen_test</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow</span>
                 <span class="kw">fn</span> <span class="ident">lanes_64</span>() {
                     <span class="ident">implementation</span>::<span class="op">&lt;</span><span class="number">64</span><span class="op">&gt;</span>();
                 }
@@ -902,5 +930,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (1eb72580d 2022-03-08)" ></div>
 </body></html>
