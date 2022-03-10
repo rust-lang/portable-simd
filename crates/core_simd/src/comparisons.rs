@@ -74,14 +74,14 @@ macro_rules! impl_min_max_vector {
             LaneCount<LANES>: SupportedLaneCount,
         {
             /// Returns the lane-wise minimum with other
-            #[must_use = "method returns a new mask and does not mutate the original value"]
+            #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn min(self, other: Self) -> Self {
                 self.lanes_gt(other).select(other, self)
             }
 
             /// Returns the lane-wise maximum with other
-            #[must_use = "method returns a new mask and does not mutate the original value"]
+            #[must_use = "method returns a new vector and does not mutate the original value"]
             #[inline]
             pub fn max(self, other: Self) -> Self {
                 self.lanes_lt(other).select(other, self)
