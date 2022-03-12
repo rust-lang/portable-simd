@@ -26,7 +26,7 @@ fn clamp_is_not_lexicographic() {
     let up = i16x2::from_array([-4, 12]);
     assert_eq!(a.clamp(lo, up), i16x2::from_array([-4, 10]));
 
-    let x = i16x2::from_array([1,10]);
+    let x = i16x2::from_array([1, 10]);
     let y = x.clamp(i16x2::splat(0), i16x2::splat(9));
-    assert_eq!(y, i16x2::from_array([1,9]));
+    assert_eq!(y, i16x2::from_array([1, 9]));
 }
