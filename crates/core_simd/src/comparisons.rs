@@ -86,6 +86,18 @@ macro_rules! impl_min_max_vector {
             pub fn max(self, other: Self) -> Self {
                 self.lanes_lt(other).select(other, self)
             }
+
+            /// Clamps the values between the two vectors given
+            ///
+            /// # Panics
+            ///
+            /// Panics if min is not actually less than or equal to max.
+            #[must_use = "method returns a new vector and does not mutate the original value"]
+            #[inline]
+            pub fn clamp(self, min: Self, max: Self) -> Self {
+                assert!(min <= max);
+                self.max(min).min(max)
+            }
         }
     }
 }
