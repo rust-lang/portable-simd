@@ -105,6 +105,24 @@
 <span id="100">100</span>
 <span id="101">101</span>
 <span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -174,39 +192,57 @@
     }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_min_max_vector</span> {
+<span class="macro">macro_rules!</span> <span class="ident">impl_ord_methods_vector</span> {
     { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> } =&gt; {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
         <span class="kw">where</span>
             <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
         {
-            <span class="doccomment">/// Returns the lane-wise minimum with other</span>
+            <span class="doccomment">/// Returns the lane-wise minimum with `other`.</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="self">self</span>.<span class="ident">lanes_gt</span>(<span class="ident">other</span>).<span class="ident">select</span>(<span class="ident">other</span>, <span class="self">self</span>)
             }
 
-            <span class="doccomment">/// Returns the lane-wise maximum with other</span>
+            <span class="doccomment">/// Returns the lane-wise maximum with `other`.</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="self">self</span>.<span class="ident">lanes_lt</span>(<span class="ident">other</span>).<span class="ident">select</span>(<span class="ident">other</span>, <span class="self">self</span>)
             }
+
+            <span class="doccomment">/// Restrict each lane to a certain interval.</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// For each lane, returns `max` if `self` is greater than `max`, and `min` if `self` is</span>
+            <span class="doccomment">/// less than `min`. Otherwise returns `self`.</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// # Panics</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// Panics if `min &gt; max` on any lane.</span>
+            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+                <span class="macro">assert!</span>(
+                    <span class="ident">min</span>.<span class="ident">lanes_le</span>(<span class="ident">max</span>).<span class="ident">all</span>(),
+                    <span class="string">&quot;each lane in `min` must be less than or equal to the corresponding lane in `max`&quot;</span>,
+                );
+                <span class="self">self</span>.<span class="ident">max</span>(<span class="ident">min</span>).<span class="ident">min</span>(<span class="ident">max</span>)
+            }
         }
     }
 }
 
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">i8</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">i16</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">i32</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">i64</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">isize</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">u8</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">u16</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">u32</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">u64</span>);
-<span class="macro">impl_min_max_vector!</span>(<span class="ident">usize</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">i8</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">i16</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">i32</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">i64</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">isize</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">u8</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">u16</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">u32</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">u64</span>);
+<span class="macro">impl_ord_methods_vector!</span>(<span class="ident">usize</span>);
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (335ffbfa5 2022-03-11)" ></div>
 </body></html>
