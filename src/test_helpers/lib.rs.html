@@ -546,11 +546,11 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">miri</span>))]</span>
-<span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
     <span class="ident">Default::default</span>()
 }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">miri</span>)]</span>
-<span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_runner</span>() -&gt; <span class="ident">proptest::test_runner::TestRunner</span> {
     <span class="comment">// Only run a few tests on Miri</span>
     <span class="ident">proptest::test_runner::TestRunner::new</span>(<span class="ident">proptest::test_runner::Config::with_cases</span>(<span class="number">4</span>))
 }
@@ -930,5 +930,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (335ffbfa5 2022-03-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (8d60bf427 2022-03-19)" ></div>
 </body></html>
