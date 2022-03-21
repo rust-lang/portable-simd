@@ -249,6 +249,18 @@
 <span id="244">244</span>
 <span id="245">245</span>
 <span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
@@ -319,14 +331,26 @@
 
 <span class="comment">// Used for bitmask bit order workaround</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ReverseBits</span> {
-    <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="comment">// Reverse the least significant `n` bits of `self`.</span>
+    <span class="comment">// (Remaining bits must be 0.)</span>
+    <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_reverse_bits</span> {
     { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
         $(
         <span class="kw">impl</span> <span class="ident">ReverseBits</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> {
-            <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> { <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::reverse_bits</span>(<span class="self">self</span>) }
+            <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+            <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
+                <span class="kw">let</span> <span class="ident">rev</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::reverse_bits</span>(<span class="self">self</span>);
+                <span class="kw">let</span> <span class="ident">bitsize</span> <span class="op">=</span> <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">8</span>;
+                <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">bitsize</span> {
+                    <span class="comment">// Shift things back to the right</span>
+                    <span class="ident">rev</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="ident">bitsize</span> <span class="op">-</span> <span class="ident">n</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">rev</span>
+                }
+            }
         }
         )<span class="op">*</span>
     }
@@ -388,7 +412,7 @@
 
         <span class="comment">// LLVM assumes bit order should match endianness</span>
         <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>()
+            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>(<span class="ident">LANES</span>)
         } <span class="kw">else</span> {
             <span class="ident">bitmask</span>
         }
@@ -401,7 +425,7 @@
     {
         <span class="comment">// LLVM assumes bit order should match endianness</span>
         <span class="kw">let</span> <span class="ident">bitmask</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>()
+            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>(<span class="ident">LANES</span>)
         } <span class="kw">else</span> {
             <span class="ident">bitmask</span>
         };
@@ -496,5 +520,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (8d60bf427 2022-03-19)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (c84f39e6c 2022-03-20)" ></div>
 </body></html>
