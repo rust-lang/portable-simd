@@ -585,6 +585,8 @@
 <span id="580">580</span>
 <span id="581">581</span>
 <span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -663,6 +665,8 @@
 <span class="macro">impl_element!</span> { <span class="ident">isize</span> }
 
 <span class="doccomment">/// A SIMD vector mask for `LANES` elements of width specified by `Element`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Masks represent boolean inclusion/exclusion on a per-lane basis.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The layout of this type is unspecified.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
@@ -1094,58 +1098,58 @@
     }
 }
 
-<span class="doccomment">/// Vector of eight 8-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 8 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 16 8-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 8 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 32 8-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 8 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">32</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 16 8-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 64 elements of 8 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x64</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">64</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of four 16-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 16 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of eight 16-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 16 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 16 16-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 16 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 32 16-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 16 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">32</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of two 32-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with two elements of 32 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of four 32-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 32 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of eight 32-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 32 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of 16 32-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 32 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of two 64-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with two elements of 64 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of four 64-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 64 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of eight 64-bit masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 64 bits.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of two pointer-width masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with two elements of pointer width.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of four pointer-width masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with four elements of pointer width.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Vector of eight pointer-width masks</span>
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of pointer width.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_from</span> {
@@ -1168,5 +1172,5 @@
 <span class="macro">impl_from!</span> { <span class="ident">i64</span> =&gt; <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span> }
 <span class="macro">impl_from!</span> { <span class="ident">isize</span> =&gt; <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span> }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (c84f39e6c 2022-03-20)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (76d770ac2 2022-04-02)" ></div>
 </body></html>
