@@ -108,7 +108,7 @@
 <span id="103">103</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SimdPartialOrd</span>, <span class="ident">SupportedLaneCount</span>};
 
 <span class="doccomment">/// Implements additional integer traits (Eq, Ord, Hash) on the specified vector `$name`, holding multiple `$lanes` of `$type`.</span>
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_vector</span> {
@@ -120,13 +120,13 @@
             <span class="doccomment">/// Returns true for each positive lane and false if it is zero or negative.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_positive</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
-                <span class="self">self</span>.<span class="ident">lanes_gt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0</span>))
+                <span class="self">self</span>.<span class="ident">simd_gt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0</span>))
             }
 
             <span class="doccomment">/// Returns true for each negative lane and false if it is zero or positive.</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_negative</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span> {
-                <span class="self">self</span>.<span class="ident">lanes_lt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0</span>))
+                <span class="self">self</span>.<span class="ident">simd_lt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0</span>))
             }
 
             <span class="doccomment">/// Returns numbers representing the sign of each lane.</span>
@@ -210,5 +210,5 @@
 <span class="doccomment">/// A 512-bit SIMD vector with 64 elements of type `i8`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x64</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">64</span><span class="op">&gt;</span>;
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (76d770ac2 2022-04-02)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (6af09d250 2022-04-03)" ></div>
 </body></html>
