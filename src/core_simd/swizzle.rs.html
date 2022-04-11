@@ -384,47 +384,53 @@
 <span id="379">379</span>
 <span id="380">380</span>
 <span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
-<span class="doccomment">/// Constructs a new vector by selecting values from the lanes of the source vector or vectors to use.</span>
+<span class="doccomment">/// Constructs a new SIMD vector by copying elements from selected lanes in other vectors.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// When swizzling one vector, the indices of the result vector are indicated by a `const` array</span>
-<span class="doccomment">/// of `usize`, like [`Swizzle`].</span>
-<span class="doccomment">/// When swizzling two vectors, the indices are indicated by a `const` array of [`Which`], like</span>
-<span class="doccomment">/// [`Swizzle2`].</span>
+<span class="doccomment">/// When swizzling one vector, lanes are selected by a `const` array of `usize`,</span>
+<span class="doccomment">/// like [`Swizzle`].</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// When swizzling two vectors, lanes are selected by a `const` array of [`Which`],</span>
+<span class="doccomment">/// like [`Swizzle2`].</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ## One source vector</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// With a single SIMD vector, the const array specifies lane indices in that vector:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # #![feature(portable_simd)]</span>
-<span class="doccomment">/// # use core::simd::{Simd, simd_swizzle};</span>
-<span class="doccomment">/// let v = Simd::&lt;f32, 4&gt;::from_array([0., 1., 2., 3.]);</span>
+<span class="doccomment">/// # use core::simd::{u32x2, u32x4, simd_swizzle};</span>
+<span class="doccomment">/// let v = u32x4::from_array([10, 11, 12, 13]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Keeping the same size</span>
-<span class="doccomment">/// let r = simd_swizzle!(v, [3, 0, 1, 2]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [3., 0., 1., 2.]);</span>
+<span class="doccomment">/// let r: u32x4 = simd_swizzle!(v, [3, 0, 1, 2]);</span>
+<span class="doccomment">/// assert_eq!(r.to_array(), [13, 10, 11, 12]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Changing the number of lanes</span>
-<span class="doccomment">/// let r = simd_swizzle!(v, [3, 1]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [3., 1.]);</span>
+<span class="doccomment">/// let r: u32x2 = simd_swizzle!(v, [3, 1]);</span>
+<span class="doccomment">/// assert_eq!(r.to_array(), [13, 11]);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ## Two source vectors</span>
+<span class="doccomment">/// With two input SIMD vectors, the const array uses `Which` to specify the source of each index:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # #![feature(portable_simd)]</span>
-<span class="doccomment">/// # use core::simd::{Simd, simd_swizzle, Which};</span>
-<span class="doccomment">/// use Which::*;</span>
-<span class="doccomment">/// let a = Simd::&lt;f32, 4&gt;::from_array([0., 1., 2., 3.]);</span>
-<span class="doccomment">/// let b = Simd::&lt;f32, 4&gt;::from_array([4., 5., 6., 7.]);</span>
+<span class="doccomment">/// # use core::simd::{u32x2, u32x4, simd_swizzle, Which};</span>
+<span class="doccomment">/// use Which::{First, Second};</span>
+<span class="doccomment">/// let a = u32x4::from_array([0, 1, 2, 3]);</span>
+<span class="doccomment">/// let b = u32x4::from_array([4, 5, 6, 7]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Keeping the same size</span>
-<span class="doccomment">/// let r = simd_swizzle!(a, b, [First(0), First(1), Second(2), Second(3)]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [0., 1., 6., 7.]);</span>
+<span class="doccomment">/// let r: u32x4 = simd_swizzle!(a, b, [First(0), First(1), Second(2), Second(3)]);</span>
+<span class="doccomment">/// assert_eq!(r.to_array(), [0, 1, 6, 7]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Changing the number of lanes</span>
-<span class="doccomment">/// let r = simd_swizzle!(a, b, [First(0), Second(0)]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [0., 4.]);</span>
+<span class="doccomment">/// let r: u32x2 = simd_swizzle!(a, b, [First(0), Second(0)]);</span>
+<span class="doccomment">/// assert_eq!(r.to_array(), [0, 4]);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_macros</span>)]</span>
 <span class="kw">pub</span> <span class="kw">macro</span> <span class="ident">simd_swizzle</span> {
@@ -454,12 +460,14 @@
     }
 }
 
-<span class="doccomment">/// An index into one of two vectors.</span>
+<span class="doccomment">/// Specifies a lane index into one of two SIMD vectors.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is an input type for [Swizzle2] and helper macros like [simd_swizzle].</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Which</span> {
-    <span class="doccomment">/// Indexes the first vector.</span>
+    <span class="doccomment">/// Index of a lane in the first input SIMD vector.</span>
     <span class="ident">First</span>(<span class="ident">usize</span>),
-    <span class="doccomment">/// Indexes the second vector.</span>
+    <span class="doccomment">/// Index of a lane in the second input SIMD vector.</span>
     <span class="ident">Second</span>(<span class="ident">usize</span>),
 }
 

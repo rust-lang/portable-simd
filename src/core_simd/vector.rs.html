@@ -646,6 +646,46 @@
 <span id="641">641</span>
 <span id="642">642</span>
 <span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -747,17 +787,44 @@
     <span class="doccomment">/// Number of lanes in this vector.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">LANES</span>;
 
-    <span class="doccomment">/// Get the number of lanes in this vector.</span>
+    <span class="doccomment">/// Returns the number of lanes in this SIMD vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # use core::simd::u32x4;</span>
+    <span class="doccomment">/// let v = u32x4::splat(0);</span>
+    <span class="doccomment">/// assert_eq!(v.lanes(), 4);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">lanes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="ident">LANES</span>
     }
 
-    <span class="doccomment">/// Construct a SIMD vector by setting all lanes to the given value.</span>
+    <span class="doccomment">/// Constructs a new SIMD vector with all lanes set to the given value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # use core::simd::u32x4;</span>
+    <span class="doccomment">/// let v = u32x4::splat(8);</span>
+    <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span>([<span class="ident">value</span>; <span class="ident">LANES</span>])
     }
 
     <span class="doccomment">/// Returns an array reference containing the entire SIMD vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # use core::simd::{Simd, u64x4};</span>
+    <span class="doccomment">/// let v: u64x4 = Simd::from_array([0, 1, 2, 3]);</span>
+    <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[0, 1, 2, 3]);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">as_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">T</span>; <span class="ident">LANES</span>] {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
     }
@@ -777,9 +844,21 @@
         <span class="self">self</span>.<span class="number">0</span>
     }
 
-    <span class="doccomment">/// Converts a slice to a SIMD vector containing `slice[..LANES]`</span>
+    <span class="doccomment">/// Converts a slice to a SIMD vector containing `slice[..LANES]`.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// `from_slice` will panic if the slice&#39;s `len` is less than the vector&#39;s `Simd::LANES`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::LANES`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # use core::simd::{Simd, u32x4};</span>
+    <span class="doccomment">/// let source = vec![1, 2, 3, 4, 5, 6];</span>
+    <span class="doccomment">/// let v = u32x4::from_slice(&amp;source);</span>
+    <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[1, 2, 3, 4]);</span>
+    <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">from_slice</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) -&gt; <span class="self">Self</span> {
         <span class="macro">assert!</span>(
@@ -796,6 +875,7 @@
     }
 
     <span class="doccomment">/// Performs lanewise conversion of a SIMD vector&#39;s elements to another SIMD-valid type.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// This follows the semantics of Rust&#39;s `as` conversion for casting</span>
     <span class="doccomment">/// integers to unsigned integers (interpreting as the other type, so `-1` to `MAX`),</span>
     <span class="doccomment">/// and from floats to integers (truncating, or saturating at the limits) for each lane,</span>
