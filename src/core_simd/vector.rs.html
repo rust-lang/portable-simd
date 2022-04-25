@@ -686,6 +686,7 @@
 <span id="681">681</span>
 <span id="682">682</span>
 <span id="683">683</span>
+<span id="684">684</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -1167,6 +1168,7 @@
         <span class="ident">mask</span>.<span class="ident">all</span>()
     }
 
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::partialeq_ne_impl</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">ne</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
         <span class="comment">// Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.</span>
@@ -1370,5 +1372,5 @@
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (1f7fb6413 2022-04-10)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (18f314e70 2022-04-24)" ></div>
 </body></html>
