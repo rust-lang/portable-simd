@@ -596,6 +596,9 @@
 <span id="589">589</span>
 <span id="590">590</span>
 <span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -612,6 +615,9 @@
 
 <span class="kw">mod</span> <span class="ident">to_bitmask</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">to_bitmask::ToBitMask</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">to_bitmask</span>::{<span class="ident">bitmask_len</span>, <span class="ident">ToBitMaskArray</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::cmp::Ordering</span>;
