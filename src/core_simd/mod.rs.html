@@ -38,12 +38,7 @@
 <span id="31">31</span>
 <span id="32">32</span>
 <span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
 </pre><pre class="rust"><code><span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">mod</span> <span class="ident">reduction</span>;
-
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">swizzle</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">intrinsics</span>;
@@ -51,12 +46,12 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">to_bytes</span>;
 
+<span class="kw">mod</span> <span class="ident">elements</span>;
 <span class="kw">mod</span> <span class="ident">eq</span>;
 <span class="kw">mod</span> <span class="ident">fmt</span>;
 <span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">mod</span> <span class="ident">lane_count</span>;
 <span class="kw">mod</span> <span class="ident">masks</span>;
-<span class="kw">mod</span> <span class="ident">math</span>;
 <span class="kw">mod</span> <span class="ident">ops</span>;
 <span class="kw">mod</span> <span class="ident">ord</span>;
 <span class="kw">mod</span> <span class="ident">round</span>;
@@ -68,6 +63,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">simd</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::intrinsics</span>;
 
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::elements</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::eq</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::lane_count</span>::{<span class="ident">LaneCount</span>, <span class="ident">SupportedLaneCount</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::masks</span>::<span class="kw-2">*</span>;
@@ -76,5 +72,5 @@
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::core_simd::vector</span>::<span class="kw-2">*</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e6a4afc3a 2022-05-20)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (c35035cef 2022-05-30)" ></div>
 </body></html>
