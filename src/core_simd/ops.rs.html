@@ -256,6 +256,9 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">Add</span>, <span class="ident">Mul</span>};
 <span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">BitAnd</span>, <span class="ident">BitOr</span>, <span class="ident">BitXor</span>};
@@ -291,6 +294,7 @@
 
 <span class="macro">macro_rules!</span> <span class="ident">unsafe_base</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ident</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>:<span class="ident">ident</span>}, $(<span class="macro-nonterminal">$</span><span class="kw">_</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>) =&gt; {
+        <span class="comment">// Safety: $lhs and $rhs are vectors</span>
         <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>) }
     };
 }
@@ -307,6 +311,7 @@
 <span class="macro">macro_rules!</span> <span class="ident">wrap_bitshift</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ident</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>:<span class="ident">ident</span>}, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ident</span>) =&gt; {
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::suspicious_arithmetic_impl</span>)]</span>
+        <span class="comment">// Safety: $lhs and the bitand result are vectors</span>
         <span class="kw">unsafe</span> {
             <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>,
@@ -349,6 +354,7 @@
                 <span class="comment">// Nice base case to make it easy to const-fold away the other branch.</span>
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>
             };
+            <span class="comment">// Safety: $lhs and rhs are vectors</span>
             <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::intrinsics</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">simd_call</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>, <span class="ident">rhs</span>) }
         }
     };

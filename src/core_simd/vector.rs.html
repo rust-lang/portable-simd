@@ -689,6 +689,30 @@
 <span id="682">682</span>
 <span id="683">683</span>
 <span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -904,7 +928,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">bootstrap</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cast</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">SimdElement</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="comment">// Safety: The input argument is a vector of a known SIMD type.</span>
+        <span class="comment">// Safety: The input argument is a vector of a valid SIMD element type.</span>
         <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_as</span>(<span class="self">self</span>) }
     }
 
@@ -1315,61 +1339,85 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u8</span> {}
+
+<span class="comment">// Safety: u8 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">u8</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i8</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u16</span> {}
+
+<span class="comment">// Safety: u16 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">u16</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i16</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u32</span> {}
+
+<span class="comment">// Safety: u32 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">u32</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i32</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u64</span> {}
+
+<span class="comment">// Safety: u64 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">u64</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">usize</span> {}
+
+<span class="comment">// Safety: usize is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">usize</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">isize</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i8</span> {}
+
+<span class="comment">// Safety: i8 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">i8</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i8</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i16</span> {}
+
+<span class="comment">// Safety: i16 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">i16</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i16</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i32</span> {}
+
+<span class="comment">// Safety: i32 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">i32</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i32</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i64</span> {}
+
+<span class="comment">// Safety: i64 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">i64</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">isize</span> {}
+
+<span class="comment">// Safety: isize is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">isize</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">isize</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">f32</span> {}
+
+<span class="comment">// Safety: f32 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">f32</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i32</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">f64</span> {}
+
+<span class="comment">// Safety: f64 is a valid SIMD element type, and is supported by this API</span>
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">SimdElement</span> <span class="kw">for</span> <span class="ident">f64</span> {
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }

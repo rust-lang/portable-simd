@@ -45,6 +45,8 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::convert::FloatToInt</span>;
@@ -77,6 +79,8 @@
                 <span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">FloatToInt</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
                 <span class="ident">I</span>: <span class="ident">SimdElement</span>,
             {
+                <span class="comment">// Safety: `self` is a vector, and `FloatToInt` ensures the type can be casted to</span>
+                <span class="comment">// an integer.</span>
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>) }
             }
         }

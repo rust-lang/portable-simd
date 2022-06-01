@@ -82,6 +82,7 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 <span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">Neg</span>, <span class="ident">Not</span>}; <span class="comment">// unary ops</span>
@@ -98,6 +99,7 @@
             <span class="attribute">#[<span class="ident">inline</span>]</span>
             <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;operator returns a new vector without mutating the input&quot;</span>]</span>
             <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
+                <span class="comment">// Safety: `self` is a signed vector</span>
                 <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_neg</span>(<span class="self">self</span>) }
             }
         })<span class="op">*</span>

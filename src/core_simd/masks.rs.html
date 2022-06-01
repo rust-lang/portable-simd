@@ -599,6 +599,7 @@
 <span id="592">592</span>
 <span id="593">593</span>
 <span id="594">594</span>
+<span id="595">595</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -669,6 +670,7 @@
             <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="self">Self</span> <span class="op">=</span> <span class="number">0</span>;
         }
 
+        <span class="comment">// Safety: this is a valid mask element type</span>
         <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">MaskElement</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {}
     }
 }
