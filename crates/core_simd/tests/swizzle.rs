@@ -25,6 +25,16 @@ fn swizzle() {
 
 #[test]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn splat_lane() {
+    let a = Simd::from_array([1, 2, 3, 4]);
+    assert_eq!(a.splat_lane::<0>().to_array(), [1; 4]);
+    assert_eq!(a.splat_lane::<1>().to_array(), [2; 4]);
+    assert_eq!(a.splat_lane::<2>().to_array(), [3; 4]);
+    assert_eq!(a.splat_lane::<3>().to_array(), [4; 4]);
+}
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn reverse() {
     let a = Simd::from_array([1, 2, 3, 4]);
     assert_eq!(a.reverse().to_array(), [4, 3, 2, 1]);

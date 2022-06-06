@@ -188,6 +188,21 @@ where
     T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
+    /// Splat a lane to the other lanes in the vector.
+    ///
+    /// Equivalent to `Simd::splat(self[LANE])`, but may be faster.
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    pub fn splat_lane<const LANE: usize>(self) -> Self {
+        struct Splat<const LANE: usize>;
+
+        impl<const LANE: usize, const LANES: usize> Swizzle<LANES, LANES> for Splat<LANE> {
+            const INDEX: [usize; LANES] = [LANE; LANES];
+        }
+
+        Splat::<LANE>::swizzle(self)
+    }
+
     /// Reverse the order of the lanes in the vector.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
