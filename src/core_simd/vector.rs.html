@@ -738,6 +738,13 @@
 <span id="731">731</span>
 <span id="732">732</span>
 <span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -749,8 +756,9 @@
 <span class="comment">// Vectors of pointers are not for public use at the current time.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">ptr</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">SimdPartialOrd</span>, <span class="ident">SupportedLaneCount</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{
+    <span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">SimdPartialOrd</span>, <span class="ident">SupportedLaneCount</span>, <span class="ident">Swizzle</span>,
+};
 
 <span class="doccomment">/// A SIMD vector of `LANES` elements of type `T`. `Simd&lt;T, N&gt;` has the same shape as [`[T; N]`](array), but operates like `T`.</span>
 <span class="doccomment">///</span>
@@ -863,8 +871,14 @@
     <span class="doccomment">/// let v = u32x4::splat(8);</span>
     <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>([<span class="ident">value</span>; <span class="ident">LANES</span>])
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// This is a workaround for `[value; LANES]` generating a loop:</span>
+        <span class="comment">// https://github.com/rust-lang/rust/issues/97804</span>
+        <span class="kw">struct</span> <span class="ident">Splat</span>;
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="number">1</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Splat</span> {
+            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; <span class="ident">LANES</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
+        }
+        <span class="ident">Splat::swizzle</span>(<span class="ident">Simd</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="number">1</span><span class="op">&gt;</span><span class="ident">::from</span>([<span class="ident">value</span>]))
     }
 
     <span class="doccomment">/// Returns an array reference containing the entire SIMD vector.</span>
@@ -1472,5 +1486,5 @@
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (50b00252a 2022-06-06)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (5750a6aa2 2022-06-20)" ></div>
 </body></html>
