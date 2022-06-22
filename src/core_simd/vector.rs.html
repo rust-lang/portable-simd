@@ -872,7 +872,7 @@
     <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// This is a workaround for `[value; LANES]` generating a loop:</span>
+        <span class="comment">// This is preferred over `[value; LANES]`, since it&#39;s explicitly a splat:</span>
         <span class="comment">// https://github.com/rust-lang/rust/issues/97804</span>
         <span class="kw">struct</span> <span class="ident">Splat</span>;
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="number">1</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Splat</span> {
