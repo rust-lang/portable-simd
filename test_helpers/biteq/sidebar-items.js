@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["BitEq",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["BitEq",""]]};
