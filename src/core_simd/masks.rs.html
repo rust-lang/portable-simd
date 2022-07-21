@@ -599,6 +599,80 @@
 <span id="593">593</span>
 <span id="594">594</span>
 <span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
 <span class="doccomment">//! Types representing</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
@@ -684,7 +758,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Masks represent boolean inclusion/exclusion on a per-lane basis.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified.</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[T; LANES]`.</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">mask_impl::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
 <span class="kw">where</span>
@@ -1122,57 +1198,129 @@
 }
 
 <span class="doccomment">/// A mask for SIMD vectors with eight elements of 8 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i8; 8]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 16 elements of 8 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i8; 16]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 32 elements of 8 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i8; 32]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">32</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 64 elements of 8 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i8; 64]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x64</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">64</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with four elements of 16 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i16; 4]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with eight elements of 16 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i16; 8]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 16 elements of 16 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i16; 16]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 32 elements of 16 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i16; 32]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">32</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with two elements of 32 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i32; 2]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with four elements of 32 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i32; 4]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with eight elements of 32 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i32; 8]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with 16 elements of 32 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i32; 16]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">16</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with two elements of 64 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i64; 2]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with four elements of 64 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i64; 4]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with eight elements of 64 bits.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[i64; 8]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with two elements of pointer width.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[isize; 2]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">2</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with four elements of pointer width.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[isize; 4]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">4</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// A mask for SIMD vectors with eight elements of pointer width.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
+<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
+<span class="doccomment">/// `[isize; 8]`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">8</span><span class="op">&gt;</span>;
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_from</span> {
@@ -1195,5 +1343,5 @@
 <span class="macro">impl_from!</span> { <span class="ident">i64</span> =&gt; <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span> }
 <span class="macro">impl_from!</span> { <span class="ident">isize</span> =&gt; <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span> }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9a7b7d5e5 2022-07-19)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (d68e7ebc3 2022-07-20)" ></div>
 </body></html>
