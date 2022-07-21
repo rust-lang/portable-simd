@@ -139,6 +139,10 @@
 <span id="133">133</span>
 <span id="134">134</span>
 <span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::sealed::Sealed</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -152,7 +156,9 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::Simd;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{Simd, SimdUint};</span>
     <span class="doccomment">/// use core::u32::MAX;</span>
     <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
     <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -168,7 +174,9 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::Simd;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{Simd, SimdUint};</span>
     <span class="doccomment">/// use core::u32::MAX;</span>
     <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
     <span class="doccomment">/// let max = Simd::splat(MAX);</span>
@@ -275,5 +283,5 @@
 
 <span class="macro">impl_trait!</span> { <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">usize</span> }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f8588549c 2022-07-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9a7b7d5e5 2022-07-19)" ></div>
 </body></html>

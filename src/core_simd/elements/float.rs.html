@@ -353,6 +353,14 @@
 <span id="347">347</span>
 <span id="348">348</span>
 <span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::sealed::Sealed</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{
     <span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SimdPartialOrd</span>,
@@ -468,7 +476,9 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::f32x2;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
     <span class="doccomment">/// let v = f32x2::from_array([1., 2.]);</span>
     <span class="doccomment">/// assert_eq!(v.reduce_sum(), 3.);</span>
     <span class="doccomment">/// ```</span>
@@ -480,7 +490,9 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::f32x2;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
     <span class="doccomment">/// let v = f32x2::from_array([3., 4.]);</span>
     <span class="doccomment">/// assert_eq!(v.reduce_product(), 12.);</span>
     <span class="doccomment">/// ```</span>
@@ -497,7 +509,9 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::f32x2;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
     <span class="doccomment">/// let v = f32x2::from_array([1., 2.]);</span>
     <span class="doccomment">/// assert_eq!(v.reduce_max(), 2.);</span>
     <span class="doccomment">///</span>
@@ -522,7 +536,9 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::f32x2;</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
     <span class="doccomment">/// let v = f32x2::from_array([3., 7.]);</span>
     <span class="doccomment">/// assert_eq!(v.reduce_min(), 3.);</span>
     <span class="doccomment">///</span>
@@ -703,5 +719,5 @@
 
 <span class="macro">impl_trait!</span> { <span class="ident">f32</span> { <span class="ident">bits</span>: <span class="ident">u32</span>, <span class="ident">mask</span>: <span class="ident">i32</span> }, <span class="ident">f64</span> { <span class="ident">bits</span>: <span class="ident">u64</span>, <span class="ident">mask</span>: <span class="ident">i64</span> } }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f8588549c 2022-07-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9a7b7d5e5 2022-07-19)" ></div>
 </body></html>

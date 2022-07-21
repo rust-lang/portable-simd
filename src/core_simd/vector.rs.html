@@ -744,6 +744,12 @@
 <span id="738">738</span>
 <span id="739">739</span>
 <span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
 </pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">float</span>;
 <span class="kw">mod</span> <span class="ident">int</span>;
 <span class="kw">mod</span> <span class="ident">uint</span>;
@@ -919,7 +925,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::{Simd, u32x4};</span>
+    <span class="doccomment">/// # use core::simd::u32x4;</span>
     <span class="doccomment">/// let source = vec![1, 2, 3, 4, 5, 6];</span>
     <span class="doccomment">/// let v = u32x4::from_slice(&amp;source);</span>
     <span class="doccomment">/// assert_eq!(v.as_array(), &amp;[1, 2, 3, 4]);</span>
@@ -1078,7 +1084,9 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core_simd::simd::{Simd, SimdPartialOrd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{Simd, SimdPartialOrd, Mask};</span>
     <span class="doccomment">/// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 5]);</span>
     <span class="doccomment">/// let alt = Simd::from_array([-5, -4, -3, -2]);</span>
@@ -1135,7 +1143,9 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core_simd::simd::{Simd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{Simd, Mask};</span>
     <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 0]);</span>
     <span class="doccomment">/// let vals = Simd::from_array([-27, 82, -41, 124]);</span>
@@ -1169,7 +1179,9 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core_simd::simd::{Simd, SimdPartialOrd, Mask};</span>
+    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
+    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
+    <span class="doccomment">/// # use simd::{Simd, SimdPartialOrd, Mask};</span>
     <span class="doccomment">/// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];</span>
     <span class="doccomment">/// let idxs = Simd::from_array([9, 3, 0, 0]);</span>
     <span class="doccomment">/// let vals = Simd::from_array([-27, 82, -41, 124]);</span>
@@ -1485,5 +1497,5 @@
     <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">i64</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f8588549c 2022-07-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9a7b7d5e5 2022-07-19)" ></div>
 </body></html>
