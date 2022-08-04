@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -371,24 +365,6 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
-<span id="375">375</span>
-<span id="376">376</span>
-<span id="377">377</span>
-<span id="378">378</span>
-<span id="379">379</span>
-<span id="380">380</span>
-<span id="381">381</span>
-<span id="382">382</span>
-<span id="383">383</span>
-<span id="384">384</span>
-<span id="385">385</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
 
@@ -656,16 +632,13 @@
 
     <span class="doccomment">/// Interleave two vectors.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Produces two vectors with lanes taken alternately from `self` and `other`.</span>
+    <span class="doccomment">/// The resulting vectors contain lanes taken alternatively from `self` and `other`, first</span>
+    <span class="doccomment">/// filling the first result, and then the second.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The first result contains the first `LANES / 2` lanes from `self` and `other`,</span>
-    <span class="doccomment">/// alternating, starting with the first lane of `self`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The second result contains the last `LANES / 2` lanes from `self` and `other`,</span>
-    <span class="doccomment">/// alternating, starting with the lane `LANES / 2` from the start of `self`.</span>
+    <span class="doccomment">/// The reverse of this operation is [`Simd::deinterleave`].</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core::simd::Simd;</span>
     <span class="doccomment">/// let a = Simd::from_array([0, 1, 2, 3]);</span>
     <span class="doccomment">/// let b = Simd::from_array([4, 5, 6, 7]);</span>
@@ -676,29 +649,17 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">lo</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
+        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">interleave</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">high</span>: <span class="ident">bool</span>) -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
             <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="number">2</span>;
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="ident">Which::First</span>(<span class="ident">offset</span>)
+                <span class="comment">// Treat the source as a concatenated vector</span>
+                <span class="kw">let</span> <span class="ident">dst_index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">high</span> { <span class="ident">i</span> <span class="op">+</span> <span class="ident">LANES</span> } <span class="kw">else</span> { <span class="ident">i</span> };
+                <span class="kw">let</span> <span class="ident">src_index</span> <span class="op">=</span> <span class="ident">dst_index</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> (<span class="ident">dst_index</span> <span class="op">%</span> <span class="number">2</span>) <span class="op">*</span> <span class="ident">LANES</span>;
+                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">src_index</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
+                    <span class="ident">Which::First</span>(<span class="ident">src_index</span>)
                 } <span class="kw">else</span> {
-                    <span class="ident">Which::Second</span>(<span class="ident">offset</span>)
-                };
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            }
-            <span class="ident">idx</span>
-        }
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">hi</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> (<span class="ident">LANES</span> <span class="op">+</span> <span class="ident">i</span>) <span class="op">/</span> <span class="number">2</span>;
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="ident">Which::First</span>(<span class="ident">offset</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">Which::Second</span>(<span class="ident">offset</span>)
+                    <span class="ident">Which::Second</span>(<span class="ident">src_index</span> <span class="op">%</span> <span class="ident">LANES</span>)
                 };
                 <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
             }
@@ -709,11 +670,11 @@
         <span class="kw">struct</span> <span class="ident">Hi</span>;
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Lo</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">lo</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>();
+            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">interleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">false</span>);
         }
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Hi</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">hi</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>();
+            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">interleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">true</span>);
         }
 
         (<span class="ident">Lo::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>), <span class="ident">Hi::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>))
@@ -727,8 +688,10 @@
     <span class="doccomment">/// The second result takes every other lane of `self` and then `other`, starting with</span>
     <span class="doccomment">/// the second lane.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// The reverse of this operation is [`Simd::interleave`].</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// #![feature(portable_simd)]</span>
+    <span class="doccomment">/// # #![feature(portable_simd)]</span>
     <span class="doccomment">/// # use core::simd::Simd;</span>
     <span class="doccomment">/// let a = Simd::from_array([0, 4, 1, 5]);</span>
     <span class="doccomment">/// let b = Simd::from_array([2, 6, 3, 7]);</span>
@@ -739,22 +702,17 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deinterleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">even</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
+        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">deinterleave</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">second</span>: <span class="ident">bool</span>) -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> <span class="op">/</span> <span class="number">2</span> {
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">Which::First</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>);
-                <span class="ident">idx</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">LANES</span> <span class="op">/</span> <span class="number">2</span>] <span class="op">=</span> <span class="ident">Which::Second</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>);
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            }
-            <span class="ident">idx</span>
-        }
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">odd</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> <span class="op">/</span> <span class="number">2</span> {
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">Which::First</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>);
-                <span class="ident">idx</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">LANES</span> <span class="op">/</span> <span class="number">2</span>] <span class="op">=</span> <span class="ident">Which::Second</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>);
+            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
+                <span class="comment">// Treat the source as a concatenated vector</span>
+                <span class="kw">let</span> <span class="ident">src_index</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="ident">second</span> <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">src_index</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
+                    <span class="ident">Which::First</span>(<span class="ident">src_index</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">Which::Second</span>(<span class="ident">src_index</span> <span class="op">%</span> <span class="ident">LANES</span>)
+                };
                 <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
             }
             <span class="ident">idx</span>
@@ -764,16 +722,15 @@
         <span class="kw">struct</span> <span class="ident">Odd</span>;
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Even</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">even</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>();
+            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">deinterleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">false</span>);
         }
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Odd</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">odd</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>();
+            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">deinterleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">true</span>);
         }
 
         (<span class="ident">Even::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>), <span class="ident">Odd::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9067d5277 2022-07-28)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
