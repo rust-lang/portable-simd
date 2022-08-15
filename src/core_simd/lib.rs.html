@@ -20,27 +20,27 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
-</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">no_std</span>]</span>
-<span class="attribute">#![<span class="ident">feature</span>(
-    <span class="ident">convert_float_to_int</span>,
-    <span class="ident">decl_macro</span>,
-    <span class="ident">intra_doc_pointers</span>,
-    <span class="ident">platform_intrinsics</span>,
-    <span class="ident">repr_simd</span>,
-    <span class="ident">simd_ffi</span>,
-    <span class="ident">staged_api</span>,
-    <span class="ident">stdsimd</span>
+</pre><pre class="rust"><code><span class="attribute">#![no_std]</span>
+<span class="attribute">#![feature(
+    convert_float_to_int,
+    decl_macro,
+    intra_doc_pointers,
+    platform_intrinsics,
+    repr_simd,
+    simd_ffi,
+    staged_api,
+    stdsimd
 )]</span>
-<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>, <span class="ident">feature</span>(<span class="ident">generic_const_exprs</span>))]</span>
-<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>, <span class="ident">allow</span>(<span class="ident">incomplete_features</span>))]</span>
-<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">unsafe_op_in_unsafe_fn</span>, <span class="ident">clippy::undocumented_unsafe_blocks</span>)]</span>
-<span class="attribute">#![<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;portable_simd&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;86656&quot;</span>)]</span>
-<span class="doccomment">//! Portable SIMD module.</span>
+<span class="attribute">#![cfg_attr(feature = <span class="string">&quot;generic_const_exprs&quot;</span>, feature(generic_const_exprs))]</span>
+<span class="attribute">#![cfg_attr(feature = <span class="string">&quot;generic_const_exprs&quot;</span>, allow(incomplete_features))]</span>
+<span class="attribute">#![warn(missing_docs)]</span>
+<span class="attribute">#![deny(unsafe_op_in_unsafe_fn, clippy::undocumented_unsafe_blocks)]</span>
+<span class="attribute">#![unstable(feature = <span class="string">&quot;portable_simd&quot;</span>, issue = <span class="string">&quot;86656&quot;</span>)]</span>
+<span class="doccomment">//! Portable SIMD module.
 
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">core_simd</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::core_simd::simd</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">simd</span>::<span class="kw-2">*</span>;
+</span><span class="attribute">#[path = <span class="string">&quot;mod.rs&quot;</span>]</span>
+<span class="kw">mod </span>core_simd;
+<span class="kw">pub use </span><span class="self">self</span>::core_simd::simd;
+<span class="kw">pub use </span>simd::<span class="kw-2">*</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

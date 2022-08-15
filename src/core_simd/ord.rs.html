@@ -211,218 +211,218 @@
 <span id="211">211</span>
 <span id="212">212</span>
 <span id="213">213</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SupportedLaneCount</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{intrinsics, LaneCount, Mask, Simd, SimdPartialEq, SupportedLaneCount};
 
-<span class="doccomment">/// Parallel `PartialOrd`.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SimdPartialOrd</span>: <span class="ident">SimdPartialEq</span> {
-    <span class="doccomment">/// Test if each lane is less than the corresponding lane in `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+<span class="doccomment">/// Parallel `PartialOrd`.
+</span><span class="kw">pub trait </span>SimdPartialOrd: SimdPartialEq {
+    <span class="doccomment">/// Test if each lane is less than the corresponding lane in `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_lt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Test if each lane is less than or equal to the corresponding lane in `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Test if each lane is less than or equal to the corresponding lane in `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_le(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Test if each lane is greater than the corresponding lane in `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Test if each lane is greater than the corresponding lane in `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_gt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Test if each lane is greater than or equal to the corresponding lane in `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Test if each lane is greater than or equal to the corresponding lane in `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_ge(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 }
 
-<span class="doccomment">/// Parallel `Ord`.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SimdOrd</span>: <span class="ident">SimdPartialOrd</span> {
-    <span class="doccomment">/// Returns the lane-wise maximum with `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// Parallel `Ord`.
+</span><span class="kw">pub trait </span>SimdOrd: SimdPartialOrd {
+    <span class="doccomment">/// Returns the lane-wise maximum with `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns the lane-wise minimum with `other`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Returns the lane-wise minimum with `other`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Restrict each lane to a certain interval.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For each lane, returns `max` if `self` is greater than `max`, and `min` if `self` is</span>
-    <span class="doccomment">/// less than `min`. Otherwise returns `self`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if `min &gt; max` on any lane.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Restrict each lane to a certain interval.
+    ///
+    /// For each lane, returns `max` if `self` is greater than `max`, and `min` if `self` is
+    /// less than `min`. Otherwise returns `self`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `min &gt; max` on any lane.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_integer</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_integer {
+    { $(<span class="macro-nonterminal">$integer</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdPartialOrd</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdPartialOrd <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$integer</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_lt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_lt(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_le(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_le(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_gt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_gt(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_ge(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_ge(<span class="self">self</span>, other)) }
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdOrd</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdOrd <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$integer</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">simd_lt</span>(<span class="ident">other</span>).<span class="ident">select</span>(<span class="ident">other</span>, <span class="self">self</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.simd_lt(other).select(other, <span class="self">self</span>)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">simd_gt</span>(<span class="ident">other</span>).<span class="ident">select</span>(<span class="ident">other</span>, <span class="self">self</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.simd_gt(other).select(other, <span class="self">self</span>)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert!</span>(
-                    <span class="ident">min</span>.<span class="ident">simd_le</span>(<span class="ident">max</span>).<span class="ident">all</span>(),
+                    min.simd_le(max).all(),
                     <span class="string">&quot;each lane in `min` must be less than or equal to the corresponding lane in `max`&quot;</span>,
                 );
-                <span class="self">self</span>.<span class="ident">simd_max</span>(<span class="ident">min</span>).<span class="ident">simd_min</span>(<span class="ident">max</span>)
+                <span class="self">self</span>.simd_max(min).simd_min(max)
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_integer!</span> { <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">usize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">isize</span> }
+<span class="macro">impl_integer!</span> { u8, u16, u32, u64, usize, i8, i16, i32, i64, isize }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_float</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">float</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_float {
+    { $(<span class="macro-nonterminal">$float</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdPartialOrd</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">float</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdPartialOrd <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$float</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_lt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_lt(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_le(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_le(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_gt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_gt(<span class="self">self</span>, other)) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>)) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_ge(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ Mask::from_int_unchecked(intrinsics::simd_ge(<span class="self">self</span>, other)) }
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_float!</span> { <span class="ident">f32</span>, <span class="ident">f64</span> }
+<span class="macro">impl_float!</span> { f32, f64 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_mask</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_mask {
+    { $(<span class="macro-nonterminal">$integer</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdPartialOrd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdPartialOrd <span class="kw">for </span>Mask&lt;<span class="macro-nonterminal">$integer</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_lt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_lt</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">other</span>.<span class="ident">to_int</span>())) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_lt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_lt(<span class="self">self</span>.to_int(), other.to_int())) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_le</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_le</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">other</span>.<span class="ident">to_int</span>())) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_le(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_le(<span class="self">self</span>.to_int(), other.to_int())) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_gt</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_gt</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">other</span>.<span class="ident">to_int</span>())) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_gt(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_gt(<span class="self">self</span>.to_int(), other.to_int())) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_ge</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="comment">// Safety: `self` is a vector, and the result of the comparison</span>
-                <span class="comment">// is always a valid mask.</span>
-                <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_ge</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">other</span>.<span class="ident">to_int</span>())) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_ge(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="comment">// Safety: `self` is a vector, and the result of the comparison
+                // is always a valid mask.
+                </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_ge(<span class="self">self</span>.to_int(), other.to_int())) }
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdOrd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">integer</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdOrd <span class="kw">for </span>Mask&lt;<span class="macro-nonterminal">$integer</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">simd_gt</span>(<span class="ident">other</span>).<span class="ident">select_mask</span>(<span class="ident">other</span>, <span class="self">self</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.simd_gt(other).select_mask(other, <span class="self">self</span>)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">simd_lt</span>(<span class="ident">other</span>).<span class="ident">select_mask</span>(<span class="ident">other</span>, <span class="self">self</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.simd_lt(other).select_mask(other, <span class="self">self</span>)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert!</span>(
-                    <span class="ident">min</span>.<span class="ident">simd_le</span>(<span class="ident">max</span>).<span class="ident">all</span>(),
+                    min.simd_le(max).all(),
                     <span class="string">&quot;each lane in `min` must be less than or equal to the corresponding lane in `max`&quot;</span>,
                 );
-                <span class="self">self</span>.<span class="ident">simd_max</span>(<span class="ident">min</span>).<span class="ident">simd_min</span>(<span class="ident">max</span>)
+                <span class="self">self</span>.simd_max(min).simd_min(max)
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_mask!</span> { <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">isize</span> }
+<span class="macro">impl_mask!</span> { i8, i16, i32, i64, isize }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

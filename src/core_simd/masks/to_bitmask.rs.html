@@ -91,98 +91,98 @@
 <span id="91">91</span>
 <span id="92">92</span>
 <span id="93">93</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">mask_impl</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">SupportedLaneCount</span>};
+</pre><pre class="rust"><code><span class="kw">use super</span>::{mask_impl, Mask, MaskElement};
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, SupportedLaneCount};
 
-<span class="kw">mod</span> <span class="ident">sealed</span> {
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {}
+<span class="kw">mod </span>sealed {
+    <span class="kw">pub trait </span>Sealed {}
 }
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sealed::Sealed</span>;
+<span class="kw">pub use </span>sealed::Sealed;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Sealed <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
 }
 
-<span class="doccomment">/// Converts masks to and from integer bitmasks.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Each bit of the bitmask corresponds to a mask lane, starting with the LSB.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToBitMask</span>: <span class="ident">Sealed</span> {
-    <span class="doccomment">/// The integer bitmask type.</span>
-    <span class="kw">type</span> <span class="ident">BitMask</span>;
+<span class="doccomment">/// Converts masks to and from integer bitmasks.
+///
+/// Each bit of the bitmask corresponds to a mask lane, starting with the LSB.
+</span><span class="kw">pub trait </span>ToBitMask: Sealed {
+    <span class="doccomment">/// The integer bitmask type.
+    </span><span class="kw">type </span>BitMask;
 
-    <span class="doccomment">/// Converts a mask to a bitmask.</span>
-    <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::BitMask</span>;
+    <span class="doccomment">/// Converts a mask to a bitmask.
+    </span><span class="kw">fn </span>to_bitmask(<span class="self">self</span>) -&gt; <span class="self">Self</span>::BitMask;
 
-    <span class="doccomment">/// Converts a bitmask to a mask.</span>
-    <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="ident">bitmask</span>: <span class="ident"><span class="self">Self</span>::BitMask</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Converts a bitmask to a mask.
+    </span><span class="kw">fn </span>from_bitmask(bitmask: <span class="self">Self</span>::BitMask) -&gt; <span class="self">Self</span>;
 }
 
-<span class="doccomment">/// Converts masks to and from byte array bitmasks.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Each bit of the bitmask corresponds to a mask lane, starting with the LSB of the first byte.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToBitMaskArray</span>: <span class="ident">Sealed</span> {
-    <span class="doccomment">/// The length of the bitmask array.</span>
-    <span class="kw">const</span> <span class="ident">BYTES</span>: <span class="ident">usize</span>;
+<span class="doccomment">/// Converts masks to and from byte array bitmasks.
+///
+/// Each bit of the bitmask corresponds to a mask lane, starting with the LSB of the first byte.
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">pub trait </span>ToBitMaskArray: Sealed {
+    <span class="doccomment">/// The length of the bitmask array.
+    </span><span class="kw">const </span>BYTES: usize;
 
-    <span class="doccomment">/// Converts a mask to a bitmask.</span>
-    <span class="kw">fn</span> <span class="ident">to_bitmask_array</span>(<span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident"><span class="self">Self</span>::BYTES</span>];
+    <span class="doccomment">/// Converts a mask to a bitmask.
+    </span><span class="kw">fn </span>to_bitmask_array(<span class="self">self</span>) -&gt; [u8; <span class="self">Self</span>::BYTES];
 
-    <span class="doccomment">/// Converts a bitmask to a mask.</span>
-    <span class="kw">fn</span> <span class="ident">from_bitmask_array</span>(<span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident"><span class="self">Self</span>::BYTES</span>]) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Converts a bitmask to a mask.
+    </span><span class="kw">fn </span>from_bitmask_array(bitmask: [u8; <span class="self">Self</span>::BYTES]) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_integer_intrinsic</span> {
-    { $(<span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span>:<span class="ident">literal</span><span class="op">&gt;</span>)<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_integer_intrinsic {
+    { $(<span class="kw">impl </span>ToBitMask&lt;BitMask=<span class="macro-nonterminal">$int</span>:ty&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="macro-nonterminal">$lanes</span>:literal&gt;)* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">MaskElement</span><span class="op">&gt;</span> <span class="ident">ToBitMask</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lanes</span><span class="op">&gt;</span> {
-            <span class="kw">type</span> <span class="ident">BitMask</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>;
+        <span class="kw">impl</span>&lt;T: MaskElement&gt; ToBitMask <span class="kw">for </span>Mask&lt;T, <span class="macro-nonterminal">$lanes</span>&gt; {
+            <span class="kw">type </span>BitMask = <span class="macro-nonterminal">$int</span>;
 
-            <span class="kw">fn</span> <span class="ident">to_bitmask</span>(<span class="self">self</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_bitmask_integer</span>()
+            <span class="kw">fn </span>to_bitmask(<span class="self">self</span>) -&gt; <span class="macro-nonterminal">$int </span>{
+                <span class="self">self</span>.<span class="number">0</span>.to_bitmask_integer()
             }
 
-            <span class="kw">fn</span> <span class="ident">from_bitmask</span>(<span class="ident">bitmask</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_bitmask_integer</span>(<span class="ident">bitmask</span>))
+            <span class="kw">fn </span>from_bitmask(bitmask: <span class="macro-nonterminal">$int</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">Self</span>(mask_impl::Mask::from_bitmask_integer(bitmask))
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
 <span class="macro">impl_integer_intrinsic!</span> {
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">1</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">2</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">4</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">8</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u16</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">16</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u32</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">32</span><span class="op">&gt;</span>
-    <span class="kw">impl</span> <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span><span class="op">=</span><span class="ident">u64</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="number">64</span><span class="op">&gt;</span>
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u8&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">1</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u8&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">2</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u8&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">4</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u8&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">8</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u16&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">16</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u32&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">32</span>&gt;
+    <span class="kw">impl </span>ToBitMask&lt;BitMask=u64&gt; <span class="kw">for </span>Mask&lt;<span class="kw">_</span>, <span class="number">64</span>&gt;
 }
 
-<span class="doccomment">/// Returns the minimum numnber of bytes in a bitmask with `lanes` lanes.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">bitmask_len</span>(<span class="ident">lanes</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    (<span class="ident">lanes</span> <span class="op">+</span> <span class="number">7</span>) <span class="op">/</span> <span class="number">8</span>
-}
+<span class="doccomment">/// Returns the minimum numnber of bytes in a bitmask with `lanes` lanes.
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">pub const fn </span>bitmask_len(lanes: usize) -&gt; usize {
+    (lanes + <span class="number">7</span>) / <span class="number">8
+</span>}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">MaskElement</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">ToBitMaskArray</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">impl</span>&lt;T: MaskElement, <span class="kw">const </span>LANES: usize&gt; ToBitMaskArray <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">const</span> <span class="ident">BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">bitmask_len</span>(<span class="ident">LANES</span>);
+    <span class="kw">const </span>BYTES: usize = bitmask_len(LANES);
 
-    <span class="kw">fn</span> <span class="ident">to_bitmask_array</span>(<span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident"><span class="self">Self</span>::BYTES</span>] {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_bitmask_array</span>()
+    <span class="kw">fn </span>to_bitmask_array(<span class="self">self</span>) -&gt; [u8; <span class="self">Self</span>::BYTES] {
+        <span class="self">self</span>.<span class="number">0</span>.to_bitmask_array()
     }
 
-    <span class="kw">fn</span> <span class="ident">from_bitmask_array</span>(<span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident"><span class="self">Self</span>::BYTES</span>]) -&gt; <span class="self">Self</span> {
-        <span class="ident">Mask</span>(<span class="ident">mask_impl::Mask::from_bitmask_array</span>(<span class="ident">bitmask</span>))
+    <span class="kw">fn </span>from_bitmask_array(bitmask: [u8; <span class="self">Self</span>::BYTES]) -&gt; <span class="self">Self </span>{
+        Mask(mask_impl::Mask::from_bitmask_array(bitmask))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

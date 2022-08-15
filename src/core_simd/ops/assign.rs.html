@@ -122,129 +122,129 @@
 <span id="122">122</span>
 <span id="123">123</span>
 <span id="124">124</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Assignment operators</span>
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">AddAssign</span>, <span class="ident">MulAssign</span>}; <span class="comment">// commutative binary op-assignment</span>
-<span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">BitAndAssign</span>, <span class="ident">BitOrAssign</span>, <span class="ident">BitXorAssign</span>}; <span class="comment">// commutative bit binary op-assignment</span>
-<span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">DivAssign</span>, <span class="ident">RemAssign</span>, <span class="ident">SubAssign</span>}; <span class="comment">// non-commutative binary op-assignment</span>
-<span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">ShlAssign</span>, <span class="ident">ShrAssign</span>}; <span class="comment">// non-commutative bit binary op-assignment</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Assignment operators
+</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>core::ops::{AddAssign, MulAssign}; <span class="comment">// commutative binary op-assignment
+</span><span class="kw">use </span>core::ops::{BitAndAssign, BitOrAssign, BitXorAssign}; <span class="comment">// commutative bit binary op-assignment
+</span><span class="kw">use </span>core::ops::{DivAssign, RemAssign, SubAssign}; <span class="comment">// non-commutative binary op-assignment
+</span><span class="kw">use </span>core::ops::{ShlAssign, ShrAssign}; <span class="comment">// non-commutative bit binary op-assignment
 
-<span class="comment">// Arithmetic</span>
+// Arithmetic
 
-<span class="macro">macro_rules!</span> <span class="ident">assign_ops</span> {
-    ($(<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assignTrait</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>,
+</span><span class="macro">macro_rules!</span> assign_ops {
+    ($(<span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$assignTrait</span>:ident&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+        <span class="kw">where
+            </span><span class="self">Self</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>,
         {
-            <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_call</span>:<span class="ident">ident</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">call</span>:<span class="ident">ident</span>
+            <span class="kw">fn </span><span class="macro-nonterminal">$assign_call</span>:ident(rhs: U) {
+                <span class="macro-nonterminal">$call</span>:ident
             }
         })<span class="kw-2">*</span>) =&gt; {
-        $(<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assignTrait</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&lt;</span><span class="macro-nonterminal">U</span>, <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>,
-            <span class="ident">T</span>: <span class="ident">SimdElement</span>,
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        $(<span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$assignTrait</span>&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+        <span class="kw">where
+            </span><span class="self">Self</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">U</span>, Output = <span class="self">Self</span>&gt;,
+            T: SimdElement,
+            LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">assign_call</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">U</span>) {
-                <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">call</span>(<span class="ident">rhs</span>);
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span><span class="macro-nonterminal">$assign_call</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: U) {
+                <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.<span class="macro-nonterminal">$call</span>(rhs);
             }
-        })<span class="op">*</span>
+        })*
     }
 }
 
 <span class="macro">assign_ops!</span> {
-    <span class="comment">// Arithmetic</span>
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">AddAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Add</span>,
+    <span class="comment">// Arithmetic
+    </span><span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; AddAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Add,
     {
-        <span class="kw">fn</span> <span class="ident">add_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">add</span>
+        <span class="kw">fn </span>add_assign(rhs: U) {
+            add
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">MulAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Mul</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; MulAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Mul,
     {
-        <span class="kw">fn</span> <span class="ident">mul_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">mul</span>
+        <span class="kw">fn </span>mul_assign(rhs: U) {
+            mul
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SubAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sub</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; SubAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sub,
     {
-        <span class="kw">fn</span> <span class="ident">sub_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">sub</span>
+        <span class="kw">fn </span>sub_assign(rhs: U) {
+            sub
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">DivAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Div</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; DivAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Div,
     {
-        <span class="kw">fn</span> <span class="ident">div_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">div</span>
+        <span class="kw">fn </span>div_assign(rhs: U) {
+            div
         }
     }
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">RemAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Rem</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; RemAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Rem,
     {
-        <span class="kw">fn</span> <span class="ident">rem_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">rem</span>
-        }
-    }
-
-    <span class="comment">// Bitops</span>
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">BitAndAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">BitAnd</span>,
-    {
-        <span class="kw">fn</span> <span class="ident">bitand_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">bitand</span>
+        <span class="kw">fn </span>rem_assign(rhs: U) {
+            rem
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">BitOrAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">BitOr</span>,
+    <span class="comment">// Bitops
+    </span><span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; BitAndAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: BitAnd,
     {
-        <span class="kw">fn</span> <span class="ident">bitor_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">bitor</span>
+        <span class="kw">fn </span>bitand_assign(rhs: U) {
+            bitand
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">BitXorAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">BitXor</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; BitOrAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: BitOr,
     {
-        <span class="kw">fn</span> <span class="ident">bitxor_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">bitxor</span>
+        <span class="kw">fn </span>bitor_assign(rhs: U) {
+            bitor
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">ShlAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Shl</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; BitXorAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: BitXor,
     {
-        <span class="kw">fn</span> <span class="ident">shl_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">shl</span>
+        <span class="kw">fn </span>bitxor_assign(rhs: U) {
+            bitxor
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">ShrAssign</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Shr</span>,
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; ShlAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Shl,
     {
-        <span class="kw">fn</span> <span class="ident">shr_assign</span>(<span class="ident">rhs</span>: <span class="ident">U</span>) {
-            <span class="ident">shr</span>
+        <span class="kw">fn </span>shl_assign(rhs: U) {
+            shl
+        }
+    }
+
+    <span class="kw">impl</span>&lt;T, U, <span class="kw">const </span>LANES: usize&gt; ShrAssign&lt;U&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Shr,
+    {
+        <span class="kw">fn </span>shr_assign(rhs: U) {
+            shr
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

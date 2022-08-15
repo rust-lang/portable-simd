@@ -76,83 +76,83 @@
 <span id="76">76</span>
 <span id="77">77</span>
 <span id="78">78</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
-<span class="kw">use</span> <span class="ident">core::ops</span>::{<span class="ident">Neg</span>, <span class="ident">Not</span>}; <span class="comment">// unary ops</span>
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+<span class="kw">use </span>core::ops::{Neg, Not}; <span class="comment">// unary ops
 
-<span class="macro">macro_rules!</span> <span class="ident">neg</span> {
-    ($(<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)<span class="kw-2">*</span>) =&gt; {
-        $(<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>: <span class="ident">SimdElement</span>,
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+</span><span class="macro">macro_rules!</span> neg {
+    ($(<span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$scalar</span>:ty, LANES&gt;)<span class="kw-2">*</span>) =&gt; {
+        $(<span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$scalar</span>, LANES&gt;
+        <span class="kw">where
+            </span><span class="macro-nonterminal">$scalar</span>: SimdElement,
+            LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+            <span class="kw">type </span>Output = <span class="self">Self</span>;
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;operator returns a new vector without mutating the input&quot;</span>]</span>
-            <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="comment">// Safety: `self` is a signed vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_neg</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="attribute">#[must_use = <span class="string">&quot;operator returns a new vector without mutating the input&quot;</span>]</span>
+            <span class="kw">fn </span>neg(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                <span class="comment">// Safety: `self` is a signed vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_neg(<span class="self">self</span>) }
             }
-        })<span class="op">*</span>
+        })*
     }
 }
 
 <span class="macro">neg!</span> {
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">f32</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;f32, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;f64, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;i8, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;i16, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;i32, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;i64, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Neg <span class="kw">for </span>Simd&lt;isize, LANES&gt;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">not</span> {
-    ($(<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>:<span class="ident">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)<span class="kw-2">*</span>) =&gt; {
-        $(<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>: <span class="ident">SimdElement</span>,
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="macro">macro_rules!</span> not {
+    ($(<span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$scalar</span>:ty, LANES&gt;)<span class="kw-2">*</span>) =&gt; {
+        $(<span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$scalar</span>, LANES&gt;
+        <span class="kw">where
+            </span><span class="macro-nonterminal">$scalar</span>: SimdElement,
+            LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+            <span class="kw">type </span>Output = <span class="self">Self</span>;
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;operator returns a new vector without mutating the input&quot;</span>]</span>
-            <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="self">self</span> <span class="op">^</span> (<span class="ident">Simd::splat</span>(<span class="op">!</span>(<span class="number">0</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar</span>)))
+            <span class="attribute">#[inline]</span>
+            <span class="attribute">#[must_use = <span class="string">&quot;operator returns a new vector without mutating the input&quot;</span>]</span>
+            <span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                <span class="self">self </span>^ (Simd::splat(!(<span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$scalar</span>)))
             }
-        })<span class="op">*</span>
+        })*
     }
 }
 
 <span class="macro">not!</span> {
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;i8, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;i16, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;i32, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;i64, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;isize, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;u8, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;u16, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;u32, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;u64, LANES&gt;
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Not</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
+    <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Not <span class="kw">for </span>Simd&lt;usize, LANES&gt;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

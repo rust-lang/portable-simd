@@ -61,68 +61,68 @@
 <span id="61">61</span>
 <span id="62">62</span>
 <span id="63">63</span>
-</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+</pre><pre class="rust"><code><span class="attribute">#![allow(non_camel_case_types)]</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::Simd</span>;
+<span class="kw">use </span><span class="kw">crate</span>::simd::Simd;
 
-<span class="doccomment">/// A SIMD vector with two elements of type `isize`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">isizex2</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A SIMD vector with two elements of type `isize`.
+</span><span class="kw">pub type </span>isizex2 = Simd&lt;isize, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A SIMD vector with four elements of type `isize`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">isizex4</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A SIMD vector with four elements of type `isize`.
+</span><span class="kw">pub type </span>isizex4 = Simd&lt;isize, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A SIMD vector with eight elements of type `isize`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">isizex8</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A SIMD vector with eight elements of type `isize`.
+</span><span class="kw">pub type </span>isizex8 = Simd&lt;isize, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A 32-bit SIMD vector with two elements of type `i16`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i16x2</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 32-bit SIMD vector with two elements of type `i16`.
+</span><span class="kw">pub type </span>i16x2 = Simd&lt;i16, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A 64-bit SIMD vector with four elements of type `i16`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i16x4</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 64-bit SIMD vector with four elements of type `i16`.
+</span><span class="kw">pub type </span>i16x4 = Simd&lt;i16, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A 128-bit SIMD vector with eight elements of type `i16`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i16x8</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 128-bit SIMD vector with eight elements of type `i16`.
+</span><span class="kw">pub type </span>i16x8 = Simd&lt;i16, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A 256-bit SIMD vector with 16 elements of type `i16`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i16x16</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 256-bit SIMD vector with 16 elements of type `i16`.
+</span><span class="kw">pub type </span>i16x16 = Simd&lt;i16, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A 512-bit SIMD vector with 32 elements of type `i16`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i16x32</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">32</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 512-bit SIMD vector with 32 elements of type `i16`.
+</span><span class="kw">pub type </span>i16x32 = Simd&lt;i16, <span class="number">32</span>&gt;;
 
-<span class="doccomment">/// A 64-bit SIMD vector with two elements of type `i32`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i32x2</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 64-bit SIMD vector with two elements of type `i32`.
+</span><span class="kw">pub type </span>i32x2 = Simd&lt;i32, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A 128-bit SIMD vector with four elements of type `i32`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i32x4</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 128-bit SIMD vector with four elements of type `i32`.
+</span><span class="kw">pub type </span>i32x4 = Simd&lt;i32, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A 256-bit SIMD vector with eight elements of type `i32`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i32x8</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 256-bit SIMD vector with eight elements of type `i32`.
+</span><span class="kw">pub type </span>i32x8 = Simd&lt;i32, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A 512-bit SIMD vector with 16 elements of type `i32`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i32x16</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 512-bit SIMD vector with 16 elements of type `i32`.
+</span><span class="kw">pub type </span>i32x16 = Simd&lt;i32, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A 128-bit SIMD vector with two elements of type `i64`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i64x2</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 128-bit SIMD vector with two elements of type `i64`.
+</span><span class="kw">pub type </span>i64x2 = Simd&lt;i64, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A 256-bit SIMD vector with four elements of type `i64`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i64x4</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 256-bit SIMD vector with four elements of type `i64`.
+</span><span class="kw">pub type </span>i64x4 = Simd&lt;i64, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A 512-bit SIMD vector with eight elements of type `i64`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i64x8</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 512-bit SIMD vector with eight elements of type `i64`.
+</span><span class="kw">pub type </span>i64x8 = Simd&lt;i64, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A 32-bit SIMD vector with four elements of type `i8`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x4</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 32-bit SIMD vector with four elements of type `i8`.
+</span><span class="kw">pub type </span>i8x4 = Simd&lt;i8, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A 64-bit SIMD vector with eight elements of type `i8`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x8</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 64-bit SIMD vector with eight elements of type `i8`.
+</span><span class="kw">pub type </span>i8x8 = Simd&lt;i8, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A 128-bit SIMD vector with 16 elements of type `i8`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x16</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 128-bit SIMD vector with 16 elements of type `i8`.
+</span><span class="kw">pub type </span>i8x16 = Simd&lt;i8, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A 256-bit SIMD vector with 32 elements of type `i8`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x32</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">32</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 256-bit SIMD vector with 32 elements of type `i8`.
+</span><span class="kw">pub type </span>i8x32 = Simd&lt;i8, <span class="number">32</span>&gt;;
 
-<span class="doccomment">/// A 512-bit SIMD vector with 64 elements of type `i8`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">i8x64</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">64</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A 512-bit SIMD vector with 64 elements of type `i8`.
+</span><span class="kw">pub type </span>i8x64 = Simd&lt;i8, <span class="number">64</span>&gt;;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

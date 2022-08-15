@@ -321,328 +321,328 @@
 <span id="321">321</span>
 <span id="322">322</span>
 <span id="323">323</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::MaskElement</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>, <span class="ident">ToBitMask</span>};
+</span><span class="kw">use </span><span class="kw">super</span>::MaskElement;
+<span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::ToBitMaskArray</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">use </span><span class="kw">crate</span>::simd::ToBitMaskArray;
 
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
+<span class="attribute">#[repr(transparent)]</span>
+<span class="kw">pub struct </span>Mask&lt;T, <span class="kw">const </span>LANES: usize&gt;(Simd&lt;T, LANES&gt;)
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Copy <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Clone <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw-2">*</span><span class="self">self</span>
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw-2">*</span><span class="self">self
+    </span>}
+}
+
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialEq <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + PartialEq,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
+{
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0</span>.eq(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialOrd <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + PartialOrd,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;core::cmp::Ordering&gt; {
+        <span class="self">self</span>.<span class="number">0</span>.partial_cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialOrd</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Eq <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + Eq,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">core::cmp::Ordering</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+}
+
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Ord <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + Ord,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
+{
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; core::cmp::Ordering {
+        <span class="self">self</span>.<span class="number">0</span>.cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">Eq</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-{
+<span class="comment">// Used for bitmask bit order workaround
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait </span>ReverseBits {
+    <span class="comment">// Reverse the least significant `n` bits of `self`.
+    // (Remaining bits must be 0.)
+    </span><span class="kw">fn </span>reverse_bits(<span class="self">self</span>, n: usize) -&gt; <span class="self">Self</span>;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">Ord</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-{
-    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">core::cmp::Ordering</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
-    }
-}
-
-<span class="comment">// Used for bitmask bit order workaround</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ReverseBits</span> {
-    <span class="comment">// Reverse the least significant `n` bits of `self`.</span>
-    <span class="comment">// (Remaining bits must be 0.)</span>
-    <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span>;
-}
-
-<span class="macro">macro_rules!</span> <span class="ident">impl_reverse_bits</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_reverse_bits {
+    { $(<span class="macro-nonterminal">$int</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span> <span class="ident">ReverseBits</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span> {
-            <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-            <span class="kw">fn</span> <span class="ident">reverse_bits</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">rev</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span><span class="ident">::reverse_bits</span>(<span class="self">self</span>);
-                <span class="kw">let</span> <span class="ident">bitsize</span> <span class="op">=</span> <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">int</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">8</span>;
-                <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">bitsize</span> {
-                    <span class="comment">// Shift things back to the right</span>
-                    <span class="ident">rev</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="ident">bitsize</span> <span class="op">-</span> <span class="ident">n</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">rev</span>
+        <span class="kw">impl </span>ReverseBits <span class="kw">for </span><span class="macro-nonterminal">$int </span>{
+            <span class="attribute">#[inline(always)]</span>
+            <span class="kw">fn </span>reverse_bits(<span class="self">self</span>, n: usize) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>rev = &lt;<span class="macro-nonterminal">$int</span>&gt;::reverse_bits(<span class="self">self</span>);
+                <span class="kw">let </span>bitsize = core::mem::size_of::&lt;<span class="macro-nonterminal">$int</span>&gt;() * <span class="number">8</span>;
+                <span class="kw">if </span>n &lt; bitsize {
+                    <span class="comment">// Shift things back to the right
+                    </span>rev &gt;&gt; (bitsize - n)
+                } <span class="kw">else </span>{
+                    rev
                 }
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_reverse_bits!</span> { <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span> }
+<span class="macro">impl_reverse_bits!</span> { u8, u16, u32, u64 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">Simd::splat</span>(<span class="kw">if</span> <span class="ident">value</span> { <span class="ident">T::TRUE</span> } <span class="kw">else</span> { <span class="ident">T::FALSE</span> }))
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(Simd::splat(<span class="kw">if </span>value { T::TRUE } <span class="kw">else </span>{ T::FALSE }))
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">T::eq</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>], <span class="ident">T::TRUE</span>)
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub unsafe fn </span>test_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>, lane: usize) -&gt; bool {
+        T::eq(<span class="self">self</span>.<span class="number">0</span>[lane], T::TRUE)
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
-        <span class="self">self</span>.<span class="number">0</span>[<span class="ident">lane</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span> { <span class="ident">T::TRUE</span> } <span class="kw">else</span> { <span class="ident">T::FALSE</span> }
+    <span class="attribute">#[inline]</span>
+    <span class="kw">pub unsafe fn </span>set_unchecked(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lane: usize, value: bool) {
+        <span class="self">self</span>.<span class="number">0</span>[lane] = <span class="kw">if </span>value { T::TRUE } <span class="kw">else </span>{ T::FALSE }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_int</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>to_int(<span class="self">self</span>) -&gt; Simd&lt;T, LANES&gt; {
+        <span class="self">self</span>.<span class="number">0
+    </span>}
+
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub unsafe fn </span>from_int_unchecked(value: Simd&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(value)
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">value</span>)
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">convert</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">U</span>: <span class="ident">MaskElement</span>,
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>convert&lt;U&gt;(<span class="self">self</span>) -&gt; Mask&lt;U, LANES&gt;
+    <span class="kw">where
+        </span>U: MaskElement,
     {
-        <span class="comment">// Safety: masks are simply integer vectors of 0 and -1, and we can cast the element type.</span>
-        <span class="kw">unsafe</span> { <span class="ident">Mask</span>(<span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="number">0</span>)) }
+        <span class="comment">// Safety: masks are simply integer vectors of 0 and -1, and we can cast the element type.
+        </span><span class="kw">unsafe </span>{ Mask(intrinsics::simd_cast(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bitmask_array</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">N</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident">N</span>]
-    <span class="kw">where</span>
-        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMaskArray</span>,
-        [(); <span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>]: <span class="ident">Sized</span>,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>to_bitmask_array&lt;<span class="kw">const </span>N: usize&gt;(<span class="self">self</span>) -&gt; [u8; N]
+    <span class="kw">where
+        </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMaskArray,
+        [(); &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES]: Sized,
     {
-        <span class="macro">assert_eq!</span>(<span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>, <span class="ident">N</span>);
+        <span class="macro">assert_eq!</span>(&lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES, N);
 
-        <span class="comment">// Safety: N is the correct bitmask size</span>
-        <span class="kw">unsafe</span> {
-            <span class="comment">// Compute the bitmask</span>
-            <span class="kw">let</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>] <span class="op">=</span>
-                <span class="ident">intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>);
+        <span class="comment">// Safety: N is the correct bitmask size
+        </span><span class="kw">unsafe </span>{
+            <span class="comment">// Compute the bitmask
+            </span><span class="kw">let </span>bitmask: [u8; &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES] =
+                intrinsics::simd_bitmask(<span class="self">self</span>.<span class="number">0</span>);
 
-            <span class="comment">// Transmute to the return type, previously asserted to be the same size</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">N</span>] <span class="op">=</span> <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
+            <span class="comment">// Transmute to the return type, previously asserted to be the same size
+            </span><span class="kw">let </span><span class="kw-2">mut </span>bitmask: [u8; N] = core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
 
-            <span class="comment">// LLVM assumes bit order should match endianness</span>
-            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
+            <span class="comment">// LLVM assumes bit order should match endianness
+            </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
+                <span class="kw">for </span>x <span class="kw">in </span>bitmask.as_mut() {
+                    <span class="kw-2">*</span>x = x.reverse_bits();
                 }
             };
 
-            <span class="ident">bitmask</span>
+            bitmask
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bitmask_array</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">N</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="ident">N</span>]) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMaskArray</span>,
-        [(); <span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>]: <span class="ident">Sized</span>,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>from_bitmask_array&lt;<span class="kw">const </span>N: usize&gt;(<span class="kw-2">mut </span>bitmask: [u8; N]) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMaskArray,
+        [(); &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES]: Sized,
     {
-        <span class="macro">assert_eq!</span>(<span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>, <span class="ident">N</span>);
+        <span class="macro">assert_eq!</span>(&lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES, N);
 
-        <span class="comment">// Safety: N is the correct bitmask size</span>
-        <span class="kw">unsafe</span> {
-            <span class="comment">// LLVM assumes bit order should match endianness</span>
-            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">bitmask</span>.<span class="ident">as_mut</span>() {
-                    <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">reverse_bits</span>();
+        <span class="comment">// Safety: N is the correct bitmask size
+        </span><span class="kw">unsafe </span>{
+            <span class="comment">// LLVM assumes bit order should match endianness
+            </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
+                <span class="kw">for </span>x <span class="kw">in </span>bitmask.as_mut() {
+                    <span class="kw-2">*</span>x = x.reverse_bits();
                 }
             }
 
-            <span class="comment">// Transmute to the bitmask type, previously asserted to be the same size</span>
-            <span class="kw">let</span> <span class="ident">bitmask</span>: [<span class="ident">u8</span>; <span class="op">&lt;</span><span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">ToBitMaskArray</span><span class="op">&gt;</span><span class="ident">::BYTES</span>] <span class="op">=</span>
-                <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bitmask</span>);
+            <span class="comment">// Transmute to the bitmask type, previously asserted to be the same size
+            </span><span class="kw">let </span>bitmask: [u8; &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES] =
+                core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
 
-            <span class="comment">// Compute the regular mask</span>
-            <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_select_bitmask</span>(
-                <span class="ident">bitmask</span>,
-                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
-                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">false</span>).<span class="ident">to_int</span>(),
+            <span class="comment">// Compute the regular mask
+            </span><span class="self">Self</span>::from_int_unchecked(intrinsics::simd_select_bitmask(
+                bitmask,
+                <span class="self">Self</span>::splat(<span class="bool-val">true</span>).to_int(),
+                <span class="self">Self</span>::splat(<span class="bool-val">false</span>).to_int(),
             ))
         }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">to_bitmask_integer</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">ReverseBits</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">U</span>
-    <span class="kw">where</span>
-        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span>,
+    <span class="attribute">#[inline]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>to_bitmask_integer&lt;U: ReverseBits&gt;(<span class="self">self</span>) -&gt; U
+    <span class="kw">where
+        </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMask&lt;BitMask = U&gt;,
     {
-        <span class="comment">// Safety: U is required to be the appropriate bitmask type</span>
-        <span class="kw">let</span> <span class="ident">bitmask</span>: <span class="ident">U</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_bitmask</span>(<span class="self">self</span>.<span class="number">0</span>) };
+        <span class="comment">// Safety: U is required to be the appropriate bitmask type
+        </span><span class="kw">let </span>bitmask: U = <span class="kw">unsafe </span>{ intrinsics::simd_bitmask(<span class="self">self</span>.<span class="number">0</span>) };
 
-        <span class="comment">// LLVM assumes bit order should match endianness</span>
-        <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>(<span class="ident">LANES</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">bitmask</span>
+        <span class="comment">// LLVM assumes bit order should match endianness
+        </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
+            bitmask.reverse_bits(LANES)
+        } <span class="kw">else </span>{
+            bitmask
         }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_bitmask_integer</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">ReverseBits</span><span class="op">&gt;</span>(<span class="ident">bitmask</span>: <span class="ident">U</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident"><span class="kw">super</span>::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">ToBitMask</span><span class="op">&lt;</span><span class="ident">BitMask</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span>,
+    <span class="attribute">#[inline]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_bitmask_integer&lt;U: ReverseBits&gt;(bitmask: U) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMask&lt;BitMask = U&gt;,
     {
-        <span class="comment">// LLVM assumes bit order should match endianness</span>
-        <span class="kw">let</span> <span class="ident">bitmask</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;big&quot;</span>) {
-            <span class="ident">bitmask</span>.<span class="ident">reverse_bits</span>(<span class="ident">LANES</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">bitmask</span>
+        <span class="comment">// LLVM assumes bit order should match endianness
+        </span><span class="kw">let </span>bitmask = <span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
+            bitmask.reverse_bits(LANES)
+        } <span class="kw">else </span>{
+            bitmask
         };
 
-        <span class="comment">// Safety: U is required to be the appropriate bitmask type</span>
-        <span class="kw">unsafe</span> {
-            <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">intrinsics::simd_select_bitmask</span>(
-                <span class="ident">bitmask</span>,
-                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>).<span class="ident">to_int</span>(),
-                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">false</span>).<span class="ident">to_int</span>(),
+        <span class="comment">// Safety: U is required to be the appropriate bitmask type
+        </span><span class="kw">unsafe </span>{
+            <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_select_bitmask(
+                bitmask,
+                <span class="self">Self</span>::splat(<span class="bool-val">true</span>).to_int(),
+                <span class="self">Self</span>::splat(<span class="bool-val">false</span>).to_int(),
             ))
         }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// Safety: use `self` as an integer vector</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_any</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>any(<span class="self">self</span>) -&gt; bool {
+        <span class="comment">// Safety: use `self` as an integer vector
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_any(<span class="self">self</span>.to_int()) }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// Safety: use `self` as an integer vector</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_all</span>(<span class="self">self</span>.<span class="ident">to_int</span>()) }
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>all(<span class="self">self</span>) -&gt; bool {
+        <span class="comment">// Safety: use `self` as an integer vector
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_all(<span class="self">self</span>.to_int()) }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::convert::From&lt;Mask&lt;T, LANES&gt;&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">value</span>.<span class="number">0</span>
+    <span class="kw">fn </span>from(value: Mask&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+        value.<span class="number">0
+    </span>}
+}
+
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAnd <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
+{
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Safety: `self` is an integer vector
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>(intrinsics::simd_and(<span class="self">self</span>.<span class="number">0</span>, rhs.<span class="number">0</span>)) }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOr <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Safety: `self` is an integer vector</span>
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_and</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Safety: `self` is an integer vector
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>(intrinsics::simd_or(<span class="self">self</span>.<span class="number">0</span>, rhs.<span class="number">0</span>)) }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXor <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Safety: `self` is an integer vector</span>
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_or</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Safety: `self` is an integer vector
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>(intrinsics::simd_xor(<span class="self">self</span>.<span class="number">0</span>, rhs.<span class="number">0</span>)) }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::Not <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Safety: `self` is an integer vector</span>
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">intrinsics::simd_xor</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="ident">rhs</span>.<span class="number">0</span>)) }
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Not</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-{
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">true</span>) <span class="op">^</span> <span class="self">self</span>
-    }
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+        <span class="self">Self</span>::splat(<span class="bool-val">true</span>) ^ <span class="self">self
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

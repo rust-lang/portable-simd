@@ -56,63 +56,63 @@
 <span id="56">56</span>
 <span id="57">57</span>
 <span id="58">58</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
-<span class="kw">use</span> <span class="ident">core</span>::{
-    <span class="ident">iter</span>::{<span class="ident">Product</span>, <span class="ident">Sum</span>},
-    <span class="ident">ops</span>::{<span class="ident">Add</span>, <span class="ident">Mul</span>},
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount};
+<span class="kw">use </span>core::{
+    iter::{Product, Sum},
+    ops::{Add, Mul},
 };
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_traits</span> {
-    { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span> } =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sum</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="macro">macro_rules!</span> impl_traits {
+    { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty </span>} =&gt; {
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Sum&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span>&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">fn</span> <span class="ident">sum</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">iter</span>.<span class="ident">fold</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Add::add</span>)
+            <span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+                iter.fold(Simd::splat(<span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Add::add</span>)
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Product</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Product&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span>&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">fn</span> <span class="ident">product</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">iter</span>.<span class="ident">fold</span>(<span class="ident">Simd::splat</span>(<span class="number">1</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Mul::mul</span>)
+            <span class="kw">fn </span>product&lt;I: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+                iter.fold(Simd::splat(<span class="number">1 </span><span class="kw">as </span><span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Mul::mul</span>)
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sum</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>LANES: usize&gt; Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span>&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">fn</span> <span class="ident">sum</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">iter</span>.<span class="ident">fold</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Add::add</span>)
+            <span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+                iter.fold(Simd::splat(<span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Add::add</span>)
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Product</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>LANES: usize&gt; Product&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>, <span class="macro-nonterminal">LANES</span>&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">fn</span> <span class="ident">product</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">iter</span>.<span class="ident">fold</span>(<span class="ident">Simd::splat</span>(<span class="number">1</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Mul::mul</span>)
+            <span class="kw">fn </span>product&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+                iter.fold(Simd::splat(<span class="number">1 </span><span class="kw">as </span><span class="macro-nonterminal">$</span><span class="kw">type</span>), <span class="macro-nonterminal">Mul::mul</span>)
             }
         }
     }
 }
 
-<span class="macro">impl_traits!</span> { <span class="ident">f32</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">f64</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">u8</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">u16</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">u32</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">u64</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">usize</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">i8</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">i16</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">i32</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">i64</span> }
-<span class="macro">impl_traits!</span> { <span class="ident">isize</span> }
+<span class="macro">impl_traits!</span> { f32 }
+<span class="macro">impl_traits!</span> { f64 }
+<span class="macro">impl_traits!</span> { u8 }
+<span class="macro">impl_traits!</span> { u16 }
+<span class="macro">impl_traits!</span> { u32 }
+<span class="macro">impl_traits!</span> { u64 }
+<span class="macro">impl_traits!</span> { usize }
+<span class="macro">impl_traits!</span> { i8 }
+<span class="macro">impl_traits!</span> { i16 }
+<span class="macro">impl_traits!</span> { i32 }
+<span class="macro">impl_traits!</span> { i64 }
+<span class="macro">impl_traits!</span> { isize }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

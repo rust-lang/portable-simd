@@ -137,144 +137,144 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::sealed::Sealed</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SupportedLaneCount</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{intrinsics, LaneCount, Simd, SupportedLaneCount};
 
-<span class="doccomment">/// Operations on SIMD vectors of unsigned integers.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SimdUint</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Sealed</span> {
-    <span class="doccomment">/// Scalar type contained by this SIMD vector type.</span>
-    <span class="kw">type</span> <span class="ident">Scalar</span>;
+<span class="doccomment">/// Operations on SIMD vectors of unsigned integers.
+</span><span class="kw">pub trait </span>SimdUint: Copy + Sealed {
+    <span class="doccomment">/// Scalar type contained by this SIMD vector type.
+    </span><span class="kw">type </span>Scalar;
 
-    <span class="doccomment">/// Lanewise saturating add.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{Simd, SimdUint};</span>
-    <span class="doccomment">/// use core::u32::MAX;</span>
-    <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
-    <span class="doccomment">/// let max = Simd::splat(MAX);</span>
-    <span class="doccomment">/// let unsat = x + max;</span>
-    <span class="doccomment">/// let sat = x.saturating_add(max);</span>
-    <span class="doccomment">/// assert_eq!(unsat, Simd::from_array([1, 0, MAX, MAX - 1]));</span>
-    <span class="doccomment">/// assert_eq!(sat, max);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Lanewise saturating add.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{Simd, SimdUint};
+    /// use core::u32::MAX;
+    /// let x = Simd::from_array([2, 1, 0, MAX]);
+    /// let max = Simd::splat(MAX);
+    /// let unsat = x + max;
+    /// let sat = x.saturating_add(max);
+    /// assert_eq!(unsat, Simd::from_array([1, 0, MAX, MAX - 1]));
+    /// assert_eq!(sat, max);
+    /// ```
+    </span><span class="kw">fn </span>saturating_add(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Lanewise saturating subtract.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{Simd, SimdUint};</span>
-    <span class="doccomment">/// use core::u32::MAX;</span>
-    <span class="doccomment">/// let x = Simd::from_array([2, 1, 0, MAX]);</span>
-    <span class="doccomment">/// let max = Simd::splat(MAX);</span>
-    <span class="doccomment">/// let unsat = x - max;</span>
-    <span class="doccomment">/// let sat = x.saturating_sub(max);</span>
-    <span class="doccomment">/// assert_eq!(unsat, Simd::from_array([3, 2, 1, 0]));</span>
-    <span class="doccomment">/// assert_eq!(sat, Simd::splat(0));</span>
-    <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Lanewise saturating subtract.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{Simd, SimdUint};
+    /// use core::u32::MAX;
+    /// let x = Simd::from_array([2, 1, 0, MAX]);
+    /// let max = Simd::splat(MAX);
+    /// let unsat = x - max;
+    /// let sat = x.saturating_sub(max);
+    /// assert_eq!(unsat, Simd::from_array([3, 2, 1, 0]));
+    /// assert_eq!(sat, Simd::splat(0));
+    </span><span class="kw">fn </span>saturating_sub(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns the sum of the lanes of the vector, with wrapping addition.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_sum</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the sum of the lanes of the vector, with wrapping addition.
+    </span><span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the product of the lanes of the vector, with wrapping multiplication.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_product</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the product of the lanes of the vector, with wrapping multiplication.
+    </span><span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the maximum lane in the vector.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_max</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the maximum lane in the vector.
+    </span><span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the minimum lane in the vector.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_min</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the minimum lane in the vector.
+    </span><span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the cumulative bitwise &quot;and&quot; across the lanes of the vector.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_and</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the cumulative bitwise &quot;and&quot; across the lanes of the vector.
+    </span><span class="kw">fn </span>reduce_and(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the cumulative bitwise &quot;or&quot; across the lanes of the vector.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_or</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the cumulative bitwise &quot;or&quot; across the lanes of the vector.
+    </span><span class="kw">fn </span>reduce_or(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the cumulative bitwise &quot;xor&quot; across the lanes of the vector.</span>
-    <span class="kw">fn</span> <span class="ident">reduce_xor</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the cumulative bitwise &quot;xor&quot; across the lanes of the vector.
+    </span><span class="kw">fn </span>reduce_xor(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_trait</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_trait {
+    { $(<span class="macro-nonterminal">$ty</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Sealed <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdUint</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdUint <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">type</span> <span class="ident">Scalar</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>;
+            <span class="kw">type </span>Scalar = <span class="macro-nonterminal">$ty</span>;
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Safety: `self` is a vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_saturating_add</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>saturating_add(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Safety: `self` is a vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_saturating_add(<span class="self">self</span>, second) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Safety: `self` is a vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_saturating_sub</span>(<span class="self">self</span>, <span class="ident">second</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>saturating_sub(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Safety: `self` is a vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_saturating_sub(<span class="self">self</span>, second) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_sum</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_add_ordered(<span class="self">self</span>, <span class="number">0</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_product</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_mul_ordered(<span class="self">self</span>, <span class="number">1</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_max</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_max(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_min</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_min(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_and</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_and</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_and(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_and(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_or</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_or</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_or(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_or(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_xor</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is an integer vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_xor</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_xor(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is an integer vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_xor(<span class="self">self</span>) }
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_trait!</span> { <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">usize</span> }
+<span class="macro">impl_trait!</span> { u8, u16, u32, u64, usize }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

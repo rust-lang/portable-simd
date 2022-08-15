@@ -152,159 +152,159 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
-</pre><pre class="rust"><code><span class="doccomment">//! This module contains the LLVM intrinsics bindings that provide the functionality for this</span>
-<span class="doccomment">//! crate.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The LLVM assembly language is documented here: &lt;https://llvm.org/docs/LangRef.html&gt;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! A quick glossary of jargon that may appear in this module, mostly paraphrasing LLVM&#39;s LangRef:</span>
-<span class="doccomment">//! - poison: &quot;undefined behavior as a value&quot;. specifically, it is like uninit memory (such as padding bytes). it is &quot;safe&quot; to create poison, BUT</span>
-<span class="doccomment">//!   poison MUST NOT be observed from safe code, as operations on poison return poison, like NaN. unlike NaN, which has defined comparisons,</span>
-<span class="doccomment">//!   poison is neither true nor false, and LLVM may also convert it to undef (at which point it is both). so, it can&#39;t be conditioned on, either.</span>
-<span class="doccomment">//! - undef: &quot;a value that is every value&quot;. functionally like poison, insofar as Rust is concerned. poison may become this. note:</span>
-<span class="doccomment">//!   this means that division by poison or undef is like division by zero, which means it inflicts...</span>
-<span class="doccomment">//! - &quot;UB&quot;: poison and undef cover most of what people call &quot;UB&quot;. &quot;UB&quot; means this operation immediately invalidates the program:</span>
-<span class="doccomment">//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the &quot;good end&quot;.</span>
-<span class="doccomment">//!   The &quot;bad end&quot; is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,</span>
-<span class="doccomment">//!   and destroy the other branch, potentially deleting safe code and violating Rust&#39;s `unsafe` contract.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Note that according to LLVM, vectors are not arrays, but they are equivalent when stored to and loaded from memory.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Unless stated otherwise, all intrinsics for binary operations require SIMD vectors of equal types and lengths.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! This module contains the LLVM intrinsics bindings that provide the functionality for this
+//! crate.
+//!
+//! The LLVM assembly language is documented here: &lt;https://llvm.org/docs/LangRef.html&gt;
+//!
+//! A quick glossary of jargon that may appear in this module, mostly paraphrasing LLVM&#39;s LangRef:
+//! - poison: &quot;undefined behavior as a value&quot;. specifically, it is like uninit memory (such as padding bytes). it is &quot;safe&quot; to create poison, BUT
+//!   poison MUST NOT be observed from safe code, as operations on poison return poison, like NaN. unlike NaN, which has defined comparisons,
+//!   poison is neither true nor false, and LLVM may also convert it to undef (at which point it is both). so, it can&#39;t be conditioned on, either.
+//! - undef: &quot;a value that is every value&quot;. functionally like poison, insofar as Rust is concerned. poison may become this. note:
+//!   this means that division by poison or undef is like division by zero, which means it inflicts...
+//! - &quot;UB&quot;: poison and undef cover most of what people call &quot;UB&quot;. &quot;UB&quot; means this operation immediately invalidates the program:
+//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the &quot;good end&quot;.
+//!   The &quot;bad end&quot; is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,
+//!   and destroy the other branch, potentially deleting safe code and violating Rust&#39;s `unsafe` contract.
+//!
+//! Note that according to LLVM, vectors are not arrays, but they are equivalent when stored to and loaded from memory.
+//!
+//! Unless stated otherwise, all intrinsics for binary operations require SIMD vectors of equal types and lengths.
 
-<span class="comment">// These intrinsics aren&#39;t linked directly from LLVM and are mostly undocumented, however they are</span>
-<span class="comment">// mostly lowered to the matching LLVM instructions by the compiler in a fairly straightforward manner.</span>
-<span class="comment">// The associated LLVM instruction or intrinsic is documented alongside each Rust intrinsic function.</span>
-<span class="kw">extern</span> <span class="string">&quot;platform-intrinsic&quot;</span> {
-    <span class="doccomment">/// add/fadd</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_add</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+</span><span class="comment">// These intrinsics aren&#39;t linked directly from LLVM and are mostly undocumented, however they are
+// mostly lowered to the matching LLVM instructions by the compiler in a fairly straightforward manner.
+// The associated LLVM instruction or intrinsic is documented alongside each Rust intrinsic function.
+</span><span class="kw">extern </span><span class="string">&quot;platform-intrinsic&quot; </span>{
+    <span class="doccomment">/// add/fadd
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_add&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="doccomment">/// sub/fsub</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_sub</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// sub/fsub
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_sub&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="doccomment">/// mul/fmul</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_mul</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// mul/fmul
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_mul&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="doccomment">/// udiv/sdiv/fdiv</span>
-    <span class="doccomment">/// ints and uints: {s,u}div incur UB if division by zero occurs.</span>
-    <span class="doccomment">/// ints: sdiv is UB for int::MIN / -1.</span>
-    <span class="doccomment">/// floats: fdiv is never UB, but may create NaNs or infinities.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_div</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// udiv/sdiv/fdiv
+    /// ints and uints: {s,u}div incur UB if division by zero occurs.
+    /// ints: sdiv is UB for int::MIN / -1.
+    /// floats: fdiv is never UB, but may create NaNs or infinities.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_div&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="doccomment">/// urem/srem/frem</span>
-    <span class="doccomment">/// ints and uints: {s,u}rem incur UB if division by zero occurs.</span>
-    <span class="doccomment">/// ints: srem is UB for int::MIN / -1.</span>
-    <span class="doccomment">/// floats: frem is equivalent to libm::fmod in the &quot;default&quot; floating point environment, sans errno.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_rem</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// urem/srem/frem
+    /// ints and uints: {s,u}rem incur UB if division by zero occurs.
+    /// ints: srem is UB for int::MIN / -1.
+    /// floats: frem is equivalent to libm::fmod in the &quot;default&quot; floating point environment, sans errno.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_rem&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="doccomment">/// shl</span>
-    <span class="doccomment">/// for (u)ints. poison if rhs &gt;= lhs::BITS</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_shl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// shl
+    /// for (u)ints. poison if rhs &gt;= lhs::BITS
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_shl&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="doccomment">/// ints: ashr</span>
-    <span class="doccomment">/// uints: lshr</span>
-    <span class="doccomment">/// poison if rhs &gt;= lhs::BITS</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_shr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// ints: ashr
+    /// uints: lshr
+    /// poison if rhs &gt;= lhs::BITS
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_shr&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="doccomment">/// and</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_and</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// and
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_and&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="doccomment">/// or</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_or</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// or
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_or&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="doccomment">/// xor</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_xor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// xor
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_xor&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="doccomment">/// getelementptr (without inbounds)</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_arith_offset</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">ptrs</span>: <span class="ident">T</span>, <span class="ident">offsets</span>: <span class="ident">U</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// getelementptr (without inbounds)
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_arith_offset&lt;T, U&gt;(ptrs: T, offsets: U) -&gt; T;
 
-    <span class="doccomment">/// fptoui/fptosi/uitofp/sitofp</span>
-    <span class="doccomment">/// casting floats to integers is truncating, so it is safe to convert values like e.g. 1.5</span>
-    <span class="doccomment">/// but the truncated value must fit in the target type or the result is poison.</span>
-    <span class="doccomment">/// use `simd_as` instead for a cast that performs a saturating conversion.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_cast</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="doccomment">/// follows Rust&#39;s `T as U` semantics, including saturating float casts</span>
-    <span class="doccomment">/// which amounts to the same as `simd_cast` for many cases</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">bootstrap</span>))]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_as</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
+    <span class="doccomment">/// fptoui/fptosi/uitofp/sitofp
+    /// casting floats to integers is truncating, so it is safe to convert values like e.g. 1.5
+    /// but the truncated value must fit in the target type or the result is poison.
+    /// use `simd_as` instead for a cast that performs a saturating conversion.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_cast&lt;T, U&gt;(x: T) -&gt; U;
+    <span class="doccomment">/// follows Rust&#39;s `T as U` semantics, including saturating float casts
+    /// which amounts to the same as `simd_cast` for many cases
+    </span><span class="attribute">#[cfg(not(bootstrap))]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_as&lt;T, U&gt;(x: T) -&gt; U;
 
-    <span class="doccomment">/// neg/fneg</span>
-    <span class="doccomment">/// ints: ultimately becomes a call to cg_ssa&#39;s BuilderMethods::neg. cg_llvm equates this to `simd_sub(Simd::splat(0), x)`.</span>
-    <span class="doccomment">/// floats: LLVM&#39;s fneg, which changes the floating point sign bit. Some arches have instructions for it.</span>
-    <span class="doccomment">/// Rust panics for Neg::neg(int::MIN) due to overflow, but it is not UB in LLVM without `nsw`.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_neg</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// neg/fneg
+    /// ints: ultimately becomes a call to cg_ssa&#39;s BuilderMethods::neg. cg_llvm equates this to `simd_sub(Simd::splat(0), x)`.
+    /// floats: LLVM&#39;s fneg, which changes the floating point sign bit. Some arches have instructions for it.
+    /// Rust panics for Neg::neg(int::MIN) due to overflow, but it is not UB in LLVM without `nsw`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_neg&lt;T&gt;(x: T) -&gt; T;
 
-    <span class="doccomment">/// fabs</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_fabs</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="doccomment">/// fabs
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_fabs&lt;T&gt;(x: T) -&gt; T;
 
-    <span class="comment">// minnum/maxnum</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_fmin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_fmax</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="comment">// minnum/maxnum
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_fmin&lt;T&gt;(x: T, y: T) -&gt; T;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_fmax&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="comment">// these return Simd&lt;int, N&gt; with the same BITS size as the inputs</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_eq</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_ne</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_lt</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_le</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_gt</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_ge</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
+    <span class="comment">// these return Simd&lt;int, N&gt; with the same BITS size as the inputs
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_eq&lt;T, U&gt;(x: T, y: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_ne&lt;T, U&gt;(x: T, y: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_lt&lt;T, U&gt;(x: T, y: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_le&lt;T, U&gt;(x: T, y: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_gt&lt;T, U&gt;(x: T, y: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_ge&lt;T, U&gt;(x: T, y: T) -&gt; U;
 
-    <span class="comment">// shufflevector</span>
-    <span class="comment">// idx: LLVM calls it a &quot;shuffle mask vector constant&quot;, a vector of i32s</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_shuffle</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>, <span class="ident">idx</span>: <span class="ident">U</span>) -&gt; <span class="ident">V</span>;
+    <span class="comment">// shufflevector
+    // idx: LLVM calls it a &quot;shuffle mask vector constant&quot;, a vector of i32s
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_shuffle&lt;T, U, V&gt;(x: T, y: T, idx: U) -&gt; V;
 
-    <span class="doccomment">/// llvm.masked.gather</span>
-    <span class="doccomment">/// like a loop of pointer reads</span>
-    <span class="doccomment">/// val: vector of values to select if a lane is masked</span>
-    <span class="doccomment">/// ptr: vector of pointers to read from</span>
-    <span class="doccomment">/// mask: a &quot;wide&quot; mask of integers, selects as if simd_select(mask, read(ptr), val)</span>
-    <span class="doccomment">/// note, the LLVM intrinsic accepts a mask vector of &lt;N x i1&gt;</span>
-    <span class="doccomment">/// FIXME: review this if/when we fix up our mask story in general?</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_gather</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">T</span>, <span class="ident">ptr</span>: <span class="ident">U</span>, <span class="ident">mask</span>: <span class="ident">V</span>) -&gt; <span class="ident">T</span>;
-    <span class="doccomment">/// llvm.masked.scatter</span>
-    <span class="doccomment">/// like gather, but more spicy, as it writes instead of reads</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_scatter</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">T</span>, <span class="ident">ptr</span>: <span class="ident">U</span>, <span class="ident">mask</span>: <span class="ident">V</span>);
+    <span class="doccomment">/// llvm.masked.gather
+    /// like a loop of pointer reads
+    /// val: vector of values to select if a lane is masked
+    /// ptr: vector of pointers to read from
+    /// mask: a &quot;wide&quot; mask of integers, selects as if simd_select(mask, read(ptr), val)
+    /// note, the LLVM intrinsic accepts a mask vector of &lt;N x i1&gt;
+    /// FIXME: review this if/when we fix up our mask story in general?
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_gather&lt;T, U, V&gt;(val: T, ptr: U, mask: V) -&gt; T;
+    <span class="doccomment">/// llvm.masked.scatter
+    /// like gather, but more spicy, as it writes instead of reads
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_scatter&lt;T, U, V&gt;(val: T, ptr: U, mask: V);
 
-    <span class="comment">// {s,u}add.sat</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_saturating_add</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="comment">// {s,u}add.sat
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_saturating_add&lt;T&gt;(x: T, y: T) -&gt; T;
 
-    <span class="comment">// {s,u}sub.sat</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_saturating_sub</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">lhs</span>: <span class="ident">T</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="comment">// {s,u}sub.sat
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_saturating_sub&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
-    <span class="comment">// reductions</span>
-    <span class="comment">// llvm.vector.reduce.{add,fadd}</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_add_ordered</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">U</span>) -&gt; <span class="ident">U</span>;
-    <span class="comment">// llvm.vector.reduce.{mul,fmul}</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_mul_ordered</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">y</span>: <span class="ident">U</span>) -&gt; <span class="ident">U</span>;
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_all</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">bool</span>;
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_any</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">bool</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_max</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_min</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_and</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_or</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_reduce_xor</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
+    <span class="comment">// reductions
+    // llvm.vector.reduce.{add,fadd}
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_add_ordered&lt;T, U&gt;(x: T, y: U) -&gt; U;
+    <span class="comment">// llvm.vector.reduce.{mul,fmul}
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_mul_ordered&lt;T, U&gt;(x: T, y: U) -&gt; U;
+    <span class="attribute">#[allow(unused)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_all&lt;T&gt;(x: T) -&gt; bool;
+    <span class="attribute">#[allow(unused)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_any&lt;T&gt;(x: T) -&gt; bool;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_max&lt;T, U&gt;(x: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_min&lt;T, U&gt;(x: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_and&lt;T, U&gt;(x: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_or&lt;T, U&gt;(x: T) -&gt; U;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_reduce_xor&lt;T, U&gt;(x: T) -&gt; U;
 
-    <span class="comment">// truncate integer vector to bitmask</span>
-    <span class="comment">// `fn simd_bitmask(vector) -&gt; unsigned integer` takes a vector of integers and</span>
-    <span class="comment">// returns either an unsigned integer or array of `u8`.</span>
-    <span class="comment">// Every element in the vector becomes a single bit in the returned bitmask.</span>
-    <span class="comment">// If the vector has less than 8 lanes, a u8 is returned with zeroed trailing bits.</span>
-    <span class="comment">// The bit order of the result depends on the byte endianness. LSB-first for little</span>
-    <span class="comment">// endian and MSB-first for big endian.</span>
-    <span class="comment">//</span>
-    <span class="comment">// UB if called on a vector with values other than 0 and -1.</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_bitmask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>) -&gt; <span class="ident">U</span>;
+    <span class="comment">// truncate integer vector to bitmask
+    // `fn simd_bitmask(vector) -&gt; unsigned integer` takes a vector of integers and
+    // returns either an unsigned integer or array of `u8`.
+    // Every element in the vector becomes a single bit in the returned bitmask.
+    // If the vector has less than 8 lanes, a u8 is returned with zeroed trailing bits.
+    // The bit order of the result depends on the byte endianness. LSB-first for little
+    // endian and MSB-first for big endian.
+    //
+    // UB if called on a vector with values other than 0 and -1.
+    </span><span class="attribute">#[allow(unused)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_bitmask&lt;T, U&gt;(x: T) -&gt; U;
 
-    <span class="comment">// select</span>
-    <span class="comment">// first argument is a vector of integers, -1 (all bits 1) is &quot;true&quot;</span>
-    <span class="comment">// logically equivalent to (yes &amp; m) | (no &amp; (m^-1),</span>
-    <span class="comment">// but you can use it on floats.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_select</span><span class="op">&lt;</span><span class="ident">M</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">m</span>: <span class="ident">M</span>, <span class="ident">yes</span>: <span class="ident">T</span>, <span class="ident">no</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">simd_select_bitmask</span><span class="op">&lt;</span><span class="ident">M</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">m</span>: <span class="ident">M</span>, <span class="ident">yes</span>: <span class="ident">T</span>, <span class="ident">no</span>: <span class="ident">T</span>) -&gt; <span class="ident">T</span>;
+    <span class="comment">// select
+    // first argument is a vector of integers, -1 (all bits 1) is &quot;true&quot;
+    // logically equivalent to (yes &amp; m) | (no &amp; (m^-1),
+    // but you can use it on floats.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_select&lt;M, T&gt;(m: M, yes: T, no: T) -&gt; T;
+    <span class="attribute">#[allow(unused)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_select_bitmask&lt;M, T&gt;(m: M, yes: T, no: T) -&gt; T;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

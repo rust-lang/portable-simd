@@ -95,102 +95,102 @@
 <span id="95">95</span>
 <span id="96">96</span>
 <span id="97">97</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Generic-length array strategy.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Generic-length array strategy.
 
-<span class="comment">// Adapted from proptest&#39;s array code</span>
-<span class="comment">// Copyright 2017 Jason Lingle</span>
+</span><span class="comment">// Adapted from proptest&#39;s array code
+// Copyright 2017 Jason Lingle
 
-<span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">marker::PhantomData</span>, <span class="ident">mem::MaybeUninit</span>};
-<span class="kw">use</span> <span class="ident">proptest</span>::{
-    <span class="ident">strategy</span>::{<span class="ident">NewTree</span>, <span class="ident">Strategy</span>, <span class="ident">ValueTree</span>},
-    <span class="ident">test_runner::TestRunner</span>,
+</span><span class="kw">use </span>core::{marker::PhantomData, mem::MaybeUninit};
+<span class="kw">use </span>proptest::{
+    strategy::{NewTree, Strategy, ValueTree},
+    test_runner::TestRunner,
 };
 
-<span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;strategies do nothing unless used&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">strategy</span>: <span class="ident">S</span>,
-    <span class="ident">_marker</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+<span class="attribute">#[must_use = <span class="string">&quot;strategies do nothing unless used&quot;</span>]</span>
+<span class="attribute">#[derive(Clone, Copy, Debug)]</span>
+<span class="kw">pub struct </span>UniformArrayStrategy&lt;S, T&gt; {
+    strategy: S,
+    _marker: PhantomData&lt;T&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">strategy</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">strategy</span>,
-            <span class="ident">_marker</span>: <span class="ident">PhantomData</span>,
+<span class="kw">impl</span>&lt;S, T&gt; UniformArrayStrategy&lt;S, T&gt; {
+    <span class="kw">pub const fn </span>new(strategy: S) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            strategy,
+            _marker: PhantomData,
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArrayValueTree</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">tree</span>: <span class="ident">T</span>,
-    <span class="ident">shrinker</span>: <span class="ident">usize</span>,
-    <span class="ident">last_shrinker</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">pub struct </span>ArrayValueTree&lt;T&gt; {
+    tree: T,
+    shrinker: usize,
+    last_shrinker: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Strategy</span> <span class="kw">for</span> <span class="ident">UniformArrayStrategy</span><span class="op">&lt;</span><span class="ident">S</span>, [<span class="ident">T</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">core::fmt::Debug</span>,
-    <span class="ident">S</span>: <span class="ident">Strategy</span><span class="op">&lt;</span><span class="ident">Value</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;T, S, <span class="kw">const </span>LANES: usize&gt; Strategy <span class="kw">for </span>UniformArrayStrategy&lt;S, [T; LANES]&gt;
+<span class="kw">where
+    </span>T: core::fmt::Debug,
+    S: Strategy&lt;Value = T&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Tree</span> <span class="op">=</span> <span class="ident">ArrayValueTree</span><span class="op">&lt;</span>[<span class="ident">S::Tree</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span>;
-    <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> [<span class="ident">T</span>; <span class="ident">LANES</span>];
+    <span class="kw">type </span>Tree = ArrayValueTree&lt;[S::Tree; LANES]&gt;;
+    <span class="kw">type </span>Value = [T; LANES];
 
-    <span class="kw">fn</span> <span class="ident">new_tree</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">runner</span>: <span class="kw-2">&amp;mut</span> <span class="ident">TestRunner</span>) -&gt; <span class="ident">NewTree</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">tree</span>: [<span class="ident">S::Tree</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span>: [<span class="ident">MaybeUninit</span><span class="op">&lt;</span><span class="ident">S::Tree</span><span class="op">&gt;</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">MaybeUninit::uninit</span>().<span class="ident">assume_init</span>();
-            <span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">tree</span>.<span class="ident">iter_mut</span>() {
-                <span class="kw-2">*</span><span class="ident">t</span> <span class="op">=</span> <span class="ident">MaybeUninit::new</span>(<span class="self">self</span>.<span class="ident">strategy</span>.<span class="ident">new_tree</span>(<span class="ident">runner</span>)<span class="question-mark">?</span>)
+    <span class="kw">fn </span>new_tree(<span class="kw-2">&amp;</span><span class="self">self</span>, runner: <span class="kw-2">&amp;mut </span>TestRunner) -&gt; NewTree&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>tree: [S::Tree; LANES] = <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>tree: [MaybeUninit&lt;S::Tree&gt;; LANES] = MaybeUninit::uninit().assume_init();
+            <span class="kw">for </span>t <span class="kw">in </span>tree.iter_mut() {
+                <span class="kw-2">*</span>t = MaybeUninit::new(<span class="self">self</span>.strategy.new_tree(runner)<span class="question-mark">?</span>)
             }
-            <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>)
+            core::mem::transmute_copy(<span class="kw-2">&amp;</span>tree)
         };
-        <span class="prelude-val">Ok</span>(<span class="ident">ArrayValueTree</span> {
-            <span class="ident">tree</span>,
-            <span class="ident">shrinker</span>: <span class="number">0</span>,
-            <span class="ident">last_shrinker</span>: <span class="prelude-val">None</span>,
+        <span class="prelude-val">Ok</span>(ArrayValueTree {
+            tree,
+            shrinker: <span class="number">0</span>,
+            last_shrinker: <span class="prelude-val">None</span>,
         })
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ValueTree</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">ValueTree</span> <span class="kw">for</span> <span class="ident">ArrayValueTree</span><span class="op">&lt;</span>[<span class="ident">T</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> [<span class="ident">T::Value</span>; <span class="ident">LANES</span>];
+<span class="kw">impl</span>&lt;T: ValueTree, <span class="kw">const </span>LANES: usize&gt; ValueTree <span class="kw">for </span>ArrayValueTree&lt;[T; LANES]&gt; {
+    <span class="kw">type </span>Value = [T::Value; LANES];
 
-    <span class="kw">fn</span> <span class="ident">current</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Value</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value</span>: [<span class="ident">MaybeUninit</span><span class="op">&lt;</span><span class="ident">T::Value</span><span class="op">&gt;</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">MaybeUninit::uninit</span>().<span class="ident">assume_init</span>();
-            <span class="kw">for</span> (<span class="ident">tree_elem</span>, <span class="ident">value_elem</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">value</span>.<span class="ident">iter_mut</span>()) {
-                <span class="kw-2">*</span><span class="ident">value_elem</span> <span class="op">=</span> <span class="ident">MaybeUninit::new</span>(<span class="ident">tree_elem</span>.<span class="ident">current</span>());
+    <span class="kw">fn </span>current(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Value {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>value: [MaybeUninit&lt;T::Value&gt;; LANES] = MaybeUninit::uninit().assume_init();
+            <span class="kw">for </span>(tree_elem, value_elem) <span class="kw">in </span><span class="self">self</span>.tree.iter().zip(value.iter_mut()) {
+                <span class="kw-2">*</span>value_elem = MaybeUninit::new(tree_elem.current());
             }
-            <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>)
+            core::mem::transmute_copy(<span class="kw-2">&amp;</span>value)
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">simplify</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">shrinker</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tree</span>[<span class="self">self</span>.<span class="ident">shrinker</span>].<span class="ident">simplify</span>() {
-                <span class="self">self</span>.<span class="ident">last_shrinker</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">shrinker</span>);
-                <span class="kw">return</span> <span class="bool-val">true</span>;
-            } <span class="kw">else</span> {
-                <span class="self">self</span>.<span class="ident">shrinker</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>simplify(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">while </span><span class="self">self</span>.shrinker &lt; LANES {
+            <span class="kw">if </span><span class="self">self</span>.tree[<span class="self">self</span>.shrinker].simplify() {
+                <span class="self">self</span>.last_shrinker = <span class="prelude-val">Some</span>(<span class="self">self</span>.shrinker);
+                <span class="kw">return </span><span class="bool-val">true</span>;
+            } <span class="kw">else </span>{
+                <span class="self">self</span>.shrinker += <span class="number">1</span>;
             }
         }
 
-        <span class="bool-val">false</span>
-    }
+        <span class="bool-val">false
+    </span>}
 
-    <span class="kw">fn</span> <span class="ident">complicate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">shrinker</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">last_shrinker</span> {
-            <span class="self">self</span>.<span class="ident">shrinker</span> <span class="op">=</span> <span class="ident">shrinker</span>;
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tree</span>[<span class="ident">shrinker</span>].<span class="ident">complicate</span>() {
-                <span class="bool-val">true</span>
-            } <span class="kw">else</span> {
-                <span class="self">self</span>.<span class="ident">last_shrinker</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                <span class="bool-val">false</span>
-            }
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
-        }
+    <span class="kw">fn </span>complicate(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(shrinker) = <span class="self">self</span>.last_shrinker {
+            <span class="self">self</span>.shrinker = shrinker;
+            <span class="kw">if </span><span class="self">self</span>.tree[shrinker].complicate() {
+                <span class="bool-val">true
+            </span>} <span class="kw">else </span>{
+                <span class="self">self</span>.last_shrinker = <span class="prelude-val">None</span>;
+                <span class="bool-val">false
+            </span>}
+        } <span class="kw">else </span>{
+            <span class="bool-val">false
+        </span>}
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

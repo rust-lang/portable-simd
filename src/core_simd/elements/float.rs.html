@@ -355,362 +355,362 @@
 <span id="355">355</span>
 <span id="356">356</span>
 <span id="357">357</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::sealed::Sealed</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{
-    <span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SimdPartialOrd</span>,
-    <span class="ident">SupportedLaneCount</span>,
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{
+    intrinsics, LaneCount, Mask, Simd, SimdElement, SimdPartialEq, SimdPartialOrd,
+    SupportedLaneCount,
 };
 
-<span class="doccomment">/// Operations on SIMD vectors of floats.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SimdFloat</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Sealed</span> {
-    <span class="doccomment">/// Mask type used for manipulating this SIMD vector type.</span>
-    <span class="kw">type</span> <span class="ident">Mask</span>;
+<span class="doccomment">/// Operations on SIMD vectors of floats.
+</span><span class="kw">pub trait </span>SimdFloat: Copy + Sealed {
+    <span class="doccomment">/// Mask type used for manipulating this SIMD vector type.
+    </span><span class="kw">type </span>Mask;
 
-    <span class="doccomment">/// Scalar type contained by this SIMD vector type.</span>
-    <span class="kw">type</span> <span class="ident">Scalar</span>;
+    <span class="doccomment">/// Scalar type contained by this SIMD vector type.
+    </span><span class="kw">type </span>Scalar;
 
-    <span class="doccomment">/// Bit representation of this SIMD vector type.</span>
-    <span class="kw">type</span> <span class="ident">Bits</span>;
+    <span class="doccomment">/// Bit representation of this SIMD vector type.
+    </span><span class="kw">type </span>Bits;
 
-    <span class="doccomment">/// Raw transmutation to an unsigned integer vector type with the</span>
-    <span class="doccomment">/// same size and number of lanes.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">to_bits</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Bits</span>;
+    <span class="doccomment">/// Raw transmutation to an unsigned integer vector type with the
+    /// same size and number of lanes.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Bits;
 
-    <span class="doccomment">/// Raw transmutation from an unsigned integer vector type with the</span>
-    <span class="doccomment">/// same size and number of lanes.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident"><span class="self">Self</span>::Bits</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Raw transmutation from an unsigned integer vector type with the
+    /// same size and number of lanes.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>from_bits(bits: <span class="self">Self</span>::Bits) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Produces a vector where every lane has the absolute value of the</span>
-    <span class="doccomment">/// equivalently-indexed lane in `self`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">abs</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Produces a vector where every lane has the absolute value of the
+    /// equivalently-indexed lane in `self`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Takes the reciprocal (inverse) of each lane, `1/x`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Takes the reciprocal (inverse) of each lane, `1/x`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Converts each lane from radians to degrees.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">to_degrees</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Converts each lane from radians to degrees.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Converts each lane from degrees to radians.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">to_radians</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Converts each lane from degrees to radians.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns true for each lane if it has a positive sign, including</span>
-    <span class="doccomment">/// `+0.0`, `NaN`s with positive sign bit and positive infinity.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_sign_positive</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if it has a positive sign, including
+    /// `+0.0`, `NaN`s with positive sign bit and positive infinity.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if it has a negative sign, including</span>
-    <span class="doccomment">/// `-0.0`, `NaN`s with negative sign bit and negative infinity.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_sign_negative</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if it has a negative sign, including
+    /// `-0.0`, `NaN`s with negative sign bit and negative infinity.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if its value is `NaN`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_nan</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if its value is `NaN`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if its value is positive infinity or negative infinity.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_infinite</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if its value is positive infinity or negative infinity.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if its value is neither infinite nor `NaN`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_finite</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if its value is neither infinite nor `NaN`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if its value is subnormal.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_subnormal</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if its value is subnormal.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Returns true for each lane if its value is neither zero, infinite,</span>
-    <span class="doccomment">/// subnormal, nor `NaN`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">is_normal</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span>;
+    <span class="doccomment">/// Returns true for each lane if its value is neither zero, infinite,
+    /// subnormal, nor `NaN`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Replaces each lane with a number that represents its sign.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `1.0` if the number is positive, `+0.0`, or `INFINITY`</span>
-    <span class="doccomment">/// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`</span>
-    <span class="doccomment">/// * `NAN` if the number is `NAN`</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">signum</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Replaces each lane with a number that represents its sign.
+    ///
+    /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
+    /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
+    /// * `NAN` if the number is `NAN`
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns each lane with the magnitude of `self` and the sign of `sign`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For any lane containing a `NAN`, a `NAN` with the sign of `sign` is returned.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">copysign</span>(<span class="self">self</span>, <span class="ident">sign</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Returns each lane with the magnitude of `self` and the sign of `sign`.
+    ///
+    /// For any lane containing a `NAN`, a `NAN` with the sign of `sign` is returned.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns the minimum of each lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If one of the values is `NAN`, then the other value is returned.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Returns the minimum of each lane.
+    ///
+    /// If one of the values is `NAN`, then the other value is returned.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns the maximum of each lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If one of the values is `NAN`, then the other value is returned.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Returns the maximum of each lane.
+    ///
+    /// If one of the values is `NAN`, then the other value is returned.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Restrict each lane to a certain interval unless it is NaN.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For each lane in `self`, returns the corresponding lane in `max` if the lane is</span>
-    <span class="doccomment">/// greater than `max`, and the corresponding lane in `min` if the lane is less</span>
-    <span class="doccomment">/// than `min`.  Otherwise returns the lane in `self`.</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">simd_clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Restrict each lane to a certain interval unless it is NaN.
+    ///
+    /// For each lane in `self`, returns the corresponding lane in `max` if the lane is
+    /// greater than `max`, and the corresponding lane in `min` if the lane is less
+    /// than `min`.  Otherwise returns the lane in `self`.
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Returns the sum of the lanes of the vector.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
-    <span class="doccomment">/// let v = f32x2::from_array([1., 2.]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_sum(), 3.);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">reduce_sum</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the sum of the lanes of the vector.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{f32x2, SimdFloat};
+    /// let v = f32x2::from_array([1., 2.]);
+    /// assert_eq!(v.reduce_sum(), 3.);
+    /// ```
+    </span><span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Reducing multiply.  Returns the product of the lanes of the vector.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
-    <span class="doccomment">/// let v = f32x2::from_array([3., 4.]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_product(), 12.);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">reduce_product</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Reducing multiply.  Returns the product of the lanes of the vector.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{f32x2, SimdFloat};
+    /// let v = f32x2::from_array([3., 4.]);
+    /// assert_eq!(v.reduce_product(), 12.);
+    /// ```
+    </span><span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the maximum lane in the vector.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns values based on equality, so a vector containing both `0.` and `-0.` may</span>
-    <span class="doccomment">/// return either.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function will not return `NaN` unless all lanes are `NaN`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
-    <span class="doccomment">/// let v = f32x2::from_array([1., 2.]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_max(), 2.);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // NaN values are skipped...</span>
-    <span class="doccomment">/// let v = f32x2::from_array([1., f32::NAN]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_max(), 1.);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // ...unless all values are NaN</span>
-    <span class="doccomment">/// let v = f32x2::from_array([f32::NAN, f32::NAN]);</span>
-    <span class="doccomment">/// assert!(v.reduce_max().is_nan());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">reduce_max</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the maximum lane in the vector.
+    ///
+    /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
+    /// return either.
+    ///
+    /// This function will not return `NaN` unless all lanes are `NaN`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{f32x2, SimdFloat};
+    /// let v = f32x2::from_array([1., 2.]);
+    /// assert_eq!(v.reduce_max(), 2.);
+    ///
+    /// // NaN values are skipped...
+    /// let v = f32x2::from_array([1., f32::NAN]);
+    /// assert_eq!(v.reduce_max(), 1.);
+    ///
+    /// // ...unless all values are NaN
+    /// let v = f32x2::from_array([f32::NAN, f32::NAN]);
+    /// assert!(v.reduce_max().is_nan());
+    /// ```
+    </span><span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 
-    <span class="doccomment">/// Returns the minimum lane in the vector.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns values based on equality, so a vector containing both `0.` and `-0.` may</span>
-    <span class="doccomment">/// return either.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function will not return `NaN` unless all lanes are `NaN`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;</span>
-    <span class="doccomment">/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;</span>
-    <span class="doccomment">/// # use simd::{f32x2, SimdFloat};</span>
-    <span class="doccomment">/// let v = f32x2::from_array([3., 7.]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_min(), 3.);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // NaN values are skipped...</span>
-    <span class="doccomment">/// let v = f32x2::from_array([1., f32::NAN]);</span>
-    <span class="doccomment">/// assert_eq!(v.reduce_min(), 1.);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // ...unless all values are NaN</span>
-    <span class="doccomment">/// let v = f32x2::from_array([f32::NAN, f32::NAN]);</span>
-    <span class="doccomment">/// assert!(v.reduce_min().is_nan());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">reduce_min</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span>;
+    <span class="doccomment">/// Returns the minimum lane in the vector.
+    ///
+    /// Returns values based on equality, so a vector containing both `0.` and `-0.` may
+    /// return either.
+    ///
+    /// This function will not return `NaN` unless all lanes are `NaN`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{f32x2, SimdFloat};
+    /// let v = f32x2::from_array([3., 7.]);
+    /// assert_eq!(v.reduce_min(), 3.);
+    ///
+    /// // NaN values are skipped...
+    /// let v = f32x2::from_array([1., f32::NAN]);
+    /// assert_eq!(v.reduce_min(), 1.);
+    ///
+    /// // ...unless all values are NaN
+    /// let v = f32x2::from_array([f32::NAN, f32::NAN]);
+    /// assert!(v.reduce_min().is_nan());
+    /// ```
+    </span><span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_trait</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span> { <span class="ident">bits</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>:<span class="ident">ty</span>, <span class="ident">mask</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span>:<span class="ident">ty</span> }),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_trait {
+    { $(<span class="macro-nonterminal">$ty</span>:ty { bits: <span class="macro-nonterminal">$bits_ty</span>:ty, mask: <span class="macro-nonterminal">$mask_ty</span>:ty }),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Sealed <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SimdFloat</span> <span class="kw">for</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; SimdFloat <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">type</span> <span class="ident">Mask</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask_ty</span> <span class="kw">as</span> <span class="ident">SimdElement</span><span class="op">&gt;</span><span class="ident">::Mask</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
-            <span class="kw">type</span> <span class="ident">Scalar</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>;
-            <span class="kw">type</span> <span class="ident">Bits</span> <span class="op">=</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
+            <span class="kw">type </span>Mask = Mask&lt;&lt;<span class="macro-nonterminal">$mask_ty </span><span class="kw">as </span>SimdElement&gt;::Mask, LANES&gt;;
+            <span class="kw">type </span>Scalar = <span class="macro-nonterminal">$ty</span>;
+            <span class="kw">type </span>Bits = Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt;;
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">to_bits</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-                <span class="macro">assert_eq!</span>(<span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(), <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Bits</span><span class="op">&gt;</span>());
-                <span class="comment">// Safety: transmuting between vector types is safe</span>
-                <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt; {
+                <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
+                <span class="comment">// Safety: transmuting between vector types is safe
+                </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span><span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits_ty</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="macro">assert_eq!</span>(<span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(), <span class="ident">core::mem::size_of</span>::<span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Bits</span><span class="op">&gt;</span>());
-                <span class="comment">// Safety: transmuting between vector types is safe</span>
-                <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bits</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from_bits(bits: Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt;) -&gt; <span class="self">Self </span>{
+                <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
+                <span class="comment">// Safety: transmuting between vector types is safe
+                </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span>bits) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">abs</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Safety: `self` is a float vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fabs</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Safety: `self` is a float vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_fabs(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">recip</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">1.0</span>) <span class="op">/</span> <span class="self">self</span>
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">Self</span>::splat(<span class="number">1.0</span>) / <span class="self">self
+            </span>}
+
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// to_degrees uses a special constant for better precision, so extract that constant
+                </span><span class="self">self </span>* <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::to_degrees(<span class="number">1.</span>))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">to_degrees</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// to_degrees uses a special constant for better precision, so extract that constant</span>
-                <span class="self">self</span> <span class="op">*</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::to_degrees</span>(<span class="number">1.</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self </span>* <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::to_radians(<span class="number">1.</span>))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">to_radians</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span> <span class="op">*</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::to_radians</span>(<span class="number">1.</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                !<span class="self">self</span>.is_sign_negative()
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_sign_positive</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="op">!</span><span class="self">self</span>.<span class="ident">is_sign_negative</span>()
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="kw">let </span>sign_bits = <span class="self">self</span>.to_bits() &amp; Simd::splat((!<span class="number">0 </span>&gt;&gt; <span class="number">1</span>) + <span class="number">1</span>);
+                sign_bits.simd_gt(Simd::splat(<span class="number">0</span>))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_sign_negative</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="kw">let</span> <span class="ident">sign_bits</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident">Simd::splat</span>((<span class="op">!</span><span class="number">0</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>);
-                <span class="ident">sign_bits</span>.<span class="ident">simd_gt</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="self">self</span>.simd_ne(<span class="self">self</span>)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_nan</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="self">self</span>.<span class="ident">simd_ne</span>(<span class="self">self</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="self">self</span>.abs().simd_eq(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_infinite</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">simd_eq</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::INFINITY</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="self">self</span>.abs().simd_lt(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_finite</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">simd_lt</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::INFINITY</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                <span class="self">self</span>.abs().simd_ne(<span class="self">Self</span>::splat(<span class="number">0.0</span>)) &amp; (<span class="self">self</span>.to_bits() &amp; <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY).to_bits()).simd_eq(Simd::splat(<span class="number">0</span>))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_subnormal</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">simd_ne</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0.0</span>)) <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::INFINITY</span>).<span class="ident">to_bits</span>()).<span class="ident">simd_eq</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+            <span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+                !(<span class="self">self</span>.abs().simd_eq(<span class="self">Self</span>::splat(<span class="number">0.0</span>)) | <span class="self">self</span>.is_nan() | <span class="self">self</span>.is_subnormal() | <span class="self">self</span>.is_infinite())
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-            <span class="kw">fn</span> <span class="ident">is_normal</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Mask</span> {
-                <span class="op">!</span>(<span class="self">self</span>.<span class="ident">abs</span>().<span class="ident">simd_eq</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">0.0</span>)) <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_nan</span>() <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_subnormal</span>() <span class="op">|</span> <span class="self">self</span>.<span class="ident">is_infinite</span>())
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.is_nan().select(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::NAN), <span class="self">Self</span>::splat(<span class="number">1.0</span>).copysign(<span class="self">self</span>))
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">signum</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">is_nan</span>().<span class="ident">select</span>(<span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident"><span class="self">Self</span>::Scalar::NAN</span>), <span class="ident"><span class="self">Self</span>::splat</span>(<span class="number">1.0</span>).<span class="ident">copysign</span>(<span class="self">self</span>))
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>sign_bit = sign.to_bits() &amp; <span class="self">Self</span>::splat(-<span class="number">0.</span>).to_bits();
+                <span class="kw">let </span>magnitude = <span class="self">self</span>.to_bits() &amp; !<span class="self">Self</span>::splat(-<span class="number">0.</span>).to_bits();
+                <span class="self">Self</span>::from_bits(sign_bit | magnitude)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">copysign</span>(<span class="self">self</span>, <span class="ident">sign</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">sign_bit</span> <span class="op">=</span> <span class="ident">sign</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">-</span><span class="number">0.</span>).<span class="ident">to_bits</span>();
-                <span class="kw">let</span> <span class="ident">magnitude</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_bits</span>() <span class="op">&amp;</span> <span class="op">!</span><span class="ident"><span class="self">Self</span>::splat</span>(<span class="op">-</span><span class="number">0.</span>).<span class="ident">to_bits</span>();
-                <span class="ident"><span class="self">Self</span>::from_bits</span>(<span class="ident">sign_bit</span> <span class="op">|</span> <span class="ident">magnitude</span>)
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Safety: `self` and `other` are float vectors
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_fmin(<span class="self">self</span>, other) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_min</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Safety: `self` and `other` are float vectors</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fmin</span>(<span class="self">self</span>, <span class="ident">other</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Safety: `self` and `other` are floating point vectors
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_fmax(<span class="self">self</span>, other) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_max</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Safety: `self` and `other` are floating point vectors</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_fmax</span>(<span class="self">self</span>, <span class="ident">other</span>) }
-            }
-
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">simd_clamp</span>(<span class="self">self</span>, <span class="ident">min</span>: <span class="self">Self</span>, <span class="ident">max</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert!</span>(
-                    <span class="ident">min</span>.<span class="ident">simd_le</span>(<span class="ident">max</span>).<span class="ident">all</span>(),
+                    min.simd_le(max).all(),
                     <span class="string">&quot;each lane in `min` must be less than or equal to the corresponding lane in `max`&quot;</span>,
                 );
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">simd_lt</span>(<span class="ident">min</span>).<span class="ident">select</span>(<span class="ident">min</span>, <span class="ident">x</span>);
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">simd_gt</span>(<span class="ident">max</span>).<span class="ident">select</span>(<span class="ident">max</span>, <span class="ident">x</span>);
-                <span class="ident">x</span>
+                <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self</span>;
+                x = x.simd_lt(min).select(min, x);
+                x = x.simd_gt(max).select(max, x);
+                x
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_sum</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// LLVM sum is inaccurate on i586</span>
-                <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
-                    <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">sum</span>()
-                } <span class="kw">else</span> {
-                    <span class="comment">// Safety: `self` is a float vector</span>
-                    <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_add_ordered</span>(<span class="self">self</span>, <span class="number">0.</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// LLVM sum is inaccurate on i586
+                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
+                    <span class="self">self</span>.as_array().iter().sum()
+                } <span class="kw">else </span>{
+                    <span class="comment">// Safety: `self` is a float vector
+                    </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_add_ordered(<span class="self">self</span>, <span class="number">0.</span>) }
                 }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_product</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// LLVM product is inaccurate on i586</span>
-                <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">not</span>(<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))) {
-                    <span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">product</span>()
-                } <span class="kw">else</span> {
-                    <span class="comment">// Safety: `self` is a float vector</span>
-                    <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_mul_ordered</span>(<span class="self">self</span>, <span class="number">1.</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// LLVM product is inaccurate on i586
+                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
+                    <span class="self">self</span>.as_array().iter().product()
+                } <span class="kw">else </span>{
+                    <span class="comment">// Safety: `self` is a float vector
+                    </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_mul_ordered(<span class="self">self</span>, <span class="number">1.</span>) }
                 }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_max</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is a float vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_max</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is a float vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_max(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">reduce_min</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Scalar</span> {
-                <span class="comment">// Safety: `self` is a float vector</span>
-                <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_reduce_min</span>(<span class="self">self</span>) }
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+                <span class="comment">// Safety: `self` is a float vector
+                </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_min(<span class="self">self</span>) }
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
 
-<span class="macro">impl_trait!</span> { <span class="ident">f32</span> { <span class="ident">bits</span>: <span class="ident">u32</span>, <span class="ident">mask</span>: <span class="ident">i32</span> }, <span class="ident">f64</span> { <span class="ident">bits</span>: <span class="ident">u64</span>, <span class="ident">mask</span>: <span class="ident">i64</span> } }
+<span class="macro">impl_trait!</span> { f32 { bits: u32, mask: i32 }, f64 { bits: u64, mask: i64 } }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

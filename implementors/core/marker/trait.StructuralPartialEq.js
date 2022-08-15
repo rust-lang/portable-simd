@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["core_simd"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.StructuralPartialEq.html\" title=\"trait core::marker::StructuralPartialEq\">StructuralPartialEq</a> for <a class=\"enum\" href=\"core_simd/simd/enum.Which.html\" title=\"enum core_simd::simd::Which\">Which</a>","synthetic":false,"types":["core_simd::core_simd::swizzle::Which"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"core_simd":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.StructuralPartialEq.html\" title=\"trait core::marker::StructuralPartialEq\">StructuralPartialEq</a> for <a class=\"enum\" href=\"core_simd/simd/enum.Which.html\" title=\"enum core_simd::simd::Which\">Which</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -57,64 +57,64 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Mask</span>, <span class="ident">MaskElement</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount};
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="doccomment">/// Choose lanes from two vectors.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For each lane in the mask, choose the corresponding lane from `true_values` if</span>
-    <span class="doccomment">/// that lane mask is true, and `false_values` if that lane mask is false.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::{Simd, Mask};</span>
-    <span class="doccomment">/// let a = Simd::from_array([0, 1, 2, 3]);</span>
-    <span class="doccomment">/// let b = Simd::from_array([4, 5, 6, 7]);</span>
-    <span class="doccomment">/// let mask = Mask::from_array([true, false, false, true]);</span>
-    <span class="doccomment">/// let c = mask.select(a, b);</span>
-    <span class="doccomment">/// assert_eq!(c.to_array(), [0, 5, 6, 3]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// Choose lanes from two vectors.
+    ///
+    /// For each lane in the mask, choose the corresponding lane from `true_values` if
+    /// that lane mask is true, and `false_values` if that lane mask is false.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::{Simd, Mask};
+    /// let a = Simd::from_array([0, 1, 2, 3]);
+    /// let b = Simd::from_array([4, 5, 6, 7]);
+    /// let mask = Mask::from_array([true, false, false, true]);
+    /// let c = mask.select(a, b);
+    /// assert_eq!(c.to_array(), [0, 5, 6, 3]);
+    /// ```
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>select&lt;U&gt;(
         <span class="self">self</span>,
-        <span class="ident">true_values</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
-        <span class="ident">false_values</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">U</span>: <span class="ident">SimdElement</span><span class="op">&lt;</span><span class="ident">Mask</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
+        true_values: Simd&lt;U, LANES&gt;,
+        false_values: Simd&lt;U, LANES&gt;,
+    ) -&gt; Simd&lt;U, LANES&gt;
+    <span class="kw">where
+        </span>U: SimdElement&lt;Mask = T&gt;,
     {
-        <span class="comment">// Safety: The mask has been cast to a vector of integers,</span>
-        <span class="comment">// and the operands to select between are vectors of the same type and length.</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_select</span>(<span class="self">self</span>.<span class="ident">to_int</span>(), <span class="ident">true_values</span>, <span class="ident">false_values</span>) }
+        <span class="comment">// Safety: The mask has been cast to a vector of integers,
+        // and the operands to select between are vectors of the same type and length.
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_select(<span class="self">self</span>.to_int(), true_values, false_values) }
     }
 
-    <span class="doccomment">/// Choose lanes from two masks.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For each lane in the mask, choose the corresponding lane from `true_values` if</span>
-    <span class="doccomment">/// that lane mask is true, and `false_values` if that lane mask is false.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::Mask;</span>
-    <span class="doccomment">/// let a = Mask::&lt;i32, 4&gt;::from_array([true, true, false, false]);</span>
-    <span class="doccomment">/// let b = Mask::&lt;i32, 4&gt;::from_array([false, false, true, true]);</span>
-    <span class="doccomment">/// let mask = Mask::&lt;i32, 4&gt;::from_array([true, false, false, true]);</span>
-    <span class="doccomment">/// let c = mask.select_mask(a, b);</span>
-    <span class="doccomment">/// assert_eq!(c.to_array(), [true, false, true, false]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select_mask</span>(<span class="self">self</span>, <span class="ident">true_values</span>: <span class="self">Self</span>, <span class="ident">false_values</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span> <span class="op">&amp;</span> <span class="ident">true_values</span> <span class="op">|</span> <span class="op">!</span><span class="self">self</span> <span class="op">&amp;</span> <span class="ident">false_values</span>
+    <span class="doccomment">/// Choose lanes from two masks.
+    ///
+    /// For each lane in the mask, choose the corresponding lane from `true_values` if
+    /// that lane mask is true, and `false_values` if that lane mask is false.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Mask;
+    /// let a = Mask::&lt;i32, 4&gt;::from_array([true, true, false, false]);
+    /// let b = Mask::&lt;i32, 4&gt;::from_array([false, false, true, true]);
+    /// let mask = Mask::&lt;i32, 4&gt;::from_array([true, false, false, true]);
+    /// let c = mask.select_mask(a, b);
+    /// assert_eq!(c.to_array(), [true, false, true, false]);
+    /// ```
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>select_mask(<span class="self">self</span>, true_values: <span class="self">Self</span>, false_values: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self </span>&amp; true_values | !<span class="self">self </span>&amp; false_values
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

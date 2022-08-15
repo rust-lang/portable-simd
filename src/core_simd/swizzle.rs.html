@@ -365,372 +365,372 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd::intrinsics</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
 
-<span class="doccomment">/// Constructs a new SIMD vector by copying elements from selected lanes in other vectors.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// When swizzling one vector, lanes are selected by a `const` array of `usize`,</span>
-<span class="doccomment">/// like [`Swizzle`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// When swizzling two vectors, lanes are selected by a `const` array of [`Which`],</span>
-<span class="doccomment">/// like [`Swizzle2`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// With a single SIMD vector, the const array specifies lane indices in that vector:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # #![feature(portable_simd)]</span>
-<span class="doccomment">/// # use core::simd::{u32x2, u32x4, simd_swizzle};</span>
-<span class="doccomment">/// let v = u32x4::from_array([10, 11, 12, 13]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // Keeping the same size</span>
-<span class="doccomment">/// let r: u32x4 = simd_swizzle!(v, [3, 0, 1, 2]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [13, 10, 11, 12]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // Changing the number of lanes</span>
-<span class="doccomment">/// let r: u32x2 = simd_swizzle!(v, [3, 1]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [13, 11]);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// With two input SIMD vectors, the const array uses `Which` to specify the source of each index:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # #![feature(portable_simd)]</span>
-<span class="doccomment">/// # use core::simd::{u32x2, u32x4, simd_swizzle, Which};</span>
-<span class="doccomment">/// use Which::{First, Second};</span>
-<span class="doccomment">/// let a = u32x4::from_array([0, 1, 2, 3]);</span>
-<span class="doccomment">/// let b = u32x4::from_array([4, 5, 6, 7]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // Keeping the same size</span>
-<span class="doccomment">/// let r: u32x4 = simd_swizzle!(a, b, [First(0), First(1), Second(2), Second(3)]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [0, 1, 6, 7]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // Changing the number of lanes</span>
-<span class="doccomment">/// let r: u32x2 = simd_swizzle!(a, b, [First(0), Second(0)]);</span>
-<span class="doccomment">/// assert_eq!(r.to_array(), [0, 4]);</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_macros</span>)]</span>
-<span class="kw">pub</span> <span class="kw">macro</span> <span class="ident">simd_swizzle</span> {
+<span class="doccomment">/// Constructs a new SIMD vector by copying elements from selected lanes in other vectors.
+///
+/// When swizzling one vector, lanes are selected by a `const` array of `usize`,
+/// like [`Swizzle`].
+///
+/// When swizzling two vectors, lanes are selected by a `const` array of [`Which`],
+/// like [`Swizzle2`].
+///
+/// # Examples
+///
+/// With a single SIMD vector, the const array specifies lane indices in that vector:
+/// ```
+/// # #![feature(portable_simd)]
+/// # use core::simd::{u32x2, u32x4, simd_swizzle};
+/// let v = u32x4::from_array([10, 11, 12, 13]);
+///
+/// // Keeping the same size
+/// let r: u32x4 = simd_swizzle!(v, [3, 0, 1, 2]);
+/// assert_eq!(r.to_array(), [13, 10, 11, 12]);
+///
+/// // Changing the number of lanes
+/// let r: u32x2 = simd_swizzle!(v, [3, 1]);
+/// assert_eq!(r.to_array(), [13, 11]);
+/// ```
+///
+/// With two input SIMD vectors, the const array uses `Which` to specify the source of each index:
+/// ```
+/// # #![feature(portable_simd)]
+/// # use core::simd::{u32x2, u32x4, simd_swizzle, Which};
+/// use Which::{First, Second};
+/// let a = u32x4::from_array([0, 1, 2, 3]);
+/// let b = u32x4::from_array([4, 5, 6, 7]);
+///
+/// // Keeping the same size
+/// let r: u32x4 = simd_swizzle!(a, b, [First(0), First(1), Second(2), Second(3)]);
+/// assert_eq!(r.to_array(), [0, 1, 6, 7]);
+///
+/// // Changing the number of lanes
+/// let r: u32x2 = simd_swizzle!(a, b, [First(0), Second(0)]);
+/// assert_eq!(r.to_array(), [0, 4]);
+/// ```
+</span><span class="attribute">#[allow(unused_macros)]</span>
+<span class="kw">pub macro </span>simd_swizzle {
     (
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>:<span class="ident">expr</span> $(,)<span class="question-mark">?</span>
-    ) =&gt; {
+        <span class="macro-nonterminal">$vector</span>:expr, <span class="macro-nonterminal">$index</span>:expr $(,)<span class="question-mark">?
+    </span>) =&gt; {
         {
-            <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd::Swizzle</span>;
-            <span class="kw">struct</span> <span class="ident">Impl</span>;
-            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="ident">LANES</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>.<span class="ident">len</span>()}<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Impl</span> {
-                <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>.<span class="ident">len</span>()}] <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>;
+            <span class="kw">use </span><span class="macro-nonterminal">$crate::simd::Swizzle</span>;
+            <span class="kw">struct </span>Impl;
+            <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle&lt;LANES, {<span class="macro-nonterminal">$index</span>.len()}&gt; <span class="kw">for </span>Impl {
+                <span class="kw">const </span>INDEX: [usize; {<span class="macro-nonterminal">$index</span>.len()}] = <span class="macro-nonterminal">$index</span>;
             }
-            <span class="ident">Impl::swizzle</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">vector</span>)
+            Impl::swizzle(<span class="macro-nonterminal">$vector</span>)
         }
     },
     (
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">first</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">second</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>:<span class="ident">expr</span> $(,)<span class="question-mark">?</span>
-    ) =&gt; {
+        <span class="macro-nonterminal">$first</span>:expr, <span class="macro-nonterminal">$second</span>:expr, <span class="macro-nonterminal">$index</span>:expr $(,)<span class="question-mark">?
+    </span>) =&gt; {
         {
-            <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::simd</span>::{<span class="ident">Which</span>, <span class="ident">Swizzle2</span>};
-            <span class="kw">struct</span> <span class="ident">Impl</span>;
-            <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>.<span class="ident">len</span>()}<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Impl</span> {
-                <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; {<span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>.<span class="ident">len</span>()}] <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">index</span>;
+            <span class="kw">use </span><span class="macro-nonterminal">$crate::simd</span>::{Which, Swizzle2};
+            <span class="kw">struct </span>Impl;
+            <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle2&lt;LANES, {<span class="macro-nonterminal">$index</span>.len()}&gt; <span class="kw">for </span>Impl {
+                <span class="kw">const </span>INDEX: [Which; {<span class="macro-nonterminal">$index</span>.len()}] = <span class="macro-nonterminal">$index</span>;
             }
-            <span class="ident">Impl::swizzle2</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">first</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">second</span>)
+            Impl::swizzle2(<span class="macro-nonterminal">$first</span>, <span class="macro-nonterminal">$second</span>)
         }
     }
 }
 
-<span class="doccomment">/// Specifies a lane index into one of two SIMD vectors.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is an input type for [Swizzle2] and helper macros like [simd_swizzle].</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Which</span> {
-    <span class="doccomment">/// Index of a lane in the first input SIMD vector.</span>
-    <span class="ident">First</span>(<span class="ident">usize</span>),
-    <span class="doccomment">/// Index of a lane in the second input SIMD vector.</span>
-    <span class="ident">Second</span>(<span class="ident">usize</span>),
+<span class="doccomment">/// Specifies a lane index into one of two SIMD vectors.
+///
+/// This is an input type for [Swizzle2] and helper macros like [simd_swizzle].
+</span><span class="attribute">#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]</span>
+<span class="kw">pub enum </span>Which {
+    <span class="doccomment">/// Index of a lane in the first input SIMD vector.
+    </span>First(usize),
+    <span class="doccomment">/// Index of a lane in the second input SIMD vector.
+    </span>Second(usize),
 }
 
-<span class="doccomment">/// Create a vector from the elements of another vector.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Map from the lanes of the input vector to the output vector.</span>
-    <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; <span class="ident">OUTPUT_LANES</span>];
+<span class="doccomment">/// Create a vector from the elements of another vector.
+</span><span class="kw">pub trait </span>Swizzle&lt;<span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; {
+    <span class="doccomment">/// Map from the lanes of the input vector to the output vector.
+    </span><span class="kw">const </span>INDEX: [usize; OUTPUT_LANES];
 
-    <span class="doccomment">/// Create a new vector from the lanes of `vector`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Lane `i` of the output is `vector[Self::INDEX[i]]`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">swizzle</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">vector</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">SimdElement</span>,
-        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+    <span class="doccomment">/// Create a new vector from the lanes of `vector`.
+    ///
+    /// Lane `i` of the output is `vector[Self::INDEX[i]]`.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">fn </span>swizzle&lt;T&gt;(vector: Simd&lt;T, INPUT_LANES&gt;) -&gt; Simd&lt;T, OUTPUT_LANES&gt;
+    <span class="kw">where
+        </span>T: SimdElement,
+        LaneCount&lt;INPUT_LANES&gt;: SupportedLaneCount,
+        LaneCount&lt;OUTPUT_LANES&gt;: SupportedLaneCount,
     {
-        <span class="comment">// Safety: `vector` is a vector, and `INDEX_IMPL` is a const array of u32.</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shuffle</span>(<span class="ident">vector</span>, <span class="ident">vector</span>, <span class="ident"><span class="self">Self</span>::INDEX_IMPL</span>) }
+        <span class="comment">// Safety: `vector` is a vector, and `INDEX_IMPL` is a const array of u32.
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_shuffle(vector, vector, <span class="self">Self</span>::INDEX_IMPL) }
     }
 }
 
-<span class="doccomment">/// Create a vector from the elements of two other vectors.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Map from the lanes of the input vectors to the output vector</span>
-    <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">OUTPUT_LANES</span>];
+<span class="doccomment">/// Create a vector from the elements of two other vectors.
+</span><span class="kw">pub trait </span>Swizzle2&lt;<span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; {
+    <span class="doccomment">/// Map from the lanes of the input vectors to the output vector
+    </span><span class="kw">const </span>INDEX: [Which; OUTPUT_LANES];
 
-    <span class="doccomment">/// Create a new vector from the lanes of `first` and `second`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Lane `i` is `first[j]` when `Self::INDEX[i]` is `First(j)`, or `second[j]` when it is</span>
-    <span class="doccomment">/// `Second(j)`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">swizzle2</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
-        <span class="ident">first</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>,
-        <span class="ident">second</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">INPUT_LANES</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">SimdElement</span>,
-        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-        <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+    <span class="doccomment">/// Create a new vector from the lanes of `first` and `second`.
+    ///
+    /// Lane `i` is `first[j]` when `Self::INDEX[i]` is `First(j)`, or `second[j]` when it is
+    /// `Second(j)`.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">fn </span>swizzle2&lt;T&gt;(
+        first: Simd&lt;T, INPUT_LANES&gt;,
+        second: Simd&lt;T, INPUT_LANES&gt;,
+    ) -&gt; Simd&lt;T, OUTPUT_LANES&gt;
+    <span class="kw">where
+        </span>T: SimdElement,
+        LaneCount&lt;INPUT_LANES&gt;: SupportedLaneCount,
+        LaneCount&lt;OUTPUT_LANES&gt;: SupportedLaneCount,
     {
-        <span class="comment">// Safety: `first` and `second` are vectors, and `INDEX_IMPL` is a const array of u32.</span>
-        <span class="kw">unsafe</span> { <span class="ident">intrinsics::simd_shuffle</span>(<span class="ident">first</span>, <span class="ident">second</span>, <span class="ident"><span class="self">Self</span>::INDEX_IMPL</span>) }
+        <span class="comment">// Safety: `first` and `second` are vectors, and `INDEX_IMPL` is a const array of u32.
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_shuffle(first, second, <span class="self">Self</span>::INDEX_IMPL) }
     }
 }
 
-<span class="doccomment">/// The `simd_shuffle` intrinsic expects `u32`, so do error checking and conversion here.</span>
-<span class="doccomment">/// This trait hides `INDEX_IMPL` from the public API.</span>
-<span class="kw">trait</span> <span class="ident">SwizzleImpl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">const</span> <span class="ident">INDEX_IMPL</span>: [<span class="ident">u32</span>; <span class="ident">OUTPUT_LANES</span>];
+<span class="doccomment">/// The `simd_shuffle` intrinsic expects `u32`, so do error checking and conversion here.
+/// This trait hides `INDEX_IMPL` from the public API.
+</span><span class="kw">trait </span>SwizzleImpl&lt;<span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; {
+    <span class="kw">const </span>INDEX_IMPL: [u32; OUTPUT_LANES];
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">SwizzleImpl</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>
-    <span class="kw">for</span> <span class="ident">T</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; SwizzleImpl&lt;INPUT_LANES, OUTPUT_LANES&gt;
+    <span class="kw">for </span>T
+<span class="kw">where
+    </span>T: Swizzle&lt;INPUT_LANES, OUTPUT_LANES&gt; + <span class="question-mark">?</span>Sized,
 {
-    <span class="kw">const</span> <span class="ident">INDEX_IMPL</span>: [<span class="ident">u32</span>; <span class="ident">OUTPUT_LANES</span>] <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">OUTPUT_LANES</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">OUTPUT_LANES</span> {
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::INDEX</span>[<span class="ident">i</span>];
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">==</span> <span class="ident">index</span>);
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="op">&lt;</span> <span class="ident">INPUT_LANES</span>, <span class="string">&quot;source lane exceeds input lane count&quot;</span>,);
-            <span class="ident">output</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span>;
-            <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">const </span>INDEX_IMPL: [u32; OUTPUT_LANES] = {
+        <span class="kw">let </span><span class="kw-2">mut </span>output = [<span class="number">0</span>; OUTPUT_LANES];
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+        <span class="kw">while </span>i &lt; OUTPUT_LANES {
+            <span class="kw">let </span>index = <span class="self">Self</span>::INDEX[i];
+            <span class="macro">assert!</span>(index <span class="kw">as </span>u32 <span class="kw">as </span>usize == index);
+            <span class="macro">assert!</span>(index &lt; INPUT_LANES, <span class="string">&quot;source lane exceeds input lane count&quot;</span>,);
+            output[i] = index <span class="kw">as </span>u32;
+            i += <span class="number">1</span>;
         }
-        <span class="ident">output</span>
+        output
     };
 }
 
-<span class="doccomment">/// The `simd_shuffle` intrinsic expects `u32`, so do error checking and conversion here.</span>
-<span class="doccomment">/// This trait hides `INDEX_IMPL` from the public API.</span>
-<span class="kw">trait</span> <span class="ident">Swizzle2Impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">const</span> <span class="ident">INDEX_IMPL</span>: [<span class="ident">u32</span>; <span class="ident">OUTPUT_LANES</span>];
+<span class="doccomment">/// The `simd_shuffle` intrinsic expects `u32`, so do error checking and conversion here.
+/// This trait hides `INDEX_IMPL` from the public API.
+</span><span class="kw">trait </span>Swizzle2Impl&lt;<span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; {
+    <span class="kw">const </span>INDEX_IMPL: [u32; OUTPUT_LANES];
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">INPUT_LANES</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">OUTPUT_LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2Impl</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span>
-    <span class="kw">for</span> <span class="ident">T</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">INPUT_LANES</span>, <span class="ident">OUTPUT_LANES</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>INPUT_LANES: usize, <span class="kw">const </span>OUTPUT_LANES: usize&gt; Swizzle2Impl&lt;INPUT_LANES, OUTPUT_LANES&gt;
+    <span class="kw">for </span>T
+<span class="kw">where
+    </span>T: Swizzle2&lt;INPUT_LANES, OUTPUT_LANES&gt; + <span class="question-mark">?</span>Sized,
 {
-    <span class="kw">const</span> <span class="ident">INDEX_IMPL</span>: [<span class="ident">u32</span>; <span class="ident">OUTPUT_LANES</span>] <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">OUTPUT_LANES</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">OUTPUT_LANES</span> {
-            <span class="kw">let</span> (<span class="ident">offset</span>, <span class="ident">index</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident"><span class="self">Self</span>::INDEX</span>[<span class="ident">i</span>] {
-                <span class="ident">Which::First</span>(<span class="ident">index</span>) =&gt; (<span class="bool-val">false</span>, <span class="ident">index</span>),
-                <span class="ident">Which::Second</span>(<span class="ident">index</span>) =&gt; (<span class="bool-val">true</span>, <span class="ident">index</span>),
+    <span class="kw">const </span>INDEX_IMPL: [u32; OUTPUT_LANES] = {
+        <span class="kw">let </span><span class="kw-2">mut </span>output = [<span class="number">0</span>; OUTPUT_LANES];
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+        <span class="kw">while </span>i &lt; OUTPUT_LANES {
+            <span class="kw">let </span>(offset, index) = <span class="kw">match </span><span class="self">Self</span>::INDEX[i] {
+                Which::First(index) =&gt; (<span class="bool-val">false</span>, index),
+                Which::Second(index) =&gt; (<span class="bool-val">true</span>, index),
             };
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="op">&lt;</span> <span class="ident">INPUT_LANES</span>, <span class="string">&quot;source lane exceeds input lane count&quot;</span>,);
+            <span class="macro">assert!</span>(index &lt; INPUT_LANES, <span class="string">&quot;source lane exceeds input lane count&quot;</span>,);
 
-            <span class="comment">// lanes are indexed by the first vector, then second vector</span>
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">offset</span> { <span class="ident">index</span> <span class="op">+</span> <span class="ident">INPUT_LANES</span> } <span class="kw">else</span> { <span class="ident">index</span> };
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">==</span> <span class="ident">index</span>);
-            <span class="ident">output</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span>;
-            <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="comment">// lanes are indexed by the first vector, then second vector
+            </span><span class="kw">let </span>index = <span class="kw">if </span>offset { index + INPUT_LANES } <span class="kw">else </span>{ index };
+            <span class="macro">assert!</span>(index <span class="kw">as </span>u32 <span class="kw">as </span>usize == index);
+            output[i] = index <span class="kw">as </span>u32;
+            i += <span class="number">1</span>;
         }
-        <span class="ident">output</span>
+        output
     };
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">SimdElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Simd&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: SimdElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="doccomment">/// Reverse the order of the lanes in the vector.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reverse</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">reverse_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="ident">index</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">LANES</span> <span class="op">-</span> <span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>;
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="doccomment">/// Reverse the order of the lanes in the vector.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>reverse(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">const fn </span>reverse_index&lt;<span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
+            <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
+            <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+            <span class="kw">while </span>i &lt; LANES {
+                index[i] = LANES - i - <span class="number">1</span>;
+                i += <span class="number">1</span>;
             }
-            <span class="ident">index</span>
+            index
         }
 
-        <span class="kw">struct</span> <span class="ident">Reverse</span>;
+        <span class="kw">struct </span>Reverse;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Reverse</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">reverse_index</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>();
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle&lt;LANES, LANES&gt; <span class="kw">for </span>Reverse {
+            <span class="kw">const </span>INDEX: [usize; LANES] = reverse_index::&lt;LANES&gt;();
         }
 
-        <span class="ident">Reverse::swizzle</span>(<span class="self">self</span>)
+        Reverse::swizzle(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Rotates the vector such that the first `OFFSET` elements of the slice move to the end</span>
-    <span class="doccomment">/// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_lanes_left`,</span>
-    <span class="doccomment">/// the element previously in lane `OFFSET` will become the first element in the slice.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_left</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="ident">index</span>[<span class="ident">i</span>] <span class="op">=</span> (<span class="ident">i</span> <span class="op">+</span> <span class="ident">offset</span>) <span class="op">%</span> <span class="ident">LANES</span>;
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="doccomment">/// Rotates the vector such that the first `OFFSET` elements of the slice move to the end
+    /// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_lanes_left`,
+    /// the element previously in lane `OFFSET` will become the first element in the slice.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>rotate_lanes_left&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">const fn </span>rotate_index&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
+            <span class="kw">let </span>offset = OFFSET % LANES;
+            <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
+            <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+            <span class="kw">while </span>i &lt; LANES {
+                index[i] = (i + offset) % LANES;
+                i += <span class="number">1</span>;
             }
-            <span class="ident">index</span>
+            index
         }
 
-        <span class="kw">struct</span> <span class="ident">Rotate</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>;
+        <span class="kw">struct </span>Rotate&lt;<span class="kw">const </span>OFFSET: usize&gt;;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Rotate</span><span class="op">&lt;</span><span class="ident">OFFSET</span><span class="op">&gt;</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">rotate_index</span>::<span class="op">&lt;</span><span class="ident">OFFSET</span>, <span class="ident">LANES</span><span class="op">&gt;</span>();
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt; Swizzle&lt;LANES, LANES&gt; <span class="kw">for </span>Rotate&lt;OFFSET&gt; {
+            <span class="kw">const </span>INDEX: [usize; LANES] = rotate_index::&lt;OFFSET, LANES&gt;();
         }
 
-        <span class="ident">Rotate</span>::<span class="op">&lt;</span><span class="ident">OFFSET</span><span class="op">&gt;</span><span class="ident">::swizzle</span>(<span class="self">self</span>)
+        Rotate::&lt;OFFSET&gt;::swizzle(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Rotates the vector such that the first `LANES - OFFSET` elements of the vector move to</span>
-    <span class="doccomment">/// the end while the last `OFFSET` elements move to the front. After calling `rotate_lanes_right`,</span>
-    <span class="doccomment">/// the element previously at index `LANES - OFFSET` will become the first element in the slice.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rotate_lanes_right</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">rotate_index</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>() -&gt; [<span class="ident">usize</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">LANES</span> <span class="op">-</span> <span class="ident">OFFSET</span> <span class="op">%</span> <span class="ident">LANES</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="ident">index</span>[<span class="ident">i</span>] <span class="op">=</span> (<span class="ident">i</span> <span class="op">+</span> <span class="ident">offset</span>) <span class="op">%</span> <span class="ident">LANES</span>;
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="doccomment">/// Rotates the vector such that the first `LANES - OFFSET` elements of the vector move to
+    /// the end while the last `OFFSET` elements move to the front. After calling `rotate_lanes_right`,
+    /// the element previously at index `LANES - OFFSET` will become the first element in the slice.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>rotate_lanes_right&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">const fn </span>rotate_index&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
+            <span class="kw">let </span>offset = LANES - OFFSET % LANES;
+            <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
+            <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+            <span class="kw">while </span>i &lt; LANES {
+                index[i] = (i + offset) % LANES;
+                i += <span class="number">1</span>;
             }
-            <span class="ident">index</span>
+            index
         }
 
-        <span class="kw">struct</span> <span class="ident">Rotate</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span><span class="op">&gt;</span>;
+        <span class="kw">struct </span>Rotate&lt;<span class="kw">const </span>OFFSET: usize&gt;;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">OFFSET</span>: <span class="ident">usize</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Rotate</span><span class="op">&lt;</span><span class="ident">OFFSET</span><span class="op">&gt;</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">usize</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">rotate_index</span>::<span class="op">&lt;</span><span class="ident">OFFSET</span>, <span class="ident">LANES</span><span class="op">&gt;</span>();
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt; Swizzle&lt;LANES, LANES&gt; <span class="kw">for </span>Rotate&lt;OFFSET&gt; {
+            <span class="kw">const </span>INDEX: [usize; LANES] = rotate_index::&lt;OFFSET, LANES&gt;();
         }
 
-        <span class="ident">Rotate</span>::<span class="op">&lt;</span><span class="ident">OFFSET</span><span class="op">&gt;</span><span class="ident">::swizzle</span>(<span class="self">self</span>)
+        Rotate::&lt;OFFSET&gt;::swizzle(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Interleave two vectors.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The resulting vectors contain lanes taken alternatively from `self` and `other`, first</span>
-    <span class="doccomment">/// filling the first result, and then the second.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The reverse of this operation is [`Simd::deinterleave`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::Simd;</span>
-    <span class="doccomment">/// let a = Simd::from_array([0, 1, 2, 3]);</span>
-    <span class="doccomment">/// let b = Simd::from_array([4, 5, 6, 7]);</span>
-    <span class="doccomment">/// let (x, y) = a.interleave(b);</span>
-    <span class="doccomment">/// assert_eq!(x.to_array(), [0, 4, 1, 5]);</span>
-    <span class="doccomment">/// assert_eq!(y.to_array(), [2, 6, 3, 7]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">interleave</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">high</span>: <span class="ident">bool</span>) -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="comment">// Treat the source as a concatenated vector</span>
-                <span class="kw">let</span> <span class="ident">dst_index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">high</span> { <span class="ident">i</span> <span class="op">+</span> <span class="ident">LANES</span> } <span class="kw">else</span> { <span class="ident">i</span> };
-                <span class="kw">let</span> <span class="ident">src_index</span> <span class="op">=</span> <span class="ident">dst_index</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> (<span class="ident">dst_index</span> <span class="op">%</span> <span class="number">2</span>) <span class="op">*</span> <span class="ident">LANES</span>;
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">src_index</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                    <span class="ident">Which::First</span>(<span class="ident">src_index</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">Which::Second</span>(<span class="ident">src_index</span> <span class="op">%</span> <span class="ident">LANES</span>)
+    <span class="doccomment">/// Interleave two vectors.
+    ///
+    /// The resulting vectors contain lanes taken alternatively from `self` and `other`, first
+    /// filling the first result, and then the second.
+    ///
+    /// The reverse of this operation is [`Simd::deinterleave`].
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let a = Simd::from_array([0, 1, 2, 3]);
+    /// let b = Simd::from_array([4, 5, 6, 7]);
+    /// let (x, y) = a.interleave(b);
+    /// assert_eq!(x.to_array(), [0, 4, 1, 5]);
+    /// assert_eq!(y.to_array(), [2, 6, 3, 7]);
+    /// ```
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>interleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+        <span class="kw">const fn </span>interleave&lt;<span class="kw">const </span>LANES: usize&gt;(high: bool) -&gt; [Which; LANES] {
+            <span class="kw">let </span><span class="kw-2">mut </span>idx = [Which::First(<span class="number">0</span>); LANES];
+            <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+            <span class="kw">while </span>i &lt; LANES {
+                <span class="comment">// Treat the source as a concatenated vector
+                </span><span class="kw">let </span>dst_index = <span class="kw">if </span>high { i + LANES } <span class="kw">else </span>{ i };
+                <span class="kw">let </span>src_index = dst_index / <span class="number">2 </span>+ (dst_index % <span class="number">2</span>) * LANES;
+                idx[i] = <span class="kw">if </span>src_index &lt; LANES {
+                    Which::First(src_index)
+                } <span class="kw">else </span>{
+                    Which::Second(src_index % LANES)
                 };
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                i += <span class="number">1</span>;
             }
-            <span class="ident">idx</span>
+            idx
         }
 
-        <span class="kw">struct</span> <span class="ident">Lo</span>;
-        <span class="kw">struct</span> <span class="ident">Hi</span>;
+        <span class="kw">struct </span>Lo;
+        <span class="kw">struct </span>Hi;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Lo</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">interleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">false</span>);
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle2&lt;LANES, LANES&gt; <span class="kw">for </span>Lo {
+            <span class="kw">const </span>INDEX: [Which; LANES] = interleave::&lt;LANES&gt;(<span class="bool-val">false</span>);
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Hi</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">interleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">true</span>);
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle2&lt;LANES, LANES&gt; <span class="kw">for </span>Hi {
+            <span class="kw">const </span>INDEX: [Which; LANES] = interleave::&lt;LANES&gt;(<span class="bool-val">true</span>);
         }
 
-        (<span class="ident">Lo::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>), <span class="ident">Hi::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>))
+        (Lo::swizzle2(<span class="self">self</span>, other), Hi::swizzle2(<span class="self">self</span>, other))
     }
 
-    <span class="doccomment">/// Deinterleave two vectors.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The first result takes every other lane of `self` and then `other`, starting with</span>
-    <span class="doccomment">/// the first lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The second result takes every other lane of `self` and then `other`, starting with</span>
-    <span class="doccomment">/// the second lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The reverse of this operation is [`Simd::interleave`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #![feature(portable_simd)]</span>
-    <span class="doccomment">/// # use core::simd::Simd;</span>
-    <span class="doccomment">/// let a = Simd::from_array([0, 4, 1, 5]);</span>
-    <span class="doccomment">/// let b = Simd::from_array([2, 6, 3, 7]);</span>
-    <span class="doccomment">/// let (x, y) = a.deinterleave(b);</span>
-    <span class="doccomment">/// assert_eq!(x.to_array(), [0, 1, 2, 3]);</span>
-    <span class="doccomment">/// assert_eq!(y.to_array(), [4, 5, 6, 7]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deinterleave</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-        <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">deinterleave</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">second</span>: <span class="ident">bool</span>) -&gt; [<span class="ident">Which</span>; <span class="ident">LANES</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> [<span class="ident">Which::First</span>(<span class="number">0</span>); <span class="ident">LANES</span>];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                <span class="comment">// Treat the source as a concatenated vector</span>
-                <span class="kw">let</span> <span class="ident">src_index</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="ident">second</span> <span class="kw">as</span> <span class="ident">usize</span>;
-                <span class="ident">idx</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">src_index</span> <span class="op">&lt;</span> <span class="ident">LANES</span> {
-                    <span class="ident">Which::First</span>(<span class="ident">src_index</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">Which::Second</span>(<span class="ident">src_index</span> <span class="op">%</span> <span class="ident">LANES</span>)
+    <span class="doccomment">/// Deinterleave two vectors.
+    ///
+    /// The first result takes every other lane of `self` and then `other`, starting with
+    /// the first lane.
+    ///
+    /// The second result takes every other lane of `self` and then `other`, starting with
+    /// the second lane.
+    ///
+    /// The reverse of this operation is [`Simd::interleave`].
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let a = Simd::from_array([0, 4, 1, 5]);
+    /// let b = Simd::from_array([2, 6, 3, 7]);
+    /// let (x, y) = a.deinterleave(b);
+    /// assert_eq!(x.to_array(), [0, 1, 2, 3]);
+    /// assert_eq!(y.to_array(), [4, 5, 6, 7]);
+    /// ```
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
+    <span class="kw">pub fn </span>deinterleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+        <span class="kw">const fn </span>deinterleave&lt;<span class="kw">const </span>LANES: usize&gt;(second: bool) -&gt; [Which; LANES] {
+            <span class="kw">let </span><span class="kw-2">mut </span>idx = [Which::First(<span class="number">0</span>); LANES];
+            <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+            <span class="kw">while </span>i &lt; LANES {
+                <span class="comment">// Treat the source as a concatenated vector
+                </span><span class="kw">let </span>src_index = i * <span class="number">2 </span>+ second <span class="kw">as </span>usize;
+                idx[i] = <span class="kw">if </span>src_index &lt; LANES {
+                    Which::First(src_index)
+                } <span class="kw">else </span>{
+                    Which::Second(src_index % LANES)
                 };
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                i += <span class="number">1</span>;
             }
-            <span class="ident">idx</span>
+            idx
         }
 
-        <span class="kw">struct</span> <span class="ident">Even</span>;
-        <span class="kw">struct</span> <span class="ident">Odd</span>;
+        <span class="kw">struct </span>Even;
+        <span class="kw">struct </span>Odd;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Even</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">deinterleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">false</span>);
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle2&lt;LANES, LANES&gt; <span class="kw">for </span>Even {
+            <span class="kw">const </span>INDEX: [Which; LANES] = deinterleave::&lt;LANES&gt;(<span class="bool-val">false</span>);
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Swizzle2</span><span class="op">&lt;</span><span class="ident">LANES</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Odd</span> {
-            <span class="kw">const</span> <span class="ident">INDEX</span>: [<span class="ident">Which</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">deinterleave</span>::<span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>(<span class="bool-val">true</span>);
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle2&lt;LANES, LANES&gt; <span class="kw">for </span>Odd {
+            <span class="kw">const </span>INDEX: [Which; LANES] = deinterleave::&lt;LANES&gt;(<span class="bool-val">true</span>);
         }
 
-        (<span class="ident">Even::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>), <span class="ident">Odd::swizzle2</span>(<span class="self">self</span>, <span class="ident">other</span>))
+        (Even::swizzle2(<span class="self">self</span>, other), Odd::swizzle2(<span class="self">self</span>, other))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

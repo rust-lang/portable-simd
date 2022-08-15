@@ -667,674 +667,674 @@
 <span id="667">667</span>
 <span id="668">668</span>
 <span id="669">669</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.</span>
-<span class="doccomment">//! Types representing</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking lanes of vectors.
+//! Types representing
+</span><span class="attribute">#![allow(non_camel_case_types)]</span>
 
-<span class="attribute">#[<span class="ident">cfg_attr</span>(
-    <span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;avx512f&quot;</span>)),
-    <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;masks/full_masks.rs&quot;</span>
-)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(
-    <span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;avx512f&quot;</span>),
-    <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;masks/bitmask.rs&quot;</span>
-)]</span>
-<span class="kw">mod</span> <span class="ident">mask_impl</span>;
+<span class="attribute">#[cfg_attr(
+    not(all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_feature = <span class="string">&quot;avx512f&quot;</span>)),
+    path = <span class="string">&quot;masks/full_masks.rs&quot;
+</span>)]</span>
+<span class="attribute">#[cfg_attr(
+    all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_feature = <span class="string">&quot;avx512f&quot;</span>),
+    path = <span class="string">&quot;masks/bitmask.rs&quot;
+</span>)]</span>
+<span class="kw">mod </span>mask_impl;
 
-<span class="kw">mod</span> <span class="ident">to_bitmask</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">to_bitmask::ToBitMask</span>;
+<span class="kw">mod </span>to_bitmask;
+<span class="kw">pub use </span>to_bitmask::ToBitMask;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">to_bitmask</span>::{<span class="ident">bitmask_len</span>, <span class="ident">ToBitMaskArray</span>};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]</span>
+<span class="kw">pub use </span>to_bitmask::{bitmask_len, ToBitMaskArray};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">intrinsics</span>, <span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SimdPartialEq</span>, <span class="ident">SupportedLaneCount</span>};
-<span class="kw">use</span> <span class="ident">core::cmp::Ordering</span>;
-<span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">fmt</span>, <span class="ident">mem</span>};
+<span class="kw">use </span><span class="kw">crate</span>::simd::{intrinsics, LaneCount, Simd, SimdElement, SimdPartialEq, SupportedLaneCount};
+<span class="kw">use </span>core::cmp::Ordering;
+<span class="kw">use </span>core::{fmt, mem};
 
-<span class="kw">mod</span> <span class="ident">sealed</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">mod </span>sealed {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="doccomment">/// Not only does this seal the `MaskElement` trait, but these functions prevent other traits</span>
-    <span class="doccomment">/// from bleeding into the parent bounds.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For example, `eq` could be provided by requiring `MaskElement: PartialEq`, but that would</span>
-    <span class="doccomment">/// prevent us from ever removing that bound, or from implementing `MaskElement` on</span>
-    <span class="doccomment">/// non-`PartialEq` types in the future.</span>
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {
-        <span class="kw">fn</span> <span class="ident">valid</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-            <span class="self">Self</span>: <span class="ident">SimdElement</span>;
+    <span class="doccomment">/// Not only does this seal the `MaskElement` trait, but these functions prevent other traits
+    /// from bleeding into the parent bounds.
+    ///
+    /// For example, `eq` could be provided by requiring `MaskElement: PartialEq`, but that would
+    /// prevent us from ever removing that bound, or from implementing `MaskElement` on
+    /// non-`PartialEq` types in the future.
+    </span><span class="kw">pub trait </span>Sealed {
+        <span class="kw">fn </span>valid&lt;<span class="kw">const </span>LANES: usize&gt;(values: Simd&lt;<span class="self">Self</span>, LANES&gt;) -&gt; bool
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+            <span class="self">Self</span>: SimdElement;
 
-        <span class="kw">fn</span> <span class="ident">eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">bool</span>;
+        <span class="kw">fn </span>eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; bool;
 
-        <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="self">Self</span>;
+        <span class="kw">const </span>TRUE: <span class="self">Self</span>;
 
-        <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="self">Self</span>;
+        <span class="kw">const </span>FALSE: <span class="self">Self</span>;
     }
 }
-<span class="kw">use</span> <span class="ident">sealed::Sealed</span>;
+<span class="kw">use </span>sealed::Sealed;
 
-<span class="doccomment">/// Marker trait for types that may be used as SIMD mask elements.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Safety</span>
-<span class="doccomment">/// Type must be a signed integer.</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">trait</span> <span class="ident">MaskElement</span>: <span class="ident">SimdElement</span> <span class="op">+</span> <span class="ident">Sealed</span> {}
+<span class="doccomment">/// Marker trait for types that may be used as SIMD mask elements.
+///
+/// # Safety
+/// Type must be a signed integer.
+</span><span class="kw">pub unsafe trait </span>MaskElement: SimdElement + Sealed {}
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_element</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span> } =&gt; {
-        <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-            <span class="kw">fn</span> <span class="ident">valid</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span>
-            <span class="kw">where</span>
-                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="macro">macro_rules!</span> impl_element {
+    { <span class="macro-nonterminal">$ty</span>:ty } =&gt; {
+        <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
+            <span class="kw">fn </span>valid&lt;<span class="kw">const </span>LANES: usize&gt;(value: Simd&lt;<span class="self">Self</span>, LANES&gt;) -&gt; bool
+            <span class="kw">where
+                </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
             {
-                (<span class="ident">value</span>.<span class="ident">simd_eq</span>(<span class="ident">Simd::splat</span>(<span class="number">0</span> <span class="kw">as</span> <span class="kw">_</span>)) <span class="op">|</span> <span class="ident">value</span>.<span class="ident">simd_eq</span>(<span class="ident">Simd::splat</span>(<span class="op">-</span><span class="number">1</span> <span class="kw">as</span> <span class="kw">_</span>))).<span class="ident">all</span>()
+                (value.simd_eq(Simd::splat(<span class="number">0 </span><span class="kw">as _</span>)) | value.simd_eq(Simd::splat(-<span class="number">1 </span><span class="kw">as _</span>))).all()
             }
 
-            <span class="kw">fn</span> <span class="ident">eq</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span> <span class="op">==</span> <span class="ident">other</span> }
+            <span class="kw">fn </span>eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; bool { <span class="self">self </span>== other }
 
-            <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="self">Self</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>;
-            <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="self">Self</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="kw">const </span>TRUE: <span class="self">Self </span>= -<span class="number">1</span>;
+            <span class="kw">const </span>FALSE: <span class="self">Self </span>= <span class="number">0</span>;
         }
 
-        <span class="comment">// Safety: this is a valid mask element type</span>
-        <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">MaskElement</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {}
+        <span class="comment">// Safety: this is a valid mask element type
+        </span><span class="kw">unsafe impl </span>MaskElement <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{}
     }
 }
 
-<span class="macro">impl_element!</span> { <span class="ident">i8</span> }
-<span class="macro">impl_element!</span> { <span class="ident">i16</span> }
-<span class="macro">impl_element!</span> { <span class="ident">i32</span> }
-<span class="macro">impl_element!</span> { <span class="ident">i64</span> }
-<span class="macro">impl_element!</span> { <span class="ident">isize</span> }
+<span class="macro">impl_element!</span> { i8 }
+<span class="macro">impl_element!</span> { i16 }
+<span class="macro">impl_element!</span> { i32 }
+<span class="macro">impl_element!</span> { i64 }
+<span class="macro">impl_element!</span> { isize }
 
-<span class="doccomment">/// A SIMD vector mask for `LANES` elements of width specified by `Element`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Masks represent boolean inclusion/exclusion on a per-lane basis.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[T; LANES]`.</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">mask_impl::Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>)
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>;
+<span class="doccomment">/// A SIMD vector mask for `LANES` elements of width specified by `Element`.
+///
+/// Masks represent boolean inclusion/exclusion on a per-lane basis.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[T; LANES]`.
+</span><span class="attribute">#[repr(transparent)]</span>
+<span class="kw">pub struct </span>Mask&lt;T, <span class="kw">const </span>LANES: usize&gt;(mask_impl::Mask&lt;T, LANES&gt;)
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Copy <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Clone <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw-2">*</span><span class="self">self</span>
-    }
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw-2">*</span><span class="self">self
+    </span>}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="doccomment">/// Construct a mask by setting all lanes to the given value.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">value</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">mask_impl::Mask::splat</span>(<span class="ident">value</span>))
+    <span class="doccomment">/// Construct a mask by setting all lanes to the given value.
+    </span><span class="kw">pub fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(mask_impl::Mask::splat(value))
     }
 
-    <span class="doccomment">/// Converts an array of bools to a SIMD mask.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_array</span>(<span class="ident">array</span>: [<span class="ident">bool</span>; <span class="ident">LANES</span>]) -&gt; <span class="self">Self</span> {
-        <span class="comment">// SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of</span>
-        <span class="comment">//     true:    0b_0000_0001</span>
-        <span class="comment">//     false:   0b_0000_0000</span>
-        <span class="comment">// Thus, an array of bools is also a valid array of bytes: [u8; N]</span>
-        <span class="comment">// This would be hypothetically valid as an &quot;in-place&quot; transmute,</span>
-        <span class="comment">// but these are &quot;dependently-sized&quot; types, so copy elision it is!</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">bytes</span>: [<span class="ident">u8</span>; <span class="ident">LANES</span>] <span class="op">=</span> <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">array</span>);
-            <span class="kw">let</span> <span class="ident">bools</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span>
-                <span class="ident">intrinsics::simd_ne</span>(<span class="ident">Simd::from_array</span>(<span class="ident">bytes</span>), <span class="ident">Simd::splat</span>(<span class="number">0u8</span>));
-            <span class="ident">Mask::from_int_unchecked</span>(<span class="ident">intrinsics::simd_cast</span>(<span class="ident">bools</span>))
-        }
-    }
-
-    <span class="doccomment">/// Converts a SIMD mask to an array of bools.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_array</span>(<span class="self">self</span>) -&gt; [<span class="ident">bool</span>; <span class="ident">LANES</span>] {
-        <span class="comment">// This follows mostly the same logic as from_array.</span>
-        <span class="comment">// SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of</span>
-        <span class="comment">//     true:    0b_0000_0001</span>
-        <span class="comment">//     false:   0b_0000_0000</span>
-        <span class="comment">// Thus, an array of bools is also a valid array of bytes: [u8; N]</span>
-        <span class="comment">// Since our masks are equal to integers where all bits are set,</span>
-        <span class="comment">// we can simply convert them to i8s, and then bitand them by the</span>
-        <span class="comment">// bitpattern for Rust&#39;s &quot;true&quot; bool.</span>
-        <span class="comment">// This would be hypothetically valid as an &quot;in-place&quot; transmute,</span>
-        <span class="comment">// but these are &quot;dependently-sized&quot; types, so copy elision it is!</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">LANES</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">intrinsics::simd_cast</span>(<span class="self">self</span>.<span class="ident">to_int</span>());
-            <span class="ident">bytes</span> <span class="op">&amp;=</span> <span class="ident">Simd::splat</span>(<span class="number">1i8</span>);
-            <span class="ident">mem::transmute_copy</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)
+    <span class="doccomment">/// Converts an array of bools to a SIMD mask.
+    </span><span class="kw">pub fn </span>from_array(array: [bool; LANES]) -&gt; <span class="self">Self </span>{
+        <span class="comment">// SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of
+        //     true:    0b_0000_0001
+        //     false:   0b_0000_0000
+        // Thus, an array of bools is also a valid array of bytes: [u8; N]
+        // This would be hypothetically valid as an &quot;in-place&quot; transmute,
+        // but these are &quot;dependently-sized&quot; types, so copy elision it is!
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>bytes: [u8; LANES] = mem::transmute_copy(<span class="kw-2">&amp;</span>array);
+            <span class="kw">let </span>bools: Simd&lt;i8, LANES&gt; =
+                intrinsics::simd_ne(Simd::from_array(bytes), Simd::splat(<span class="number">0u8</span>));
+            Mask::from_int_unchecked(intrinsics::simd_cast(bools))
         }
     }
 
-    <span class="doccomment">/// Converts a vector of integers to a mask, where 0 represents `false` and -1</span>
-    <span class="doccomment">/// represents `true`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">/// All lanes must be either 0 or -1.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_int_unchecked</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Safety: the caller must confirm this invariant</span>
-        <span class="kw">unsafe</span> { <span class="self">Self</span>(<span class="ident">mask_impl::Mask::from_int_unchecked</span>(<span class="ident">value</span>)) }
-    }
-
-    <span class="doccomment">/// Converts a vector of integers to a mask, where 0 represents `false` and -1</span>
-    <span class="doccomment">/// represents `true`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// Panics if any lane is not 0 or -1.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_int</span>(<span class="ident">value</span>: <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">assert!</span>(<span class="ident">T::valid</span>(<span class="ident">value</span>), <span class="string">&quot;all values must be either 0 or -1&quot;</span>,);
-        <span class="comment">// Safety: the validity has been checked</span>
-        <span class="kw">unsafe</span> { <span class="ident"><span class="self">Self</span>::from_int_unchecked</span>(<span class="ident">value</span>) }
-    }
-
-    <span class="doccomment">/// Converts the mask to a vector of integers, where 0 represents `false` and -1</span>
-    <span class="doccomment">/// represents `true`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_int</span>(<span class="self">self</span>) -&gt; <span class="ident">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_int</span>()
-    }
-
-    <span class="doccomment">/// Converts the mask to a mask of any other lane size.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cast</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">MaskElement</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">U</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="ident">Mask</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">convert</span>())
-    }
-
-    <span class="doccomment">/// Tests the value of the specified lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">/// `lane` must be less than `LANES`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">test_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// Safety: the caller must confirm this invariant</span>
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>) }
-    }
-
-    <span class="doccomment">/// Tests the value of the specified lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// Panics if `lane` is greater than or equal to the number of lanes in the vector.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="macro">assert!</span>(<span class="ident">lane</span> <span class="op">&lt;</span> <span class="ident">LANES</span>, <span class="string">&quot;lane index out of range&quot;</span>);
-        <span class="comment">// Safety: the lane index has been checked</span>
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">test_unchecked</span>(<span class="ident">lane</span>) }
-    }
-
-    <span class="doccomment">/// Sets the value of the specified lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">/// `lane` must be less than `LANES`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">set_unchecked</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
-        <span class="comment">// Safety: the caller must confirm this invariant</span>
-        <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
+    <span class="doccomment">/// Converts a SIMD mask to an array of bools.
+    </span><span class="kw">pub fn </span>to_array(<span class="self">self</span>) -&gt; [bool; LANES] {
+        <span class="comment">// This follows mostly the same logic as from_array.
+        // SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of
+        //     true:    0b_0000_0001
+        //     false:   0b_0000_0000
+        // Thus, an array of bools is also a valid array of bytes: [u8; N]
+        // Since our masks are equal to integers where all bits are set,
+        // we can simply convert them to i8s, and then bitand them by the
+        // bitpattern for Rust&#39;s &quot;true&quot; bool.
+        // This would be hypothetically valid as an &quot;in-place&quot; transmute,
+        // but these are &quot;dependently-sized&quot; types, so copy elision it is!
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>bytes: Simd&lt;i8, LANES&gt; = intrinsics::simd_cast(<span class="self">self</span>.to_int());
+            bytes &amp;= Simd::splat(<span class="number">1i8</span>);
+            mem::transmute_copy(<span class="kw-2">&amp;</span>bytes)
         }
     }
 
-    <span class="doccomment">/// Sets the value of the specified lane.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// Panics if `lane` is greater than or equal to the number of lanes in the vector.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lane</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">bool</span>) {
-        <span class="macro">assert!</span>(<span class="ident">lane</span> <span class="op">&lt;</span> <span class="ident">LANES</span>, <span class="string">&quot;lane index out of range&quot;</span>);
-        <span class="comment">// Safety: the lane index has been checked</span>
-        <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">set_unchecked</span>(<span class="ident">lane</span>, <span class="ident">value</span>);
+    <span class="doccomment">/// Converts a vector of integers to a mask, where 0 represents `false` and -1
+    /// represents `true`.
+    ///
+    /// # Safety
+    /// All lanes must be either 0 or -1.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub unsafe fn </span>from_int_unchecked(value: Simd&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Safety: the caller must confirm this invariant
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>(mask_impl::Mask::from_int_unchecked(value)) }
+    }
+
+    <span class="doccomment">/// Converts a vector of integers to a mask, where 0 represents `false` and -1
+    /// represents `true`.
+    ///
+    /// # Panics
+    /// Panics if any lane is not 0 or -1.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>from_int(value: Simd&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+        <span class="macro">assert!</span>(T::valid(value), <span class="string">&quot;all values must be either 0 or -1&quot;</span>,);
+        <span class="comment">// Safety: the validity has been checked
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(value) }
+    }
+
+    <span class="doccomment">/// Converts the mask to a vector of integers, where 0 represents `false` and -1
+    /// represents `true`.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>to_int(<span class="self">self</span>) -&gt; Simd&lt;T, LANES&gt; {
+        <span class="self">self</span>.<span class="number">0</span>.to_int()
+    }
+
+    <span class="doccomment">/// Converts the mask to a mask of any other lane size.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>cast&lt;U: MaskElement&gt;(<span class="self">self</span>) -&gt; Mask&lt;U, LANES&gt; {
+        Mask(<span class="self">self</span>.<span class="number">0</span>.convert())
+    }
+
+    <span class="doccomment">/// Tests the value of the specified lane.
+    ///
+    /// # Safety
+    /// `lane` must be less than `LANES`.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub unsafe fn </span>test_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>, lane: usize) -&gt; bool {
+        <span class="comment">// Safety: the caller must confirm this invariant
+        </span><span class="kw">unsafe </span>{ <span class="self">self</span>.<span class="number">0</span>.test_unchecked(lane) }
+    }
+
+    <span class="doccomment">/// Tests the value of the specified lane.
+    ///
+    /// # Panics
+    /// Panics if `lane` is greater than or equal to the number of lanes in the vector.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>test(<span class="kw-2">&amp;</span><span class="self">self</span>, lane: usize) -&gt; bool {
+        <span class="macro">assert!</span>(lane &lt; LANES, <span class="string">&quot;lane index out of range&quot;</span>);
+        <span class="comment">// Safety: the lane index has been checked
+        </span><span class="kw">unsafe </span>{ <span class="self">self</span>.test_unchecked(lane) }
+    }
+
+    <span class="doccomment">/// Sets the value of the specified lane.
+    ///
+    /// # Safety
+    /// `lane` must be less than `LANES`.
+    </span><span class="attribute">#[inline]</span>
+    <span class="kw">pub unsafe fn </span>set_unchecked(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lane: usize, value: bool) {
+        <span class="comment">// Safety: the caller must confirm this invariant
+        </span><span class="kw">unsafe </span>{
+            <span class="self">self</span>.<span class="number">0</span>.set_unchecked(lane, value);
         }
     }
 
-    <span class="doccomment">/// Returns true if any lane is set, or false otherwise.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">any</span>()
+    <span class="doccomment">/// Sets the value of the specified lane.
+    ///
+    /// # Panics
+    /// Panics if `lane` is greater than or equal to the number of lanes in the vector.
+    </span><span class="attribute">#[inline]</span>
+    <span class="kw">pub fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lane: usize, value: bool) {
+        <span class="macro">assert!</span>(lane &lt; LANES, <span class="string">&quot;lane index out of range&quot;</span>);
+        <span class="comment">// Safety: the lane index has been checked
+        </span><span class="kw">unsafe </span>{
+            <span class="self">self</span>.set_unchecked(lane, value);
+        }
     }
 
-    <span class="doccomment">/// Returns true if all lanes are set, or false otherwise.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">all</span>()
+    <span class="doccomment">/// Returns true if any lane is set, or false otherwise.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>any(<span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0</span>.any()
+    }
+
+    <span class="doccomment">/// Returns true if all lanes are set, or false otherwise.
+    </span><span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">pub fn </span>all(<span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0</span>.all()
     }
 }
 
-<span class="comment">// vector/array conversion</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">bool</span>; <span class="ident">LANES</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="comment">// vector/array conversion
+</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; From&lt;[bool; LANES]&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">array</span>: [<span class="ident">bool</span>; <span class="ident">LANES</span>]) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::from_array</span>(<span class="ident">array</span>)
+    <span class="kw">fn </span>from(array: [bool; LANES]) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from_array(array)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> [<span class="ident">bool</span>; <span class="ident">LANES</span>]
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; From&lt;Mask&lt;T, LANES&gt;&gt; <span class="kw">for </span>[bool; LANES]
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">vector</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">vector</span>.<span class="ident">to_array</span>()
+    <span class="kw">fn </span>from(vector: Mask&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+        vector.to_array()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Default <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a defaulted mask with all lanes set to false (0)&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::splat</span>(<span class="bool-val">false</span>)
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a defaulted mask with all lanes set to false (0)&quot;</span>]</span>
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::splat(<span class="bool-val">false</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialEq <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + PartialEq,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span> <span class="op">==</span> <span class="ident">other</span>.<span class="number">0</span>
-    }
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0 </span>== other.<span class="number">0
+    </span>}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">PartialOrd</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialOrd <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + PartialOrd,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new Ordering and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new Ordering and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
+        <span class="self">self</span>.<span class="number">0</span>.partial_cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span> <span class="op">+</span> <span class="ident">fmt::Debug</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; fmt::Debug <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement + fmt::Debug,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_list</span>()
-            .<span class="ident">entries</span>((<span class="number">0</span>..<span class="ident">LANES</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">lane</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">test</span>(<span class="ident">lane</span>)))
-            .<span class="ident">finish</span>()
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_list()
+            .entries((<span class="number">0</span>..LANES).map(|lane| <span class="self">self</span>.test(lane)))
+            .finish()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAnd <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="ident">rhs</span>.<span class="number">0</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>&amp; rhs.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAnd&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span> <span class="op">&amp;</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self </span>{
+        <span class="self">self </span>&amp; <span class="self">Self</span>::splat(rhs)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAnd</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAnd&lt;Mask&lt;T, LANES&gt;&gt; <span class="kw">for </span>bool
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="ident">Mask::splat</span>(<span class="self">self</span>) <span class="op">&amp;</span> <span class="ident">rhs</span>
+    <span class="kw">type </span>Output = Mask&lt;T, LANES&gt;;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: Mask&lt;T, LANES&gt;) -&gt; Mask&lt;T, LANES&gt; {
+        Mask::splat(<span class="self">self</span>) &amp; rhs
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOr <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">|</span> <span class="ident">rhs</span>.<span class="number">0</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>| rhs.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOr&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self </span>{
+        <span class="self">self </span>| <span class="self">Self</span>::splat(rhs)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOr</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOr&lt;Mask&lt;T, LANES&gt;&gt; <span class="kw">for </span>bool
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span> {
-        <span class="ident">Mask::splat</span>(<span class="self">self</span>) <span class="op">|</span> <span class="ident">rhs</span>
+    <span class="kw">type </span>Output = Mask&lt;T, LANES&gt;;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: Mask&lt;T, LANES&gt;) -&gt; Mask&lt;T, LANES&gt; {
+        Mask::splat(<span class="self">self</span>) | rhs
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXor <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span> <span class="op">^</span> <span class="ident">rhs</span>.<span class="number">0</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Output {
+        <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>^ rhs.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXor&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="self">self</span> <span class="op">^</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>)
+    <span class="kw">type </span>Output = <span class="self">Self</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self</span>::Output {
+        <span class="self">self </span>^ <span class="self">Self</span>::splat(rhs)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXor</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXor&lt;Mask&lt;T, LANES&gt;&gt; <span class="kw">for </span>bool
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="ident">Mask::splat</span>(<span class="self">self</span>) <span class="op">^</span> <span class="ident">rhs</span>
+    <span class="kw">type </span>Output = Mask&lt;T, LANES&gt;;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: Mask&lt;T, LANES&gt;) -&gt; <span class="self">Self</span>::Output {
+        Mask::splat(<span class="self">self</span>) ^ rhs
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::Not</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::Not <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>;
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn</span> <span class="ident">not</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="self">Self</span>(<span class="op">!</span><span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">type </span>Output = Mask&lt;T, LANES&gt;;
+    <span class="attribute">#[inline]</span>
+    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
+    <span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+        <span class="self">Self</span>(!<span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAndAssign</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAndAssign <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="ident">rhs</span>.<span class="number">0</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0 </span>&amp; rhs.<span class="number">0</span>;
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitAndAssign</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitAndAssign&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitand_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: bool) {
+        <span class="kw-2">*</span><span class="self">self </span>&amp;= <span class="self">Self</span>::splat(rhs);
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOrAssign</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOrAssign <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">|</span> <span class="ident">rhs</span>.<span class="number">0</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitor_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0 </span>| rhs.<span class="number">0</span>;
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitOrAssign</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitOrAssign&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitor_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">|</span><span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitor_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: bool) {
+        <span class="kw-2">*</span><span class="self">self </span>|= <span class="self">Self</span>::splat(rhs);
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXorAssign</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXorAssign <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">^</span> <span class="ident">rhs</span>.<span class="number">0</span>;
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitxor_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0 </span>^ rhs.<span class="number">0</span>;
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">core::ops::BitXorAssign</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">MaskElement</span>,
-    <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::ops::BitXorAssign&lt;bool&gt; <span class="kw">for </span>Mask&lt;T, LANES&gt;
+<span class="kw">where
+    </span>T: MaskElement,
+    LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">bitxor_assign</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">bool</span>) {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">^</span><span class="op">=</span> <span class="ident"><span class="self">Self</span>::splat</span>(<span class="ident">rhs</span>);
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>bitxor_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: bool) {
+        <span class="kw-2">*</span><span class="self">self </span>^= <span class="self">Self</span>::splat(rhs);
     }
 }
 
-<span class="doccomment">/// A mask for SIMD vectors with eight elements of 8 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i8; 8]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 8 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i8; 8]`.
+</span><span class="kw">pub type </span>mask8x8 = Mask&lt;i8, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 8 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i8; 16]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 8 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i8; 16]`.
+</span><span class="kw">pub type </span>mask8x16 = Mask&lt;i8, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 8 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i8; 32]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">32</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 8 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i8; 32]`.
+</span><span class="kw">pub type </span>mask8x32 = Mask&lt;i8, <span class="number">32</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 64 elements of 8 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i8; 64]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask8x64</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="number">64</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 64 elements of 8 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i8; 64]`.
+</span><span class="kw">pub type </span>mask8x64 = Mask&lt;i8, <span class="number">64</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with four elements of 16 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i16; 4]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 16 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i16; 4]`.
+</span><span class="kw">pub type </span>mask16x4 = Mask&lt;i16, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with eight elements of 16 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i16; 8]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 16 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i16; 8]`.
+</span><span class="kw">pub type </span>mask16x8 = Mask&lt;i16, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 16 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i16; 16]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 16 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i16; 16]`.
+</span><span class="kw">pub type </span>mask16x16 = Mask&lt;i16, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 16 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i16; 32]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask16x32</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i16</span>, <span class="number">32</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 32 elements of 16 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i16; 32]`.
+</span><span class="kw">pub type </span>mask16x32 = Mask&lt;i16, <span class="number">32</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with two elements of 32 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i32; 2]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with two elements of 32 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i32; 2]`.
+</span><span class="kw">pub type </span>mask32x2 = Mask&lt;i32, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with four elements of 32 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i32; 4]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 32 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i32; 4]`.
+</span><span class="kw">pub type </span>mask32x4 = Mask&lt;i32, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with eight elements of 32 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i32; 8]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 32 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i32; 8]`.
+</span><span class="kw">pub type </span>mask32x8 = Mask&lt;i32, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 32 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i32; 16]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask32x16</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">16</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with 16 elements of 32 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i32; 16]`.
+</span><span class="kw">pub type </span>mask32x16 = Mask&lt;i32, <span class="number">16</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with two elements of 64 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i64; 2]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with two elements of 64 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i64; 2]`.
+</span><span class="kw">pub type </span>mask64x2 = Mask&lt;i64, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with four elements of 64 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i64; 4]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with four elements of 64 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i64; 4]`.
+</span><span class="kw">pub type </span>mask64x4 = Mask&lt;i64, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with eight elements of 64 bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[i64; 8]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mask64x8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of 64 bits.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[i64; 8]`.
+</span><span class="kw">pub type </span>mask64x8 = Mask&lt;i64, <span class="number">8</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with two elements of pointer width.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[isize; 2]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex2</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">2</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with two elements of pointer width.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[isize; 2]`.
+</span><span class="kw">pub type </span>masksizex2 = Mask&lt;isize, <span class="number">2</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with four elements of pointer width.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[isize; 4]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex4</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">4</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with four elements of pointer width.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[isize; 4]`.
+</span><span class="kw">pub type </span>masksizex4 = Mask&lt;isize, <span class="number">4</span>&gt;;
 
-<span class="doccomment">/// A mask for SIMD vectors with eight elements of pointer width.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The layout of this type is unspecified, and may change between platforms</span>
-<span class="doccomment">/// and/or Rust versions, and code should not assume that it is equivalent to</span>
-<span class="doccomment">/// `[isize; 8]`.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">masksizex8</span> <span class="op">=</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="ident">isize</span>, <span class="number">8</span><span class="op">&gt;</span>;
+<span class="doccomment">/// A mask for SIMD vectors with eight elements of pointer width.
+///
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[isize; 8]`.
+</span><span class="kw">pub type </span>masksizex8 = Mask&lt;isize, <span class="number">8</span>&gt;;
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_from</span> {
-    { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ty</span>  =&gt; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ty</span>),<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_from {
+    { <span class="macro-nonterminal">$from</span>:ty  =&gt; $(<span class="macro-nonterminal">$to</span>:ty),* } =&gt; {
         $(
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>, <span class="ident">LANES</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; From&lt;Mask&lt;<span class="macro-nonterminal">$from</span>, LANES&gt;&gt; <span class="kw">for </span>Mask&lt;<span class="macro-nonterminal">$to</span>, LANES&gt;
+        <span class="kw">where
+            </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
         {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="ident">Mask</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>, <span class="ident">LANES</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">value</span>.<span class="ident">cast</span>()
+            <span class="kw">fn </span>from(value: Mask&lt;<span class="macro-nonterminal">$from</span>, LANES&gt;) -&gt; <span class="self">Self </span>{
+                value.cast()
             }
         }
-        )<span class="op">*</span>
+        )*
     }
 }
-<span class="macro">impl_from!</span> { <span class="ident">i8</span> =&gt; <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">isize</span> }
-<span class="macro">impl_from!</span> { <span class="ident">i16</span> =&gt; <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">isize</span>, <span class="ident">i8</span> }
-<span class="macro">impl_from!</span> { <span class="ident">i32</span> =&gt; <span class="ident">i64</span>, <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span> }
-<span class="macro">impl_from!</span> { <span class="ident">i64</span> =&gt; <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span> }
-<span class="macro">impl_from!</span> { <span class="ident">isize</span> =&gt; <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span> }
+<span class="macro">impl_from!</span> { i8 =&gt; i16, i32, i64, isize }
+<span class="macro">impl_from!</span> { i16 =&gt; i32, i64, isize, i8 }
+<span class="macro">impl_from!</span> { i32 =&gt; i64, isize, i8, i16 }
+<span class="macro">impl_from!</span> { i64 =&gt; isize, i8, i16, i32 }
+<span class="macro">impl_from!</span> { isize =&gt; i8, i16, i32, i64 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

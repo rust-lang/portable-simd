@@ -29,36 +29,36 @@
 <span id="29">29</span>
 <span id="30">30</span>
 <span id="31">31</span>
-</pre><pre class="rust"><code><span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-<span class="macro">macro_rules!</span> <span class="ident">from_transmute</span> {
-    { <span class="kw">unsafe</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ty</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span>:<span class="ident">ty</span> } =&gt; {
-        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> }
-        <span class="macro">from_transmute!</span>{ @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">b</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> }
+</pre><pre class="rust"><code><span class="doccomment">/// Provides implementations of `From&lt;$a&gt; for $b` and `From&lt;$b&gt; for $a` that transmutes the value.
+</span><span class="attribute">#[allow(unused)]</span>
+<span class="macro">macro_rules!</span> from_transmute {
+    { <span class="kw">unsafe </span><span class="macro-nonterminal">$a</span>:ty =&gt; <span class="macro-nonterminal">$b</span>:ty } =&gt; {
+        <span class="macro">from_transmute!</span>{ @<span class="kw">impl </span><span class="macro-nonterminal">$a </span>=&gt; <span class="macro-nonterminal">$b </span>}
+        <span class="macro">from_transmute!</span>{ @<span class="kw">impl </span><span class="macro-nonterminal">$b </span>=&gt; <span class="macro-nonterminal">$a </span>}
     };
-    { @<span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>:<span class="ident">ty</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span>:<span class="ident">ty</span> } =&gt; {
-        <span class="kw">impl</span> <span class="ident">core::convert::From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to</span> {
-                <span class="comment">// Safety: transmuting between vectors is safe, but the caller of this macro</span>
-                <span class="comment">// checks the invariants</span>
-                <span class="kw">unsafe</span> { <span class="ident">core::mem::transmute</span>(<span class="ident">value</span>) }
+    { @<span class="kw">impl </span><span class="macro-nonterminal">$from</span>:ty =&gt; <span class="macro-nonterminal">$to</span>:ty } =&gt; {
+        <span class="kw">impl </span>core::convert::From&lt;<span class="macro-nonterminal">$from</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$to </span>{
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(value: <span class="macro-nonterminal">$from</span>) -&gt; <span class="macro-nonterminal">$to </span>{
+                <span class="comment">// Safety: transmuting between vectors is safe, but the caller of this macro
+                // checks the invariants
+                </span><span class="kw">unsafe </span>{ core::mem::transmute(value) }
             }
         }
     };
 }
 
-<span class="doccomment">/// Conversions to x86&#39;s SIMD types.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">x86</span>;
+<span class="doccomment">/// Conversions to x86&#39;s SIMD types.
+</span><span class="attribute">#[cfg(any(target_arch = <span class="string">&quot;x86&quot;</span>, target_arch = <span class="string">&quot;x86_64&quot;</span>))]</span>
+<span class="kw">mod </span>x86;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">wasm32</span>;
+<span class="attribute">#[cfg(any(target_arch = <span class="string">&quot;wasm32&quot;</span>))]</span>
+<span class="kw">mod </span>wasm32;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;aarch64&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,))]</span>
-<span class="kw">mod</span> <span class="ident">arm</span>;
+<span class="attribute">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;arm&quot;</span>,))]</span>
+<span class="kw">mod </span>arm;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc64&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">powerpc</span>;
+<span class="attribute">#[cfg(any(target_arch = <span class="string">&quot;powerpc&quot;</span>, target_arch = <span class="string">&quot;powerpc64&quot;</span>))]</span>
+<span class="kw">mod </span>powerpc;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>

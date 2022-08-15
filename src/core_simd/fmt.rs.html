@@ -37,44 +37,44 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::simd</span>::{<span class="ident">LaneCount</span>, <span class="ident">Simd</span>, <span class="ident">SimdElement</span>, <span class="ident">SupportedLaneCount</span>};
-<span class="kw">use</span> <span class="ident">core::fmt</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SimdElement, SupportedLaneCount};
+<span class="kw">use </span>core::fmt;
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_fmt_trait</span> {
-    { $(<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>,)<span class="op">*</span> } =&gt; {
+<span class="macro">macro_rules!</span> impl_fmt_trait {
+    { $(<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>,)* } =&gt; {
         $(
-            <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">LANES</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span> <span class="kw">for</span> <span class="macro-nonterminal">Simd</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">LANES</span><span class="op">&gt;</span>
-            <span class="kw">where</span>
-                <span class="ident">LaneCount</span><span class="op">&lt;</span><span class="ident">LANES</span><span class="op">&gt;</span>: <span class="ident">SupportedLaneCount</span>,
-                <span class="ident">T</span>: <span class="ident">SimdElement</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span>,
+            <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; fmt::<span class="macro-nonterminal">$</span><span class="kw">trait for </span><span class="macro-nonterminal">Simd</span>&lt;T, LANES&gt;
+            <span class="kw">where
+                </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+                T: SimdElement + fmt::<span class="macro-nonterminal">$</span><span class="kw">trait</span>,
             {
-                <span class="kw">fn</span> <span class="macro-nonterminal">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-                    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-                    <span class="kw">struct</span> <span class="ident">Wrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">fmt</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="macro-nonterminal">T</span>);
+                <span class="kw">fn </span><span class="macro-nonterminal">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+                    <span class="attribute">#[repr(transparent)]</span>
+                    <span class="kw">struct </span>Wrapper&lt;<span class="lifetime">&#39;a</span>, T: fmt::<span class="macro-nonterminal">$</span><span class="kw">trait</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">T</span>);
 
-                    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">fmt</span>::<span class="macro-nonterminal">$</span><span class="kw">trait</span><span class="op">&gt;</span> <span class="macro-nonterminal">fmt::Debug</span> <span class="kw">for</span> <span class="ident">Wrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-                        <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-                            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">fmt</span>(<span class="ident">f</span>)
+                    <span class="kw">impl</span>&lt;T: fmt::<span class="macro-nonterminal">$</span><span class="kw">trait</span>&gt; <span class="macro-nonterminal">fmt::Debug </span><span class="kw">for </span>Wrapper&lt;<span class="lifetime">&#39;_</span>, T&gt; {
+                        <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+                            <span class="self">self</span>.<span class="number">0</span>.fmt(f)
                         }
                     }
 
-                    <span class="ident">f</span>.<span class="ident">debug_list</span>()
-                        .<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">as_array</span>().<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Wrapper</span>(<span class="ident">x</span>)))
-                        .<span class="ident">finish</span>()
+                    f.debug_list()
+                        .entries(<span class="self">self</span>.as_array().iter().map(|x| Wrapper(x)))
+                        .finish()
                 }
             }
-        )<span class="op">*</span>
+        )*
     }
 }
 
 <span class="macro">impl_fmt_trait!</span> {
-    <span class="ident">Debug</span>,
-    <span class="ident">Binary</span>,
-    <span class="ident">LowerExp</span>,
-    <span class="ident">UpperExp</span>,
-    <span class="ident">Octal</span>,
-    <span class="ident">LowerHex</span>,
-    <span class="ident">UpperHex</span>,
+    Debug,
+    Binary,
+    LowerExp,
+    UpperExp,
+    Octal,
+    LowerHex,
+    UpperHex,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (1b57946a4 2022-08-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>
