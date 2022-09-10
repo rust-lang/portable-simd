@@ -9,9 +9,11 @@ categories = ["hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 
 [features]
-default = []
+default = ["as_crate"]
+as_crate = []
 std = []
 generic_const_exprs = []
+all_lane_counts = []
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies.wasm-bindgen]
 version = "0.2"
