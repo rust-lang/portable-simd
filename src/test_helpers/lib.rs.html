@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../test_helpers/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../test_helpers/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../test_helpers/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../test_helpers/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../test_helpers/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../test_helpers/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -578,11 +578,11 @@
 <span id="578">578</span>
 </pre><pre class="rust"><code><span class="kw">pub mod </span>array;
 
-<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-<span class="kw">pub mod </span>wasm;
+<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+</span><span class="kw">pub mod </span>wasm;
 
-<span class="attribute">#[macro_use]</span>
-<span class="kw">pub mod </span>biteq;
+<span class="attribute">#[macro_use]
+</span><span class="kw">pub mod </span>biteq;
 
 <span class="doccomment">/// Specifies the default strategy for testing a type.
 ///
@@ -592,7 +592,7 @@
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy;
 }
 
-<span class="macro">macro_rules!</span> impl_num {
+<span class="macro">macro_rules! </span>impl_num {
     { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">tt </span>} =&gt; {
         <span class="kw">impl </span>DefaultStrategy <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
             <span class="kw">type </span><span class="macro-nonterminal">Strategy </span>= proptest::num::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::Any</span>;
@@ -603,45 +603,45 @@
     }
 }
 
-<span class="macro">impl_num!</span> { i8 }
-<span class="macro">impl_num!</span> { i16 }
-<span class="macro">impl_num!</span> { i32 }
-<span class="macro">impl_num!</span> { i64 }
-<span class="macro">impl_num!</span> { isize }
-<span class="macro">impl_num!</span> { u8 }
-<span class="macro">impl_num!</span> { u16 }
-<span class="macro">impl_num!</span> { u32 }
-<span class="macro">impl_num!</span> { u64 }
-<span class="macro">impl_num!</span> { usize }
-<span class="macro">impl_num!</span> { f32 }
-<span class="macro">impl_num!</span> { f64 }
+<span class="macro">impl_num! </span>{ i8 }
+<span class="macro">impl_num! </span>{ i16 }
+<span class="macro">impl_num! </span>{ i32 }
+<span class="macro">impl_num! </span>{ i64 }
+<span class="macro">impl_num! </span>{ isize }
+<span class="macro">impl_num! </span>{ u8 }
+<span class="macro">impl_num! </span>{ u16 }
+<span class="macro">impl_num! </span>{ u32 }
+<span class="macro">impl_num! </span>{ u64 }
+<span class="macro">impl_num! </span>{ usize }
+<span class="macro">impl_num! </span>{ f32 }
+<span class="macro">impl_num! </span>{ f64 }
 
-<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]</span>
-<span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>u128 {
+<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+</span><span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>u128 {
     <span class="kw">type </span>Strategy = proptest::num::u128::Any;
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
         proptest::num::u128::ANY
     }
 }
 
-<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]</span>
-<span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>i128 {
+<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+</span><span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>i128 {
     <span class="kw">type </span>Strategy = proptest::num::i128::Any;
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
         proptest::num::i128::ANY
     }
 }
 
-<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-<span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>u128 {
+<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+</span><span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>u128 {
     <span class="kw">type </span>Strategy = <span class="kw">crate</span>::wasm::u128::Any;
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
         <span class="kw">crate</span>::wasm::u128::ANY
     }
 }
 
-<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-<span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>i128 {
+<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+</span><span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>i128 {
     <span class="kw">type </span>Strategy = <span class="kw">crate</span>::wasm::i128::Any;
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
         <span class="kw">crate</span>::wasm::i128::ANY
@@ -655,12 +655,12 @@
     }
 }
 
-<span class="attribute">#[cfg(not(miri))]</span>
-<span class="kw">pub fn </span>make_runner() -&gt; proptest::test_runner::TestRunner {
+<span class="attribute">#[cfg(not(miri))]
+</span><span class="kw">pub fn </span>make_runner() -&gt; proptest::test_runner::TestRunner {
     Default::default()
 }
-<span class="attribute">#[cfg(miri)]</span>
-<span class="kw">pub fn </span>make_runner() -&gt; proptest::test_runner::TestRunner {
+<span class="attribute">#[cfg(miri)]
+</span><span class="kw">pub fn </span>make_runner() -&gt; proptest::test_runner::TestRunner {
     <span class="comment">// Only run a few tests on Miri
     </span>proptest::test_runner::TestRunner::new(proptest::test_runner::Config::with_cases(<span class="number">4</span>))
 }
@@ -707,8 +707,8 @@
 }
 
 <span class="doccomment">/// Test a unary vector function against a unary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_unary_elementwise&lt;Scalar, ScalarResult, Vector, VectorResult, <span class="kw">const </span>LANES: usize&gt;(
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_unary_elementwise&lt;Scalar, ScalarResult, Vector, VectorResult, <span class="kw">const </span>LANES: usize&gt;(
     fv: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Vector) -&gt; VectorResult,
     fs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Scalar) -&gt; ScalarResult,
     check: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn([Scalar; LANES]) -&gt; bool,
@@ -734,8 +734,8 @@
 }
 
 <span class="doccomment">/// Test a unary vector function against a unary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_unary_mask_elementwise&lt;Scalar, Vector, Mask, <span class="kw">const </span>LANES: usize&gt;(
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_unary_mask_elementwise&lt;Scalar, Vector, Mask, <span class="kw">const </span>LANES: usize&gt;(
     fv: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Vector) -&gt; Mask,
     fs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Scalar) -&gt; bool,
     check: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn([Scalar; LANES]) -&gt; bool,
@@ -760,8 +760,8 @@
 }
 
 <span class="doccomment">/// Test a binary vector function against a binary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_binary_elementwise&lt;
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_binary_elementwise&lt;
     Scalar1,
     Scalar2,
     ScalarResult,
@@ -797,8 +797,8 @@
 }
 
 <span class="doccomment">/// Test a binary vector-scalar function against a binary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_binary_scalar_rhs_elementwise&lt;
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_binary_scalar_rhs_elementwise&lt;
     Scalar1,
     Scalar2,
     ScalarResult,
@@ -832,8 +832,8 @@
 }
 
 <span class="doccomment">/// Test a binary vector-scalar function against a binary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_binary_scalar_lhs_elementwise&lt;
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_binary_scalar_lhs_elementwise&lt;
     Scalar1,
     Scalar2,
     ScalarResult,
@@ -867,8 +867,8 @@
 }
 
 <span class="doccomment">/// Test a ternary vector function against a ternary scalar function, applied elementwise.
-</span><span class="attribute">#[inline(never)]</span>
-<span class="kw">pub fn </span>test_ternary_elementwise&lt;
+</span><span class="attribute">#[inline(never)]
+</span><span class="kw">pub fn </span>test_ternary_elementwise&lt;
     Scalar1,
     Scalar2,
     Scalar3,
@@ -911,13 +911,13 @@
     );
 }
 
-<span class="attribute">#[doc(hidden)]</span>
-<span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> test_lanes_helper {
+<span class="attribute">#[doc(hidden)]
+#[macro_export]
+</span><span class="macro">macro_rules! </span>test_lanes_helper {
     ($($(<span class="attribute">#[<span class="macro-nonterminal">$meta</span>:meta]</span>)* <span class="macro-nonterminal">$fn_name</span>:ident <span class="macro-nonterminal">$lanes</span>:literal;)+) =&gt; {
         $(
-            <span class="attribute">#[test]</span>
-            $(<span class="attribute">#[<span class="macro-nonterminal">$meta</span>]</span>)*
+            <span class="attribute">#[test]
+            </span>$(<span class="attribute">#[<span class="macro-nonterminal">$meta</span>]</span>)*
             <span class="kw">fn </span><span class="macro-nonterminal">$fn_name</span>() {
                 implementation::&lt;<span class="macro-nonterminal">$lanes</span>&gt;();
             }
@@ -945,8 +945,8 @@
 }
 
 <span class="doccomment">/// Expand a const-generic test into separate tests for each possible lane count.
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> test_lanes {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>test_lanes {
     {
         $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
     } =&gt; {
@@ -959,8 +959,8 @@
                     </span>core_simd::LaneCount&lt;<span class="macro-nonterminal">$lanes</span>&gt;: core_simd::SupportedLaneCount,
                 <span class="macro-nonterminal">$body
 
-                </span><span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-                <span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+                </span><span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+                </span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
                 <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attribute">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">&quot;wasm32&quot;</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
@@ -969,7 +969,7 @@
                     lanes_4 <span class="number">4</span>;
                 );
 
-                <span class="attribute">#[cfg(not(miri))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+                <span class="attribute">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attribute">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">&quot;wasm32&quot;</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
                     lanes_8 <span class="number">8</span>;
@@ -978,8 +978,8 @@
                     lanes_64 <span class="number">64</span>;
                 );
 
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]</span>
-                <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]
+                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="comment">// test some odd and even non-power-of-2 lengths on miri
                     </span><span class="attribute">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">&quot;wasm32&quot;</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
                     lanes_3 <span class="number">3</span>;
@@ -987,8 +987,8 @@
                     lanes_6 <span class="number">6</span>;
                 );
 
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]</span>
-                <span class="attribute">#[cfg(not(miri))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]
+                #[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attribute">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">&quot;wasm32&quot;</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
                     lanes_7 <span class="number">7</span>;
@@ -1052,8 +1052,8 @@
 }
 
 <span class="doccomment">/// Expand a const-generic `#[should_panic]` test into separate tests for each possible lane count.
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> test_lanes_panic {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>test_lanes_panic {
     {
         $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
     } =&gt; {
@@ -1073,7 +1073,7 @@
                     lanes_4 <span class="number">4</span>;
                 );
 
-                <span class="attribute">#[cfg(not(miri))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+                <span class="attribute">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attribute">#[<span class="macro-nonterminal">should_panic</span>]</span>;
                     lanes_8 <span class="number">8</span>;
@@ -1082,8 +1082,8 @@
                     lanes_64 <span class="number">64</span>;
                 );
 
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]</span>
-                <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]
+                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="comment">// test some odd and even non-power-of-2 lengths on miri
                     </span><span class="attribute">#[<span class="macro-nonterminal">should_panic</span>]</span>;
                     lanes_3 <span class="number">3</span>;
@@ -1091,8 +1091,8 @@
                     lanes_6 <span class="number">6</span>;
                 );
 
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]</span>
-                <span class="attribute">#[cfg(not(miri))]</span> <span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;all_lane_counts&quot;</span>)]
+                #[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attribute">#[<span class="macro-nonterminal">should_panic</span>]</span>;
                     lanes_7 <span class="number">7</span>;
@@ -1155,4 +1155,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_helpers" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (8796e7a9c 2022-10-08)" ></div></body></html>

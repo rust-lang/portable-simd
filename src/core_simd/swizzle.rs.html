@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -409,8 +409,8 @@
 /// let r: u32x2 = simd_swizzle!(a, b, [First(0), Second(0)]);
 /// assert_eq!(r.to_array(), [0, 4]);
 /// ```
-</span><span class="attribute">#[allow(unused_macros)]</span>
-<span class="kw">pub macro </span>simd_swizzle {
+</span><span class="attribute">#[allow(unused_macros)]
+</span><span class="kw">pub macro </span>simd_swizzle {
     (
         <span class="macro-nonterminal">$vector</span>:expr, <span class="macro-nonterminal">$index</span>:expr $(,)<span class="question-mark">?
     </span>) =&gt; {
@@ -440,8 +440,8 @@
 <span class="doccomment">/// Specifies a lane index into one of two SIMD vectors.
 ///
 /// This is an input type for [Swizzle2] and helper macros like [simd_swizzle].
-</span><span class="attribute">#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]</span>
-<span class="kw">pub enum </span>Which {
+</span><span class="attribute">#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+</span><span class="kw">pub enum </span>Which {
     <span class="doccomment">/// Index of a lane in the first input SIMD vector.
     </span>First(usize),
     <span class="doccomment">/// Index of a lane in the second input SIMD vector.
@@ -456,9 +456,9 @@
     <span class="doccomment">/// Create a new vector from the lanes of `vector`.
     ///
     /// Lane `i` of the output is `vector[Self::INDEX[i]]`.
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">fn </span>swizzle&lt;T&gt;(vector: Simd&lt;T, INPUT_LANES&gt;) -&gt; Simd&lt;T, OUTPUT_LANES&gt;
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">fn </span>swizzle&lt;T&gt;(vector: Simd&lt;T, INPUT_LANES&gt;) -&gt; Simd&lt;T, OUTPUT_LANES&gt;
     <span class="kw">where
         </span>T: SimdElement,
         LaneCount&lt;INPUT_LANES&gt;: SupportedLaneCount,
@@ -478,9 +478,9 @@
     ///
     /// Lane `i` is `first[j]` when `Self::INDEX[i]` is `First(j)`, or `second[j]` when it is
     /// `Second(j)`.
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">fn </span>swizzle2&lt;T&gt;(
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">fn </span>swizzle2&lt;T&gt;(
         first: Simd&lt;T, INPUT_LANES&gt;,
         second: Simd&lt;T, INPUT_LANES&gt;,
     ) -&gt; Simd&lt;T, OUTPUT_LANES&gt;
@@ -556,9 +556,9 @@
     LaneCount&lt;LANES&gt;: SupportedLaneCount,
 {
     <span class="doccomment">/// Reverse the order of the lanes in the vector.
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub fn </span>reverse(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">pub fn </span>reverse(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">const fn </span>reverse_index&lt;<span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
             <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
             <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
@@ -581,9 +581,9 @@
     <span class="doccomment">/// Rotates the vector such that the first `OFFSET` elements of the slice move to the end
     /// while the last `LANES - OFFSET` elements move to the front. After calling `rotate_lanes_left`,
     /// the element previously in lane `OFFSET` will become the first element in the slice.
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub fn </span>rotate_lanes_left&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">pub fn </span>rotate_lanes_left&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">const fn </span>rotate_index&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
             <span class="kw">let </span>offset = OFFSET % LANES;
             <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
@@ -607,9 +607,9 @@
     <span class="doccomment">/// Rotates the vector such that the first `LANES - OFFSET` elements of the vector move to
     /// the end while the last `OFFSET` elements move to the front. After calling `rotate_lanes_right`,
     /// the element previously at index `LANES - OFFSET` will become the first element in the slice.
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub fn </span>rotate_lanes_right&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">pub fn </span>rotate_lanes_right&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">const fn </span>rotate_index&lt;<span class="kw">const </span>OFFSET: usize, <span class="kw">const </span>LANES: usize&gt;() -&gt; [usize; LANES] {
             <span class="kw">let </span>offset = LANES - OFFSET % LANES;
             <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; LANES];
@@ -646,9 +646,9 @@
     /// assert_eq!(x.to_array(), [0, 4, 1, 5]);
     /// assert_eq!(y.to_array(), [2, 6, 3, 7]);
     /// ```
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub fn </span>interleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">pub fn </span>interleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const fn </span>interleave&lt;<span class="kw">const </span>LANES: usize&gt;(high: bool) -&gt; [Which; LANES] {
             <span class="kw">let </span><span class="kw-2">mut </span>idx = [Which::First(<span class="number">0</span>); LANES];
             <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
@@ -699,9 +699,9 @@
     /// assert_eq!(x.to_array(), [0, 1, 2, 3]);
     /// assert_eq!(y.to_array(), [4, 5, 6, 7]);
     /// ```
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]</span>
-    <span class="kw">pub fn </span>deinterleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+    </span><span class="attribute">#[inline]
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    </span><span class="kw">pub fn </span>deinterleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const fn </span>deinterleave&lt;<span class="kw">const </span>LANES: usize&gt;(second: bool) -&gt; [Which; LANES] {
             <span class="kw">let </span><span class="kw-2">mut </span>idx = [Which::First(<span class="number">0</span>); LANES];
             <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
@@ -733,4 +733,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (8796e7a9c 2022-10-08)" ></div></body></html>

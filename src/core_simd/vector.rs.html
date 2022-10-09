@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -835,8 +835,8 @@
 /// [`read`]: pointer::read
 /// [`write`]: pointer::write
 /// [as_simd]: slice::as_simd
-</span><span class="attribute">#[repr(simd)]</span>
-<span class="kw">pub struct </span>Simd&lt;T, <span class="kw">const </span>LANES: usize&gt;([T; LANES])
+</span><span class="attribute">#[repr(simd)]
+</span><span class="kw">pub struct </span>Simd&lt;T, <span class="kw">const </span>LANES: usize&gt;([T; LANES])
 <span class="kw">where
     </span>T: SimdElement,
     LaneCount&lt;LANES&gt;: SupportedLaneCount;
@@ -927,8 +927,8 @@
     /// let v = u32x4::from_slice(&amp;source);
     /// assert_eq!(v.as_array(), &amp;[1, 2, 3, 4]);
     /// ```
-    </span><span class="attribute">#[must_use]</span>
-    <span class="kw">pub const fn </span>from_slice(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub const fn </span>from_slice(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
         <span class="macro">assert!</span>(
             slice.len() &gt;= LANES,
             <span class="string">&quot;slice length must be at least the number of lanes&quot;
@@ -965,10 +965,10 @@
     /// assert_ne!(floats, floats_again);
     /// assert_eq!(floats_again, Simd::from_array([1.0, -4.0, 2147483647.0, 0.0]));
     /// ```
-    </span><span class="attribute">#[must_use]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="attribute">#[cfg(not(bootstrap))]</span>
-    <span class="kw">pub fn </span>cast&lt;U: SimdElement&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt; {
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    #[cfg(not(bootstrap))]
+    </span><span class="kw">pub fn </span>cast&lt;U: SimdElement&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt; {
         <span class="comment">// Safety: The input argument is a vector of a valid SIMD element type.
         </span><span class="kw">unsafe </span>{ intrinsics::simd_as(<span class="self">self</span>) }
     }
@@ -987,8 +987,8 @@
     /// which saturates on conversion.
     ///
     /// [cast]: Simd::cast
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[cfg_attr(miri, track_caller)]</span> <span class="comment">// even without panics, this helps for Miri backtraces
+    </span><span class="attribute">#[inline]
+    #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>to_int_unchecked&lt;I&gt;(<span class="self">self</span>) -&gt; Simd&lt;I, LANES&gt;
     <span class="kw">where
         </span>T: core::convert::FloatToInt&lt;I&gt;,
@@ -1013,9 +1013,9 @@
     /// let result = Simd::gather_or(&amp;vec, idxs, alt); // Note the lane that is out-of-bounds.
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, 15]));
     /// ```
-    </span><span class="attribute">#[must_use]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="kw">pub fn </span>gather_or(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;, or: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    </span><span class="kw">pub fn </span>gather_or(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;, or: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::gather_select(slice, Mask::splat(<span class="bool-val">true</span>), idxs, or)
     }
 
@@ -1032,9 +1032,9 @@
     /// let result = Simd::gather_or_default(&amp;vec, idxs); // Note the lane that is out-of-bounds.
     /// assert_eq!(result, Simd::from_array([0, 13, 10, 15]));
     /// ```
-    </span><span class="attribute">#[must_use]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="kw">pub fn </span>gather_or_default(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;) -&gt; <span class="self">Self
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    </span><span class="kw">pub fn </span>gather_or_default(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;) -&gt; <span class="self">Self
     </span><span class="kw">where
         </span>T: Default,
     {
@@ -1057,9 +1057,9 @@
     /// let result = Simd::gather_select(&amp;vec, enable, idxs, alt); // Note the lane that is out-of-bounds.
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
-    </span><span class="attribute">#[must_use]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="kw">pub fn </span>gather_select(
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    </span><span class="kw">pub fn </span>gather_select(
         slice: <span class="kw-2">&amp;</span>[T],
         enable: Mask&lt;isize, LANES&gt;,
         idxs: Simd&lt;usize, LANES&gt;,
@@ -1097,9 +1097,9 @@
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
     /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
-    </span><span class="attribute">#[must_use]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="attribute">#[cfg_attr(miri, track_caller)]</span> <span class="comment">// even without panics, this helps for Miri backtraces
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>gather_select_unchecked(
         slice: <span class="kw-2">&amp;</span>[T],
         enable: Mask&lt;isize, LANES&gt;,
@@ -1128,8 +1128,8 @@
     /// vals.scatter(&amp;mut vec, idxs); // index 0 receives two writes.
     /// assert_eq!(vec, vec![124, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
-    </span><span class="attribute">#[inline]</span>
-    <span class="kw">pub fn </span>scatter(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T], idxs: Simd&lt;usize, LANES&gt;) {
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>scatter(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T], idxs: Simd&lt;usize, LANES&gt;) {
         <span class="self">self</span>.scatter_select(slice, Mask::splat(<span class="bool-val">true</span>), idxs)
     }
 
@@ -1153,8 +1153,8 @@
     /// vals.scatter_select(&amp;mut vec, enable, idxs); // index 0&#39;s second write is masked, thus omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
-    </span><span class="attribute">#[inline]</span>
-    <span class="kw">pub fn </span>scatter_select(
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>scatter_select(
         <span class="self">self</span>,
         slice: <span class="kw-2">&amp;mut </span>[T],
         enable: Mask&lt;isize, LANES&gt;,
@@ -1194,8 +1194,8 @@
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
     /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
-    </span><span class="attribute">#[inline]</span>
-    <span class="attribute">#[cfg_attr(miri, track_caller)]</span> <span class="comment">// even without panics, this helps for Miri backtraces
+    </span><span class="attribute">#[inline]
+    #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>scatter_select_unchecked(
         <span class="self">self</span>,
         slice: <span class="kw-2">&amp;mut </span>[T],
@@ -1246,8 +1246,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement + Default,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::splat(T::default())
     }
 }
@@ -1257,8 +1257,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement + PartialEq,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="comment">// Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
             <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, LANES&gt; = intrinsics::simd_eq(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
@@ -1269,9 +1269,9 @@
         </span>mask.all()
     }
 
-    <span class="attribute">#[allow(clippy::partialeq_ne_impl)]</span>
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>ne(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+    <span class="attribute">#[allow(clippy::partialeq_ne_impl)]
+    #[inline]
+    </span><span class="kw">fn </span>ne(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="comment">// Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
             <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, LANES&gt; = intrinsics::simd_ne(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
@@ -1288,8 +1288,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement + PartialOrd,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;core::cmp::Ordering&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;core::cmp::Ordering&gt; {
         <span class="comment">// TODO use SIMD equality
         </span><span class="self">self</span>.to_array().partial_cmp(other.as_ref())
     }
@@ -1307,8 +1307,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement + Ord,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; core::cmp::Ordering {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; core::cmp::Ordering {
         <span class="comment">// TODO use SIMD equality
         </span><span class="self">self</span>.to_array().cmp(other.as_ref())
     }
@@ -1319,8 +1319,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement + core::hash::Hash,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>hash&lt;H&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H)
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>hash&lt;H&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H)
     <span class="kw">where
         </span>H: core::hash::Hasher,
     {
@@ -1334,8 +1334,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; LANES] {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; LANES] {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
     </span>}
 }
@@ -1345,8 +1345,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; LANES] {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; LANES] {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
     </span>}
 }
@@ -1357,8 +1357,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
     </span>}
 }
@@ -1368,8 +1368,8 @@
     </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T] {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T] {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
     </span>}
 }
@@ -1497,4 +1497,4 @@
     <span class="kw">type </span>Mask = i64;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (8796e7a9c 2022-10-08)" ></div></body></html>

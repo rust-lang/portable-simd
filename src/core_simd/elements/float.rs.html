@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/elements/float.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../core_simd/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/elements/float.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../core_simd/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../core_simd/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -374,95 +374,95 @@
 
     <span class="doccomment">/// Raw transmutation to an unsigned integer vector type with the
     /// same size and number of lanes.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Bits;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Bits;
 
     <span class="doccomment">/// Raw transmutation from an unsigned integer vector type with the
     /// same size and number of lanes.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>from_bits(bits: <span class="self">Self</span>::Bits) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>from_bits(bits: <span class="self">Self</span>::Bits) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Produces a vector where every lane has the absolute value of the
     /// equivalently-indexed lane in `self`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Takes the reciprocal (inverse) of each lane, `1/x`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Converts each lane from radians to degrees.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Converts each lane from degrees to radians.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns true for each lane if it has a positive sign, including
     /// `+0.0`, `NaN`s with positive sign bit and positive infinity.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if it has a negative sign, including
     /// `-0.0`, `NaN`s with negative sign bit and negative infinity.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if its value is `NaN`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if its value is positive infinity or negative infinity.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if its value is neither infinite nor `NaN`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if its value is subnormal.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each lane if its value is neither zero, infinite,
     /// subnormal, nor `NaN`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Replaces each lane with a number that represents its sign.
     ///
     /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
     /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
     /// * `NAN` if the number is `NAN`
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns each lane with the magnitude of `self` and the sign of `sign`.
     ///
     /// For any lane containing a `NAN`, a `NAN` with the sign of `sign` is returned.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the minimum of each lane.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the maximum of each lane.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Restrict each lane to a certain interval unless it is NaN.
     ///
     /// For each lane in `self`, returns the corresponding lane in `max` if the lane is
     /// greater than `max`, and the corresponding lane in `min` if the lane is less
     /// than `min`.  Otherwise returns the lane in `self`.
-    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]</span>
-    <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    </span><span class="attribute">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the sum of the lanes of the vector.
     ///
@@ -547,7 +547,7 @@
     </span><span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar;
 }
 
-<span class="macro">macro_rules!</span> impl_trait {
+<span class="macro">macro_rules! </span>impl_trait {
     { $(<span class="macro-nonterminal">$ty</span>:ty { bits: <span class="macro-nonterminal">$bits_ty</span>:ty, mask: <span class="macro-nonterminal">$mask_ty</span>:ty }),* } =&gt; {
         $(
         <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Sealed <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
@@ -564,105 +564,105 @@
             <span class="kw">type </span>Scalar = <span class="macro-nonterminal">$ty</span>;
             <span class="kw">type </span>Bits = Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt;;
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt; {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt; {
                 <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
                 <span class="comment">// Safety: transmuting between vector types is safe
                 </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span><span class="self">self</span>) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>from_bits(bits: Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt;) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>from_bits(bits: Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, LANES&gt;) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
                 <span class="comment">// Safety: transmuting between vector types is safe
                 </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span>bits) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="comment">// Safety: `self` is a float vector
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_fabs(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="self">Self</span>::splat(<span class="number">1.0</span>) / <span class="self">self
             </span>}
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="comment">// to_degrees uses a special constant for better precision, so extract that constant
                 </span><span class="self">self </span>* <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::to_degrees(<span class="number">1.</span>))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="self">self </span>* <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::to_radians(<span class="number">1.</span>))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 !<span class="self">self</span>.is_sign_negative()
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 <span class="kw">let </span>sign_bits = <span class="self">self</span>.to_bits() &amp; Simd::splat((!<span class="number">0 </span>&gt;&gt; <span class="number">1</span>) + <span class="number">1</span>);
                 sign_bits.simd_gt(Simd::splat(<span class="number">0</span>))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 <span class="self">self</span>.simd_ne(<span class="self">self</span>)
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 <span class="self">self</span>.abs().simd_eq(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 <span class="self">self</span>.abs().simd_lt(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 <span class="self">self</span>.abs().simd_ne(<span class="self">Self</span>::splat(<span class="number">0.0</span>)) &amp; (<span class="self">self</span>.to_bits() &amp; <span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::INFINITY).to_bits()).simd_eq(Simd::splat(<span class="number">0</span>))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="attribute">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]</span>
-            <span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
+            <span class="attribute">#[inline]
+            #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+            </span><span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 !(<span class="self">self</span>.abs().simd_eq(<span class="self">Self</span>::splat(<span class="number">0.0</span>)) | <span class="self">self</span>.is_nan() | <span class="self">self</span>.is_subnormal() | <span class="self">self</span>.is_infinite())
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="self">self</span>.is_nan().select(<span class="self">Self</span>::splat(<span class="self">Self</span>::Scalar::NAN), <span class="self">Self</span>::splat(<span class="number">1.0</span>).copysign(<span class="self">self</span>))
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="kw">let </span>sign_bit = sign.to_bits() &amp; <span class="self">Self</span>::splat(-<span class="number">0.</span>).to_bits();
                 <span class="kw">let </span>magnitude = <span class="self">self</span>.to_bits() &amp; !<span class="self">Self</span>::splat(-<span class="number">0.</span>).to_bits();
                 <span class="self">Self</span>::from_bits(sign_bit | magnitude)
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="comment">// Safety: `self` and `other` are float vectors
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_fmin(<span class="self">self</span>, other) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="comment">// Safety: `self` and `other` are floating point vectors
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_fmax(<span class="self">self</span>, other) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert!</span>(
                     min.simd_le(max).all(),
                     <span class="string">&quot;each lane in `min` must be less than or equal to the corresponding lane in `max`&quot;</span>,
@@ -673,8 +673,8 @@
                 x
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// LLVM sum is inaccurate on i586
                 </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
                     <span class="self">self</span>.as_array().iter().sum()
@@ -684,8 +684,8 @@
                 }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// LLVM product is inaccurate on i586
                 </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
                     <span class="self">self</span>.as_array().iter().product()
@@ -695,14 +695,14 @@
                 }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>reduce_max(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// Safety: `self` is a float vector
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_max(<span class="self">self</span>) }
             }
 
-            <span class="attribute">#[inline]</span>
-            <span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>reduce_min(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// Safety: `self` is a float vector
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_reduce_min(<span class="self">self</span>) }
             }
@@ -711,6 +711,6 @@
     }
 }
 
-<span class="macro">impl_trait!</span> { f32 { bits: u32, mask: i32 }, f64 { bits: u64, mask: i64 } }
+<span class="macro">impl_trait! </span>{ f32 { bits: u32, mask: i32 }, f64 { bits: u64, mask: i64 } }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (801821d15 2022-08-14)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (8796e7a9c 2022-10-08)" ></div></body></html>
