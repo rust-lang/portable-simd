@@ -20,6 +20,8 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
 </pre><pre class="rust"><code><span class="attribute">#![no_std]
 #![feature(
     convert_float_to_int,
@@ -29,7 +31,9 @@
     repr_simd,
     simd_ffi,
     staged_api,
-    stdsimd
+    stdsimd,
+    strict_provenance,
+    ptr_metadata
 )]
 #![cfg_attr(feature = <span class="string">&quot;generic_const_exprs&quot;</span>, feature(generic_const_exprs))]
 #![cfg_attr(feature = <span class="string">&quot;generic_const_exprs&quot;</span>, allow(incomplete_features))]

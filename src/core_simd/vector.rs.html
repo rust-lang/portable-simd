@@ -739,11 +739,45 @@
 <span id="739">739</span>
 <span id="740">740</span>
 <span id="741">741</span>
-</pre><pre class="rust"><code><span class="comment">// Vectors of pointers are not for public use at the current time.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>ptr;
-
-<span class="kw">use </span><span class="kw">crate</span>::simd::{
-    intrinsics, LaneCount, Mask, MaskElement, SimdPartialOrd, SupportedLaneCount, Swizzle,
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
+    intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
+    SimdPartialOrd, SupportedLaneCount, Swizzle,
 };
 
 <span class="doccomment">/// A SIMD vector of `LANES` elements of type `T`. `Simd&lt;T, N&gt;` has the same shape as [`[T; N]`](array), but operates like `T`.
@@ -952,9 +986,24 @@
     </span><span class="attribute">#[must_use]
     #[inline]
     #[cfg(not(bootstrap))]
-    </span><span class="kw">pub fn </span>cast&lt;U: SimdElement&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt; {
-        <span class="comment">// Safety: The input argument is a vector of a valid SIMD element type.
+    </span><span class="kw">pub fn </span>cast&lt;U: SimdCast&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt;
+    <span class="kw">where
+        </span>T: SimdCast,
+    {
+        <span class="comment">// Safety: supported types are guaranteed by SimdCast
         </span><span class="kw">unsafe </span>{ intrinsics::simd_as(<span class="self">self</span>) }
+    }
+
+    <span class="doccomment">/// Lanewise casts pointers to another pointer type.
+    </span><span class="attribute">#[must_use]
+    #[inline]
+    </span><span class="kw">pub fn </span>cast_ptr&lt;U&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt;
+    <span class="kw">where
+        </span>T: SimdCastPtr&lt;U&gt;,
+        U: SimdElement,
+    {
+        <span class="comment">// Safety: supported types are guaranteed by SimdCastPtr
+        </span><span class="kw">unsafe </span>{ intrinsics::simd_cast_ptr(<span class="self">self</span>) }
     }
 
     <span class="doccomment">/// Rounds toward zero and converts to the same-width integer type, assuming that
@@ -975,11 +1024,10 @@
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>to_int_unchecked&lt;I&gt;(<span class="self">self</span>) -&gt; Simd&lt;I, LANES&gt;
     <span class="kw">where
-        </span>T: core::convert::FloatToInt&lt;I&gt;,
-        I: SimdElement,
+        </span>T: core::convert::FloatToInt&lt;I&gt; + SimdCast,
+        I: SimdCast,
     {
-        <span class="comment">// Safety: `self` is a vector, and `FloatToInt` ensures the type can be casted to
-        // an integer.
+        <span class="comment">// Safety: supported types are guaranteed by SimdCast, the caller is responsible for the extra invariants
         </span><span class="kw">unsafe </span>{ intrinsics::simd_cast(<span class="self">self</span>) }
     }
 
@@ -1090,7 +1138,7 @@
         idxs: Simd&lt;usize, LANES&gt;,
         or: <span class="self">Self</span>,
     ) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>base_ptr = <span class="kw">crate</span>::simd::ptr::SimdConstPtr::splat(slice.as_ptr());
+        <span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*const </span>T, LANES&gt;::splat(slice.as_ptr());
         <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.
         </span><span class="kw">let </span>ptrs = base_ptr.wrapping_add(idxs);
         <span class="comment">// Safety: The ptrs have been bounds-masked to prevent memory-unsafe reads insha&#39;allah
@@ -1198,7 +1246,7 @@
         // 3. &amp;mut [T] which will become our base ptr.
         </span><span class="kw">unsafe </span>{
             <span class="comment">// Now Entering ☢️ *mut T Zone
-            </span><span class="kw">let </span>base_ptr = <span class="kw">crate</span>::simd::ptr::SimdMutPtr::splat(slice.as_mut_ptr());
+            </span><span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*mut </span>T, LANES&gt;::splat(slice.as_mut_ptr());
             <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.
             </span><span class="kw">let </span>ptrs = base_ptr.wrapping_add(idxs);
             <span class="comment">// The ptrs have been bounds-masked to prevent memory-unsafe writes insha&#39;allah
@@ -1479,6 +1527,30 @@
 <span class="comment">// Safety: f64 is a valid SIMD element type, and is supported by this API
 </span><span class="kw">unsafe impl </span>SimdElement <span class="kw">for </span>f64 {
     <span class="kw">type </span>Mask = i64;
+}
+
+<span class="kw">impl</span>&lt;T&gt; Sealed <span class="kw">for </span><span class="kw-2">*const </span>T {}
+
+<span class="comment">// Safety: (thin) const pointers are valid SIMD element types, and are supported by this API
+//
+// Fat pointers may be supported in the future.
+</span><span class="kw">unsafe impl</span>&lt;T&gt; SimdElement <span class="kw">for </span><span class="kw-2">*const </span>T
+<span class="kw">where
+    </span>T: core::ptr::Pointee&lt;Metadata = ()&gt;,
+{
+    <span class="kw">type </span>Mask = isize;
+}
+
+<span class="kw">impl</span>&lt;T&gt; Sealed <span class="kw">for </span><span class="kw-2">*mut </span>T {}
+
+<span class="comment">// Safety: (thin) mut pointers are valid SIMD element types, and are supported by this API
+//
+// Fat pointers may be supported in the future.
+</span><span class="kw">unsafe impl</span>&lt;T&gt; SimdElement <span class="kw">for </span><span class="kw-2">*mut </span>T
+<span class="kw">where
+    </span>T: core::ptr::Pointee&lt;Metadata = ()&gt;,
+{
+    <span class="kw">type </span>Mask = isize;
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="core_simd" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9565dfeb4 2022-10-28)" ></div></body></html>

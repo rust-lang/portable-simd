@@ -576,6 +576,29 @@
 <span id="576">576</span>
 <span id="577">577</span>
 <span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
 </pre><pre class="rust"><code><span class="kw">pub mod </span>array;
 
 <span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
@@ -615,6 +638,28 @@
 <span class="macro">impl_num! </span>{ usize }
 <span class="macro">impl_num! </span>{ f32 }
 <span class="macro">impl_num! </span>{ f64 }
+
+<span class="kw">impl</span>&lt;T&gt; DefaultStrategy <span class="kw">for </span><span class="kw-2">*const </span>T {
+    <span class="kw">type </span>Strategy = proptest::strategy::Map&lt;proptest::num::isize::Any, <span class="kw">fn</span>(isize) -&gt; <span class="kw-2">*const </span>T&gt;;
+    <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
+        <span class="kw">fn </span>map&lt;T&gt;(x: isize) -&gt; <span class="kw-2">*const </span>T {
+            x <span class="kw">as _
+        </span>}
+        <span class="kw">use </span>proptest::strategy::Strategy;
+        proptest::num::isize::ANY.prop_map(map)
+    }
+}
+
+<span class="kw">impl</span>&lt;T&gt; DefaultStrategy <span class="kw">for </span><span class="kw-2">*mut </span>T {
+    <span class="kw">type </span>Strategy = proptest::strategy::Map&lt;proptest::num::isize::Any, <span class="kw">fn</span>(isize) -&gt; <span class="kw-2">*mut </span>T&gt;;
+    <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
+        <span class="kw">fn </span>map&lt;T&gt;(x: isize) -&gt; <span class="kw-2">*mut </span>T {
+            x <span class="kw">as _
+        </span>}
+        <span class="kw">use </span>proptest::strategy::Strategy;
+        proptest::num::isize::ANY.prop_map(map)
+    }
+}
 
 <span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
 </span><span class="kw">impl </span>DefaultStrategy <span class="kw">for </span>u128 {
@@ -713,21 +758,21 @@
     fs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Scalar) -&gt; ScalarResult,
     check: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn([Scalar; LANES]) -&gt; bool,
 ) <span class="kw">where
-    </span>Scalar: Copy + Default + core::fmt::Debug + DefaultStrategy,
-    ScalarResult: Copy + Default + biteq::BitEq + core::fmt::Debug + DefaultStrategy,
+    </span>Scalar: Copy + core::fmt::Debug + DefaultStrategy,
+    ScalarResult: Copy + biteq::BitEq + core::fmt::Debug + DefaultStrategy,
     Vector: Into&lt;[Scalar; LANES]&gt; + From&lt;[Scalar; LANES]&gt; + Copy,
     VectorResult: Into&lt;[ScalarResult; LANES]&gt; + From&lt;[ScalarResult; LANES]&gt; + Copy,
 {
     test_1(<span class="kw-2">&amp;</span>|x: [Scalar; LANES]| {
         <span class="macro">proptest::prop_assume!</span>(check(x));
         <span class="kw">let </span>result_1: [ScalarResult; LANES] = fv(x.into()).into();
-        <span class="kw">let </span>result_2: [ScalarResult; LANES] = {
-            <span class="kw">let </span><span class="kw-2">mut </span>result = [ScalarResult::default(); LANES];
-            <span class="kw">for </span>(i, o) <span class="kw">in </span>x.iter().zip(result.iter_mut()) {
-                <span class="kw-2">*</span>o = fs(<span class="kw-2">*</span>i);
-            }
-            result
-        };
+        <span class="kw">let </span>result_2: [ScalarResult; LANES] = x
+            .iter()
+            .copied()
+            .map(fs)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .try_into()
+            .unwrap();
         <span class="macro">crate::prop_assert_biteq!</span>(result_1, result_2);
         <span class="prelude-val">Ok</span>(())
     });
@@ -740,7 +785,7 @@
     fs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Scalar) -&gt; bool,
     check: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn([Scalar; LANES]) -&gt; bool,
 ) <span class="kw">where
-    </span>Scalar: Copy + Default + core::fmt::Debug + DefaultStrategy,
+    </span>Scalar: Copy + core::fmt::Debug + DefaultStrategy,
     Vector: Into&lt;[Scalar; LANES]&gt; + From&lt;[Scalar; LANES]&gt; + Copy,
     Mask: Into&lt;[bool; LANES]&gt; + From&lt;[bool; LANES]&gt; + Copy,
 {
@@ -774,9 +819,9 @@
     fs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(Scalar1, Scalar2) -&gt; ScalarResult,
     check: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn([Scalar1; LANES], [Scalar2; LANES]) -&gt; bool,
 ) <span class="kw">where
-    </span>Scalar1: Copy + Default + core::fmt::Debug + DefaultStrategy,
-    Scalar2: Copy + Default + core::fmt::Debug + DefaultStrategy,
-    ScalarResult: Copy + Default + biteq::BitEq + core::fmt::Debug + DefaultStrategy,
+    </span>Scalar1: Copy + core::fmt::Debug + DefaultStrategy,
+    Scalar2: Copy + core::fmt::Debug + DefaultStrategy,
+    ScalarResult: Copy + biteq::BitEq + core::fmt::Debug + DefaultStrategy,
     Vector1: Into&lt;[Scalar1; LANES]&gt; + From&lt;[Scalar1; LANES]&gt; + Copy,
     Vector2: Into&lt;[Scalar2; LANES]&gt; + From&lt;[Scalar2; LANES]&gt; + Copy,
     VectorResult: Into&lt;[ScalarResult; LANES]&gt; + From&lt;[ScalarResult; LANES]&gt; + Copy,
@@ -784,13 +829,14 @@
     test_2(<span class="kw-2">&amp;</span>|x: [Scalar1; LANES], y: [Scalar2; LANES]| {
         <span class="macro">proptest::prop_assume!</span>(check(x, y));
         <span class="kw">let </span>result_1: [ScalarResult; LANES] = fv(x.into(), y.into()).into();
-        <span class="kw">let </span>result_2: [ScalarResult; LANES] = {
-            <span class="kw">let </span><span class="kw-2">mut </span>result = [ScalarResult::default(); LANES];
-            <span class="kw">for </span>((i1, i2), o) <span class="kw">in </span>x.iter().zip(y.iter()).zip(result.iter_mut()) {
-                <span class="kw-2">*</span>o = fs(<span class="kw-2">*</span>i1, <span class="kw-2">*</span>i2);
-            }
-            result
-        };
+        <span class="kw">let </span>result_2: [ScalarResult; LANES] = x
+            .iter()
+            .copied()
+            .zip(y.iter().copied())
+            .map(|(x, y)| fs(x, y))
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .try_into()
+            .unwrap();
         <span class="macro">crate::prop_assert_biteq!</span>(result_1, result_2);
         <span class="prelude-val">Ok</span>(())
     });
