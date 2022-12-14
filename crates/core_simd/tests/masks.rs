@@ -104,18 +104,13 @@ macro_rules! test_mask_api {
 
             #[test]
             fn cast() {
-                fn cast_impl<T: core_simd::simd::MaskElement>()
-                where
-                    Mask<$type, 8>: Into<Mask<T, 8>>,
+                fn cast_impl<T: core_simd::simd::SimdElement>()
                 {
                     let values = [true, false, false, true, false, false, true, false];
                     let mask = Mask::<$type, 8>::from_array(values);
 
                     let cast_mask = mask.cast::<T>();
                     assert_eq!(values, cast_mask.to_array());
-
-                    let into_mask: Mask<T, 8> = mask.into();
-                    assert_eq!(values, into_mask.to_array());
                 }
 
                 cast_impl::<i8>();
@@ -123,6 +118,15 @@ macro_rules! test_mask_api {
                 cast_impl::<i32>();
                 cast_impl::<i64>();
                 cast_impl::<isize>();
+                cast_impl::<u8>();
+                cast_impl::<u16>();
+                cast_impl::<u32>();
+                cast_impl::<u64>();
+                cast_impl::<usize>();
+                cast_impl::<f32>();
+                cast_impl::<f64>();
+                cast_impl::<*mut u8>();
+                cast_impl::<*const u8>();
             }
 
             #[cfg(feature = "generic_const_exprs")]
@@ -148,14 +152,4 @@ mod mask_api {
     test_mask_api! { i32 }
     test_mask_api! { i64 }
     test_mask_api! { isize }
-}
-
-#[test]
-fn convert() {
-    use core_simd::simd::Mask;
-    let values = [true, false, false, true, false, false, true, false];
-    assert_eq!(
-        Mask::<i8, 8>::from_array(values),
-        Mask::<i32, 8>::from_array(values).into()
-    );
 }

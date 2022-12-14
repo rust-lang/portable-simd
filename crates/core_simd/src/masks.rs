@@ -531,24 +531,3 @@ where
         *self ^= Self::splat(rhs);
     }
 }
-
-macro_rules! impl_from {
-    { $from:ty  => $($to:ty),* } => {
-        $(
-        impl<const LANES: usize> From<Mask<$from, LANES>> for Mask<$to, LANES>
-        where
-            LaneCount<LANES>: SupportedLaneCount,
-        {
-            #[inline]
-            fn from(value: Mask<$from, LANES>) -> Self {
-                value.cast()
-            }
-        }
-        )*
-    }
-}
-impl_from! { i8 => i16, i32, i64, isize }
-impl_from! { i16 => i32, i64, isize, i8 }
-impl_from! { i32 => i64, isize, i8, i16 }
-impl_from! { i64 => isize, i8, i16, i32 }
-impl_from! { isize => i8, i16, i32, i64 }
