@@ -1,7 +1,6 @@
 use super::sealed::Sealed;
 use crate::simd::{
-    intrinsics, LaneCount, Mask, Simd, SimdElement, SimdPartialEq, SimdPartialOrd,
-    SupportedLaneCount,
+    intrinsics, LaneCount, Mask, Simd, SimdPartialEq, SimdPartialOrd, SupportedLaneCount,
 };
 
 /// Operations on SIMD vectors of floats.
@@ -191,7 +190,7 @@ pub trait SimdFloat: Copy + Sealed {
 }
 
 macro_rules! impl_trait {
-    { $($ty:ty { bits: $bits_ty:ty, mask: $mask_ty:ty }),* } => {
+    { $($ty:ty { bits: $bits_ty:ty }),* } => {
         $(
         impl<const LANES: usize> Sealed for Simd<$ty, LANES>
         where
@@ -203,7 +202,7 @@ macro_rules! impl_trait {
         where
             LaneCount<LANES>: SupportedLaneCount,
         {
-            type Mask = Mask<<$mask_ty as SimdElement>::Mask, LANES>;
+            type Mask = Mask<$ty, LANES>;
             type Scalar = $ty;
             type Bits = Simd<$bits_ty, LANES>;
 
@@ -251,7 +250,7 @@ macro_rules! impl_trait {
             #[inline]
             fn is_sign_negative(self) -> Self::Mask {
                 let sign_bits = self.to_bits() & Simd::splat((!0 >> 1) + 1);
-                sign_bits.simd_gt(Simd::splat(0))
+                sign_bits.simd_gt(Simd::splat(0)).cast()
             }
 
             #[inline]
@@ -271,7 +270,7 @@ macro_rules! impl_trait {
 
             #[inline]
             fn is_subnormal(self) -> Self::Mask {
-                self.abs().simd_ne(Self::splat(0.0)) & (self.to_bits() & Self::splat(Self::Scalar::INFINITY).to_bits()).simd_eq(Simd::splat(0))
+                self.abs().simd_ne(Self::splat(0.0)) & (self.to_bits() & Self::splat(Self::Scalar::INFINITY).to_bits()).simd_eq(Simd::splat(0)).cast()
             }
 
             #[inline]
@@ -354,4 +353,4 @@ macro_rules! impl_trait {
     }
 }
 
-impl_trait! { f32 { bits: u32, mask: i32 }, f64 { bits: u64, mask: i64 } }
+impl_trait! { f32 { bits: u32 }, f64 { bits: u64 } }

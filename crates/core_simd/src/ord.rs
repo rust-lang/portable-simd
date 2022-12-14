@@ -220,22 +220,22 @@ where
 {
     #[inline]
     fn simd_lt(self, other: Self) -> Self::Mask {
-        self.addr().simd_lt(other.addr())
+        self.addr().simd_lt(other.addr()).cast()
     }
 
     #[inline]
     fn simd_le(self, other: Self) -> Self::Mask {
-        self.addr().simd_le(other.addr())
+        self.addr().simd_le(other.addr()).cast()
     }
 
     #[inline]
     fn simd_gt(self, other: Self) -> Self::Mask {
-        self.addr().simd_gt(other.addr())
+        self.addr().simd_gt(other.addr()).cast()
     }
 
     #[inline]
     fn simd_ge(self, other: Self) -> Self::Mask {
-        self.addr().simd_ge(other.addr())
+        self.addr().simd_ge(other.addr()).cast()
     }
 }
 
@@ -269,22 +269,22 @@ where
 {
     #[inline]
     fn simd_lt(self, other: Self) -> Self::Mask {
-        self.addr().simd_lt(other.addr())
+        self.addr().simd_lt(other.addr()).cast()
     }
 
     #[inline]
     fn simd_le(self, other: Self) -> Self::Mask {
-        self.addr().simd_le(other.addr())
+        self.addr().simd_le(other.addr()).cast()
     }
 
     #[inline]
     fn simd_gt(self, other: Self) -> Self::Mask {
-        self.addr().simd_gt(other.addr())
+        self.addr().simd_gt(other.addr()).cast()
     }
 
     #[inline]
     fn simd_ge(self, other: Self) -> Self::Mask {
-        self.addr().simd_ge(other.addr())
+        self.addr().simd_ge(other.addr()).cast()
     }
 }
 

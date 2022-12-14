@@ -89,21 +89,21 @@ impl_element! { isize }
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; LANES]`.
 #[repr(transparent)]
-pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T, LANES>)
+pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T::Mask, LANES>)
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount;
 
 impl<T, const LANES: usize> Copy for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
 }
 
 impl<T, const LANES: usize> Clone for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -114,7 +114,7 @@ where
 
 impl<T, const LANES: usize> Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     /// Construct a mask by setting all lanes to the given value.
@@ -167,7 +167,7 @@ where
     /// All lanes must be either 0 or -1.
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub unsafe fn from_int_unchecked(value: Simd<T, LANES>) -> Self {
+    pub unsafe fn from_int_unchecked(value: Simd<T::Mask, LANES>) -> Self {
         // Safety: the caller must confirm this invariant
         unsafe { Self(mask_impl::Mask::from_int_unchecked(value)) }
     }
@@ -179,8 +179,8 @@ where
     /// Panics if any lane is not 0 or -1.
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn from_int(value: Simd<T, LANES>) -> Self {
-        assert!(T::valid(value), "all values must be either 0 or -1",);
+    pub fn from_int(value: Simd<T::Mask, LANES>) -> Self {
+        assert!(T::Mask::valid(value), "all values must be either 0 or -1",);
         // Safety: the validity has been checked
         unsafe { Self::from_int_unchecked(value) }
     }
@@ -189,14 +189,14 @@ where
     /// represents `true`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    pub fn to_int(self) -> Simd<T, LANES> {
+    pub fn to_int(self) -> Simd<T::Mask, LANES> {
         self.0.to_int()
     }
 
     /// Converts the mask to a mask of any other lane size.
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn cast<U: MaskElement>(self) -> Mask<U, LANES> {
+    pub fn cast<U: SimdElement>(self) -> Mask<U, LANES> {
         Mask(self.0.convert())
     }
 
@@ -266,7 +266,7 @@ where
 // vector/array conversion
 impl<T, const LANES: usize> From<[bool; LANES]> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -277,7 +277,7 @@ where
 
 impl<T, const LANES: usize> From<Mask<T, LANES>> for [bool; LANES]
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -288,7 +288,7 @@ where
 
 impl<T, const LANES: usize> Default for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -300,7 +300,8 @@ where
 
 impl<T, const LANES: usize> PartialEq for Mask<T, LANES>
 where
-    T: MaskElement + PartialEq,
+    T: SimdElement,
+    T::Mask: PartialEq,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -312,7 +313,8 @@ where
 
 impl<T, const LANES: usize> PartialOrd for Mask<T, LANES>
 where
-    T: MaskElement + PartialOrd,
+    T: SimdElement,
+    T::Mask: PartialOrd,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -324,7 +326,7 @@ where
 
 impl<T, const LANES: usize> fmt::Debug for Mask<T, LANES>
 where
-    T: MaskElement + fmt::Debug,
+    T: SimdElement + fmt::Debug,
     LaneCount<LANES>: SupportedLaneCount,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -336,7 +338,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAnd for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -349,7 +351,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAnd<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -362,7 +364,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAnd<Mask<T, LANES>> for bool
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Mask<T, LANES>;
@@ -375,7 +377,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOr for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -388,7 +390,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOr<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -401,7 +403,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOr<Mask<T, LANES>> for bool
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Mask<T, LANES>;
@@ -414,7 +416,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXor for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -427,7 +429,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXor<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -440,7 +442,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXor<Mask<T, LANES>> for bool
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Mask<T, LANES>;
@@ -453,7 +455,7 @@ where
 
 impl<T, const LANES: usize> core::ops::Not for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Mask<T, LANES>;
@@ -466,7 +468,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAndAssign for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -477,7 +479,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAndAssign<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -488,7 +490,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOrAssign for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -499,7 +501,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOrAssign<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -510,7 +512,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXorAssign for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -521,7 +523,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXorAssign<bool> for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]

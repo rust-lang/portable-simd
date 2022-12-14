@@ -313,11 +313,11 @@ where
     #[inline]
     pub fn gather_select(
         slice: &[T],
-        enable: Mask<isize, LANES>,
+        enable: Mask<usize, LANES>,
         idxs: Simd<usize, LANES>,
         or: Self,
     ) -> Self {
-        let enable: Mask<isize, LANES> = enable & idxs.simd_lt(Simd::splat(slice.len()));
+        let enable: Mask<usize, LANES> = enable & idxs.simd_lt(Simd::splat(slice.len()));
         // Safety: We have masked-off out-of-bounds lanes.
         unsafe { Self::gather_select_unchecked(slice, enable, idxs, or) }
     }
@@ -354,7 +354,7 @@ where
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub unsafe fn gather_select_unchecked(
         slice: &[T],
-        enable: Mask<isize, LANES>,
+        enable: Mask<usize, LANES>,
         idxs: Simd<usize, LANES>,
         or: Self,
     ) -> Self {
@@ -362,7 +362,7 @@ where
         // Ferris forgive me, I have done pointer arithmetic here.
         let ptrs = base_ptr.wrapping_add(idxs);
         // Safety: The caller is responsible for determining the indices are okay to read
-        unsafe { Self::gather_select_ptr(ptrs, enable, or) }
+        unsafe { Self::gather_select_ptr(ptrs, enable.cast(), or) }
     }
 
     /// Read pointers elementwise into a SIMD vector.
@@ -421,7 +421,7 @@ where
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub unsafe fn gather_select_ptr(
         source: Simd<*const T, LANES>,
-        enable: Mask<isize, LANES>,
+        enable: Mask<*const T, LANES>,
         or: Self,
     ) -> Self {
         // Safety: The caller is responsible for upholding all invariants
@@ -472,10 +472,10 @@ where
     pub fn scatter_select(
         self,
         slice: &mut [T],
-        enable: Mask<isize, LANES>,
+        enable: Mask<usize, LANES>,
         idxs: Simd<usize, LANES>,
     ) {
-        let enable: Mask<isize, LANES> = enable & idxs.simd_lt(Simd::splat(slice.len()));
+        let enable: Mask<usize, LANES> = enable & idxs.simd_lt(Simd::splat(slice.len()));
         // Safety: We have masked-off out-of-bounds lanes.
         unsafe { self.scatter_select_unchecked(slice, enable, idxs) }
     }
@@ -514,7 +514,7 @@ where
     pub unsafe fn scatter_select_unchecked(
         self,
         slice: &mut [T],
-        enable: Mask<isize, LANES>,
+        enable: Mask<usize, LANES>,
         idxs: Simd<usize, LANES>,
     ) {
         // Safety: This block works with *mut T derived from &mut 'a [T],
@@ -533,7 +533,7 @@ where
             // Ferris forgive me, I have done pointer arithmetic here.
             let ptrs = base_ptr.wrapping_add(idxs);
             // The ptrs have been bounds-masked to prevent memory-unsafe writes insha'allah
-            self.scatter_select_ptr(ptrs, enable);
+            self.scatter_select_ptr(ptrs, enable.cast());
             // Cleared ☢️ *mut T Zone
         }
     }
@@ -586,7 +586,7 @@ where
     /// ```
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
-    pub unsafe fn scatter_select_ptr(self, dest: Simd<*mut T, LANES>, enable: Mask<isize, LANES>) {
+    pub unsafe fn scatter_select_ptr(self, dest: Simd<*mut T, LANES>, enable: Mask<*mut T, LANES>) {
         // Safety: The caller is responsible for upholding all invariants
         unsafe { intrinsics::simd_scatter(self, dest, enable.to_int()) }
     }
@@ -630,7 +630,7 @@ where
         // Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         let mask = unsafe {
             let tfvec: Simd<<T as SimdElement>::Mask, LANES> = intrinsics::simd_eq(*self, *other);
-            Mask::from_int_unchecked(tfvec)
+            Mask::<T, LANES>::from_int_unchecked(tfvec)
         };
 
         // Two vectors are equal if all lanes tested true for vertical equality.
@@ -643,7 +643,7 @@ where
         // Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         let mask = unsafe {
             let tfvec: Simd<<T as SimdElement>::Mask, LANES> = intrinsics::simd_ne(*self, *other);
-            Mask::from_int_unchecked(tfvec)
+            Mask::<T, LANES>::from_int_unchecked(tfvec)
         };
 
         // Two vectors are non-equal if any lane tested true for vertical non-equality.
