@@ -1,5 +1,5 @@
 #![allow(unused_imports)]
-use super::MaskElement;
+use super::{Sealed as _, SimdElement};
 use crate::simd::intrinsics;
 use crate::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask};
 use core::marker::PhantomData;
@@ -11,19 +11,19 @@ pub struct Mask<T, const LANES: usize>(
     PhantomData<T>,
 )
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount;
 
 impl<T, const LANES: usize> Copy for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
 }
 
 impl<T, const LANES: usize> Clone for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -34,7 +34,7 @@ where
 
 impl<T, const LANES: usize> PartialEq for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -45,7 +45,7 @@ where
 
 impl<T, const LANES: usize> PartialOrd for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -56,14 +56,14 @@ where
 
 impl<T, const LANES: usize> Eq for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
 }
 
 impl<T, const LANES: usize> Ord for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -74,7 +74,7 @@ where
 
 impl<T, const LANES: usize> Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     #[inline]
@@ -107,15 +107,19 @@ where
 
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    pub fn to_int(self) -> Simd<T, LANES> {
+    pub fn to_int(self) -> Simd<T::Mask, LANES> {
         unsafe {
-            intrinsics::simd_select_bitmask(self.0, Simd::splat(T::TRUE), Simd::splat(T::FALSE))
+            intrinsics::simd_select_bitmask(
+                self.0,
+                Simd::splat(T::Mask::TRUE),
+                Simd::splat(T::Mask::FALSE),
+            )
         }
     }
 
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub unsafe fn from_int_unchecked(value: Simd<T, LANES>) -> Self {
+    pub unsafe fn from_int_unchecked(value: Simd<T::Mask, LANES>) -> Self {
         unsafe { Self(intrinsics::simd_bitmask(value), PhantomData) }
     }
 
@@ -159,9 +163,9 @@ where
 
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    pub fn convert<U>(self) -> Mask<U, LANES>
+    pub fn cast<U>(self) -> Mask<U, LANES>
     where
-        U: MaskElement,
+        U: SimdElement,
     {
         // Safety: bitmask layout does not depend on the element width
         unsafe { core::mem::transmute_copy(&self) }
@@ -182,7 +186,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitAnd for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
     <LaneCount<LANES> as SupportedLaneCount>::BitMask: AsRef<[u8]> + AsMut<[u8]>,
 {
@@ -199,7 +203,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitOr for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
     <LaneCount<LANES> as SupportedLaneCount>::BitMask: AsRef<[u8]> + AsMut<[u8]>,
 {
@@ -216,7 +220,7 @@ where
 
 impl<T, const LANES: usize> core::ops::BitXor for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;
@@ -232,7 +236,7 @@ where
 
 impl<T, const LANES: usize> core::ops::Not for Mask<T, LANES>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount,
 {
     type Output = Self;

@@ -89,7 +89,7 @@ impl_element! { isize }
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; LANES]`.
 #[repr(transparent)]
-pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T::Mask, LANES>)
+pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T, LANES>)
 where
     T: SimdElement,
     LaneCount<LANES>: SupportedLaneCount;
@@ -197,7 +197,7 @@ where
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn cast<U: SimdElement>(self) -> Mask<U, LANES> {
-        Mask(self.0.convert())
+        Mask(self.0.cast())
     }
 
     /// Tests the value of the specified lane.
