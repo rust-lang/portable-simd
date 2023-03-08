@@ -89,7 +89,7 @@ impl_element! { isize }
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; LANES]`.
 ///
-/// For a type with layout guaranteed equivalent to `[T; LANES]`, use 
+/// For a type with layout guaranteed equivalent to `[T; LANES]`, use
 /// `SIMD<T, LANES>`. For a type with layout guaranteed to use 1 bit per
 /// lane (padded up to full bytes), use `LANES::BitMask`.
 #[repr(transparent)]
