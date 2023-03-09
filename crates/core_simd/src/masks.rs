@@ -90,7 +90,7 @@ impl_element! { isize }
 /// `[T; LANES]`.
 ///
 /// For a type with layout guaranteed equivalent to `[T; LANES]`, use
-/// `SIMD<T, LANES>`. For a type with layout guaranteed to use 1 bit per
+/// `Simd<T, LANES>`. For a type with layout guaranteed to use 1 bit per
 /// lane (padded up to full bytes), use `LANES::BitMask`.
 #[repr(transparent)]
 pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T, LANES>)
