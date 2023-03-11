@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ArrayValueTree",""],["UniformArrayStrategy",""]]};
+window.SIDEBAR_ITEMS = {"struct":["ArrayValueTree","UniformArrayStrategy"]};

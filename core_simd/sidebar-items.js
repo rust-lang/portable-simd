@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["simd","Portable SIMD module."]]};
+window.SIDEBAR_ITEMS = {"mod":["simd"]};

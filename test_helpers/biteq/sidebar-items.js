@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["BitEq",""]]};
+window.SIDEBAR_ITEMS = {"trait":["BitEq"]};

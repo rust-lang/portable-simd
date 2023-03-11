@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["StdFloat","This trait provides a possibly-temporary implementation of float functions that may, in the absence of hardware support, canonicalize to calling an operating system’s `math.h` dynamically-loaded library (also known as a shared object). As these conditionally require runtime support, they should only appear in binaries built assuming OS support: `std`."]]};
+window.SIDEBAR_ITEMS = {"trait":["StdFloat"]};
