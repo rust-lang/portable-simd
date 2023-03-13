@@ -372,7 +372,8 @@ where
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # use core::simd::Simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
     /// let y = x.slice::<2, 4>();
     /// assert_eq!(y.to_array(), [2, 3, 4, 5]);
@@ -381,7 +382,7 @@ where
     /// Will be rejected at compile time if `OFFSET + LEN > LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
-    pub fn slice<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN>
+    pub fn split_to<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN>
     where
         LaneCount<LEN>: SupportedLaneCount,
     {
@@ -411,7 +412,8 @@ where
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # use core::simd::Simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3]);
     /// let y = Simd::from_array([4, 5, 6, 7]);
     /// let z = x.concat_to::<8>(y);
@@ -450,7 +452,8 @@ where
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # use core::simd::Simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
     /// // Swap adjacent lanes:
     /// assert_eq!(x.general_reverse::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
@@ -466,7 +469,8 @@ where
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # use core::simd::Simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
     /// let x = x + x.general_reverse::<1>();
     /// let x = x + x.general_reverse::<2>();
