@@ -382,6 +382,9 @@ where
     /// ```
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    // TODO: when `generic_const_exprs` supports it, provide
+    //   `pub fn split(self) -> [Simd<T, {LANES / 2}>; 2]`
+    // and deprecate `split_to`.
     pub fn split_to<const HALF_LANES: usize>(self) -> [Simd<T, HALF_LANES>; 2]
     where
         LaneCount<HALF_LANES>: SupportedLaneCount,
@@ -428,6 +431,9 @@ where
     /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    // TODO: when `generic_const_exprs` supports it, provide
+    //   `pub fn concat(self, other: Self) -> Simd<T, {LANES * 2}>`
+    // and deprecate `concat_to`.
     pub fn concat_to<const DOUBLE_LANES: usize>(self, other: Self) -> Simd<T, DOUBLE_LANES>
     where
         LaneCount<DOUBLE_LANES>: SupportedLaneCount,
@@ -452,8 +458,12 @@ where
 
     /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.
     ///
-    /// Also known as `grev` in the RISC-V Bitmanip specification, this is a powerful
-    /// swizzle operation that can implement many common patterns as special cases.
+    /// This is a powerful swizzle operation that can implement many common patterns as special cases.
+    /// For power-of-2 swap masks, this produces the [butterfly shuffles](https://en.wikipedia.org/wiki/Butterfly_network)
+    /// that are often useful for horizontal reductions.
+    /// 
+    /// A similar operation (operating on bits instead of lanes) is known as `grev` in the RISC-V
+    /// Bitmanip specification.
     ///
     /// ```
     /// # #![feature(portable_simd)]
