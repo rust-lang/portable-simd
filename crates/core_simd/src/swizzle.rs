@@ -369,7 +369,7 @@ where
     ///
     /// This is equivalent to computing `&self[OFFSET..OFFSET+LEN]` on
     /// the underlying array.
-    /// 
+    ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
@@ -377,12 +377,14 @@ where
     /// let y = x.slice::<2, 4>();
     /// assert_eq!(y.to_array(), [2, 3, 4, 5]);
     /// ```
-    /// 
+    ///
     /// Will be rejected at compile time if `OFFSET + LEN > LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
-    pub fn slice<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN> 
-        where LaneCount<LEN>: SupportedLaneCount {
+    pub fn slice<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN>
+    where
+        LaneCount<LEN>: SupportedLaneCount,
+    {
         const fn slice_index<const LEN: usize>(offset: usize, lanes: usize) -> [usize; LEN] {
             assert!(offset + LEN <= lanes, "slice out of bounds");
             let mut index = [0; LEN];
@@ -394,17 +396,19 @@ where
             index
         }
         struct Slice<const OFFSET: usize>;
-        impl<const OFFSET: usize, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN> for Slice<OFFSET> {
+        impl<const OFFSET: usize, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN>
+            for Slice<OFFSET>
+        {
             const INDEX: [usize; LEN] = slice_index::<LEN>(OFFSET, LANES);
         }
         Slice::<OFFSET>::swizzle(self)
     }
 
     /// Concatenates two vectors of equal length.
-    /// 
+    ///
     /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
     /// from the input vectors. You must specify it explicitly.
-    /// 
+    ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
@@ -413,10 +417,11 @@ where
     /// let z = x.concat_to::<8>(y);
     /// assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
-    /// 
+    ///
     /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
     pub fn concat_to<const DOUBLE_LANES: usize>(self, other: Self) -> Simd<T, DOUBLE_LANES>
-        where LaneCount<DOUBLE_LANES>: SupportedLaneCount
+    where
+        LaneCount<DOUBLE_LANES>: SupportedLaneCount,
     {
         const fn concat_index<const DOUBLE_LANES: usize>(lanes: usize) -> [Which; DOUBLE_LANES] {
             assert!(lanes * 2 == DOUBLE_LANES);
@@ -437,10 +442,10 @@ where
     }
 
     /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.
-    /// 
+    ///
     /// Also known as `grev` in the RISC-V Bitmanip specification, this is a powerful
     /// swizzle operation that can implement many common patterns as special cases.
-    /// 
+    ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
@@ -454,9 +459,9 @@ where
     /// // Reverse lanes, within each 4-lane group:
     /// assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
     /// ```
-    /// 
+    ///
     /// Commonly useful for horizontal reductions, for example:
-    /// 
+    ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
