@@ -109,3 +109,13 @@ fn general_reverse() {
     // Reverse lanes, within each 4-lane group:
     assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
 }
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn general_reverse_sum() {
+    let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
+    let x = x + x.general_reverse::<1>();
+    let x = x + x.general_reverse::<2>();
+    let x = x + x.general_reverse::<4>();
+    assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
+}

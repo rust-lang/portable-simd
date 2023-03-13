@@ -454,6 +454,19 @@ where
     /// // Reverse lanes, within each 4-lane group:
     /// assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
     /// ```
+    /// 
+    /// Commonly useful for horizontal reductions, for example:
+    /// 
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
+    /// let x = x + x.general_reverse::<1>();
+    /// let x = x + x.general_reverse::<2>();
+    /// let x = x + x.general_reverse::<4>();
+    /// assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
+    /// ```
+
     pub fn general_reverse<const SWAP_MASK: usize>(self) -> Self {
         const fn general_reverse_index<const LANES: usize>(swap_mask: usize) -> [usize; LANES] {
             let mut index = [0; LANES];
