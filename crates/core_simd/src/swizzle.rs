@@ -419,6 +419,8 @@ where
     /// ```
     ///
     /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn concat_to<const DOUBLE_LANES: usize>(self, other: Self) -> Simd<T, DOUBLE_LANES>
     where
         LaneCount<DOUBLE_LANES>: SupportedLaneCount,
@@ -471,7 +473,8 @@ where
     /// let x = x + x.general_reverse::<4>();
     /// assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
     /// ```
-
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn general_reverse<const SWAP_MASK: usize>(self) -> Self {
         const fn general_reverse_index<const LANES: usize>(swap_mask: usize) -> [usize; LANES] {
             let mut index = [0; LANES];
