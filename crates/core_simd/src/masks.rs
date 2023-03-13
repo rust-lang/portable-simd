@@ -89,7 +89,7 @@ impl_element! { isize }
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; LANES]`.
 ///
-/// For a type with size guaranteed equivalent to `[T; LANES]`, use
+/// For a type with size guaranteed equal to `[T; LANES]`, use
 /// `Simd<T, LANES>`. For a type with size guaranteed to use 1 bit per
 /// lane (padded up to the next integer type or), use [`ToBitMask::BitMask`]
 /// or (with crate feature `generic_const_exprs`) `ToBitMaskArray::BitMaskArray`.
