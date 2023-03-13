@@ -484,6 +484,9 @@ where
     /// ```
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    #[doc(alias = "grev")]
+    #[doc(alias = "butterfly")]
+    #[doc(alias = "bfly")]
     pub fn general_reverse<const SWAP_MASK: usize>(self) -> Self {
         const fn general_reverse_index<const LANES: usize>(swap_mask: usize) -> [usize; LANES] {
             let mut index = [0; LANES];
