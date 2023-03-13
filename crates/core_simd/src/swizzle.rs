@@ -364,4 +364,110 @@ where
 
         (Even::swizzle2(self, other), Odd::swizzle2(self, other))
     }
+
+    /// Takes a slice of a vector to produce a shorter vector.
+    ///
+    /// This is equivalent to computing `&self[OFFSET..OFFSET+LEN]` on
+    /// the underlying array.
+    /// 
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    /// let y = x.slice::<2, 4>();
+    /// assert_eq!(y.to_array(), [2, 3, 4, 5]);
+    /// ```
+    /// 
+    /// Will be rejected at compile time if `OFFSET + LEN > LANES`.
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    pub fn slice<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN> 
+        where LaneCount<LEN>: SupportedLaneCount {
+        const fn slice_index<const LEN: usize>(offset: usize, lanes: usize) -> [usize; LEN] {
+            assert!(offset + LEN <= lanes, "slice out of bounds");
+            let mut index = [0; LEN];
+            let mut i = 0;
+            while i < LEN {
+                index[i] = i + offset;
+                i += 1;
+            }
+            index
+        }
+        struct Slice<const OFFSET: usize>;
+        impl<const OFFSET: usize, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN> for Slice<OFFSET> {
+            const INDEX: [usize; LEN] = slice_index::<LEN>(OFFSET, LANES);
+        }
+        Slice::<OFFSET>::swizzle(self)
+    }
+
+    /// Concatenates two vectors of equal length.
+    /// 
+    /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
+    /// from the input vectors. You must specify it explicitly.
+    /// 
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3]);
+    /// let y = Simd::from_array([4, 5, 6, 7]);
+    /// let z = x.concat_to::<8>(y);
+    /// assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
+    /// ```
+    /// 
+    /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
+    pub fn concat_to<const DOUBLE_LANES: usize>(self, other: Self) -> Simd<T, DOUBLE_LANES>
+        where LaneCount<DOUBLE_LANES>: SupportedLaneCount
+    {
+        const fn concat_index<const DOUBLE_LANES: usize>(lanes: usize) -> [Which; DOUBLE_LANES] {
+            assert!(lanes * 2 == DOUBLE_LANES);
+            let mut index = [Which::First(0); DOUBLE_LANES];
+            let mut i = 0;
+            while i < lanes {
+                index[i] = Which::First(i);
+                index[i + lanes] = Which::Second(i);
+                i += 1;
+            }
+            index
+        }
+        struct Concat;
+        impl<const LANES: usize, const DOUBLE_LANES: usize> Swizzle2<LANES, DOUBLE_LANES> for Concat {
+            const INDEX: [Which; DOUBLE_LANES] = concat_index::<DOUBLE_LANES>(LANES);
+        }
+        Concat::swizzle2(self, other)
+    }
+
+    /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.
+    /// 
+    /// Also known as `grev` in the RISC-V Bitmanip specification, this is a powerful
+    /// swizzle operation that can implement many common patterns as special cases.
+    /// 
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    /// // Swap adjacent lanes:
+    /// assert_eq!(x.general_reverse::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
+    /// // Swap lanes separated by distance 2:
+    /// assert_eq!(x.general_reverse::<2>().to_array(), [2, 3, 0, 1, 6, 7, 4, 5]);
+    /// // Swap lanes separated by distance 4:
+    /// assert_eq!(x.general_reverse::<4>().to_array(), [4, 5, 6, 7, 0, 1, 2, 3]);
+    /// // Reverse lanes, within each 4-lane group:
+    /// assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
+    /// ```
+    pub fn general_reverse<const SWAP_MASK: usize>(self) -> Self {
+        const fn general_reverse_index<const LANES: usize>(swap_mask: usize) -> [usize; LANES] {
+            let mut index = [0; LANES];
+            let mut i = 0;
+            while i < LANES {
+                index[i] = i ^ swap_mask;
+                i += 1;
+            }
+            index
+        }
+        struct GeneralReverse<const DISTANCE: usize>;
+        impl<const LANES: usize, const DISTANCE: usize> Swizzle<LANES, LANES> for GeneralReverse<DISTANCE> {
+            const INDEX: [usize; LANES] = general_reverse_index::<LANES>(DISTANCE);
+        }
+        GeneralReverse::<SWAP_MASK>::swizzle(self)
+    }
 }

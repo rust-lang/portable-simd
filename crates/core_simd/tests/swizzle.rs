@@ -74,3 +74,38 @@ fn interleave_one() {
     assert_eq!(even, a);
     assert_eq!(odd, b);
 }
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn slice() {
+    let a = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    let lo = a.slice::<0, 4>();
+    let mid = a.slice::<3, 2>();
+    let hi = a.slice::<4, 4>();
+    assert_eq!(lo.to_array(), [0, 1, 2, 3]);
+    assert_eq!(mid.to_array(), [3, 4]);
+    assert_eq!(hi.to_array(), [4, 5, 6, 7]);
+}
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn concat() {
+    let x = Simd::from_array([0, 1, 2, 3]);
+    let y = Simd::from_array([4, 5, 6, 7]);
+    let z = x.concat_to::<8>(y);
+    assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
+}
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn general_reverse() {
+    let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    // Swap adjacent lanes:
+    assert_eq!(x.general_reverse::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
+    // Swap lanes separated by distance 2:
+    assert_eq!(x.general_reverse::<2>().to_array(), [2, 3, 0, 1, 6, 7, 4, 5]);
+    // Swap lanes separated by distance 4:
+    assert_eq!(x.general_reverse::<4>().to_array(), [4, 5, 6, 7, 0, 1, 2, 3]);
+    // Reverse lanes, within each 4-lane group:
+    assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
+}
