@@ -461,7 +461,7 @@ where
     /// This is a powerful swizzle operation that can implement many common patterns as special cases.
     /// For power-of-2 swap masks, this produces the [butterfly shuffles](https://en.wikipedia.org/wiki/Butterfly_network)
     /// that are often useful for horizontal reductions.
-    /// 
+    ///
     /// A similar operation (operating on bits instead of lanes) is known as `grev` in the RISC-V
     /// Bitmanip specification.
     ///
