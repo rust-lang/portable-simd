@@ -365,29 +365,33 @@ where
         (Even::swizzle2(self, other), Odd::swizzle2(self, other))
     }
 
-    /// Takes a slice of a vector to produce a shorter vector.
+    /// Splits a vector into its two halves.
     ///
-    /// This is equivalent to computing `&self[OFFSET..OFFSET+LEN]` on
-    /// the underlying array.
+    /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
+    /// from the input vectors. You must specify it explicitly. A compile-time error will be raised
+    /// if `HALF_LANES * 2 != LANES`.
     ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
     /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
-    /// let y = x.slice::<2, 4>();
-    /// assert_eq!(y.to_array(), [2, 3, 4, 5]);
+    /// let [y, z] = x.split_to::<4>();
+    /// assert_eq!(y.to_array(), [0, 1, 2, 3]);
+    /// assert_eq!(z.to_array(), [4, 5, 6, 7]);
     /// ```
-    ///
-    /// Will be rejected at compile time if `OFFSET + LEN > LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
-    pub fn split_to<const OFFSET: usize, const LEN: usize>(self) -> Simd<T, LEN>
+    pub fn split_to<const HALF_LANES: usize>(self) -> [Simd<T, HALF_LANES>; 2]
     where
-        LaneCount<LEN>: SupportedLaneCount,
+        LaneCount<HALF_LANES>: SupportedLaneCount,
     {
-        const fn slice_index<const LEN: usize>(offset: usize, lanes: usize) -> [usize; LEN] {
-            assert!(offset + LEN <= lanes, "slice out of bounds");
+        const fn slice_index<const LEN: usize>(hi_half: bool, lanes: usize) -> [usize; LEN] {
+            assert!(
+                LEN * 2 == lanes,
+                "x.split_to::<N>() must provide N=x.lanes()/2"
+            );
+            let offset = if hi_half { LEN } else { 0 };
             let mut index = [0; LEN];
             let mut i = 0;
             while i < LEN {
@@ -396,19 +400,20 @@ where
             }
             index
         }
-        struct Slice<const OFFSET: usize>;
-        impl<const OFFSET: usize, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN>
-            for Slice<OFFSET>
+        struct Split<const HI_HALF: bool>;
+        impl<const HI_HALF: bool, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN>
+            for Split<HI_HALF>
         {
-            const INDEX: [usize; LEN] = slice_index::<LEN>(OFFSET, LANES);
+            const INDEX: [usize; LEN] = slice_index::<LEN>(HI_HALF, LANES);
         }
-        Slice::<OFFSET>::swizzle(self)
+        [Split::<false>::swizzle(self), Split::<true>::swizzle(self)]
     }
 
     /// Concatenates two vectors of equal length.
     ///
     /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
-    /// from the input vectors. You must specify it explicitly.
+    /// from the input vectors. You must specify it explicitly. A compile time error will be raised
+    /// if `LANES * 2 != DOUBLE_LANES`
     ///
     /// ```
     /// # #![feature(portable_simd)]

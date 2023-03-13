@@ -79,11 +79,8 @@ fn interleave_one() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn slice() {
     let a = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
-    let lo = a.slice::<0, 4>();
-    let mid = a.slice::<3, 2>();
-    let hi = a.slice::<4, 4>();
+    let [lo, hi] = a.split_to::<4>();
     assert_eq!(lo.to_array(), [0, 1, 2, 3]);
-    assert_eq!(mid.to_array(), [3, 4]);
     assert_eq!(hi.to_array(), [4, 5, 6, 7]);
 }
 
