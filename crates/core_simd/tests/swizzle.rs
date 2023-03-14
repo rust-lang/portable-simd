@@ -95,6 +95,7 @@ fn concat_equal_width() {
 
 #[test]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg(feature = "all_lane_counts")]
 fn concat_different_width() {
     let x = Simd::from_array([0, 1, 2, 3]);
     let y = Simd::from_array([4, 5]);
