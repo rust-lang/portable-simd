@@ -368,24 +368,23 @@ where
     /// Splits a vector into its two halves.
     ///
     /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
-    /// from the input vectors. You must specify it explicitly. A compile-time error will be raised
-    /// if `HALF_LANES * 2 != LANES`.
+    /// from the input vectors. You must specify it explicitly or constrain it by context. A
+    /// compile-time error will be raised if `HALF_LANES * 2 != LANES`.
     ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
     /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
-    /// let [y, z] = x.split_to::<4>();
+    /// let [y, z] = x.split();
     /// assert_eq!(y.to_array(), [0, 1, 2, 3]);
     /// assert_eq!(z.to_array(), [4, 5, 6, 7]);
     /// ```
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
-    // TODO: when `generic_const_exprs` supports it, provide
+    // TODO: when `generic_const_exprs` supports it, change signature to
     //   `pub fn split(self) -> [Simd<T, {LANES / 2}>; 2]`
-    // and deprecate `split_to`.
-    pub fn split_to<const HALF_LANES: usize>(self) -> [Simd<T, HALF_LANES>; 2]
+    pub fn split<const HALF_LANES: usize>(self) -> [Simd<T, HALF_LANES>; 2]
     where
         LaneCount<HALF_LANES>: SupportedLaneCount,
     {
@@ -415,8 +414,8 @@ where
     /// Concatenates two vectors of equal length.
     ///
     /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
-    /// from the input vectors. You must specify it explicitly. A compile time error will be raised
-    /// if `LANES * 2 != DOUBLE_LANES`
+    /// from the input vectors. You must specify it explicitly or constrain it by context.
+    /// A compile time error will be raised if `LANES + LANES2 != OUTPUT_LANES`.
     ///
     /// ```
     /// # #![feature(portable_simd)]
@@ -424,36 +423,60 @@ where
     /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3]);
     /// let y = Simd::from_array([4, 5, 6, 7]);
-    /// let z = x.concat_to::<8>(y);
+    /// let z = x.concat(y);
     /// assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
     ///
     /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
-    // TODO: when `generic_const_exprs` supports it, provide
-    //   `pub fn concat(self, other: Self) -> Simd<T, {LANES * 2}>`
-    // and deprecate `concat_to`.
-    pub fn concat_to<const DOUBLE_LANES: usize>(self, other: Self) -> Simd<T, DOUBLE_LANES>
+    // TODO: when `generic_const_exprs` supports it, change signature to
+    //   `pub fn concat<const LANES2>(self, other: Simd<T, LANES2>) -> Simd<T, {LANES + LANES2}>`
+    pub fn concat<const OUTPUT_LANES: usize, const LANES2: usize>(
+        self,
+        other: Simd<T, LANES2>,
+    ) -> Simd<T, OUTPUT_LANES>
     where
-        LaneCount<DOUBLE_LANES>: SupportedLaneCount,
+        LaneCount<OUTPUT_LANES>: SupportedLaneCount,
+        LaneCount<LANES2>: SupportedLaneCount,
     {
-        const fn concat_index<const DOUBLE_LANES: usize>(lanes: usize) -> [Which; DOUBLE_LANES] {
-            assert!(lanes * 2 == DOUBLE_LANES);
-            let mut index = [Which::First(0); DOUBLE_LANES];
-            let mut i = 0;
-            while i < lanes {
-                index[i] = Which::First(i);
-                index[i + lanes] = Which::Second(i);
-                i += 1;
-            }
-            index
+        struct Extend;
+        impl<const I: usize, const O: usize> Swizzle<I, O> for Extend {
+            const INDEX: [usize; O] = {
+                assert!(I <= O);
+                let mut index = [0; O];
+                let mut i = 0;
+                while i < I {
+                    index[i] = i;
+                    i += 1;
+                }
+                index
+            };
         }
-        struct Concat;
-        impl<const LANES: usize, const DOUBLE_LANES: usize> Swizzle2<LANES, DOUBLE_LANES> for Concat {
-            const INDEX: [Which; DOUBLE_LANES] = concat_index::<DOUBLE_LANES>(LANES);
+        struct Concat<const A: usize, const B: usize, const Y: usize>;
+        impl<const A: usize, const B: usize, const Y: usize> Swizzle2<Y, Y> for Concat<A, B, Y> {
+            const INDEX: [Which; Y] = {
+                assert!(
+                    A + B == Y,
+                    "concat: OUTPUT_LANES must be the sum of all input lane counts"
+                );
+                let mut retval = [Which::First(0); Y];
+                let mut i = 0;
+                while i < Y {
+                    if i < A {
+                        retval[i] = Which::First(i);
+                    } else {
+                        retval[i] = Which::Second(i - A);
+                    }
+                    i += 1;
+                }
+                retval
+            };
         }
-        Concat::swizzle2(self, other)
+        Concat::<LANES, LANES2, OUTPUT_LANES>::swizzle2(
+            Extend::swizzle(self),
+            Extend::swizzle(other),
+        )
     }
 
     /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.

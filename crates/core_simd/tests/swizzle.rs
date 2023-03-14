@@ -79,18 +79,27 @@ fn interleave_one() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn slice() {
     let a = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
-    let [lo, hi] = a.split_to::<4>();
+    let [lo, hi] = a.split();
     assert_eq!(lo.to_array(), [0, 1, 2, 3]);
     assert_eq!(hi.to_array(), [4, 5, 6, 7]);
 }
 
 #[test]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-fn concat() {
+fn concat_equal_width() {
     let x = Simd::from_array([0, 1, 2, 3]);
     let y = Simd::from_array([4, 5, 6, 7]);
-    let z = x.concat_to::<8>(y);
+    let z = x.concat(y);
     assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
+}
+
+#[test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+fn concat_different_width() {
+    let x = Simd::from_array([0, 1, 2, 3]);
+    let y = Simd::from_array([4, 5]);
+    let z = x.concat(y);
+    assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5]);
 }
 
 #[test]
