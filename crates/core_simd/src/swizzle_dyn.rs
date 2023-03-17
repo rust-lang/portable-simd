@@ -8,6 +8,11 @@ where
     /// Swizzle a vector of bytes according to the index vector.
     /// Indices within range select the appropriate byte.
     /// Indices "out of bounds" instead select 0.
+    ///
+    /// Note that the current implementation is selected during build-time
+    /// of the standard library, so `cargo build -Zbuild-std` may be necessary
+    /// to unlock better performance, especially for larger vectors.
+    /// A planned compiler improvement will enable using `#[target_feature]` instead.
     #[inline]
     pub fn swizzle_dyn(self, idxs: Simd<u8, N>) -> Self {
         #![allow(unused_imports, unused_unsafe)]
@@ -74,14 +79,22 @@ unsafe fn avx2_pshufb(bytes: Simd<u8, 32>, idxs: Simd<u8, 32>) -> Simd<u8, 32> {
     let high = mid + mid;
     // SAFETY: Caller promised AVX2
     unsafe {
-        // This is ordering sensitive: permutes fight for the same ports
-        // and LLVM will order these instructions how you put them here.
-        // Try break up the permutes a bit accordingly.
+        // This is ordering sensitive, and LLVM will order these how you put them.
+        // Most AVX2 impls use ~5 "ports", and only 1 or 2 are capable of permutes.
+        // But the "compose" step will lower to ops that can also use at least 1 other port.
+        // So this tries to break up permutes so composition flows through "open" ports.
+        // Comparative benches should be done on multiple AVX2 CPUs before reordering this
+
         let hihi = avx2_cross_shuffle::<0x11>(bytes.into(), bytes.into());
-        let hi_shuf = Simd::from(avx2_half_pshufb(hihi, idxs.into()));
+        let hi_shuf = Simd::from(avx2_half_pshufb(
+            hihi,        // duplicate the vector's top half
+            idxs.into(), // so that using only 4 bits of an index still picks bytes 16-31
+        ));
+        // A zero-fill during the compose step gives the "all-Neon-like" OOB-is-0 semantics
         let compose = idxs.simd_lt(high).select(hi_shuf, Simd::splat(0));
         let lolo = avx2_cross_shuffle::<0x00>(bytes.into(), bytes.into());
         let lo_shuf = Simd::from(avx2_half_pshufb(lolo, idxs.into()));
+        // Repeat, then pick indices < 16, overwriting indices 0-15 from previous compose step
         let compose = idxs.simd_lt(mid).select(lo_shuf, compose);
         compose
     }
