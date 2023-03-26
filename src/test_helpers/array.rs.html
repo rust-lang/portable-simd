@@ -95,6 +95,8 @@
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Generic-length array strategy.
 
 </span><span class="comment">// Adapted from proptest&#39;s array code
@@ -138,7 +140,8 @@
 
     <span class="kw">fn </span>new_tree(<span class="kw-2">&amp;</span><span class="self">self</span>, runner: <span class="kw-2">&amp;mut </span>TestRunner) -&gt; NewTree&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>tree: [S::Tree; LANES] = <span class="kw">unsafe </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>tree: [MaybeUninit&lt;S::Tree&gt;; LANES] = MaybeUninit::uninit().assume_init();
+            <span class="attr">#[allow(clippy::uninit_assumed_init)]
+            </span><span class="kw">let </span><span class="kw-2">mut </span>tree: [MaybeUninit&lt;S::Tree&gt;; LANES] = MaybeUninit::uninit().assume_init();
             <span class="kw">for </span>t <span class="kw">in </span>tree.iter_mut() {
                 <span class="kw-2">*</span>t = MaybeUninit::new(<span class="self">self</span>.strategy.new_tree(runner)<span class="question-mark">?</span>)
             }
@@ -157,7 +160,8 @@
 
     <span class="kw">fn </span>current(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Value {
         <span class="kw">unsafe </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>value: [MaybeUninit&lt;T::Value&gt;; LANES] = MaybeUninit::uninit().assume_init();
+            <span class="attr">#[allow(clippy::uninit_assumed_init)]
+            </span><span class="kw">let </span><span class="kw-2">mut </span>value: [MaybeUninit&lt;T::Value&gt;; LANES] = MaybeUninit::uninit().assume_init();
             <span class="kw">for </span>(tree_elem, value_elem) <span class="kw">in </span><span class="self">self</span>.tree.iter().zip(value.iter_mut()) {
                 <span class="kw-2">*</span>value_elem = MaybeUninit::new(tree_elem.current());
             }
