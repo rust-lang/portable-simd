@@ -109,22 +109,22 @@ fn general_reverse() {
     let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
     // Swap adjacent lanes:
     assert_eq!(
-        x.general_reverse::<1>().to_array(),
+        x.swizzle_to_xor_indices::<1>().to_array(),
         [1, 0, 3, 2, 5, 4, 7, 6]
     );
     // Swap lanes separated by distance 2:
     assert_eq!(
-        x.general_reverse::<2>().to_array(),
+        x.swizzle_to_xor_indices::<2>().to_array(),
         [2, 3, 0, 1, 6, 7, 4, 5]
     );
     // Swap lanes separated by distance 4:
     assert_eq!(
-        x.general_reverse::<4>().to_array(),
+        x.swizzle_to_xor_indices::<4>().to_array(),
         [4, 5, 6, 7, 0, 1, 2, 3]
     );
     // Reverse lanes, within each 4-lane group:
     assert_eq!(
-        x.general_reverse::<3>().to_array(),
+        x.swizzle_to_xor_indices::<3>().to_array(),
         [3, 2, 1, 0, 7, 6, 5, 4]
     );
 }
@@ -133,8 +133,8 @@ fn general_reverse() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn general_reverse_sum() {
     let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
-    let x = x + x.general_reverse::<1>();
-    let x = x + x.general_reverse::<2>();
-    let x = x + x.general_reverse::<4>();
+    let x = x + x.swizzle_to_xor_indices::<1>();
+    let x = x + x.swizzle_to_xor_indices::<2>();
+    let x = x + x.swizzle_to_xor_indices::<4>();
     assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
 }

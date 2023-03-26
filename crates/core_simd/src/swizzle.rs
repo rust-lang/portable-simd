@@ -426,8 +426,6 @@ where
     /// let z = x.concat(y);
     /// assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
-    ///
-    /// Will be rejected at compile time if `LANES * 2 != DOUBLE_LANES`.
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     // TODO: when `generic_const_exprs` supports it, change signature to
@@ -481,8 +479,8 @@ where
 
     /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.
     ///
-    /// This is a powerful swizzle operation that can implement many common patterns as special cases.
-    /// For power-of-2 swap masks, this produces the [butterfly shuffles](https://en.wikipedia.org/wiki/Butterfly_network)
+    /// This is a powerful swizzle operation that can implement many common patterns as special cases:
+    /// Each power-of-2 swap mask produces a single stage of the [butterfly shuffles](https://en.wikipedia.org/wiki/Butterfly_network)
     /// that are often useful for horizontal reductions.
     ///
     /// A similar operation (operating on bits instead of lanes) is known as `grev` in the RISC-V
@@ -494,34 +492,37 @@ where
     /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
     /// // Swap adjacent lanes:
-    /// assert_eq!(x.general_reverse::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
+    /// assert_eq!(x.swizzle_to_xor_indices::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
     /// // Swap lanes separated by distance 2:
-    /// assert_eq!(x.general_reverse::<2>().to_array(), [2, 3, 0, 1, 6, 7, 4, 5]);
+    /// assert_eq!(x.swizzle_to_xor_indices::<2>().to_array(), [2, 3, 0, 1, 6, 7, 4, 5]);
     /// // Swap lanes separated by distance 4:
-    /// assert_eq!(x.general_reverse::<4>().to_array(), [4, 5, 6, 7, 0, 1, 2, 3]);
+    /// assert_eq!(x.swizzle_to_xor_indices::<4>().to_array(), [4, 5, 6, 7, 0, 1, 2, 3]);
     /// // Reverse lanes, within each 4-lane group:
-    /// assert_eq!(x.general_reverse::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
+    /// assert_eq!(x.swizzle_to_xor_indices::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
     /// ```
     ///
-    /// Commonly useful for horizontal reductions, for example:
+    /// This operation is commonly useful for horizontal reductions, for example:
     ///
     /// ```
     /// # #![feature(portable_simd)]
     /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
     /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
     /// let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
-    /// let x = x + x.general_reverse::<1>();
-    /// let x = x + x.general_reverse::<2>();
-    /// let x = x + x.general_reverse::<4>();
+    /// let x = x + x.swizzle_to_xor_indices::<1>();
+    /// let x = x + x.swizzle_to_xor_indices::<2>();
+    /// let x = x + x.swizzle_to_xor_indices::<4>();
     /// assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
     /// ```
+
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     #[doc(alias = "grev")]
     #[doc(alias = "butterfly")]
     #[doc(alias = "bfly")]
-    pub fn general_reverse<const SWAP_MASK: usize>(self) -> Self {
-        const fn general_reverse_index<const LANES: usize>(swap_mask: usize) -> [usize; LANES] {
+    pub fn swizzle_to_xor_indices<const SWAP_MASK: usize>(self) -> Self {
+        const fn swizzle_to_xor_indices_index<const LANES: usize>(
+            swap_mask: usize,
+        ) -> [usize; LANES] {
             let mut index = [0; LANES];
             let mut i = 0;
             while i < LANES {
@@ -530,10 +531,12 @@ where
             }
             index
         }
-        struct GeneralReverse<const DISTANCE: usize>;
-        impl<const LANES: usize, const DISTANCE: usize> Swizzle<LANES, LANES> for GeneralReverse<DISTANCE> {
-            const INDEX: [usize; LANES] = general_reverse_index::<LANES>(DISTANCE);
+        struct ButterflySwizzle<const DISTANCE: usize>;
+        impl<const LANES: usize, const DISTANCE: usize> Swizzle<LANES, LANES>
+            for ButterflySwizzle<DISTANCE>
+        {
+            const INDEX: [usize; LANES] = swizzle_to_xor_indices_index::<LANES>(DISTANCE);
         }
-        GeneralReverse::<SWAP_MASK>::swizzle(self)
+        ButterflySwizzle::<SWAP_MASK>::swizzle(self)
     }
 }
