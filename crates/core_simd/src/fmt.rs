@@ -14,6 +14,7 @@ where
     /// let floats = Simd::<f32, 4>::splat(-1.0);
     /// assert_eq!(format!("{:?}", [-1.0; 4]), format!("{:?}", floats));
     /// ```
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         <[T] as fmt::Debug>::fmt(self.as_array(), f)
     }
