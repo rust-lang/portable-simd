@@ -2,6 +2,7 @@ use crate::simd::{
     intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
     SimdPartialOrd, SupportedLaneCount, Swizzle,
 };
+use core::convert::{TryFrom, TryInto};
 
 /// A SIMD vector with the shape of `[T; N]` but the operations of `T`.
 ///
