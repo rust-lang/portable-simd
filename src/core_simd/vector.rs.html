@@ -980,53 +980,78 @@
 <a href="#980" id="980">980</a>
 <a href="#981" id="981">981</a>
 <a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
     SimdPartialOrd, SupportedLaneCount, Swizzle,
 };
 
-<span class="doccomment">/// A SIMD vector of `LANES` elements of type `T`. `Simd&lt;T, N&gt;` has the same shape as [`[T; N]`](array), but operates like `T`.
+<span class="doccomment">/// A SIMD vector with the shape of `[T; N]` but the operations of `T`.
 ///
-/// Two vectors of the same type and length will, by convention, support the operators (+, *, etc.) that `T` does.
-/// These take the lanes at each index on the left-hand side and right-hand side, perform the operation,
-/// and return the result in the same lane in a vector of equal size. For a given operator, this is equivalent to zipping
-/// the two arrays together and mapping the operator over each lane.
+/// `Simd&lt;T, N&gt;` supports the operators (+, *, etc.) that `T` does in &quot;elementwise&quot; fashion.
+/// These take the element at each index from the left-hand side and right-hand side,
+/// perform the operation, then return the result in the same index in a vector of equal size.
+/// However, `Simd` differs from normal iteration and normal arrays:
+/// - `Simd&lt;T, N&gt;` executes `N` operations in a single step with no `break`s
+/// - `Simd&lt;T, N&gt;` can have an alignment greater than `T`, for better mechanical sympathy
+///
+/// By always imposing these constraints on `Simd`, it is easier to compile elementwise operations
+/// into machine instructions that can themselves be executed in parallel.
 ///
 /// ```rust
-/// # #![feature(array_zip, portable_simd)]
+/// # #![feature(portable_simd)]
 /// # use core::simd::{Simd};
-/// let a0: [i32; 4] = [-2, 0, 2, 4];
-/// let a1 = [10, 9, 8, 7];
-/// let zm_add = a0.zip(a1).map(|(lhs, rhs)| lhs + rhs);
-/// let zm_mul = a0.zip(a1).map(|(lhs, rhs)| lhs * rhs);
+/// # use core::array;
+/// let a: [i32; 4] = [-2, 0, 2, 4];
+/// let b = [10, 9, 8, 7];
+/// let sum = array::from_fn(|i| a[i] + b[i]);
+/// let prod = array::from_fn(|i| a[i] * b[i]);
 ///
 /// // `Simd&lt;T, N&gt;` implements `From&lt;[T; N]&gt;
-/// let (v0, v1) = (Simd::from(a0), Simd::from(a1));
+/// let (v, w) = (Simd::from(a), Simd::from(b));
 /// // Which means arrays implement `Into&lt;Simd&lt;T, N&gt;&gt;`.
-/// assert_eq!(v0 + v1, zm_add.into());
-/// assert_eq!(v0 * v1, zm_mul.into());
+/// assert_eq!(v + w, sum.into());
+/// assert_eq!(v * w, prod.into());
 /// ```
 ///
-/// `Simd` with integers has the quirk that these operations are also inherently wrapping, as if `T` was [`Wrapping&lt;T&gt;`].
+///
+/// `Simd` with integer elements treats operators as wrapping, as if `T` was [`Wrapping&lt;T&gt;`].
 /// Thus, `Simd` does not implement `wrapping_add`, because that is the default behavior.
 /// This means there is no warning on overflows, even in &quot;debug&quot; builds.
 /// For most applications where `Simd` is appropriate, it is &quot;not a bug&quot; to wrap,
 /// and even &quot;debug builds&quot; are unlikely to tolerate the loss of performance.
 /// You may want to consider using explicitly checked arithmetic if such is required.
-/// Division by zero still causes a panic, so you may want to consider using floating point numbers if that is unacceptable.
+/// Division by zero on integers still causes a panic, so
+/// you may want to consider using `f32` or `f64` if that is unacceptable.
 ///
 /// [`Wrapping&lt;T&gt;`]: core::num::Wrapping
 ///
 /// # Layout
-/// `Simd&lt;T, N&gt;` has a layout similar to `[T; N]` (identical &quot;shapes&quot;), but with a greater alignment.
+/// `Simd&lt;T, N&gt;` has a layout similar to `[T; N]` (identical &quot;shapes&quot;), with a greater alignment.
 /// `[T; N]` is aligned to `T`, but `Simd&lt;T, N&gt;` will have an alignment based on both `T` and `N`.
-/// It is thus sound to [`transmute`] `Simd&lt;T, N&gt;` to `[T; N]`, and will typically optimize to zero cost,
-/// but the reverse transmutation is more likely to require a copy the compiler cannot simply elide.
+/// Thus it is sound to [`transmute`] `Simd&lt;T, N&gt;` to `[T; N]` and should optimize to &quot;zero cost&quot;,
+/// but the reverse transmutation may require a copy the compiler cannot simply elide.
 ///
 /// # ABI &quot;Features&quot;
-/// Due to Rust&#39;s safety guarantees, `Simd&lt;T, N&gt;` is currently passed to and from functions via memory, not SIMD registers,
-/// except as an optimization. `#[inline]` hints are recommended on functions that accept `Simd&lt;T, N&gt;` or return it.
-/// The need for this may be corrected in the future.
+/// Due to Rust&#39;s safety guarantees, `Simd&lt;T, N&gt;` is currently passed and returned via memory,
+/// not SIMD registers, except as an optimization. Using `#[inline]` on functions that accept
+/// `Simd&lt;T, N&gt;` or return it is recommended, at the cost of code generation time, as
+/// inlining SIMD-using functions can omit a large function prolog or epilog and thus
+/// improve both speed and code size. The need for this may be corrected in the future.
+///
+/// Using `#[inline(always)]` still requires additional care.
 ///
 /// # Safe SIMD with Unsafe Rust
 ///
@@ -1037,18 +1062,22 @@
 /// Thus, when using `unsafe` Rust to read and write `Simd&lt;T, N&gt;` through [raw pointers], it is a good idea to first try with
 /// [`read_unaligned`] and [`write_unaligned`]. This is because:
 /// - [`read`] and [`write`] require full alignment (in this case, `Simd&lt;T, N&gt;`&#39;s alignment)
-/// - the likely source for reading or destination for writing `Simd&lt;T, N&gt;` is [`[T]`](slice) and similar types, aligned to `T`
-/// - combining these actions would violate the `unsafe` contract and explode the program into a puff of **undefined behavior**
-/// - the compiler can implicitly adjust layouts to make unaligned reads or writes fully aligned if it sees the optimization
-/// - most contemporary processors suffer no performance penalty for &quot;unaligned&quot; reads and writes that are aligned at runtime
+/// - `Simd&lt;T, N&gt;` is often read from or written to [`[T]`](slice) and other types aligned to `T`
+/// - combining these actions violates the `unsafe` contract and explodes the program into
+///   a puff of **undefined behavior**
+/// - the compiler can implicitly adjust layouts to make unaligned reads or writes fully aligned
+///   if it sees the optimization
+/// - most contemporary processors with &quot;aligned&quot; and &quot;unaligned&quot; read and write instructions
+///   exhibit no performance difference if the &quot;unaligned&quot; variant is aligned at runtime
 ///
-/// By imposing less obligations, unaligned functions are less likely to make the program unsound,
+/// Less obligations mean unaligned reads and writes are less likely to make the program unsound,
 /// and may be just as fast as stricter alternatives.
-/// When trying to guarantee alignment, [`[T]::as_simd`][as_simd] is an option for converting `[T]` to `[Simd&lt;T, N&gt;]`,
-/// and allows soundly operating on an aligned SIMD body, but it may cost more time when handling the scalar head and tail.
-/// If these are not sufficient, then it is most ideal to design data structures to be already aligned
-/// to the `Simd&lt;T, N&gt;` you wish to use before using `unsafe` Rust to read or write.
-/// More conventional ways to compensate for these facts, like materializing `Simd` to or from an array first,
+/// When trying to guarantee alignment, [`[T]::as_simd`][as_simd] is an option for
+/// converting `[T]` to `[Simd&lt;T, N&gt;]`, and allows soundly operating on an aligned SIMD body,
+/// but it may cost more time when handling the scalar head and tail.
+/// If these are not enough, it is most ideal to design data structures to be already aligned
+/// to `mem::align_of::&lt;Simd&lt;T, N&gt;&gt;()` before using `unsafe` Rust to read or write.
+/// Other ways to compensate for these facts, like materializing `Simd` to or from an array first,
 /// are handled by safe methods like [`Simd::from_array`] and [`Simd::from_slice`].
 ///
 /// [`transmute`]: core::mem::transmute
@@ -1064,20 +1093,20 @@
 // avoided, as it will likely become illegal on `#[repr(simd)]` structs in the future. It also
 // causes rustc to emit illegal LLVM IR in some cases.
 </span><span class="attr">#[repr(simd)]
-</span><span class="kw">pub struct </span>Simd&lt;T, <span class="kw">const </span>LANES: usize&gt;([T; LANES])
+</span><span class="kw">pub struct </span>Simd&lt;T, <span class="kw">const </span>N: usize&gt;([T; N])
 <span class="kw">where
-    </span>T: SimdElement,
-    LaneCount&lt;LANES&gt;: SupportedLaneCount;
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
+    T: SimdElement;
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="doccomment">/// Number of lanes in this vector.
-    </span><span class="kw">pub const </span>LANES: usize = LANES;
+    <span class="doccomment">/// Number of elements in this vector.
+    </span><span class="kw">pub const </span>N: usize = N;
 
-    <span class="doccomment">/// Returns the number of lanes in this SIMD vector.
+    <span class="doccomment">/// Returns the number of elements in this SIMD vector.
     ///
     /// # Examples
     ///
@@ -1088,10 +1117,10 @@
     /// assert_eq!(v.lanes(), 4);
     /// ```
     </span><span class="kw">pub const fn </span>lanes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        LANES
+        <span class="self">Self</span>::N
     }
 
-    <span class="doccomment">/// Constructs a new SIMD vector with all lanes set to the given value.
+    <span class="doccomment">/// Constructs a new SIMD vector with all elements set to the given value.
     ///
     /// # Examples
     ///
@@ -1102,11 +1131,11 @@
     /// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);
     /// ```
     </span><span class="kw">pub fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
-        <span class="comment">// This is preferred over `[value; LANES]`, since it&#39;s explicitly a splat:
+        <span class="comment">// This is preferred over `[value; N]`, since it&#39;s explicitly a splat:
         // https://github.com/rust-lang/rust/issues/97804
         </span><span class="kw">struct </span>Splat;
-        <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Swizzle&lt;<span class="number">1</span>, LANES&gt; <span class="kw">for </span>Splat {
-            <span class="kw">const </span>INDEX: [usize; LANES] = [<span class="number">0</span>; LANES];
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;<span class="number">1</span>, N&gt; <span class="kw">for </span>Splat {
+            <span class="kw">const </span>INDEX: [usize; N] = [<span class="number">0</span>; N];
         }
         Splat::swizzle(Simd::&lt;T, <span class="number">1</span>&gt;::from([value]))
     }
@@ -1121,30 +1150,30 @@
     /// let v: u64x4 = Simd::from_array([0, 1, 2, 3]);
     /// assert_eq!(v.as_array(), &amp;[0, 1, 2, 3]);
     /// ```
-    </span><span class="kw">pub const fn </span>as_array(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; LANES] {
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, LANES&gt;` and `[T; LANES]`
-        // is always valid and `Simd&lt;T, LANES&gt;` never has a lower alignment
-        // than `[T; LANES]`.
+    </span><span class="kw">pub const fn </span>as_array(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; N] {
+        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
+        // is always valid and `Simd&lt;T, N&gt;` never has a lower alignment
+        // than `[T; N]`.
         //
         // NOTE: This deliberately doesn&#39;t just use `&amp;self.0`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; LANES]) }
+        </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; N]) }
     }
 
     <span class="doccomment">/// Returns a mutable array reference containing the entire SIMD vector.
-    </span><span class="kw">pub fn </span>as_mut_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; LANES] {
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, LANES&gt;` and `[T; LANES]`
-        // is always valid and `Simd&lt;T, LANES&gt;` never has a lower alignment
-        // than `[T; LANES]`.
+    </span><span class="kw">pub fn </span>as_mut_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; N] {
+        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
+        // is always valid and `Simd&lt;T, N&gt;` never has a lower alignment
+        // than `[T; N]`.
         //
         // NOTE: This deliberately doesn&#39;t just use `&amp;mut self.0`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*mut </span>[T; LANES]) }
+        </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*mut </span>[T; N]) }
     }
 
     <span class="doccomment">/// Converts an array to a SIMD vector.
-    </span><span class="kw">pub const fn </span>from_array(array: [T; LANES]) -&gt; <span class="self">Self </span>{
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, LANES&gt;` and `[T; LANES]`
+    </span><span class="kw">pub const fn </span>from_array(array: [T; N]) -&gt; <span class="self">Self </span>{
+        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
         // is always valid. We need to use `read_unaligned` here, since
         // the array may have a lower alignment than the vector.
         //
@@ -1154,12 +1183,12 @@
         //
         // NOTE: This deliberately doesn&#39;t just use `Self(array)`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span>array <span class="kw">as </span><span class="kw-2">*const </span>[T; LANES] <span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self</span>).read_unaligned() }
+        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span>array <span class="kw">as </span><span class="kw-2">*const </span>[T; N] <span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self</span>).read_unaligned() }
     }
 
     <span class="doccomment">/// Converts a SIMD vector to an array.
-    </span><span class="kw">pub const fn </span>to_array(<span class="self">self</span>) -&gt; [T; LANES] {
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, LANES&gt;` and `[T; LANES]`
+    </span><span class="kw">pub const fn </span>to_array(<span class="self">self</span>) -&gt; [T; N] {
+        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
         // is always valid. No need to use `read_unaligned` here, since
         // the vector never has a lower alignment than the array.
         //
@@ -1169,14 +1198,14 @@
         //
         // NOTE: This deliberately doesn&#39;t just use `self.0`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span><span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; LANES]).read() }
+        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span><span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; N]).read() }
     }
 
-    <span class="doccomment">/// Converts a slice to a SIMD vector containing `slice[..LANES]`.
+    <span class="doccomment">/// Converts a slice to a SIMD vector containing `slice[..N]`.
     ///
     /// # Panics
     ///
-    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::LANES`.
+    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::N`.
     ///
     /// # Example
     ///
@@ -1190,21 +1219,21 @@
     </span><span class="attr">#[must_use]
     </span><span class="kw">pub const fn </span>from_slice(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
         <span class="macro">assert!</span>(
-            slice.len() &gt;= LANES,
-            <span class="string">&quot;slice length must be at least the number of lanes&quot;
+            slice.len() &gt;= <span class="self">Self</span>::N,
+            <span class="string">&quot;slice length must be at least the number of elements&quot;
         </span>);
-        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == LANES * core::mem::size_of::&lt;T&gt;());
+        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == <span class="self">Self</span>::N * core::mem::size_of::&lt;T&gt;());
         <span class="comment">// Safety:
         // - We&#39;ve checked the length is sufficient.
         // - `T` and `Simd&lt;T, N&gt;` are Copy types.
         </span><span class="kw">unsafe </span>{ slice.as_ptr().cast::&lt;<span class="self">Self</span>&gt;().read_unaligned() }
     }
 
-    <span class="doccomment">/// Writes a SIMD vector to the first `LANES` elements of a slice.
+    <span class="doccomment">/// Writes a SIMD vector to the first `N` elements of a slice.
     ///
     /// # Panics
     ///
-    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::LANES`.
+    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::N`.
     ///
     /// # Example
     ///
@@ -1220,22 +1249,22 @@
     /// ```
     </span><span class="kw">pub fn </span>copy_to_slice(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
         <span class="macro">assert!</span>(
-            slice.len() &gt;= LANES,
-            <span class="string">&quot;slice length must be at least the number of lanes&quot;
+            slice.len() &gt;= <span class="self">Self</span>::N,
+            <span class="string">&quot;slice length must be at least the number of elements&quot;
         </span>);
-        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == LANES * core::mem::size_of::&lt;T&gt;());
+        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == <span class="self">Self</span>::N * core::mem::size_of::&lt;T&gt;());
         <span class="comment">// Safety:
         // - We&#39;ve checked the length is sufficient
         // - `T` and `Simd&lt;T, N&gt;` are Copy types.
         </span><span class="kw">unsafe </span>{ slice.as_mut_ptr().cast::&lt;<span class="self">Self</span>&gt;().write_unaligned(<span class="self">self</span>) }
     }
 
-    <span class="doccomment">/// Performs lanewise conversion of a SIMD vector&#39;s elements to another SIMD-valid type.
+    <span class="doccomment">/// Performs elementwise conversion of a SIMD vector&#39;s elements to another SIMD-valid type.
     ///
-    /// This follows the semantics of Rust&#39;s `as` conversion for casting
-    /// integers to unsigned integers (interpreting as the other type, so `-1` to `MAX`),
-    /// and from floats to integers (truncating, or saturating at the limits) for each lane,
-    /// or vice versa.
+    /// This follows the semantics of Rust&#39;s `as` conversion for casting integers between
+    /// signed and unsigned (interpreting integers as 2s complement, so `-1` to `U::MAX` and
+    /// `1 &lt;&lt; (U::BITS -1)` becoming `I::MIN` ), and from floats to integers (truncating,
+    /// or saturating at the limits) for each element.
     ///
     /// # Examples
     /// ```
@@ -1256,7 +1285,7 @@
     </span><span class="attr">#[must_use]
     #[inline]
     #[cfg(not(bootstrap))]
-    </span><span class="kw">pub fn </span>cast&lt;U: SimdCast&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt;
+    </span><span class="kw">pub fn </span>cast&lt;U: SimdCast&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, N&gt;
     <span class="kw">where
         </span>T: SimdCast,
     {
@@ -1264,10 +1293,10 @@
         </span><span class="kw">unsafe </span>{ intrinsics::simd_as(<span class="self">self</span>) }
     }
 
-    <span class="doccomment">/// Lanewise casts pointers to another pointer type.
+    <span class="doccomment">/// Casts a vector of pointers to another pointer type.
     </span><span class="attr">#[must_use]
     #[inline]
-    </span><span class="kw">pub fn </span>cast_ptr&lt;U&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, LANES&gt;
+    </span><span class="kw">pub fn </span>cast_ptr&lt;U&gt;(<span class="self">self</span>) -&gt; Simd&lt;U, N&gt;
     <span class="kw">where
         </span>T: SimdCastPtr&lt;U&gt;,
         U: SimdElement,
@@ -1292,7 +1321,7 @@
     /// [cast]: Simd::cast
     </span><span class="attr">#[inline]
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
-    </span><span class="kw">pub unsafe fn </span>to_int_unchecked&lt;I&gt;(<span class="self">self</span>) -&gt; Simd&lt;I, LANES&gt;
+    </span><span class="kw">pub unsafe fn </span>to_int_unchecked&lt;I&gt;(<span class="self">self</span>) -&gt; Simd&lt;I, N&gt;
     <span class="kw">where
         </span>T: core::convert::FloatToInt&lt;I&gt; + SimdCast,
         I: SimdCast,
@@ -1302,79 +1331,79 @@
     }
 
     <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
-    /// If an index is out-of-bounds, the lane is instead selected from the `or` vector.
+    /// If an index is out-of-bounds, the element is instead selected from the `or` vector.
     ///
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
     /// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 5]);
+    /// let idxs = Simd::from_array([9, 3, 0, 5]);  // Note the index that is out-of-bounds
     /// let alt = Simd::from_array([-5, -4, -3, -2]);
     ///
-    /// let result = Simd::gather_or(&amp;vec, idxs, alt); // Note the lane that is out-of-bounds.
+    /// let result = Simd::gather_or(&amp;vec, idxs, alt);
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, 15]));
     /// ```
     </span><span class="attr">#[must_use]
     #[inline]
-    </span><span class="kw">pub fn </span>gather_or(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;, or: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>gather_or(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, N&gt;, or: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::gather_select(slice, Mask::splat(<span class="bool-val">true</span>), idxs, or)
     }
 
-    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
-    /// If an index is out-of-bounds, the lane is set to the default value for the type.
+    <span class="doccomment">/// Reads from indices in `slice` to construct a SIMD vector.
+    /// If an index is out-of-bounds, the element is set to the default given by `T: Default`.
     ///
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
     /// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 5]);
+    /// let idxs = Simd::from_array([9, 3, 0, 5]);  // Note the index that is out-of-bounds
     ///
-    /// let result = Simd::gather_or_default(&amp;vec, idxs); // Note the lane that is out-of-bounds.
+    /// let result = Simd::gather_or_default(&amp;vec, idxs);
     /// assert_eq!(result, Simd::from_array([0, 13, 10, 15]));
     /// ```
     </span><span class="attr">#[must_use]
     #[inline]
-    </span><span class="kw">pub fn </span>gather_or_default(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, LANES&gt;) -&gt; <span class="self">Self
+    </span><span class="kw">pub fn </span>gather_or_default(slice: <span class="kw-2">&amp;</span>[T], idxs: Simd&lt;usize, N&gt;) -&gt; <span class="self">Self
     </span><span class="kw">where
         </span>T: Default,
     {
         <span class="self">Self</span>::gather_or(slice, idxs, <span class="self">Self</span>::splat(T::default()))
     }
 
-    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If an index is disabled or is out-of-bounds, the lane is selected from the `or` vector.
+    <span class="doccomment">/// Reads from indices in `slice` to construct a SIMD vector.
+    /// The mask `enable`s all `true` indices and disables all `false` indices.
+    /// If an index is disabled or is out-of-bounds, the element is selected from the `or` vector.
     ///
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::{Simd, Mask};
     /// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 5]);
+    /// let idxs = Simd::from_array([9, 3, 0, 5]); // Includes an out-of-bounds index
     /// let alt = Simd::from_array([-5, -4, -3, -2]);
-    /// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.
+    /// let enable = Mask::from_array([true, true, true, false]); // Includes a masked element
     ///
-    /// let result = Simd::gather_select(&amp;vec, enable, idxs, alt); // Note the lane that is out-of-bounds.
+    /// let result = Simd::gather_select(&amp;vec, enable, idxs, alt);
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
     </span><span class="attr">#[must_use]
     #[inline]
     </span><span class="kw">pub fn </span>gather_select(
         slice: <span class="kw-2">&amp;</span>[T],
-        enable: Mask&lt;isize, LANES&gt;,
-        idxs: Simd&lt;usize, LANES&gt;,
+        enable: Mask&lt;isize, N&gt;,
+        idxs: Simd&lt;usize, N&gt;,
         or: <span class="self">Self</span>,
     ) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>enable: Mask&lt;isize, LANES&gt; = enable &amp; idxs.simd_lt(Simd::splat(slice.len()));
-        <span class="comment">// Safety: We have masked-off out-of-bounds lanes.
+        <span class="kw">let </span>enable: Mask&lt;isize, N&gt; = enable &amp; idxs.simd_lt(Simd::splat(slice.len()));
+        <span class="comment">// Safety: We have masked-off out-of-bounds indices.
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::gather_select_unchecked(slice, enable, idxs, or) }
     }
 
-    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If an index is disabled, the lane is selected from the `or` vector.
+    <span class="doccomment">/// Reads from indices in `slice` to construct a SIMD vector.
+    /// The mask `enable`s all `true` indices and disables all `false` indices.
+    /// If an index is disabled, the element is selected from the `or` vector.
     ///
     /// # Safety
     ///
@@ -1388,13 +1417,13 @@
     /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
     /// # use simd::{Simd, SimdPartialOrd, Mask};
     /// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 5]);
+    /// let idxs = Simd::from_array([9, 3, 0, 5]); // Includes an out-of-bounds index
     /// let alt = Simd::from_array([-5, -4, -3, -2]);
-    /// let enable = Mask::from_array([true, true, true, false]); // Note the final mask lane.
+    /// let enable = Mask::from_array([true, true, true, false]); // Includes a masked element
     /// // If this mask was used to gather, it would be unsound. Let&#39;s fix that.
     /// let enable = enable &amp; idxs.simd_lt(Simd::splat(vec.len()));
     ///
-    /// // We have masked the OOB lane, so it&#39;s safe to gather now.
+    /// // The out-of-bounds index has been masked, so it&#39;s safe to gather now.
     /// let result = unsafe { Simd::gather_select_unchecked(&amp;vec, enable, idxs, alt) };
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
@@ -1404,18 +1433,18 @@
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>gather_select_unchecked(
         slice: <span class="kw-2">&amp;</span>[T],
-        enable: Mask&lt;isize, LANES&gt;,
-        idxs: Simd&lt;usize, LANES&gt;,
+        enable: Mask&lt;isize, N&gt;,
+        idxs: Simd&lt;usize, N&gt;,
         or: <span class="self">Self</span>,
     ) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*const </span>T, LANES&gt;::splat(slice.as_ptr());
+        <span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*const </span>T, N&gt;::splat(slice.as_ptr());
         <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.
         </span><span class="kw">let </span>ptrs = base_ptr.wrapping_add(idxs);
         <span class="comment">// Safety: The caller is responsible for determining the indices are okay to read
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::gather_select_ptr(ptrs, enable, or) }
     }
 
-    <span class="doccomment">/// Read pointers elementwise into a SIMD vector.
+    <span class="doccomment">/// Read elementwise from pointers into a SIMD vector.
     ///
     /// # Safety
     ///
@@ -1436,7 +1465,7 @@
     </span><span class="attr">#[must_use]
     #[inline]
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
-    </span><span class="kw">pub unsafe fn </span>gather_ptr(source: Simd&lt;<span class="kw-2">*const </span>T, LANES&gt;) -&gt; <span class="self">Self
+    </span><span class="kw">pub unsafe fn </span>gather_ptr(source: Simd&lt;<span class="kw-2">*const </span>T, N&gt;) -&gt; <span class="self">Self
     </span><span class="kw">where
         </span>T: Default,
     {
@@ -1445,13 +1474,14 @@
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::gather_select_ptr(source, Mask::splat(<span class="bool-val">true</span>), <span class="self">Self</span>::default()) }
     }
 
-    <span class="doccomment">/// Conditionally read pointers elementwise into a SIMD vector.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If a lane is disabled, the lane is selected from the `or` vector and no read is performed.
+    <span class="doccomment">/// Conditionally read elementwise from pointers into a SIMD vector.
+    /// The mask `enable`s all `true` pointers and disables all `false` pointers.
+    /// If a pointer is disabled, the element is selected from the `or` vector,
+    /// and no read is performed.
     ///
     /// # Safety
     ///
-    /// Enabled lanes must satisfy the same conditions as [`core::ptr::read`].
+    /// Enabled elements must satisfy the same conditions as [`core::ptr::read`].
     ///
     /// # Example
     /// ```
@@ -1470,8 +1500,8 @@
     #[inline]
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
     </span><span class="kw">pub unsafe fn </span>gather_select_ptr(
-        source: Simd&lt;<span class="kw-2">*const </span>T, LANES&gt;,
-        enable: Mask&lt;isize, LANES&gt;,
+        source: Simd&lt;<span class="kw-2">*const </span>T, N&gt;,
+        enable: Mask&lt;isize, N&gt;,
         or: <span class="self">Self</span>,
     ) -&gt; <span class="self">Self </span>{
         <span class="comment">// Safety: The caller is responsible for upholding all invariants
@@ -1479,30 +1509,31 @@
     }
 
     <span class="doccomment">/// Writes the values in a SIMD vector to potentially discontiguous indices in `slice`.
-    /// If two lanes in the scattered vector would write to the same index
-    /// only the last lane is guaranteed to actually be written.
+    /// If an index is out-of-bounds, the write is suppressed without panicking.
+    /// If two elements in the scattered vector would write to the same index
+    /// only the last element is guaranteed to actually be written.
     ///
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
     /// # use core::simd::Simd;
     /// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 0]);
+    /// let idxs = Simd::from_array([9, 3, 0, 0]); // Note the duplicate index.
     /// let vals = Simd::from_array([-27, 82, -41, 124]);
     ///
-    /// vals.scatter(&amp;mut vec, idxs); // index 0 receives two writes.
+    /// vals.scatter(&amp;mut vec, idxs); // two logical writes means the last wins.
     /// assert_eq!(vec, vec![124, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>scatter(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T], idxs: Simd&lt;usize, LANES&gt;) {
+    </span><span class="kw">pub fn </span>scatter(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T], idxs: Simd&lt;usize, N&gt;) {
         <span class="self">self</span>.scatter_select(slice, Mask::splat(<span class="bool-val">true</span>), idxs)
     }
 
-    <span class="doccomment">/// Writes the values in a SIMD vector to multiple potentially discontiguous indices in `slice`.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If an enabled index is out-of-bounds, the lane is not written.
-    /// If two enabled lanes in the scattered vector would write to the same index,
-    /// only the last lane is guaranteed to actually be written.
+    <span class="doccomment">/// Writes values from a SIMD vector to multiple potentially discontiguous indices in `slice`.
+    /// The mask `enable`s all `true` indices and disables all `false` indices.
+    /// If an enabled index is out-of-bounds, the write is suppressed without panicking.
+    /// If two enabled elements in the scattered vector would write to the same index,
+    /// only the last element is guaranteed to actually be written.
     ///
     /// # Examples
     /// ```
@@ -1511,29 +1542,24 @@
     /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
     /// # use simd::{Simd, Mask};
     /// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
-    /// let idxs = Simd::from_array([9, 3, 0, 0]);
+    /// let idxs = Simd::from_array([9, 3, 0, 0]); // Includes an out-of-bounds index
     /// let vals = Simd::from_array([-27, 82, -41, 124]);
-    /// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.
+    /// let enable = Mask::from_array([true, true, true, false]); // Includes a masked element
     ///
-    /// vals.scatter_select(&amp;mut vec, enable, idxs); // index 0&#39;s second write is masked, thus omitted.
+    /// vals.scatter_select(&amp;mut vec, enable, idxs); // The last write is masked, thus omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>scatter_select(
-        <span class="self">self</span>,
-        slice: <span class="kw-2">&amp;mut </span>[T],
-        enable: Mask&lt;isize, LANES&gt;,
-        idxs: Simd&lt;usize, LANES&gt;,
-    ) {
-        <span class="kw">let </span>enable: Mask&lt;isize, LANES&gt; = enable &amp; idxs.simd_lt(Simd::splat(slice.len()));
-        <span class="comment">// Safety: We have masked-off out-of-bounds lanes.
+    </span><span class="kw">pub fn </span>scatter_select(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T], enable: Mask&lt;isize, N&gt;, idxs: Simd&lt;usize, N&gt;) {
+        <span class="kw">let </span>enable: Mask&lt;isize, N&gt; = enable &amp; idxs.simd_lt(Simd::splat(slice.len()));
+        <span class="comment">// Safety: We have masked-off out-of-bounds indices.
         </span><span class="kw">unsafe </span>{ <span class="self">self</span>.scatter_select_unchecked(slice, enable, idxs) }
     }
 
-    <span class="doccomment">/// Writes the values in a SIMD vector to multiple potentially discontiguous indices in `slice`.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If two enabled lanes in the scattered vector would write to the same index,
-    /// only the last lane is guaranteed to actually be written.
+    <span class="doccomment">/// Writes values from a SIMD vector to multiple potentially discontiguous indices in `slice`.
+    /// The mask `enable`s all `true` indices and disables all `false` indices.
+    /// If two enabled elements in the scattered vector would write to the same index,
+    /// only the last element is guaranteed to actually be written.
     ///
     /// # Safety
     ///
@@ -1549,13 +1575,13 @@
     /// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
     /// let idxs = Simd::from_array([9, 3, 0, 0]);
     /// let vals = Simd::from_array([-27, 82, -41, 124]);
-    /// let enable = Mask::from_array([true, true, true, false]); // Note the mask of the last lane.
+    /// let enable = Mask::from_array([true, true, true, false]); // Masks the final index
     /// // If this mask was used to scatter, it would be unsound. Let&#39;s fix that.
     /// let enable = enable &amp; idxs.simd_lt(Simd::splat(vec.len()));
     ///
-    /// // We have masked the OOB lane, so it&#39;s safe to scatter now.
+    /// // We have masked the OOB index, so it&#39;s safe to scatter now.
     /// unsafe { vals.scatter_select_unchecked(&amp;mut vec, enable, idxs); }
-    /// // index 0&#39;s second write is masked, thus was omitted.
+    /// // The second write to index 0 was masked, thus omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
     /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
@@ -1564,8 +1590,8 @@
     </span><span class="kw">pub unsafe fn </span>scatter_select_unchecked(
         <span class="self">self</span>,
         slice: <span class="kw-2">&amp;mut </span>[T],
-        enable: Mask&lt;isize, LANES&gt;,
-        idxs: Simd&lt;usize, LANES&gt;,
+        enable: Mask&lt;isize, N&gt;,
+        idxs: Simd&lt;usize, N&gt;,
     ) {
         <span class="comment">// Safety: This block works with *mut T derived from &amp;mut &#39;a [T],
         // which means it is delicate in Rust&#39;s borrowing model, circa 2021:
@@ -1579,7 +1605,7 @@
         // 3. &amp;mut [T] which will become our base ptr.
         </span><span class="kw">unsafe </span>{
             <span class="comment">// Now Entering ☢️ *mut T Zone
-            </span><span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*mut </span>T, LANES&gt;::splat(slice.as_mut_ptr());
+            </span><span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*mut </span>T, N&gt;::splat(slice.as_mut_ptr());
             <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.
             </span><span class="kw">let </span>ptrs = base_ptr.wrapping_add(idxs);
             <span class="comment">// The ptrs have been bounds-masked to prevent memory-unsafe writes insha&#39;allah
@@ -1608,18 +1634,18 @@
     /// ```
     </span><span class="attr">#[inline]
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
-    </span><span class="kw">pub unsafe fn </span>scatter_ptr(<span class="self">self</span>, dest: Simd&lt;<span class="kw-2">*mut </span>T, LANES&gt;) {
+    </span><span class="kw">pub unsafe fn </span>scatter_ptr(<span class="self">self</span>, dest: Simd&lt;<span class="kw-2">*mut </span>T, N&gt;) {
         <span class="comment">// Safety: The caller is responsible for upholding all invariants
         </span><span class="kw">unsafe </span>{ <span class="self">self</span>.scatter_select_ptr(dest, Mask::splat(<span class="bool-val">true</span>)) }
     }
 
     <span class="doccomment">/// Conditionally write pointers elementwise into a SIMD vector.
-    /// The mask `enable`s all `true` lanes and disables all `false` lanes.
-    /// If a lane is disabled, the write to that lane is skipped.
+    /// The mask `enable`s all `true` pointers and disables all `false` pointers.
+    /// If a pointer is disabled, the write to its pointee is skipped.
     ///
     /// # Safety
     ///
-    /// Enabled lanes must satisfy the same conditions as [`core::ptr::write`].
+    /// Enabled pointers must satisfy the same conditions as [`core::ptr::write`].
     ///
     /// # Example
     /// ```
@@ -1636,32 +1662,32 @@
     /// ```
     </span><span class="attr">#[inline]
     #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
-    </span><span class="kw">pub unsafe fn </span>scatter_select_ptr(<span class="self">self</span>, dest: Simd&lt;<span class="kw-2">*mut </span>T, LANES&gt;, enable: Mask&lt;isize, LANES&gt;) {
+    </span><span class="kw">pub unsafe fn </span>scatter_select_ptr(<span class="self">self</span>, dest: Simd&lt;<span class="kw-2">*mut </span>T, N&gt;, enable: Mask&lt;isize, N&gt;) {
         <span class="comment">// Safety: The caller is responsible for upholding all invariants
         </span><span class="kw">unsafe </span>{ intrinsics::simd_scatter(<span class="self">self</span>, dest, enable.to_int()) }
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Copy <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Copy <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>T: SimdElement,
-    LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
+    T: SimdElement,
 {
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Clone <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Clone <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>T: SimdElement,
-    LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
+    T: SimdElement,
 {
     <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw-2">*</span><span class="self">self
     </span>}
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Default <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Default <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + Default,
 {
     <span class="attr">#[inline]
@@ -1670,20 +1696,20 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialEq <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; PartialEq <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + PartialEq,
 {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="comment">// Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
-            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, LANES&gt; = intrinsics::simd_eq(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
+            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, N&gt; = intrinsics::simd_eq(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
             Mask::from_int_unchecked(tfvec)
         };
 
-        <span class="comment">// Two vectors are equal if all lanes tested true for vertical equality.
+        <span class="comment">// Two vectors are equal if all elements are equal when compared elementwise
         </span>mask.all()
     }
 
@@ -1692,18 +1718,18 @@
     </span><span class="kw">fn </span>ne(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="comment">// Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
-            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, LANES&gt; = intrinsics::simd_ne(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
+            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, N&gt; = intrinsics::simd_ne(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
             Mask::from_int_unchecked(tfvec)
         };
 
-        <span class="comment">// Two vectors are non-equal if any lane tested true for vertical non-equality.
+        <span class="comment">// Two vectors are non-equal if any elements are non-equal when compared elementwise
         </span>mask.any()
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; PartialOrd <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; PartialOrd <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + PartialOrd,
 {
     <span class="attr">#[inline]
@@ -1713,16 +1739,16 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Eq <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Eq <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + Eq,
 {
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Ord <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Ord <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + Ord,
 {
     <span class="attr">#[inline]
@@ -1732,9 +1758,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; core::hash::Hash <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; core::hash::Hash <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement + core::hash::Hash,
 {
     <span class="attr">#[inline]
@@ -1747,32 +1773,32 @@
 }
 
 <span class="comment">// array references
-</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; AsRef&lt;[T; LANES]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; AsRef&lt;[T; N]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; LANES] {
+    </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; N] {
         <span class="self">self</span>.as_array()
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; AsMut&lt;[T; LANES]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; AsMut&lt;[T; N]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; LANES] {
+    </span><span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; N] {
         <span class="self">self</span>.as_mut_array()
     }
 }
 
 <span class="comment">// slice references
-</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; AsRef&lt;[T]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; AsRef&lt;[T]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="attr">#[inline]
@@ -1781,9 +1807,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; AsMut&lt;[T]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; AsMut&lt;[T]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="attr">#[inline]
@@ -1793,29 +1819,29 @@
 }
 
 <span class="comment">// vector/array conversion
-</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; From&lt;[T; LANES]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+</span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; From&lt;[T; N]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="kw">fn </span>from(array: [T; LANES]) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(array)
+    <span class="kw">fn </span>from(array: [T; N]) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from_array(array)
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; From&lt;Simd&lt;T, LANES&gt;&gt; <span class="kw">for </span>[T; LANES]
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; From&lt;Simd&lt;T, N&gt;&gt; <span class="kw">for </span>[T; N]
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="kw">fn </span>from(vector: Simd&lt;T, LANES&gt;) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>from(vector: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
         vector.to_array()
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; TryFrom&lt;<span class="kw-2">&amp;</span>[T]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; TryFrom&lt;<span class="kw-2">&amp;</span>[T]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="kw">type </span>Error = core::array::TryFromSliceError;
@@ -1825,9 +1851,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; TryFrom&lt;<span class="kw-2">&amp;mut </span>[T]&gt; <span class="kw">for </span>Simd&lt;T, LANES&gt;
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; TryFrom&lt;<span class="kw-2">&amp;mut </span>[T]&gt; <span class="kw">for </span>Simd&lt;T, N&gt;
 <span class="kw">where
-    </span>LaneCount&lt;LANES&gt;: SupportedLaneCount,
+    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
     <span class="kw">type </span>Error = core::array::TryFromSliceError;
