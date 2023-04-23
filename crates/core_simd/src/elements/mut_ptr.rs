@@ -74,7 +74,7 @@ where
     type Usize = Simd<usize, LANES>;
     type Isize = Simd<isize, LANES>;
     type ConstPtr = Simd<*const T, LANES>;
-    type Mask = Mask<isize, LANES>;
+    type Mask = Mask<*mut T, LANES>;
 
     #[inline]
     fn is_null(self) -> Self::Mask {

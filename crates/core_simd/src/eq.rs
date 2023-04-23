@@ -1,5 +1,5 @@
 use crate::simd::{
-    intrinsics, LaneCount, Mask, Simd, SimdConstPtr, SimdElement, SimdMutPtr, SupportedLaneCount,
+    intrinsics, LaneCount, Mask, Simd, SimdConstPtr, SimdMutPtr, SupportedLaneCount,
 };
 
 /// Parallel `PartialEq`.
@@ -23,7 +23,7 @@ macro_rules! impl_number {
         where
             LaneCount<LANES>: SupportedLaneCount,
         {
-            type Mask = Mask<<$number as SimdElement>::Mask, LANES>;
+            type Mask = Mask<$number, LANES>;
 
             #[inline]
             fn simd_eq(self, other: Self) -> Self::Mask {
@@ -78,16 +78,16 @@ impl<T, const LANES: usize> SimdPartialEq for Simd<*const T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
 {
-    type Mask = Mask<isize, LANES>;
+    type Mask = Mask<*const T, LANES>;
 
     #[inline]
     fn simd_eq(self, other: Self) -> Self::Mask {
-        self.addr().simd_eq(other.addr())
+        self.addr().simd_eq(other.addr()).cast()
     }
 
     #[inline]
     fn simd_ne(self, other: Self) -> Self::Mask {
-        self.addr().simd_ne(other.addr())
+        self.addr().simd_ne(other.addr()).cast()
     }
 }
 
@@ -95,15 +95,15 @@ impl<T, const LANES: usize> SimdPartialEq for Simd<*mut T, LANES>
 where
     LaneCount<LANES>: SupportedLaneCount,
 {
-    type Mask = Mask<isize, LANES>;
+    type Mask = Mask<*mut T, LANES>;
 
     #[inline]
     fn simd_eq(self, other: Self) -> Self::Mask {
-        self.addr().simd_eq(other.addr())
+        self.addr().simd_eq(other.addr()).cast()
     }
 
     #[inline]
     fn simd_ne(self, other: Self) -> Self::Mask {
-        self.addr().simd_ne(other.addr())
+        self.addr().simd_ne(other.addr()).cast()
     }
 }

@@ -1,7 +1,5 @@
 use super::sealed::Sealed;
-use crate::simd::{
-    intrinsics, LaneCount, Mask, Simd, SimdElement, SimdPartialOrd, SupportedLaneCount,
-};
+use crate::simd::{intrinsics, LaneCount, Mask, Simd, SimdPartialOrd, SupportedLaneCount};
 
 /// Operations on SIMD vectors of signed integers.
 pub trait SimdInt: Copy + Sealed {
@@ -196,7 +194,7 @@ macro_rules! impl_trait {
         where
             LaneCount<LANES>: SupportedLaneCount,
         {
-            type Mask = Mask<<$ty as SimdElement>::Mask, LANES>;
+            type Mask = Mask<$ty, LANES>;
             type Scalar = $ty;
 
             #[inline]
