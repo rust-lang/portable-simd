@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (b628260df 2023-04-22)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -993,6 +993,42 @@
 <a href="#993" id="993">993</a>
 <a href="#994" id="994">994</a>
 <a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
+<a href="#1011" id="1011">1011</a>
+<a href="#1012" id="1012">1012</a>
+<a href="#1013" id="1013">1013</a>
+<a href="#1014" id="1014">1014</a>
+<a href="#1015" id="1015">1015</a>
+<a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
     SimdPartialOrd, SupportedLaneCount, Swizzle,
@@ -1171,34 +1207,70 @@
         </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*mut </span>[T; N]) }
     }
 
+    <span class="doccomment">/// Load a vector from an array of `T`.
+    ///
+    /// This function is necessary since `repr(simd)` has padding for non-power-of-2 vectors (at the time of writing).
+    /// With padding, `read_unaligned` will read past the end of an array of N elements.
+    ///
+    /// # Safety
+    /// Reading `ptr` must be safe, as if by `&lt;*const [T; N]&gt;::read_unaligned`.
+    </span><span class="kw">const unsafe fn </span>load(ptr: <span class="kw-2">*const </span>[T; N]) -&gt; <span class="self">Self </span>{
+        <span class="comment">// There are potentially simpler ways to write this function, but this should result in
+        // LLVM `load &lt;N x T&gt;`
+
+        </span><span class="kw">let </span><span class="kw-2">mut </span>tmp = core::mem::MaybeUninit::&lt;<span class="self">Self</span>&gt;::uninit();
+        <span class="comment">// SAFETY: `Simd&lt;T, N&gt;` always contains `N` elements of type `T`.  It may have padding
+        // which does not need to be initialized.  The safety of reading `ptr` is ensured by the
+        // caller.
+        </span><span class="kw">unsafe </span>{
+            core::ptr::copy_nonoverlapping(ptr, tmp.as_mut_ptr().cast(), <span class="number">1</span>);
+            tmp.assume_init()
+        }
+    }
+
+    <span class="doccomment">/// Store a vector to an array of `T`.
+    ///
+    /// See `load` as to why this function is necessary.
+    ///
+    /// # Safety
+    /// Writing to `ptr` must be safe, as if by `&lt;*mut [T; N]&gt;::write_unaligned`.
+    </span><span class="kw">const unsafe fn </span>store(<span class="self">self</span>, ptr: <span class="kw-2">*mut </span>[T; N]) {
+        <span class="comment">// There are potentially simpler ways to write this function, but this should result in
+        // LLVM `store &lt;N x T&gt;`
+
+        // Creating a temporary helps LLVM turn the memcpy into a store.
+        </span><span class="kw">let </span>tmp = <span class="self">self</span>;
+        <span class="comment">// SAFETY: `Simd&lt;T, N&gt;` always contains `N` elements of type `T`.  The safety of writing
+        // `ptr` is ensured by the caller.
+        </span><span class="kw">unsafe </span>{ core::ptr::copy_nonoverlapping(tmp.as_array(), ptr, <span class="number">1</span>) }
+    }
+
     <span class="doccomment">/// Converts an array to a SIMD vector.
     </span><span class="kw">pub const fn </span>from_array(array: [T; N]) -&gt; <span class="self">Self </span>{
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
-        // is always valid. We need to use `read_unaligned` here, since
-        // the array may have a lower alignment than the vector.
+        <span class="comment">// SAFETY: `&amp;array` is safe to read.
         //
-        // FIXME: We currently use a pointer read instead of `transmute_copy` because
-        // it results in better codegen with optimizations disabled, but we should
-        // probably just use `transmute` once that works on const generic types.
+        // FIXME: We currently use a pointer load instead of `transmute_copy` because `repr(simd)`
+        // results in padding for non-power-of-2 vectors (so vectors are larger than arrays).
         //
         // NOTE: This deliberately doesn&#39;t just use `Self(array)`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span>array <span class="kw">as </span><span class="kw-2">*const </span>[T; N] <span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self</span>).read_unaligned() }
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::load(<span class="kw-2">&amp;</span>array) }
     }
 
     <span class="doccomment">/// Converts a SIMD vector to an array.
     </span><span class="kw">pub const fn </span>to_array(<span class="self">self</span>) -&gt; [T; N] {
-        <span class="comment">// SAFETY: Transmuting between `Simd&lt;T, N&gt;` and `[T; N]`
-        // is always valid. No need to use `read_unaligned` here, since
-        // the vector never has a lower alignment than the array.
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = core::mem::MaybeUninit::uninit();
+        <span class="comment">// SAFETY: writing to `tmp` is safe and initializes it.
         //
-        // FIXME: We currently use a pointer read instead of `transmute_copy` because
-        // it results in better codegen with optimizations disabled, but we should
-        // probably just use `transmute` once that works on const generic types.
+        // FIXME: We currently use a pointer store instead of `transmute_copy` because `repr(simd)`
+        // results in padding for non-power-of-2 vectors (so vectors are larger than arrays).
         //
         // NOTE: This deliberately doesn&#39;t just use `self.0`, see the comment
         // on the struct definition for details.
-        </span><span class="kw">unsafe </span>{ (<span class="kw-2">&amp;</span><span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; N]).read() }
+        </span><span class="kw">unsafe </span>{
+            <span class="self">self</span>.store(tmp.as_mut_ptr());
+            tmp.assume_init()
+        }
     }
 
     <span class="doccomment">/// Converts a slice to a SIMD vector containing `slice[..N]`.
