@@ -1025,10 +1025,6 @@
 <a href="#1025" id="1025">1025</a>
 <a href="#1026" id="1026">1026</a>
 <a href="#1027" id="1027">1027</a>
-<a href="#1028" id="1028">1028</a>
-<a href="#1029" id="1029">1029</a>
-<a href="#1030" id="1030">1030</a>
-<a href="#1031" id="1031">1031</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
     SimdPartialOrd, SupportedLaneCount, Swizzle,
@@ -1294,11 +1290,9 @@
             slice.len() &gt;= <span class="self">Self</span>::N,
             <span class="string">&quot;slice length must be at least the number of elements&quot;
         </span>);
-        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == <span class="self">Self</span>::N * core::mem::size_of::&lt;T&gt;());
-        <span class="comment">// Safety:
-        // - We&#39;ve checked the length is sufficient.
-        // - `T` and `Simd&lt;T, N&gt;` are Copy types.
-        </span><span class="kw">unsafe </span>{ slice.as_ptr().cast::&lt;<span class="self">Self</span>&gt;().read_unaligned() }
+        <span class="comment">// SAFETY: We just checked that the slice contains
+        // at least `N` elements.
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::load(slice.as_ptr().cast()) }
     }
 
     <span class="doccomment">/// Writes a SIMD vector to the first `N` elements of a slice.
@@ -1324,11 +1318,9 @@
             slice.len() &gt;= <span class="self">Self</span>::N,
             <span class="string">&quot;slice length must be at least the number of elements&quot;
         </span>);
-        <span class="macro">assert!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == <span class="self">Self</span>::N * core::mem::size_of::&lt;T&gt;());
-        <span class="comment">// Safety:
-        // - We&#39;ve checked the length is sufficient
-        // - `T` and `Simd&lt;T, N&gt;` are Copy types.
-        </span><span class="kw">unsafe </span>{ slice.as_mut_ptr().cast::&lt;<span class="self">Self</span>&gt;().write_unaligned(<span class="self">self</span>) }
+        <span class="comment">// SAFETY: We just checked that the slice contains
+        // at least `N` elements.
+        </span><span class="kw">unsafe </span>{ <span class="self">self</span>.store(slice.as_mut_ptr().cast()) }
     }
 
     <span class="doccomment">/// Performs elementwise conversion of a SIMD vector&#39;s elements to another SIMD-valid type.
