@@ -25,7 +25,7 @@ use core::convert::{TryFrom, TryInto};
 /// let sum = array::from_fn(|i| a[i] + b[i]);
 /// let prod = array::from_fn(|i| a[i] * b[i]);
 ///
-/// // `Simd<T, N>` implements `From<[T; N]>
+/// // `Simd<T, N>` implements `From<[T; N]>`
 /// let (v, w) = (Simd::from(a), Simd::from(b));
 /// // Which means arrays implement `Into<Simd<T, N>>`.
 /// assert_eq!(v + w, sum.into());
@@ -322,7 +322,6 @@ where
     /// ```
     #[must_use]
     #[inline]
-    #[cfg(not(bootstrap))]
     pub fn cast<U: SimdCast>(self) -> Simd<U, N>
     where
         T: SimdCast,
