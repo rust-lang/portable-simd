@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (2f6bc5d25 2023-05-09)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (77f4f828a 2023-05-20)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../core_simd/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1026,6 +1026,23 @@
 <a href="#1026" id="1026">1026</a>
 <a href="#1027" id="1027">1027</a>
 <a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     intrinsics, LaneCount, Mask, MaskElement, SimdCast, SimdCastPtr, SimdConstPtr, SimdMutPtr,
     SimdPartialOrd, SupportedLaneCount, Swizzle,
@@ -1150,6 +1167,7 @@
     /// let v = u32x4::splat(0);
     /// assert_eq!(v.lanes(), 4);
     /// ```
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub const fn </span>lanes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">Self</span>::LANES
     }
@@ -1164,6 +1182,7 @@
     /// let v = u32x4::splat(8);
     /// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);
     /// ```
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
         <span class="comment">// This is preferred over `[value; N]`, since it&#39;s explicitly a splat:
         // https://github.com/rust-lang/rust/issues/97804
@@ -1184,6 +1203,7 @@
     /// let v: u64x4 = Simd::from_array([0, 1, 2, 3]);
     /// assert_eq!(v.as_array(), &amp;[0, 1, 2, 3]);
     /// ```
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub const fn </span>as_array(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T; N] {
         <span class="comment">// SAFETY: `Simd&lt;T, N&gt;` is just an overaligned `[T; N]` with
         // potential padding at the end, so pointer casting to a
@@ -1195,6 +1215,7 @@
     }
 
     <span class="doccomment">/// Returns a mutable array reference containing the entire SIMD vector.
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>as_mut_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; N] {
         <span class="comment">// SAFETY: `Simd&lt;T, N&gt;` is just an overaligned `[T; N]` with
         // potential padding at the end, so pointer casting to a
@@ -1212,6 +1233,7 @@
     ///
     /// # Safety
     /// Reading `ptr` must be safe, as if by `&lt;*const [T; N]&gt;::read_unaligned`.
+    </span><span class="attr">#[inline]
     </span><span class="kw">const unsafe fn </span>load(ptr: <span class="kw-2">*const </span>[T; N]) -&gt; <span class="self">Self </span>{
         <span class="comment">// There are potentially simpler ways to write this function, but this should result in
         // LLVM `load &lt;N x T&gt;`
@@ -1232,6 +1254,7 @@
     ///
     /// # Safety
     /// Writing to `ptr` must be safe, as if by `&lt;*mut [T; N]&gt;::write_unaligned`.
+    </span><span class="attr">#[inline]
     </span><span class="kw">const unsafe fn </span>store(<span class="self">self</span>, ptr: <span class="kw-2">*mut </span>[T; N]) {
         <span class="comment">// There are potentially simpler ways to write this function, but this should result in
         // LLVM `store &lt;N x T&gt;`
@@ -1244,6 +1267,7 @@
     }
 
     <span class="doccomment">/// Converts an array to a SIMD vector.
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub const fn </span>from_array(array: [T; N]) -&gt; <span class="self">Self </span>{
         <span class="comment">// SAFETY: `&amp;array` is safe to read.
         //
@@ -1256,6 +1280,7 @@
     }
 
     <span class="doccomment">/// Converts a SIMD vector to an array.
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub const fn </span>to_array(<span class="self">self</span>) -&gt; [T; N] {
         <span class="kw">let </span><span class="kw-2">mut </span>tmp = core::mem::MaybeUninit::uninit();
         <span class="comment">// SAFETY: writing to `tmp` is safe and initializes it.
@@ -1287,6 +1312,8 @@
     /// assert_eq!(v.as_array(), &amp;[1, 2, 3, 4]);
     /// ```
     </span><span class="attr">#[must_use]
+    #[inline]
+    #[track_caller]
     </span><span class="kw">pub const fn </span>from_slice(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
         <span class="macro">assert!</span>(
             slice.len() &gt;= <span class="self">Self</span>::LANES,
@@ -1315,6 +1342,8 @@
     /// v.copy_to_slice(&amp;mut dest);
     /// assert_eq!(&amp;dest, &amp;[1, 2, 3, 4, 0, 0]);
     /// ```
+    </span><span class="attr">#[inline]
+    #[track_caller]
     </span><span class="kw">pub fn </span>copy_to_slice(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
         <span class="macro">assert!</span>(
             slice.len() &gt;= <span class="self">Self</span>::LANES,
@@ -1746,7 +1775,8 @@
     </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw-2">*</span><span class="self">self
     </span>}
 }
@@ -1890,7 +1920,8 @@
     </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="kw">fn </span>from(array: [T; N]) -&gt; <span class="self">Self </span>{
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(array: [T; N]) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::from_array(array)
     }
 }
@@ -1900,7 +1931,8 @@
     </span>LaneCount&lt;N&gt;: SupportedLaneCount,
     T: SimdElement,
 {
-    <span class="kw">fn </span>from(vector: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(vector: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
         vector.to_array()
     }
 }
@@ -1912,7 +1944,8 @@
 {
     <span class="kw">type </span>Error = core::array::TryFromSliceError;
 
-    <span class="kw">fn </span>try_from(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, core::array::TryFromSliceError&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>try_from(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, core::array::TryFromSliceError&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_array(slice.try_into()<span class="question-mark">?</span>))
     }
 }
@@ -1924,7 +1957,8 @@
 {
     <span class="kw">type </span>Error = core::array::TryFromSliceError;
 
-    <span class="kw">fn </span>try_from(slice: <span class="kw-2">&amp;mut </span>[T]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, core::array::TryFromSliceError&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>try_from(slice: <span class="kw-2">&amp;mut </span>[T]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, core::array::TryFromSliceError&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_array(slice.try_into()<span class="question-mark">?</span>))
     }
 }
