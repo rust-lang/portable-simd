@@ -450,7 +450,7 @@
     /// # #![feature(portable_simd)]
     /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
     /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
-    /// # use simd::{f32x2, SimdFloat, SimdInt, Simd};
+    /// # use simd::{SimdFloat, SimdInt, Simd};
     /// let floats: Simd&lt;f32, 4&gt; = Simd::from_array([1.9, -4.5, f32::INFINITY, f32::NAN]);
     /// let ints = floats.cast::&lt;i32&gt;();
     /// assert_eq!(ints, Simd::from_array([1, -4, i32::MAX, 0]));
