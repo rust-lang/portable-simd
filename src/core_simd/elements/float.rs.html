@@ -418,6 +418,8 @@
 <a href="#418" id="418">418</a>
 <a href="#419" id="419">419</a>
 <a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{
     intrinsics, LaneCount, Mask, Simd, SimdCast, SimdElement, SimdPartialEq, SimdPartialOrd,
@@ -446,7 +448,9 @@
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # use core::simd::Simd;
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{f32x2, SimdFloat, SimdInt, Simd};
     /// let floats: Simd&lt;f32, 4&gt; = Simd::from_array([1.9, -4.5, f32::INFINITY, f32::NAN]);
     /// let ints = floats.cast::&lt;i32&gt;();
     /// assert_eq!(ints, Simd::from_array([1, -4, i32::MAX, 0]));
