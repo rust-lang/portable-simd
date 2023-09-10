@@ -161,6 +161,12 @@
 <a href="#161" id="161">161</a>
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! This module contains the LLVM intrinsics bindings that provide the functionality for this
 //! crate.
 //!
@@ -323,5 +329,11 @@
 
     <span class="doccomment">/// convert an exposed address back to a pointer
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_from_exposed_addr&lt;T, U&gt;(addr: T) -&gt; U;
+
+    <span class="comment">// Integer operations
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_bswap&lt;T&gt;(x: T) -&gt; T;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_bitreverse&lt;T&gt;(x: T) -&gt; T;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_ctlz&lt;T&gt;(x: T) -&gt; T;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_cttz&lt;T&gt;(x: T) -&gt; T;
 }
 </code></pre></div></section></main></body></html>
