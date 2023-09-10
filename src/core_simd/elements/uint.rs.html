@@ -154,6 +154,18 @@
 <a href="#154" id="154">154</a>
 <a href="#155" id="155">155</a>
 <a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{intrinsics, LaneCount, Simd, SimdCast, SimdElement, SupportedLaneCount};
 
@@ -171,6 +183,12 @@
     /// other integer types, and saturating to float types).
     </span><span class="attr">#[must_use]
     </span><span class="kw">fn </span>cast&lt;T: SimdCast&gt;(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Cast&lt;T&gt;;
+
+    <span class="doccomment">/// Wrapping negation.
+    ///
+    /// Like [`u32::wrapping_neg`], all applications of this function will wrap, with the exception
+    /// of `-0`.
+    </span><span class="kw">fn </span>wrapping_neg(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Lanewise saturating add.
     ///
@@ -230,7 +248,7 @@
 }
 
 <span class="macro">macro_rules! </span>impl_trait {
-    { $(<span class="macro-nonterminal">$ty</span>:ty),* } =&gt; {
+    { $(<span class="macro-nonterminal">$ty</span>:ident (<span class="macro-nonterminal">$signed</span>:ident)),* } =&gt; {
         $(
         <span class="kw">impl</span>&lt;<span class="kw">const </span>LANES: usize&gt; Sealed <span class="kw">for </span>Simd&lt;<span class="macro-nonterminal">$ty</span>, LANES&gt;
         <span class="kw">where
@@ -249,6 +267,12 @@
             </span><span class="kw">fn </span>cast&lt;T: SimdCast&gt;(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Cast&lt;T&gt; {
                 <span class="comment">// Safety: supported types are guaranteed by SimdCast
                 </span><span class="kw">unsafe </span>{ intrinsics::simd_as(<span class="self">self</span>) }
+            }
+
+            <span class="attr">#[inline]
+            </span><span class="kw">fn </span>wrapping_neg(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">use </span><span class="kw">crate</span>::simd::SimdInt;
+                (-<span class="self">self</span>.cast::&lt;<span class="macro-nonterminal">$signed</span>&gt;()).cast()
             }
 
             <span class="attr">#[inline]
@@ -309,5 +333,5 @@
     }
 }
 
-<span class="macro">impl_trait! </span>{ u8, u16, u32, u64, usize }
+<span class="macro">impl_trait! </span>{ u8 (i8), u16 (i16), u32 (i32), u64 (i64), usize (isize) }
 </code></pre></div></section></main></body></html>
