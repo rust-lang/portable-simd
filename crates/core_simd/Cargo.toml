@@ -13,6 +13,7 @@ default = ["as_crate"]
 as_crate = []
 std = []
 generic_const_exprs = []
+adt_const_params = []
 all_lane_counts = []
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]

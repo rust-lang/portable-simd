@@ -309,6 +309,104 @@ where
         unsafe { self.store(slice.as_mut_ptr().cast()) }
     }
 
+    /// Create a new SIMD vector from the elements of another vector.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{u32x2, u32x4};
+    /// let v = u32x4::from_array([0, 1, 2, 3]);
+    ///
+    /// let even: u32x2 = v.swizzle::<2, { &[0, 2] }>();
+    /// assert_eq!(even.to_array(), [0, 2]);
+    ///
+    /// let all3: u32x4 = v.swizzle::<4, { &[3, 3, 3, 3] }>();
+    /// assert_eq!(all3.to_array(), [3, 3, 3, 3]);
+    /// ```
+    #[track_caller]
+    #[cfg(feature = "adt_const_params")]
+    #[inline]
+    pub fn swizzle<const M: usize, const INDEX: &'static [usize]>(self) -> Simd<T, M>
+    where
+        LaneCount<M>: SupportedLaneCount,
+    {
+        // SAFETY: `self` is a vector and the swizzle index is a const array of u32
+        unsafe {
+            intrinsics::simd_shuffle(
+                self,
+                self,
+                const {
+                    assert!(M == INDEX.len(), "`M` must equal the length of `INDEX`");
+                    let mut r = [0; M];
+                    let mut i = 0;
+                    while i < M {
+                        assert!(
+                            INDEX[i] < N,
+                            "indices must be less than the input vector length"
+                        );
+                        r[i] = INDEX[i] as u32;
+                        i += 1;
+                    }
+                    r
+                },
+            )
+        }
+    }
+
+    /// Create a new SIMD vector from the elements of the concatenation of two vectors.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{u32x2, u32x4};
+    /// let a = u32x4::from_array([0, 1, 2, 3]);
+    /// let b = u32x4::from_array([4, 5, 6, 7]);
+    ///
+    /// let first: u32x2 = a.concat_swizzle::<2, { &[0, 4] }>(b);
+    /// assert_eq!(first.to_array(), [0, 4]);
+    ///
+    /// let reverse: u32x4 = a.concat_swizzle::<4, { &[5, 4, 3, 2] }>(b);
+    /// assert_eq!(reverse.to_array(), [5, 4, 3, 2]);
+    /// ```
+    #[track_caller]
+    #[cfg(feature = "adt_const_params")]
+    #[inline]
+    pub fn concat_swizzle<const M: usize, const INDEX: &'static [usize]>(
+        self,
+        other: Self,
+    ) -> Simd<T, M>
+    where
+        LaneCount<M>: SupportedLaneCount,
+    {
+        // SAFETY: `self` is a vector and the swizzle index is a const array of u32
+        unsafe {
+            intrinsics::simd_shuffle(
+                self,
+                other,
+                const {
+                    assert!(M == INDEX.len(), "`M` must equal the length of `INDEX`");
+                    let mut r = [0; M];
+                    let mut i = 0;
+                    while i < M {
+                        assert!(
+                            INDEX[i] < 2 * N,
+                            "indices must be less than the concatenated vector length"
+                        );
+                        r[i] = INDEX[i] as u32;
+                        i += 1;
+                    }
+                    r
+                },
+            )
+        }
+    }
+
     /// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
     /// If an index is out-of-bounds, the element is instead selected from the `or` vector.
     ///
