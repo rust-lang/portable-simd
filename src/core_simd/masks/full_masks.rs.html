@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks/full_masks.rs`."><title>full_masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-deb46770fd761b69.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0-nightly (fcab24817 2023-10-13)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f34af1a0ee6bacd.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks/full_masks.rs`."><title>full_masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-deb46770fd761b69.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0-nightly (4578435e1 2023-10-19)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f34af1a0ee6bacd.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -314,25 +314,11 @@
 <a href="#314" id="314">314</a>
 <a href="#315" id="315">315</a>
 <a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.
 
-</span><span class="kw">use </span><span class="kw">super</span>::MaskElement;
+</span><span class="kw">use super</span>::{to_bitmask::ToBitMaskArray, MaskElement};
 <span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask};
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::simd::ToBitMaskArray;
 
 <span class="attr">#[repr(transparent)]
 </span><span class="kw">pub struct </span>Mask&lt;T, <span class="kw">const </span>LANES: usize&gt;(Simd&lt;T, LANES&gt;)
@@ -472,23 +458,19 @@
         </span><span class="kw">unsafe </span>{ Mask(intrinsics::simd_cast(<span class="self">self</span>.<span class="number">0</span>)) }
     }
 
-    <span class="attr">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]
-    #[inline]
+    <span class="attr">#[inline]
     #[must_use = <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]
     </span><span class="kw">pub fn </span>to_bitmask_array&lt;<span class="kw">const </span>N: usize&gt;(<span class="self">self</span>) -&gt; [u8; N]
     <span class="kw">where
         </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMaskArray,
-        [(); &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES]: Sized,
     {
-        <span class="macro">assert_eq!</span>(&lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES, N);
-
-        <span class="comment">// Safety: N is the correct bitmask size
+        <span class="comment">// Safety: Bytes is the right size array
         </span><span class="kw">unsafe </span>{
             <span class="comment">// Compute the bitmask
-            </span><span class="kw">let </span>bitmask: [u8; &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES] =
+            </span><span class="kw">let </span>bitmask: &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BitMaskArray =
                 intrinsics::simd_bitmask(<span class="self">self</span>.<span class="number">0</span>);
 
-            <span class="comment">// Transmute to the return type, previously asserted to be the same size
+            <span class="comment">// Transmute to the return type
             </span><span class="kw">let </span><span class="kw-2">mut </span>bitmask: [u8; N] = core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
 
             <span class="comment">// LLVM assumes bit order should match endianness
@@ -502,17 +484,13 @@
         }
     }
 
-    <span class="attr">#[cfg(feature = <span class="string">&quot;generic_const_exprs&quot;</span>)]
-    #[inline]
+    <span class="attr">#[inline]
     #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
     </span><span class="kw">pub fn </span>from_bitmask_array&lt;<span class="kw">const </span>N: usize&gt;(<span class="kw-2">mut </span>bitmask: [u8; N]) -&gt; <span class="self">Self
     </span><span class="kw">where
         </span><span class="kw">super</span>::Mask&lt;T, LANES&gt;: ToBitMaskArray,
-        [(); &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES]: Sized,
     {
-        <span class="macro">assert_eq!</span>(&lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES, N);
-
-        <span class="comment">// Safety: N is the correct bitmask size
+        <span class="comment">// Safety: Bytes is the right size array
         </span><span class="kw">unsafe </span>{
             <span class="comment">// LLVM assumes bit order should match endianness
             </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
@@ -521,8 +499,8 @@
                 }
             }
 
-            <span class="comment">// Transmute to the bitmask type, previously asserted to be the same size
-            </span><span class="kw">let </span>bitmask: [u8; &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BYTES] =
+            <span class="comment">// Transmute to the bitmask
+            </span><span class="kw">let </span>bitmask: &lt;<span class="kw">super</span>::Mask&lt;T, LANES&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BitMaskArray =
                 core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
 
             <span class="comment">// Compute the regular mask
