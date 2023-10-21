@@ -1120,10 +1120,10 @@
         <span class="comment">// This is preferred over `[value; N]`, since it&#39;s explicitly a splat:
         // https://github.com/rust-lang/rust/issues/97804
         </span><span class="kw">struct </span>Splat;
-        <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;<span class="number">1</span>, N&gt; <span class="kw">for </span>Splat {
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;N&gt; <span class="kw">for </span>Splat {
             <span class="kw">const </span>INDEX: [usize; N] = [<span class="number">0</span>; N];
         }
-        Splat::swizzle(Simd::&lt;T, <span class="number">1</span>&gt;::from([value]))
+        Splat::swizzle::&lt;T, <span class="number">1</span>&gt;(Simd::&lt;T, <span class="number">1</span>&gt;::from([value]))
     }
 
     <span class="doccomment">/// Returns an array reference containing the entire SIMD vector.
