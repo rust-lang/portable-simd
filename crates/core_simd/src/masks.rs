@@ -87,6 +87,11 @@ impl_element! { isize }
 /// The layout of this type is unspecified, and may change between platforms
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; LANES]`.
+///
+/// For a type with size guaranteed equal to `[T; LANES]`, use
+/// `Simd<T, LANES>`. For a type with size guaranteed to use 1 bit per
+/// lane (padded up to the next integer type or), use [`ToBitMask::BitMask`]
+/// or (with crate feature `generic_const_exprs`) `ToBitMaskArray::BitMaskArray`.
 #[repr(transparent)]
 pub struct Mask<T, const LANES: usize>(mask_impl::Mask<T, LANES>)
 where
