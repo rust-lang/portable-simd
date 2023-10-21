@@ -78,6 +78,8 @@
 <a href="#78" id="78">78</a>
 <a href="#79" id="79">79</a>
 <a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! The portable SIMD prelude.
 //!
 //! Includes important traits and types to be imported with a glob:
@@ -87,8 +89,10 @@
 
 </span><span class="attr">#[doc(no_inline)]
 </span><span class="kw">pub use super</span>::{
-    simd_swizzle, Mask, Simd, SimdConstPtr, SimdFloat, SimdInt, SimdMutPtr, SimdOrd, SimdPartialEq,
-    SimdPartialOrd, SimdUint,
+    cmp::{SimdOrd, SimdPartialEq, SimdPartialOrd},
+    num::{SimdFloat, SimdInt, SimdUint},
+    ptr::{SimdConstPtr, SimdMutPtr},
+    simd_swizzle, Mask, Simd,
 };
 
 <span class="attr">#[rustfmt::skip]

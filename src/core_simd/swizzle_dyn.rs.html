@@ -259,7 +259,7 @@
 #[inline]
 #[allow(clippy::let_and_return)]
 </span><span class="kw">unsafe fn </span>avx2_pshufb(bytes: Simd&lt;u8, <span class="number">32</span>&gt;, idxs: Simd&lt;u8, <span class="number">32</span>&gt;) -&gt; Simd&lt;u8, <span class="number">32</span>&gt; {
-    <span class="kw">use </span><span class="kw">crate</span>::simd::SimdPartialOrd;
+    <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
     <span class="attr">#[cfg(target_arch = <span class="string">&quot;x86&quot;</span>)]
     </span><span class="kw">use </span>core::arch::x86;
     <span class="attr">#[cfg(target_arch = <span class="string">&quot;x86_64&quot;</span>)]
@@ -322,7 +322,7 @@
     <span class="comment">// On x86, make sure the top bit is set.
     </span><span class="attr">#[cfg(any(target_arch = <span class="string">&quot;x86&quot;</span>, target_arch = <span class="string">&quot;x86_64&quot;</span>))]
     </span><span class="kw">let </span>idxs = {
-        <span class="kw">use </span><span class="kw">crate</span>::simd::SimdPartialOrd;
+        <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
         idxs.simd_lt(Simd::splat(N <span class="kw">as </span>u8))
             .select(idxs, Simd::splat(u8::MAX))
     };

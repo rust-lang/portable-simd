@@ -134,7 +134,13 @@
 <a href="#134" id="134">134</a>
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SimdElement, SimdFloat, SimdInt, SimdUint, SupportedLaneCount};
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
+    num::{SimdFloat, SimdInt, SimdUint},
+    LaneCount, Simd, SimdElement, SupportedLaneCount,
+};
 
 <span class="kw">mod </span>sealed {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;

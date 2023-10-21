@@ -45,14 +45,11 @@
 
 <span class="kw">mod </span>alias;
 <span class="kw">mod </span>cast;
-<span class="kw">mod </span>elements;
-<span class="kw">mod </span>eq;
 <span class="kw">mod </span>fmt;
 <span class="kw">mod </span>iter;
 <span class="kw">mod </span>lane_count;
 <span class="kw">mod </span>masks;
 <span class="kw">mod </span>ops;
-<span class="kw">mod </span>ord;
 <span class="kw">mod </span>select;
 <span class="kw">mod </span>swizzle_dyn;
 <span class="kw">mod </span>to_bytes;
@@ -64,15 +61,18 @@
 
     </span><span class="kw">pub mod </span>prelude;
 
+    <span class="kw">pub mod </span>num;
+
+    <span class="kw">pub mod </span>ptr;
+
+    <span class="kw">pub mod </span>cmp;
+
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="kw">crate</span>::core_simd::intrinsics;
 
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::alias::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::cast::<span class="kw-2">*</span>;
-    <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::elements::<span class="kw-2">*</span>;
-    <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::eq::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::lane_count::{LaneCount, SupportedLaneCount};
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::masks::<span class="kw-2">*</span>;
-    <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::ord::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::swizzle::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::swizzle_dyn::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::core_simd::to_bytes::ToBytes;
