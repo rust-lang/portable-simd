@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/ops/deref.rs`."><title>deref.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-deb46770fd761b69.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0-nightly (4578435e1 2023-10-19)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f34af1a0ee6bacd.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/ops/deref.rs`."><title>deref.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (dd430bc8c 2023-11-14)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f06f02fd918e3bb3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -129,16 +129,16 @@
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
 <span class="macro">macro_rules! </span>deref_lhs {
-    (<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
+    (<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
             <span class="kw">fn </span><span class="macro-nonterminal">$call</span>:ident
         }) =&gt; {
-        <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$simd
+        <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$simd
         </span><span class="kw">where
             </span>T: SimdElement,
             <span class="macro-nonterminal">$simd</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">$simd</span>, Output = <span class="macro-nonterminal">$simd</span>&gt;,
-            LaneCount&lt;LANES&gt;: SupportedLaneCount,
+            LaneCount&lt;N&gt;: SupportedLaneCount,
         {
-            <span class="kw">type </span>Output = Simd&lt;T, LANES&gt;;
+            <span class="kw">type </span>Output = Simd&lt;T, N&gt;;
 
             <span class="attr">#[inline]
             #[must_use = <span class="string">&quot;operator returns a new vector without mutating the inputs&quot;</span>]
@@ -150,16 +150,16 @@
 }
 
 <span class="macro">macro_rules! </span>deref_rhs {
-    (<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
+    (<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
             <span class="kw">fn </span><span class="macro-nonterminal">$call</span>:ident
         }) =&gt; {
-        <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$simd
+        <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$simd
         </span><span class="kw">where
             </span>T: SimdElement,
             <span class="macro-nonterminal">$simd</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">$simd</span>, Output = <span class="macro-nonterminal">$simd</span>&gt;,
-            LaneCount&lt;LANES&gt;: SupportedLaneCount,
+            LaneCount&lt;N&gt;: SupportedLaneCount,
         {
-            <span class="kw">type </span>Output = Simd&lt;T, LANES&gt;;
+            <span class="kw">type </span>Output = Simd&lt;T, N&gt;;
 
             <span class="attr">#[inline]
             #[must_use = <span class="string">&quot;operator returns a new vector without mutating the inputs&quot;</span>]
@@ -171,25 +171,25 @@
 }
 
 <span class="macro">macro_rules! </span>deref_ops {
-    ($(<span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
+    ($(<span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident </span><span class="kw">for </span><span class="macro-nonterminal">$simd</span>:ty {
             <span class="kw">fn </span><span class="macro-nonterminal">$call</span>:ident
         })<span class="kw-2">*</span>) =&gt; {
         $(
             <span class="macro">deref_rhs! </span>{
-                <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait for </span><span class="macro-nonterminal">$simd </span>{
+                <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait for </span><span class="macro-nonterminal">$simd </span>{
                     <span class="kw">fn </span><span class="macro-nonterminal">$call
                 </span>}
             }
             <span class="macro">deref_lhs! </span>{
-                <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait for </span><span class="macro-nonterminal">$simd </span>{
+                <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait for </span><span class="macro-nonterminal">$simd </span>{
                     <span class="kw">fn </span><span class="macro-nonterminal">$call
                 </span>}
             }
-            <span class="kw">impl</span>&lt;<span class="lifetime">&#39;lhs</span>, <span class="lifetime">&#39;rhs</span>, T, <span class="kw">const </span>LANES: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;rhs </span><span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;lhs </span><span class="macro-nonterminal">$simd
+            <span class="kw">impl</span>&lt;<span class="lifetime">&#39;lhs</span>, <span class="lifetime">&#39;rhs</span>, T, <span class="kw">const </span>N: usize&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;rhs </span><span class="macro-nonterminal">$simd</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;lhs </span><span class="macro-nonterminal">$simd
             </span><span class="kw">where
                 </span>T: SimdElement,
                 <span class="macro-nonterminal">$simd</span>: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">$simd</span>, Output = <span class="macro-nonterminal">$simd</span>&gt;,
-                LaneCount&lt;LANES&gt;: SupportedLaneCount,
+                LaneCount&lt;N&gt;: SupportedLaneCount,
             {
                 <span class="kw">type </span>Output = <span class="macro-nonterminal">$simd</span>;
 
@@ -205,44 +205,44 @@
 
 <span class="macro">deref_ops! </span>{
     <span class="comment">// Arithmetic
-    </span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Add <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    </span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Add <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>add
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Mul <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Mul <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>mul
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Sub <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Sub <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>sub
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Div <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Div <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>div
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Rem <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Rem <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>rem
     }
 
     <span class="comment">// Bitops
-    </span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; BitAnd <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    </span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; BitAnd <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>bitand
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; BitOr <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; BitOr <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>bitor
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; BitXor <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; BitXor <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>bitxor
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Shl <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Shl <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>shl
     }
 
-    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>LANES: usize&gt; Shr <span class="kw">for </span>Simd&lt;T, LANES&gt; {
+    <span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; Shr <span class="kw">for </span>Simd&lt;T, N&gt; {
         <span class="kw">fn </span>shr
     }
 }
