@@ -1,3 +1,4 @@
+use super::masks::{ToBitMask, ToBitMaskArray};
 use crate::simd::{
     cmp::SimdPartialOrd,
     intrinsics,
@@ -313,28 +314,39 @@ where
 
     #[must_use]
     #[inline]
-    pub fn masked_load_or(slice: &[T], or: Self) -> Self {
+    pub fn masked_load_or(slice: &[T], or: Self) -> Self
+    where
+        Mask<<T as SimdElement>::Mask, N>: ToBitMask + ToBitMaskArray,
+    {
         Self::masked_load_select(slice, Mask::splat(true), or)
     }
 
     #[must_use]
     #[inline]
-    pub fn masked_load_select(slice: &[T], enable: Mask<isize, N>, or: Self) -> Self {
-        let ptr = slice.as_ptr();
-        let idxs = Simd::<usize, N>::from_slice(&[
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-            46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
-        ]);
-        let enable: Mask<isize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
-        unsafe { Self::masked_load_select_ptr(ptr, enable, or) }
+    pub fn masked_load_select(
+        slice: &[T],
+        mut enable: Mask<<T as SimdElement>::Mask, N>,
+        or: Self,
+    ) -> Self
+    where
+        Mask<<T as SimdElement>::Mask, N>: ToBitMask + ToBitMaskArray,
+    {
+        enable &= {
+            let mask = bzhi_u64(u64::MAX, core::cmp::min(N, slice.len()) as u32);
+            let mask_bytes: [u8; 8] = unsafe { core::mem::transmute(mask) };
+            let mut in_bounds_arr = Mask::splat(true).to_bitmask_array();
+            let len = in_bounds_arr.as_ref().len();
+            in_bounds_arr.as_mut().copy_from_slice(&mask_bytes[..len]);
+            Mask::from_bitmask_array(in_bounds_arr)
+        };
+        unsafe { Self::masked_load_select_ptr(slice.as_ptr(), enable, or) }
     }
 
     #[must_use]
     #[inline]
     pub unsafe fn masked_load_select_unchecked(
         slice: &[T],
-        enable: Mask<isize, N>,
+        enable: Mask<<T as SimdElement>::Mask, N>,
         or: Self,
     ) -> Self {
         let ptr = slice.as_ptr();
@@ -343,7 +355,11 @@ where
 
     #[must_use]
     #[inline]
-    pub unsafe fn masked_load_select_ptr(ptr: *const T, enable: Mask<isize, N>, or: Self) -> Self {
+    pub unsafe fn masked_load_select_ptr(
+        ptr: *const T,
+        enable: Mask<<T as SimdElement>::Mask, N>,
+        or: Self,
+    ) -> Self {
         unsafe { intrinsics::simd_masked_load(or, ptr, enable.to_int()) }
     }
 
@@ -526,25 +542,33 @@ where
     }
 
     #[inline]
-    pub fn masked_store(self, slice: &mut [T], enable: Mask<isize, N>) {
+    pub fn masked_store(self, slice: &mut [T], mut enable: Mask<<T as SimdElement>::Mask, N>)
+    where
+        Mask<<T as SimdElement>::Mask, N>: ToBitMask + ToBitMaskArray,
+    {
+        enable &= {
+            let mask = bzhi_u64(u64::MAX, core::cmp::min(N, slice.len()) as u32);
+            let mask_bytes: [u8; 8] = unsafe { core::mem::transmute(mask) };
+            let mut in_bounds_arr = Mask::splat(true).to_bitmask_array();
+            let len = in_bounds_arr.as_ref().len();
+            in_bounds_arr.as_mut().copy_from_slice(&mask_bytes[..len]);
+            Mask::from_bitmask_array(in_bounds_arr)
+        };
+        unsafe { self.masked_store_ptr(slice.as_mut_ptr(), enable) }
+    }
+
+    #[inline]
+    pub unsafe fn masked_store_unchecked(
+        self,
+        slice: &mut [T],
+        enable: Mask<<T as SimdElement>::Mask, N>,
+    ) {
         let ptr = slice.as_mut_ptr();
-        let idxs = Simd::<usize, N>::from_slice(&[
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-            46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
-        ]);
-        let enable: Mask<isize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
         unsafe { self.masked_store_ptr(ptr, enable) }
     }
 
     #[inline]
-    pub unsafe fn masked_store_unchecked(self, slice: &mut [T], enable: Mask<isize, N>) {
-        let ptr = slice.as_mut_ptr();
-        unsafe { self.masked_store_ptr(ptr, enable) }
-    }
-
-    #[inline]
-    pub unsafe fn masked_store_ptr(self, ptr: *mut T, enable: Mask<isize, N>) {
+    pub unsafe fn masked_store_ptr(self, ptr: *mut T, enable: Mask<<T as SimdElement>::Mask, N>) {
         unsafe { intrinsics::simd_masked_store(self, ptr, enable.to_int()) }
     }
 
@@ -1032,4 +1056,15 @@ where
     T: core::ptr::Pointee<Metadata = ()>,
 {
     type Mask = isize;
+}
+
+// This function matches the semantics of the `bzhi` instruction on x86 BMI2
+// TODO: optimize it further if possible
+// https://stackoverflow.com/questions/75179720/how-to-get-rust-compiler-to-emit-bzhi-instruction-without-resorting-to-platform
+fn bzhi_u64(a: u64, ix: u32) -> u64 {
+    if ix > 63 {
+        a
+    } else {
+        a & (1u64 << ix) - 1
+    }
 }
