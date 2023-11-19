@@ -21,11 +21,11 @@ fn masked_load_store() {
 
     // read from index 8 is OOB and dropped
     assert_eq!(
-        u8x4::masked_load_or(&arr[4..], u8x4::splat(42)),
+        u8x4::load_or(&arr[4..], u8x4::splat(42)),
         u8x4::from_array([3, 255, 0, 42])
     );
     assert_eq!(
-        u8x4::masked_load_select(
+        u8x4::load_select(
             &arr[4..],
             Mask::from_array([true, false, true, true]),
             u8x4::splat(42)
