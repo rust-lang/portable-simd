@@ -324,7 +324,7 @@ where
             + core::ops::Add<<T as SimdElement>::Mask, Output = <T as SimdElement>::Mask>,
         Simd<<T as SimdElement>::Mask, N>: SimdPartialOrd,
         Mask<<T as SimdElement>::Mask, N>: core::ops::BitAnd<Output = Mask<<T as SimdElement>::Mask, N>>
-            + core::convert::From<<Simd<<T as SimdElement>::Mask, N> as SimdPartialEq>::Mask>,
+            + core::convert::From<Mask<i8, N>>,
     {
         Self::load_or(slice, Default::default())
     }
@@ -339,7 +339,7 @@ where
             + core::ops::Add<<T as SimdElement>::Mask, Output = <T as SimdElement>::Mask>,
         Simd<<T as SimdElement>::Mask, N>: SimdPartialOrd,
         Mask<<T as SimdElement>::Mask, N>: core::ops::BitAnd<Output = Mask<<T as SimdElement>::Mask, N>>
-            + core::convert::From<<Simd<<T as SimdElement>::Mask, N> as SimdPartialEq>::Mask>,
+            + core::convert::From<Mask<i8, N>>,
     {
         Self::load_select(slice, Mask::splat(true), or)
     }
@@ -355,7 +355,7 @@ where
             + core::ops::Add<<T as SimdElement>::Mask, Output = <T as SimdElement>::Mask>,
         Simd<<T as SimdElement>::Mask, N>: SimdPartialOrd,
         Mask<<T as SimdElement>::Mask, N>: core::ops::BitAnd<Output = Mask<<T as SimdElement>::Mask, N>>
-            + core::convert::From<<Simd<<T as SimdElement>::Mask, N> as SimdPartialEq>::Mask>,
+            + core::convert::From<Mask<i8, N>>,
     {
         Self::load_select(slice, enable, Default::default())
     }
@@ -370,7 +370,7 @@ where
             + core::ops::Add<<T as SimdElement>::Mask, Output = <T as SimdElement>::Mask>,
         Simd<<T as SimdElement>::Mask, N>: SimdPartialOrd,
         Mask<<T as SimdElement>::Mask, N>: core::ops::BitAnd<Output = Mask<<T as SimdElement>::Mask, N>>
-            + core::convert::From<<Simd<<T as SimdElement>::Mask, N> as SimdPartialEq>::Mask>,
+            + core::convert::From<Mask<i8, N>>,
     {
         if USE_BRANCH {
             if core::intrinsics::likely(enable.all() && slice.len() > N) {
@@ -599,7 +599,7 @@ where
             + core::ops::Add<<T as SimdElement>::Mask, Output = <T as SimdElement>::Mask>,
         Simd<<T as SimdElement>::Mask, N>: SimdPartialOrd,
         Mask<<T as SimdElement>::Mask, N>: core::ops::BitAnd<Output = Mask<<T as SimdElement>::Mask, N>>
-            + core::convert::From<<Simd<<T as SimdElement>::Mask, N> as SimdPartialEq>::Mask>,
+            + core::convert::From<Mask<i8, N>>,
     {
         if USE_BRANCH {
             if core::intrinsics::likely(enable.all() && slice.len() > N) {
@@ -1143,14 +1143,10 @@ where
     M: MaskElement + Default + core::convert::From<i8> + core::ops::Add<M, Output = M>,
     Simd<M, N>: SimdPartialOrd,
     // <Simd<M, N> as SimdPartialEq>::Mask: Mask<M, N>,
-    Mask<M, N>: core::ops::BitAnd<Output = Mask<M, N>>
-        + core::convert::From<<Simd<M, N> as SimdPartialEq>::Mask>,
+    Mask<M, N>: core::ops::BitAnd<Output = Mask<M, N>> + core::convert::From<Mask<i8, N>>,
 {
-    let index = index::<M, N>();
-    enable
-        & Mask::<M, N>::from(
-            index.simd_lt(Simd::splat(M::from(i8::try_from(len).unwrap_or(i8::MAX)))),
-        )
+    let index = index::<i8, N>();
+    enable & Mask::<M, N>::from(index.simd_lt(Simd::splat(i8::try_from(len).unwrap_or(i8::MAX))))
 }
 
 // This function matches the semantics of the `bzhi` instruction on x86 BMI2
