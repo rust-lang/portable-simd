@@ -660,6 +660,29 @@
 <a href="#660" id="660">660</a>
 <a href="#661" id="661">661</a>
 <a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking elements of vectors.
 //! Types representing
 </span><span class="attr">#![allow(non_camel_case_types)]
@@ -957,6 +980,16 @@
     ///
     /// Each bit is set if the corresponding element in the mask is `true`.
     /// The remaining bits are unset.
+    ///
+    /// The bits are packed into the first N bits of the vector:
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::mask32x8;
+    /// let mask = mask32x8::from_array([true, false, true, false, false, false, true, false]);
+    /// assert_eq!(mask.to_bitmask_vector()[0], 0b01000101);
+    /// ```
     </span><span class="attr">#[inline]
     #[must_use = <span class="string">&quot;method returns a new integer and does not mutate the original value&quot;</span>]
     </span><span class="kw">pub fn </span>to_bitmask_vector(<span class="self">self</span>) -&gt; Simd&lt;u8, N&gt; {
@@ -966,6 +999,19 @@
     <span class="doccomment">/// Create a mask from a bitmask vector.
     ///
     /// For each bit, if it is set, the corresponding element in the mask is set to `true`.
+    ///
+    /// The bits are packed into the first N bits of the vector:
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::{mask32x8, u8x8};
+    /// let bitmask = u8x8::from_array([0b01000101, 0, 0, 0, 0, 0, 0, 0]);
+    /// assert_eq!(
+    ///     mask32x8::from_bitmask_vector(bitmask),
+    ///     mask32x8::from_array([true, false, true, false, false, false, true, false]),
+    /// );
+    /// ```
     </span><span class="attr">#[inline]
     #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
     </span><span class="kw">pub fn </span>from_bitmask_vector(bitmask: Simd&lt;u8, N&gt;) -&gt; <span class="self">Self </span>{
