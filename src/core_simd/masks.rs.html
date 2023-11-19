@@ -588,6 +588,78 @@
 <a href="#588" id="588">588</a>
 <a href="#589" id="589">589</a>
 <a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking elements of vectors.
 //! Types representing
 </span><span class="attr">#![allow(non_camel_case_types)]
@@ -603,7 +675,7 @@
 </span><span class="kw">mod </span>mask_impl;
 
 <span class="kw">use </span><span class="kw">crate</span>::simd::{
-    cmp::SimdPartialEq, intrinsics, LaneCount, Simd, SimdElement, SupportedLaneCount,
+    cmp::SimdPartialEq, intrinsics, LaneCount, Simd, SimdCast, SimdElement, SupportedLaneCount,
 };
 <span class="kw">use </span>core::cmp::Ordering;
 <span class="kw">use </span>core::{fmt, mem};
@@ -625,6 +697,10 @@
 
         <span class="kw">fn </span>eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; bool;
 
+        <span class="kw">fn </span>as_usize(<span class="self">self</span>) -&gt; usize;
+
+        <span class="kw">type </span>Unsigned: SimdElement;
+
         <span class="kw">const </span>TRUE: <span class="self">Self</span>;
 
         <span class="kw">const </span>FALSE: <span class="self">Self</span>;
@@ -636,10 +712,10 @@
 ///
 /// # Safety
 /// Type must be a signed integer.
-</span><span class="kw">pub unsafe trait </span>MaskElement: SimdElement + Sealed {}
+</span><span class="kw">pub unsafe trait </span>MaskElement: SimdElement&lt;Mask = <span class="self">Self</span>&gt; + SimdCast + Sealed {}
 
 <span class="macro">macro_rules! </span>impl_element {
-    { <span class="macro-nonterminal">$ty</span>:ty } =&gt; {
+    { <span class="macro-nonterminal">$ty</span>:ty, <span class="macro-nonterminal">$unsigned</span>:ty } =&gt; {
         <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>valid&lt;<span class="kw">const </span>N: usize&gt;(value: Simd&lt;<span class="self">Self</span>, N&gt;) -&gt; bool
@@ -652,6 +728,13 @@
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; bool { <span class="self">self </span>== other }
 
+            <span class="attr">#[inline]
+            </span><span class="kw">fn </span>as_usize(<span class="self">self</span>) -&gt; usize {
+                <span class="self">self </span><span class="kw">as </span>usize
+            }
+
+            <span class="kw">type </span>Unsigned = <span class="macro-nonterminal">$unsigned</span>;
+
             <span class="kw">const </span>TRUE: <span class="self">Self </span>= -<span class="number">1</span>;
             <span class="kw">const </span>FALSE: <span class="self">Self </span>= <span class="number">0</span>;
         }
@@ -661,11 +744,11 @@
     }
 }
 
-<span class="macro">impl_element! </span>{ i8 }
-<span class="macro">impl_element! </span>{ i16 }
-<span class="macro">impl_element! </span>{ i32 }
-<span class="macro">impl_element! </span>{ i64 }
-<span class="macro">impl_element! </span>{ isize }
+<span class="macro">impl_element! </span>{ i8, u8 }
+<span class="macro">impl_element! </span>{ i16, u16 }
+<span class="macro">impl_element! </span>{ i32, u32 }
+<span class="macro">impl_element! </span>{ i64, u64 }
+<span class="macro">impl_element! </span>{ isize, usize }
 
 <span class="doccomment">/// A SIMD vector mask for `N` elements of width specified by `Element`.
 ///
@@ -887,6 +970,67 @@
     #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
     </span><span class="kw">pub fn </span>from_bitmask_vector(bitmask: Simd&lt;u8, N&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(mask_impl::Mask::from_bitmask_vector(bitmask))
+    }
+
+    <span class="doccomment">/// Find the index of the first set element.
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
+    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # use simd::mask32x8;
+    /// assert_eq!(mask32x8::splat(false).first_set(), None);
+    /// assert_eq!(mask32x8::splat(true).first_set(), Some(0));
+    ///
+    /// let mask = mask32x8::from_array([false, true, false, false, true, false, false, true]);
+    /// assert_eq!(mask.first_set(), Some(1));
+    /// ```
+    </span><span class="attr">#[inline]
+    #[must_use = <span class="string">&quot;method returns the index and does not mutate the original value&quot;</span>]
+    </span><span class="kw">pub fn </span>first_set(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="comment">// If bitmasks are efficient, using them is better
+        </span><span class="kw">if </span><span class="macro">cfg!</span>(target_feature = <span class="string">&quot;sse&quot;</span>) &amp;&amp; N &lt;= <span class="number">64 </span>{
+            <span class="kw">let </span>tz = <span class="self">self</span>.to_bitmask().trailing_zeros();
+            <span class="kw">return if </span>tz == <span class="number">64 </span>{ <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(tz <span class="kw">as </span>usize) };
+        }
+
+        <span class="comment">// To find the first set index:
+        // * create a vector 0..N
+        // * replace unset mask elements in that vector with -1
+        // * perform _unsigned_ reduce-min
+        // * check if the result is -1 or an index
+
+        </span><span class="kw">let </span>index = Simd::from_array(
+            <span class="kw">const </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>index = [<span class="number">0</span>; N];
+                <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+                <span class="kw">while </span>i &lt; N {
+                    index[i] = i;
+                    i += <span class="number">1</span>;
+                }
+                index
+            },
+        );
+
+        <span class="comment">// Safety: the input and output are integer vectors
+        </span><span class="kw">let </span>index: Simd&lt;T, N&gt; = <span class="kw">unsafe </span>{ intrinsics::simd_cast(index) };
+
+        <span class="kw">let </span>masked_index = <span class="self">self</span>.select(index, <span class="self">Self</span>::splat(<span class="bool-val">true</span>).to_int());
+
+        <span class="comment">// Safety: the input and output are integer vectors
+        </span><span class="kw">let </span>masked_index: Simd&lt;T::Unsigned, N&gt; = <span class="kw">unsafe </span>{ intrinsics::simd_cast(masked_index) };
+
+        <span class="comment">// Safety: the input is an integer vector
+        </span><span class="kw">let </span>min_index: T::Unsigned = <span class="kw">unsafe </span>{ intrinsics::simd_reduce_min(masked_index) };
+
+        <span class="comment">// Safety: the return value is the unsigned version of T
+        </span><span class="kw">let </span>min_index: T = <span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span>min_index) };
+
+        <span class="kw">if </span>min_index.eq(T::TRUE) {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(min_index.as_usize())
+        }
     }
 }
 
