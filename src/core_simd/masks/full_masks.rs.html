@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks/full_masks.rs`."><title>full_masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (a57770440 2023-11-16)" data-channel="nightly" data-search-js="search-83dad86cfc406332.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f06f02fd918e3bb3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks/full_masks.rs`."><title>full_masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (4cb3beec8 2023-11-18)" data-channel="nightly" data-search-js="search-83dad86cfc406332.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f06f02fd918e3bb3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -314,11 +314,72 @@
 <a href="#314" id="314">314</a>
 <a href="#315" id="315">315</a>
 <a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.
 
-</span><span class="kw">use super</span>::{to_bitmask::ToBitMaskArray, MaskElement};
-<span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
-<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount, ToBitMask};
+</span><span class="kw">use </span><span class="kw">crate</span>::simd::intrinsics;
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, MaskElement, Simd, SupportedLaneCount};
 
 <span class="attr">#[repr(transparent)]
 </span><span class="kw">pub struct </span>Mask&lt;T, <span class="kw">const </span>N: usize&gt;(Simd&lt;T, N&gt;)
@@ -459,53 +520,49 @@
     }
 
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new array and does not mutate the original value&quot;</span>]
-    </span><span class="kw">pub fn </span>to_bitmask_array&lt;<span class="kw">const </span>M: usize&gt;(<span class="self">self</span>) -&gt; [u8; M]
-    <span class="kw">where
-        </span><span class="kw">super</span>::Mask&lt;T, N&gt;: ToBitMaskArray,
-    {
+    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="kw">pub fn </span>to_bitmask_vector(<span class="self">self</span>) -&gt; Simd&lt;u8, N&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>bitmask = Simd::splat(<span class="number">0</span>);
+
         <span class="comment">// Safety: Bytes is the right size array
         </span><span class="kw">unsafe </span>{
             <span class="comment">// Compute the bitmask
-            </span><span class="kw">let </span>bitmask: &lt;<span class="kw">super</span>::Mask&lt;T, N&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BitMaskArray =
+            </span><span class="kw">let </span><span class="kw-2">mut </span>bytes: &lt;LaneCount&lt;N&gt; <span class="kw">as </span>SupportedLaneCount&gt;::BitMask =
                 intrinsics::simd_bitmask(<span class="self">self</span>.<span class="number">0</span>);
-
-            <span class="comment">// Transmute to the return type
-            </span><span class="kw">let </span><span class="kw-2">mut </span>bitmask: [u8; M] = core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
 
             <span class="comment">// LLVM assumes bit order should match endianness
             </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for </span>x <span class="kw">in </span>bitmask.as_mut() {
-                    <span class="kw-2">*</span>x = x.reverse_bits();
+                <span class="kw">for </span>x <span class="kw">in </span>bytes.as_mut() {
+                    <span class="kw-2">*</span>x = x.reverse_bits()
                 }
-            };
+            }
 
-            bitmask
+            bitmask.as_mut_array()[..bytes.as_ref().len()].copy_from_slice(bytes.as_ref());
         }
+
+        bitmask
     }
 
     <span class="attr">#[inline]
     #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
-    </span><span class="kw">pub fn </span>from_bitmask_array&lt;<span class="kw">const </span>M: usize&gt;(<span class="kw-2">mut </span>bitmask: [u8; M]) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span><span class="kw">super</span>::Mask&lt;T, N&gt;: ToBitMaskArray,
-    {
+    </span><span class="kw">pub fn </span>from_bitmask_vector(bitmask: Simd&lt;u8, N&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>bytes = &lt;LaneCount&lt;N&gt; <span class="kw">as </span>SupportedLaneCount&gt;::BitMask::default();
+
         <span class="comment">// Safety: Bytes is the right size array
         </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>len = bytes.as_ref().len();
+            bytes.as_mut().copy_from_slice(<span class="kw-2">&amp;</span>bitmask.as_array()[..len]);
+
             <span class="comment">// LLVM assumes bit order should match endianness
             </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
-                <span class="kw">for </span>x <span class="kw">in </span>bitmask.as_mut() {
+                <span class="kw">for </span>x <span class="kw">in </span>bytes.as_mut() {
                     <span class="kw-2">*</span>x = x.reverse_bits();
                 }
             }
 
-            <span class="comment">// Transmute to the bitmask
-            </span><span class="kw">let </span>bitmask: &lt;<span class="kw">super</span>::Mask&lt;T, N&gt; <span class="kw">as </span>ToBitMaskArray&gt;::BitMaskArray =
-                core::mem::transmute_copy(<span class="kw-2">&amp;</span>bitmask);
-
             <span class="comment">// Compute the regular mask
             </span><span class="self">Self</span>::from_int_unchecked(intrinsics::simd_select_bitmask(
-                bitmask,
+                bytes,
                 <span class="self">Self</span>::splat(<span class="bool-val">true</span>).to_int(),
                 <span class="self">Self</span>::splat(<span class="bool-val">false</span>).to_int(),
             ))
@@ -513,40 +570,107 @@
     }
 
     <span class="attr">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>to_bitmask_integer&lt;U: ReverseBits&gt;(<span class="self">self</span>) -&gt; U
+    </span><span class="kw">unsafe fn </span>to_bitmask_impl&lt;U: ReverseBits, <span class="kw">const </span>M: usize&gt;(<span class="self">self</span>) -&gt; U
     <span class="kw">where
-        </span><span class="kw">super</span>::Mask&lt;T, N&gt;: ToBitMask&lt;BitMask = U&gt;,
+        </span>LaneCount&lt;M&gt;: SupportedLaneCount,
     {
-        <span class="comment">// Safety: U is required to be the appropriate bitmask type
-        </span><span class="kw">let </span>bitmask: U = <span class="kw">unsafe </span>{ intrinsics::simd_bitmask(<span class="self">self</span>.<span class="number">0</span>) };
+        <span class="kw">let </span>resized = <span class="self">self</span>.to_int().resize::&lt;M&gt;(T::FALSE);
+
+        <span class="comment">// Safety: `resized` is an integer vector with length M, which must match T
+        </span><span class="kw">let </span>bitmask: U = <span class="kw">unsafe </span>{ intrinsics::simd_bitmask(resized) };
 
         <span class="comment">// LLVM assumes bit order should match endianness
         </span><span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
-            bitmask.reverse_bits(N)
+            bitmask.reverse_bits(M)
         } <span class="kw">else </span>{
             bitmask
         }
     }
 
     <span class="attr">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_bitmask_integer&lt;U: ReverseBits&gt;(bitmask: U) -&gt; <span class="self">Self
+    </span><span class="kw">unsafe fn </span>from_bitmask_impl&lt;U: ReverseBits, <span class="kw">const </span>M: usize&gt;(bitmask: U) -&gt; <span class="self">Self
     </span><span class="kw">where
-        </span><span class="kw">super</span>::Mask&lt;T, N&gt;: ToBitMask&lt;BitMask = U&gt;,
+        </span>LaneCount&lt;M&gt;: SupportedLaneCount,
     {
         <span class="comment">// LLVM assumes bit order should match endianness
         </span><span class="kw">let </span>bitmask = <span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">&quot;big&quot;</span>) {
-            bitmask.reverse_bits(N)
+            bitmask.reverse_bits(M)
         } <span class="kw">else </span>{
             bitmask
         };
 
-        <span class="comment">// Safety: U is required to be the appropriate bitmask type
-        </span><span class="kw">unsafe </span>{
-            <span class="self">Self</span>::from_int_unchecked(intrinsics::simd_select_bitmask(
+        <span class="comment">// SAFETY: `mask` is the correct bitmask type for a u64 bitmask
+        </span><span class="kw">let </span>mask: Simd&lt;T, M&gt; = <span class="kw">unsafe </span>{
+            intrinsics::simd_select_bitmask(
                 bitmask,
-                <span class="self">Self</span>::splat(<span class="bool-val">true</span>).to_int(),
-                <span class="self">Self</span>::splat(<span class="bool-val">false</span>).to_int(),
-            ))
+                Simd::&lt;T, M&gt;::splat(T::TRUE),
+                Simd::&lt;T, M&gt;::splat(T::FALSE),
+            )
+        };
+
+        <span class="comment">// SAFETY: `mask` only contains `T::TRUE` or `T::FALSE`
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(mask.resize::&lt;N&gt;(T::FALSE)) }
+    }
+
+    <span class="attr">#[inline]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>to_bitmask_integer(<span class="self">self</span>) -&gt; u64 {
+        <span class="comment">// TODO modify simd_bitmask to zero-extend output, making this unnecessary
+        </span><span class="macro">macro_rules! </span>bitmask {
+            { $(<span class="macro-nonterminal">$ty</span>:ty: $(<span class="macro-nonterminal">$len</span>:literal),<span class="kw-2">*</span>;)* } =&gt; {
+                <span class="kw">match </span>N {
+                    $($(
+                    <span class="comment">// Safety: bitmask matches length
+                    </span><span class="macro-nonterminal">$len </span>=&gt; <span class="kw">unsafe </span>{ <span class="self">self</span>.to_bitmask_impl::&lt;<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$len</span>&gt;() <span class="kw">as </span>u64 },
+                    )<span class="kw-2">*</span>)*
+                    <span class="comment">// Safety: bitmask matches length
+                    </span><span class="kw">_ </span>=&gt; <span class="kw">unsafe </span>{ <span class="self">self</span>.to_bitmask_impl::&lt;u64, <span class="number">64</span>&gt;() },
+                }
+            }
+        }
+        <span class="attr">#[cfg(all_lane_counts)]
+        </span><span class="macro">bitmask! </span>{
+            u8: <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>;
+            u16: <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>;
+            u32: <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>, <span class="number">23</span>, <span class="number">24</span>, <span class="number">25</span>, <span class="number">26</span>, <span class="number">27</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">32</span>;
+            u64: <span class="number">33</span>, <span class="number">34</span>, <span class="number">35</span>, <span class="number">36</span>, <span class="number">37</span>, <span class="number">38</span>, <span class="number">39</span>, <span class="number">40</span>, <span class="number">41</span>, <span class="number">42</span>, <span class="number">43</span>, <span class="number">44</span>, <span class="number">45</span>, <span class="number">46</span>, <span class="number">47</span>, <span class="number">48</span>, <span class="number">49</span>, <span class="number">50</span>, <span class="number">51</span>, <span class="number">52</span>, <span class="number">53</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>, <span class="number">57</span>, <span class="number">58</span>, <span class="number">59</span>, <span class="number">60</span>, <span class="number">61</span>, <span class="number">62</span>, <span class="number">63</span>, <span class="number">64</span>;
+        }
+        <span class="attr">#[cfg(not(all_lane_counts))]
+        </span><span class="macro">bitmask! </span>{
+            u8: <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">8</span>;
+            u16: <span class="number">16</span>;
+            u32: <span class="number">32</span>;
+            u64: <span class="number">64</span>;
+        }
+    }
+
+    <span class="attr">#[inline]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_bitmask_integer(bitmask: u64) -&gt; <span class="self">Self </span>{
+        <span class="comment">// TODO modify simd_bitmask_select to truncate input, making this unnecessary
+        </span><span class="macro">macro_rules! </span>bitmask {
+            { $(<span class="macro-nonterminal">$ty</span>:ty: $(<span class="macro-nonterminal">$len</span>:literal),<span class="kw-2">*</span>;)* } =&gt; {
+                <span class="kw">match </span>N {
+                    $($(
+                    <span class="comment">// Safety: bitmask matches length
+                    </span><span class="macro-nonterminal">$len </span>=&gt; <span class="kw">unsafe </span>{ <span class="self">Self</span>::from_bitmask_impl::&lt;<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$len</span>&gt;(bitmask <span class="kw">as </span><span class="macro-nonterminal">$ty</span>) },
+                    )<span class="kw-2">*</span>)*
+                    <span class="comment">// Safety: bitmask matches length
+                    </span><span class="kw">_ </span>=&gt; <span class="kw">unsafe </span>{ <span class="self">Self</span>::from_bitmask_impl::&lt;u64, <span class="number">64</span>&gt;(bitmask) },
+                }
+            }
+        }
+        <span class="attr">#[cfg(all_lane_counts)]
+        </span><span class="macro">bitmask! </span>{
+            u8: <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>;
+            u16: <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>;
+            u32: <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>, <span class="number">23</span>, <span class="number">24</span>, <span class="number">25</span>, <span class="number">26</span>, <span class="number">27</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">32</span>;
+            u64: <span class="number">33</span>, <span class="number">34</span>, <span class="number">35</span>, <span class="number">36</span>, <span class="number">37</span>, <span class="number">38</span>, <span class="number">39</span>, <span class="number">40</span>, <span class="number">41</span>, <span class="number">42</span>, <span class="number">43</span>, <span class="number">44</span>, <span class="number">45</span>, <span class="number">46</span>, <span class="number">47</span>, <span class="number">48</span>, <span class="number">49</span>, <span class="number">50</span>, <span class="number">51</span>, <span class="number">52</span>, <span class="number">53</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>, <span class="number">57</span>, <span class="number">58</span>, <span class="number">59</span>, <span class="number">60</span>, <span class="number">61</span>, <span class="number">62</span>, <span class="number">63</span>, <span class="number">64</span>;
+        }
+        <span class="attr">#[cfg(not(all_lane_counts))]
+        </span><span class="macro">bitmask! </span>{
+            u8: <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">8</span>;
+            u16: <span class="number">16</span>;
+            u32: <span class="number">32</span>;
+            u64: <span class="number">64</span>;
         }
     }
 
