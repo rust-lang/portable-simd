@@ -112,9 +112,9 @@ extern "platform-intrinsic" {
     /// ptr: vector of pointers to read from
     /// mask: a "wide" mask of integers, selects as if simd_select(mask, read(ptr), val)
     /// note, the LLVM intrinsic accepts a mask vector of `<N x i1>`
-    pub(crate) fn simd_masked_load<T, U, V>(val: T, ptr: U, mask: V) -> T;
+    pub(crate) fn simd_masked_load<V, U, T>(mask: V, ptr: U, val: T) -> T;
     /// like masked_load, but more spicy, as it writes instead of reads
-    pub(crate) fn simd_masked_store<T, U, V>(val: T, ptr: U, mask: V);
+    pub(crate) fn simd_masked_store<V, U, T>(mask: V, ptr: U, val: T);
 
     // {s,u}add.sat
     pub(crate) fn simd_saturating_add<T>(x: T, y: T) -> T;

@@ -408,7 +408,7 @@ where
         enable: Mask<<T as SimdElement>::Mask, N>,
         or: Self,
     ) -> Self {
-        unsafe { intrinsics::simd_masked_load(or, ptr, enable.to_int()) }
+        unsafe { intrinsics::simd_masked_load(enable.to_int(), ptr, or) }
     }
 
     /// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
@@ -631,7 +631,7 @@ where
 
     #[inline]
     pub unsafe fn masked_store_ptr(self, ptr: *mut T, enable: Mask<<T as SimdElement>::Mask, N>) {
-        unsafe { intrinsics::simd_masked_store(self, ptr, enable.to_int()) }
+        unsafe { intrinsics::simd_masked_store(enable.to_int(), ptr, self) }
     }
 
     /// Writes the values in a SIMD vector to potentially discontiguous indices in `slice`.
