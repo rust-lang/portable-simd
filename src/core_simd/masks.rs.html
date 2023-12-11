@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks.rs`."><title>masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (90e321d82 2023-12-02)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/masks.rs`."><title>masks.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (d86d65bbc 2023-12-10)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -688,12 +688,12 @@
 </span><span class="attr">#![allow(non_camel_case_types)]
 
 #[cfg_attr(
-    not(all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_feature = <span class="string">&quot;avx512f&quot;</span>)),
-    path = <span class="string">&quot;masks/full_masks.rs&quot;
+    not(all(target_arch = <span class="string">"x86_64"</span>, target_feature = <span class="string">"avx512f"</span>)),
+    path = <span class="string">"masks/full_masks.rs"
 </span>)]
 #[cfg_attr(
-    all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_feature = <span class="string">&quot;avx512f&quot;</span>),
-    path = <span class="string">&quot;masks/bitmask.rs&quot;
+    all(target_arch = <span class="string">"x86_64"</span>, target_feature = <span class="string">"avx512f"</span>),
+    path = <span class="string">"masks/bitmask.rs"
 </span>)]
 </span><span class="kw">mod </span>mask_impl;
 
@@ -818,12 +818,12 @@
     <span class="doccomment">/// Converts an array of bools to a SIMD mask.
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>from_array(array: [bool; N]) -&gt; <span class="self">Self </span>{
-        <span class="comment">// SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of
+        <span class="comment">// SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
         //     true:    0b_0000_0001
         //     false:   0b_0000_0000
         // Thus, an array of bools is also a valid array of bytes: [u8; N]
-        // This would be hypothetically valid as an &quot;in-place&quot; transmute,
-        // but these are &quot;dependently-sized&quot; types, so copy elision it is!
+        // This would be hypothetically valid as an "in-place" transmute,
+        // but these are "dependently-sized" types, so copy elision it is!
         </span><span class="kw">unsafe </span>{
             <span class="kw">let </span>bytes: [u8; N] = mem::transmute_copy(<span class="kw-2">&amp;</span>array);
             <span class="kw">let </span>bools: Simd&lt;i8, N&gt; = intrinsics::simd_ne(Simd::from_array(bytes), Simd::splat(<span class="number">0u8</span>));
@@ -835,15 +835,15 @@
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>to_array(<span class="self">self</span>) -&gt; [bool; N] {
         <span class="comment">// This follows mostly the same logic as from_array.
-        // SAFETY: Rust&#39;s bool has a layout of 1 byte (u8) with a value of
+        // SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
         //     true:    0b_0000_0001
         //     false:   0b_0000_0000
         // Thus, an array of bools is also a valid array of bytes: [u8; N]
         // Since our masks are equal to integers where all bits are set,
         // we can simply convert them to i8s, and then bitand them by the
-        // bitpattern for Rust&#39;s &quot;true&quot; bool.
-        // This would be hypothetically valid as an &quot;in-place&quot; transmute,
-        // but these are &quot;dependently-sized&quot; types, so copy elision it is!
+        // bitpattern for Rust's "true" bool.
+        // This would be hypothetically valid as an "in-place" transmute,
+        // but these are "dependently-sized" types, so copy elision it is!
         </span><span class="kw">unsafe </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>bytes: Simd&lt;i8, N&gt; = intrinsics::simd_cast(<span class="self">self</span>.to_int());
             bytes &amp;= Simd::splat(<span class="number">1i8</span>);
@@ -857,7 +857,7 @@
     /// # Safety
     /// All elements must be either 0 or -1.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">pub unsafe fn </span>from_int_unchecked(value: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
         <span class="comment">// Safety: the caller must confirm this invariant
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>(mask_impl::Mask::from_int_unchecked(value)) }
@@ -869,10 +869,10 @@
     /// # Panics
     /// Panics if any element is not 0 or -1.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     #[track_caller]
     </span><span class="kw">pub fn </span>from_int(value: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
-        <span class="macro">assert!</span>(T::valid(value), <span class="string">&quot;all values must be either 0 or -1&quot;</span>,);
+        <span class="macro">assert!</span>(T::valid(value), <span class="string">"all values must be either 0 or -1"</span>,);
         <span class="comment">// Safety: the validity has been checked
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(value) }
     }
@@ -880,14 +880,14 @@
     <span class="doccomment">/// Converts the mask to a vector of integers, where 0 represents `false` and -1
     /// represents `true`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>to_int(<span class="self">self</span>) -&gt; Simd&lt;T, N&gt; {
         <span class="self">self</span>.<span class="number">0</span>.to_int()
     }
 
     <span class="doccomment">/// Converts the mask to a mask of any other element size.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>cast&lt;U: MaskElement&gt;(<span class="self">self</span>) -&gt; Mask&lt;U, N&gt; {
         Mask(<span class="self">self</span>.<span class="number">0</span>.convert())
     }
@@ -897,7 +897,7 @@
     /// # Safety
     /// `index` must be less than `self.len()`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     </span><span class="kw">pub unsafe fn </span>test_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; bool {
         <span class="comment">// Safety: the caller must confirm this invariant
         </span><span class="kw">unsafe </span>{ <span class="self">self</span>.<span class="number">0</span>.test_unchecked(index) }
@@ -908,10 +908,10 @@
     /// # Panics
     /// Panics if `index` is greater than or equal to the number of elements in the vector.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     #[track_caller]
     </span><span class="kw">pub fn </span>test(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; bool {
-        <span class="macro">assert!</span>(index &lt; N, <span class="string">&quot;element index out of range&quot;</span>);
+        <span class="macro">assert!</span>(index &lt; N, <span class="string">"element index out of range"</span>);
         <span class="comment">// Safety: the element index has been checked
         </span><span class="kw">unsafe </span>{ <span class="self">self</span>.test_unchecked(index) }
     }
@@ -935,7 +935,7 @@
     </span><span class="attr">#[inline]
     #[track_caller]
     </span><span class="kw">pub fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, value: bool) {
-        <span class="macro">assert!</span>(index &lt; N, <span class="string">&quot;element index out of range&quot;</span>);
+        <span class="macro">assert!</span>(index &lt; N, <span class="string">"element index out of range"</span>);
         <span class="comment">// Safety: the element index has been checked
         </span><span class="kw">unsafe </span>{
             <span class="self">self</span>.set_unchecked(index, value);
@@ -944,14 +944,14 @@
 
     <span class="doccomment">/// Returns true if any element is set, or false otherwise.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>any(<span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.<span class="number">0</span>.any()
     }
 
     <span class="doccomment">/// Returns true if all elements are set, or false otherwise.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>all(<span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.<span class="number">0</span>.all()
     }
@@ -961,7 +961,7 @@
     /// Each bit is set if the corresponding element in the mask is `true`.
     /// If the mask contains more than 64 elements, the bitmask is truncated to the first 64.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new integer and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new integer and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>to_bitmask(<span class="self">self</span>) -&gt; u64 {
         <span class="self">self</span>.<span class="number">0</span>.to_bitmask_integer()
     }
@@ -971,7 +971,7 @@
     /// For each bit, if it is set, the corresponding element in the mask is set to `true`.
     /// If the mask contains more than 64 elements, the remainder are set to `false`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>from_bitmask(bitmask: u64) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(mask_impl::Mask::from_bitmask_integer(bitmask))
     }
@@ -984,14 +984,14 @@
     /// The bits are packed into the first N bits of the vector:
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::mask32x8;
     /// let mask = mask32x8::from_array([true, false, true, false, false, false, true, false]);
     /// assert_eq!(mask.to_bitmask_vector()[0], 0b01000101);
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new integer and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new integer and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>to_bitmask_vector(<span class="self">self</span>) -&gt; Simd&lt;u8, N&gt; {
         <span class="self">self</span>.<span class="number">0</span>.to_bitmask_vector()
     }
@@ -1003,8 +1003,8 @@
     /// The bits are packed into the first N bits of the vector:
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{mask32x8, u8x8};
     /// let bitmask = u8x8::from_array([0b01000101, 0, 0, 0, 0, 0, 0, 0]);
     /// assert_eq!(
@@ -1013,7 +1013,7 @@
     /// );
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>from_bitmask_vector(bitmask: Simd&lt;u8, N&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(mask_impl::Mask::from_bitmask_vector(bitmask))
     }
@@ -1022,8 +1022,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::mask32x8;
     /// assert_eq!(mask32x8::splat(false).first_set(), None);
     /// assert_eq!(mask32x8::splat(true).first_set(), Some(0));
@@ -1032,10 +1032,10 @@
     /// assert_eq!(mask.first_set(), Some(1));
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns the index and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns the index and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>first_set(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
         <span class="comment">// If bitmasks are efficient, using them is better
-        </span><span class="kw">if </span><span class="macro">cfg!</span>(target_feature = <span class="string">&quot;sse&quot;</span>) &amp;&amp; N &lt;= <span class="number">64 </span>{
+        </span><span class="kw">if </span><span class="macro">cfg!</span>(target_feature = <span class="string">"sse"</span>) &amp;&amp; N &lt;= <span class="number">64 </span>{
             <span class="kw">let </span>tz = <span class="self">self</span>.to_bitmask().trailing_zeros();
             <span class="kw">return if </span>tz == <span class="number">64 </span>{ <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(tz <span class="kw">as </span>usize) };
         }
@@ -1109,7 +1109,7 @@
     LaneCount&lt;N&gt;: SupportedLaneCount,
 {
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a defaulted mask with all elements set to false (0)&quot;</span>]
+    #[must_use = <span class="string">"method returns a defaulted mask with all elements set to false (0)"</span>]
     </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::splat(<span class="bool-val">false</span>)
     }
@@ -1121,7 +1121,7 @@
     LaneCount&lt;N&gt;: SupportedLaneCount,
 {
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new bool and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="self">self</span>.<span class="number">0 </span>== other.<span class="number">0
     </span>}
@@ -1133,7 +1133,7 @@
     LaneCount&lt;N&gt;: SupportedLaneCount,
 {
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new Ordering and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new Ordering and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
         <span class="self">self</span>.<span class="number">0</span>.partial_cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
     }
@@ -1145,7 +1145,7 @@
     LaneCount&lt;N&gt;: SupportedLaneCount,
 {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
         f.debug_list()
             .entries((<span class="number">0</span>..N).map(|i| <span class="self">self</span>.test(i)))
             .finish()
@@ -1159,7 +1159,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>&amp; rhs.<span class="number">0</span>)
     }
@@ -1172,7 +1172,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self </span>{
         <span class="self">self </span>&amp; <span class="self">Self</span>::splat(rhs)
     }
@@ -1185,7 +1185,7 @@
 {
     <span class="kw">type </span>Output = Mask&lt;T, N&gt;;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitand(<span class="self">self</span>, rhs: Mask&lt;T, N&gt;) -&gt; Mask&lt;T, N&gt; {
         Mask::splat(<span class="self">self</span>) &amp; rhs
     }
@@ -1198,7 +1198,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>| rhs.<span class="number">0</span>)
     }
@@ -1211,7 +1211,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self </span>{
         <span class="self">self </span>| <span class="self">Self</span>::splat(rhs)
     }
@@ -1224,7 +1224,7 @@
 {
     <span class="kw">type </span>Output = Mask&lt;T, N&gt;;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitor(<span class="self">self</span>, rhs: Mask&lt;T, N&gt;) -&gt; Mask&lt;T, N&gt; {
         Mask::splat(<span class="self">self</span>) | rhs
     }
@@ -1237,7 +1237,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Output {
         <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0 </span>^ rhs.<span class="number">0</span>)
     }
@@ -1250,7 +1250,7 @@
 {
     <span class="kw">type </span>Output = <span class="self">Self</span>;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: bool) -&gt; <span class="self">Self</span>::Output {
         <span class="self">self </span>^ <span class="self">Self</span>::splat(rhs)
     }
@@ -1263,7 +1263,7 @@
 {
     <span class="kw">type </span>Output = Mask&lt;T, N&gt;;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>bitxor(<span class="self">self</span>, rhs: Mask&lt;T, N&gt;) -&gt; <span class="self">Self</span>::Output {
         Mask::splat(<span class="self">self</span>) ^ rhs
     }
@@ -1276,7 +1276,7 @@
 {
     <span class="kw">type </span>Output = Mask&lt;T, N&gt;;
     <span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
         <span class="self">Self</span>(!<span class="self">self</span>.<span class="number">0</span>)
     }

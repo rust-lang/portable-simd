@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/intrinsics.rs`."><title>intrinsics.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (90e321d82 2023-12-02)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/intrinsics.rs`."><title>intrinsics.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (d86d65bbc 2023-12-10)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -173,25 +173,25 @@
 //!
 //! The LLVM assembly language is documented here: &lt;https://llvm.org/docs/LangRef.html&gt;
 //!
-//! A quick glossary of jargon that may appear in this module, mostly paraphrasing LLVM&#39;s LangRef:
-//! - poison: &quot;undefined behavior as a value&quot;. specifically, it is like uninit memory (such as padding bytes). it is &quot;safe&quot; to create poison, BUT
+//! A quick glossary of jargon that may appear in this module, mostly paraphrasing LLVM's LangRef:
+//! - poison: "undefined behavior as a value". specifically, it is like uninit memory (such as padding bytes). it is "safe" to create poison, BUT
 //!   poison MUST NOT be observed from safe code, as operations on poison return poison, like NaN. unlike NaN, which has defined comparisons,
-//!   poison is neither true nor false, and LLVM may also convert it to undef (at which point it is both). so, it can&#39;t be conditioned on, either.
-//! - undef: &quot;a value that is every value&quot;. functionally like poison, insofar as Rust is concerned. poison may become this. note:
+//!   poison is neither true nor false, and LLVM may also convert it to undef (at which point it is both). so, it can't be conditioned on, either.
+//! - undef: "a value that is every value". functionally like poison, insofar as Rust is concerned. poison may become this. note:
 //!   this means that division by poison or undef is like division by zero, which means it inflicts...
-//! - &quot;UB&quot;: poison and undef cover most of what people call &quot;UB&quot;. &quot;UB&quot; means this operation immediately invalidates the program:
-//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the &quot;good end&quot;.
-//!   The &quot;bad end&quot; is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,
-//!   and destroy the other branch, potentially deleting safe code and violating Rust&#39;s `unsafe` contract.
+//! - "UB": poison and undef cover most of what people call "UB". "UB" means this operation immediately invalidates the program:
+//!   LLVM is allowed to lower it to `ud2` or other opcodes that may cause an illegal instruction exception, and this is the "good end".
+//!   The "bad end" is that LLVM may reverse time to the moment control flow diverged on a path towards undefined behavior,
+//!   and destroy the other branch, potentially deleting safe code and violating Rust's `unsafe` contract.
 //!
 //! Note that according to LLVM, vectors are not arrays, but they are equivalent when stored to and loaded from memory.
 //!
 //! Unless stated otherwise, all intrinsics for binary operations require SIMD vectors of equal types and lengths.
 
-</span><span class="comment">// These intrinsics aren&#39;t linked directly from LLVM and are mostly undocumented, however they are
+</span><span class="comment">// These intrinsics aren't linked directly from LLVM and are mostly undocumented, however they are
 // mostly lowered to the matching LLVM instructions by the compiler in a fairly straightforward manner.
 // The associated LLVM instruction or intrinsic is documented alongside each Rust intrinsic function.
-</span><span class="kw">extern </span><span class="string">&quot;platform-intrinsic&quot; </span>{
+</span><span class="kw">extern </span><span class="string">"platform-intrinsic" </span>{
     <span class="doccomment">/// add/fadd
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_add&lt;T&gt;(x: T, y: T) -&gt; T;
 
@@ -210,7 +210,7 @@
     <span class="doccomment">/// urem/srem/frem
     /// ints and uints: {s,u}rem incur UB if division by zero occurs.
     /// ints: srem is UB for int::MIN / -1.
-    /// floats: frem is equivalent to libm::fmod in the &quot;default&quot; floating point environment, sans errno.
+    /// floats: frem is equivalent to libm::fmod in the "default" floating point environment, sans errno.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_rem&lt;T&gt;(lhs: T, rhs: T) -&gt; T;
 
     <span class="doccomment">/// shl
@@ -236,13 +236,13 @@
     /// but the truncated value must fit in the target type or the result is poison.
     /// use `simd_as` instead for a cast that performs a saturating conversion.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_cast&lt;T, U&gt;(x: T) -&gt; U;
-    <span class="doccomment">/// follows Rust&#39;s `T as U` semantics, including saturating float casts
+    <span class="doccomment">/// follows Rust's `T as U` semantics, including saturating float casts
     /// which amounts to the same as `simd_cast` for many cases
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_as&lt;T, U&gt;(x: T) -&gt; U;
 
     <span class="doccomment">/// neg/fneg
-    /// ints: ultimately becomes a call to cg_ssa&#39;s BuilderMethods::neg. cg_llvm equates this to `simd_sub(Simd::splat(0), x)`.
-    /// floats: LLVM&#39;s fneg, which changes the floating point sign bit. Some arches have instructions for it.
+    /// ints: ultimately becomes a call to cg_ssa's BuilderMethods::neg. cg_llvm equates this to `simd_sub(Simd::splat(0), x)`.
+    /// floats: LLVM's fneg, which changes the floating point sign bit. Some arches have instructions for it.
     /// Rust panics for Neg::neg(int::MIN) due to overflow, but it is not UB in LLVM without `nsw`.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_neg&lt;T&gt;(x: T) -&gt; T;
 
@@ -262,14 +262,14 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_ge&lt;T, U&gt;(x: T, y: T) -&gt; U;
 
     <span class="comment">// shufflevector
-    // idx: LLVM calls it a &quot;shuffle mask vector constant&quot;, a vector of i32s
+    // idx: LLVM calls it a "shuffle mask vector constant", a vector of i32s
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_shuffle&lt;T, U, V&gt;(x: T, y: T, idx: U) -&gt; V;
 
     <span class="doccomment">/// llvm.masked.gather
     /// like a loop of pointer reads
     /// val: vector of values to select if a lane is masked
     /// ptr: vector of pointers to read from
-    /// mask: a &quot;wide&quot; mask of integers, selects as if simd_select(mask, read(ptr), val)
+    /// mask: a "wide" mask of integers, selects as if simd_select(mask, read(ptr), val)
     /// note, the LLVM intrinsic accepts a mask vector of `&lt;N x i1&gt;`
     /// FIXME: review this if/when we fix up our mask story in general?
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_gather&lt;T, U, V&gt;(val: T, ptr: U, mask: V) -&gt; T;
@@ -312,7 +312,7 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_bitmask&lt;T, U&gt;(x: T) -&gt; U;
 
     <span class="comment">// select
-    // first argument is a vector of integers, -1 (all bits 1) is &quot;true&quot;
+    // first argument is a vector of integers, -1 (all bits 1) is "true"
     // logically equivalent to (yes &amp; m) | (no &amp; (m^-1),
     // but you can use it on floats.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>simd_select&lt;M, T&gt;(m: M, yes: T, no: T) -&gt; T;

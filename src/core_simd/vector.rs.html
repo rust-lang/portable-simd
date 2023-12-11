@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (90e321d82 2023-12-02)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/vector.rs`."><title>vector.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (d86d65bbc 2023-12-10)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -989,7 +989,7 @@
 
 <span class="doccomment">/// A SIMD vector with the shape of `[T; N]` but the operations of `T`.
 ///
-/// `Simd&lt;T, N&gt;` supports the operators (+, *, etc.) that `T` does in &quot;elementwise&quot; fashion.
+/// `Simd&lt;T, N&gt;` supports the operators (+, *, etc.) that `T` does in "elementwise" fashion.
 /// These take the element at each index from the left-hand side and right-hand side,
 /// perform the operation, then return the result in the same index in a vector of equal size.
 /// However, `Simd` differs from normal iteration and normal arrays:
@@ -1018,9 +1018,9 @@
 ///
 /// `Simd` with integer elements treats operators as wrapping, as if `T` was [`Wrapping&lt;T&gt;`].
 /// Thus, `Simd` does not implement `wrapping_add`, because that is the default behavior.
-/// This means there is no warning on overflows, even in &quot;debug&quot; builds.
-/// For most applications where `Simd` is appropriate, it is &quot;not a bug&quot; to wrap,
-/// and even &quot;debug builds&quot; are unlikely to tolerate the loss of performance.
+/// This means there is no warning on overflows, even in "debug" builds.
+/// For most applications where `Simd` is appropriate, it is "not a bug" to wrap,
+/// and even "debug builds" are unlikely to tolerate the loss of performance.
 /// You may want to consider using explicitly checked arithmetic if such is required.
 /// Division by zero on integers still causes a panic, so
 /// you may want to consider using `f32` or `f64` if that is unacceptable.
@@ -1028,13 +1028,13 @@
 /// [`Wrapping&lt;T&gt;`]: core::num::Wrapping
 ///
 /// # Layout
-/// `Simd&lt;T, N&gt;` has a layout similar to `[T; N]` (identical &quot;shapes&quot;), with a greater alignment.
+/// `Simd&lt;T, N&gt;` has a layout similar to `[T; N]` (identical "shapes"), with a greater alignment.
 /// `[T; N]` is aligned to `T`, but `Simd&lt;T, N&gt;` will have an alignment based on both `T` and `N`.
-/// Thus it is sound to [`transmute`] `Simd&lt;T, N&gt;` to `[T; N]` and should optimize to &quot;zero cost&quot;,
+/// Thus it is sound to [`transmute`] `Simd&lt;T, N&gt;` to `[T; N]` and should optimize to "zero cost",
 /// but the reverse transmutation may require a copy the compiler cannot simply elide.
 ///
-/// # ABI &quot;Features&quot;
-/// Due to Rust&#39;s safety guarantees, `Simd&lt;T, N&gt;` is currently passed and returned via memory,
+/// # ABI "Features"
+/// Due to Rust's safety guarantees, `Simd&lt;T, N&gt;` is currently passed and returned via memory,
 /// not SIMD registers, except as an optimization. Using `#[inline]` on functions that accept
 /// `Simd&lt;T, N&gt;` or return it is recommended, at the cost of code generation time, as
 /// inlining SIMD-using functions can omit a large function prolog or epilog and thus
@@ -1050,14 +1050,14 @@
 /// but references to `[T; N]` are not interchangeable with those to `Simd&lt;T, N&gt;`.
 /// Thus, when using `unsafe` Rust to read and write `Simd&lt;T, N&gt;` through [raw pointers], it is a good idea to first try with
 /// [`read_unaligned`] and [`write_unaligned`]. This is because:
-/// - [`read`] and [`write`] require full alignment (in this case, `Simd&lt;T, N&gt;`&#39;s alignment)
+/// - [`read`] and [`write`] require full alignment (in this case, `Simd&lt;T, N&gt;`'s alignment)
 /// - `Simd&lt;T, N&gt;` is often read from or written to [`[T]`](slice) and other types aligned to `T`
 /// - combining these actions violates the `unsafe` contract and explodes the program into
 ///   a puff of **undefined behavior**
 /// - the compiler can implicitly adjust layouts to make unaligned reads or writes fully aligned
 ///   if it sees the optimization
-/// - most contemporary processors with &quot;aligned&quot; and &quot;unaligned&quot; read and write instructions
-///   exhibit no performance difference if the &quot;unaligned&quot; variant is aligned at runtime
+/// - most contemporary processors with "aligned" and "unaligned" read and write instructions
+///   exhibit no performance difference if the "unaligned" variant is aligned at runtime
 ///
 /// Less obligations mean unaligned reads and writes are less likely to make the program unsound,
 /// and may be just as fast as stricter alternatives.
@@ -1101,8 +1101,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::u32x4;
     /// let v = u32x4::splat(0);
     /// assert_eq!(v.len(), 4);
@@ -1119,15 +1119,15 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::u32x4;
     /// let v = u32x4::splat(8);
     /// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
-        <span class="comment">// This is preferred over `[value; N]`, since it&#39;s explicitly a splat:
+        <span class="comment">// This is preferred over `[value; N]`, since it's explicitly a splat:
         // https://github.com/rust-lang/rust/issues/97804
         </span><span class="kw">struct </span>Splat;
         <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;N&gt; <span class="kw">for </span>Splat {
@@ -1152,7 +1152,7 @@
         // potential padding at the end, so pointer casting to a
         // `&amp;[T; N]` is safe.
         //
-        // NOTE: This deliberately doesn&#39;t just use `&amp;self.0`, see the comment
+        // NOTE: This deliberately doesn't just use `&amp;self.0`, see the comment
         // on the struct definition for details.
         </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*const </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*const </span>[T; N]) }
     }
@@ -1164,7 +1164,7 @@
         // potential padding at the end, so pointer casting to a
         // `&amp;mut [T; N]` is safe.
         //
-        // NOTE: This deliberately doesn&#39;t just use `&amp;mut self.0`, see the comment
+        // NOTE: This deliberately doesn't just use `&amp;mut self.0`, see the comment
         // on the struct definition for details.
         </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>(<span class="self">self </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="self">Self </span><span class="kw">as </span><span class="kw-2">*mut </span>[T; N]) }
     }
@@ -1175,7 +1175,7 @@
     /// With padding, `read_unaligned` will read past the end of an array of N elements.
     ///
     /// # Safety
-    /// Reading `ptr` must be safe, as if by `&lt;*const [T; N]&gt;::read_unaligned`.
+    /// Reading `ptr` must be safe, as if by `&lt;*const [T; N]&gt;::read`.
     </span><span class="attr">#[inline]
     </span><span class="kw">const unsafe fn </span>load(ptr: <span class="kw-2">*const </span>[T; N]) -&gt; <span class="self">Self </span>{
         <span class="comment">// There are potentially simpler ways to write this function, but this should result in
@@ -1196,7 +1196,7 @@
     /// See `load` as to why this function is necessary.
     ///
     /// # Safety
-    /// Writing to `ptr` must be safe, as if by `&lt;*mut [T; N]&gt;::write_unaligned`.
+    /// Writing to `ptr` must be safe, as if by `&lt;*mut [T; N]&gt;::write`.
     </span><span class="attr">#[inline]
     </span><span class="kw">const unsafe fn </span>store(<span class="self">self</span>, ptr: <span class="kw-2">*mut </span>[T; N]) {
         <span class="comment">// There are potentially simpler ways to write this function, but this should result in
@@ -1217,7 +1217,7 @@
         // FIXME: We currently use a pointer load instead of `transmute_copy` because `repr(simd)`
         // results in padding for non-power-of-2 vectors (so vectors are larger than arrays).
         //
-        // NOTE: This deliberately doesn&#39;t just use `Self(array)`, see the comment
+        // NOTE: This deliberately doesn't just use `Self(array)`, see the comment
         // on the struct definition for details.
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::load(<span class="kw-2">&amp;</span>array) }
     }
@@ -1231,7 +1231,7 @@
         // FIXME: We currently use a pointer store instead of `transmute_copy` because `repr(simd)`
         // results in padding for non-power-of-2 vectors (so vectors are larger than arrays).
         //
-        // NOTE: This deliberately doesn&#39;t just use `self.0`, see the comment
+        // NOTE: This deliberately doesn't just use `self.0`, see the comment
         // on the struct definition for details.
         </span><span class="kw">unsafe </span>{
             <span class="self">self</span>.store(tmp.as_mut_ptr());
@@ -1243,7 +1243,7 @@
     ///
     /// # Panics
     ///
-    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::N`.
+    /// Panics if the slice's length is less than the vector's `Simd::N`.
     ///
     /// # Example
     ///
@@ -1260,7 +1260,7 @@
     </span><span class="kw">pub const fn </span>from_slice(slice: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
         <span class="macro">assert!</span>(
             slice.len() &gt;= <span class="self">Self</span>::LEN,
-            <span class="string">&quot;slice length must be at least the number of elements&quot;
+            <span class="string">"slice length must be at least the number of elements"
         </span>);
         <span class="comment">// SAFETY: We just checked that the slice contains
         // at least `N` elements.
@@ -1271,14 +1271,14 @@
     ///
     /// # Panics
     ///
-    /// Panics if the slice&#39;s length is less than the vector&#39;s `Simd::N`.
+    /// Panics if the slice's length is less than the vector's `Simd::N`.
     ///
     /// # Example
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::u32x4;
     /// let mut dest = vec![0; 6];
     /// let v = u32x4::from_array([1, 2, 3, 4]);
@@ -1290,7 +1290,7 @@
     </span><span class="kw">pub fn </span>copy_to_slice(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
         <span class="macro">assert!</span>(
             slice.len() &gt;= <span class="self">Self</span>::LEN,
-            <span class="string">&quot;slice length must be at least the number of elements&quot;
+            <span class="string">"slice length must be at least the number of elements"
         </span>);
         <span class="comment">// SAFETY: We just checked that the slice contains
         // at least `N` elements.
@@ -1380,17 +1380,17 @@
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Simd, cmp::SimdPartialOrd, Mask};
     /// let vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
     /// let idxs = Simd::from_array([9, 3, 0, 5]); // Includes an out-of-bounds index
     /// let alt = Simd::from_array([-5, -4, -3, -2]);
     /// let enable = Mask::from_array([true, true, true, false]); // Includes a masked element
-    /// // If this mask was used to gather, it would be unsound. Let&#39;s fix that.
+    /// // If this mask was used to gather, it would be unsound. Let's fix that.
     /// let enable = enable &amp; idxs.simd_lt(Simd::splat(vec.len()));
     ///
-    /// // The out-of-bounds index has been masked, so it&#39;s safe to gather now.
+    /// // The out-of-bounds index has been masked, so it's safe to gather now.
     /// let result = unsafe { Simd::gather_select_unchecked(&amp;vec, enable, idxs, alt) };
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
@@ -1420,8 +1420,8 @@
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let values = [6, 2, 4, 9];
     /// let offsets = Simd::from_array([1, 0, 0, 3]);
@@ -1436,7 +1436,7 @@
     </span><span class="kw">where
         </span>T: Default,
     {
-        <span class="comment">// TODO: add an intrinsic that doesn&#39;t use a passthru vector, and remove the T: Default bound
+        <span class="comment">// TODO: add an intrinsic that doesn't use a passthru vector, and remove the T: Default bound
         // Safety: The caller is responsible for upholding all invariants
         </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::gather_select_ptr(source, Mask::splat(<span class="bool-val">true</span>), <span class="self">Self</span>::default()) }
     }
@@ -1453,8 +1453,8 @@
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let values = [6, 2, 4, 9];
     /// let enable = Mask::from_array([true, true, false, true]);
@@ -1505,8 +1505,8 @@
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Simd, Mask};
     /// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
     /// let idxs = Simd::from_array([9, 3, 0, 0]); // Includes an out-of-bounds index
@@ -1536,17 +1536,17 @@
     /// # Examples
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Simd, cmp::SimdPartialOrd, Mask};
     /// let mut vec: Vec&lt;i32&gt; = vec![10, 11, 12, 13, 14, 15, 16, 17, 18];
     /// let idxs = Simd::from_array([9, 3, 0, 0]);
     /// let vals = Simd::from_array([-27, 82, -41, 124]);
     /// let enable = Mask::from_array([true, true, true, false]); // Masks the final index
-    /// // If this mask was used to scatter, it would be unsound. Let&#39;s fix that.
+    /// // If this mask was used to scatter, it would be unsound. Let's fix that.
     /// let enable = enable &amp; idxs.simd_lt(Simd::splat(vec.len()));
     ///
-    /// // We have masked the OOB index, so it&#39;s safe to scatter now.
+    /// // We have masked the OOB index, so it's safe to scatter now.
     /// unsafe { vals.scatter_select_unchecked(&amp;mut vec, enable, idxs); }
     /// // The second write to index 0 was masked, thus omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
@@ -1560,14 +1560,14 @@
         enable: Mask&lt;isize, N&gt;,
         idxs: Simd&lt;usize, N&gt;,
     ) {
-        <span class="comment">// Safety: This block works with *mut T derived from &amp;mut &#39;a [T],
-        // which means it is delicate in Rust&#39;s borrowing model, circa 2021:
-        // &amp;mut &#39;a [T] asserts uniqueness, so deriving &amp;&#39;a [T] invalidates live *mut Ts!
+        <span class="comment">// Safety: This block works with *mut T derived from &amp;mut 'a [T],
+        // which means it is delicate in Rust's borrowing model, circa 2021:
+        // &amp;mut 'a [T] asserts uniqueness, so deriving &amp;'a [T] invalidates live *mut Ts!
         // Even though this block is largely safe methods, it must be exactly this way
-        // to prevent invalidating the raw ptrs while they&#39;re live.
+        // to prevent invalidating the raw ptrs while they're live.
         // Thus, entering this block requires all values to use being already ready:
         // 0. idxs we want to write to, which are used to construct the mask.
-        // 1. enable, which depends on an initial &amp;&#39;a [T] and the idxs.
+        // 1. enable, which depends on an initial &amp;'a [T] and the idxs.
         // 2. actual values to scatter (self).
         // 3. &amp;mut [T] which will become our base ptr.
         </span><span class="kw">unsafe </span>{
@@ -1575,7 +1575,7 @@
             </span><span class="kw">let </span>base_ptr = Simd::&lt;<span class="kw-2">*mut </span>T, N&gt;::splat(slice.as_mut_ptr());
             <span class="comment">// Ferris forgive me, I have done pointer arithmetic here.
             </span><span class="kw">let </span>ptrs = base_ptr.wrapping_add(idxs);
-            <span class="comment">// The ptrs have been bounds-masked to prevent memory-unsafe writes insha&#39;allah
+            <span class="comment">// The ptrs have been bounds-masked to prevent memory-unsafe writes insha'allah
             </span><span class="self">self</span>.scatter_select_ptr(ptrs, enable);
             <span class="comment">// Cleared ☢️ *mut T Zone
         </span>}
@@ -1590,8 +1590,8 @@
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Simd, ptr::SimdMutPtr};
     /// let mut values = [0; 4];
     /// let offset = Simd::from_array([3, 2, 1, 0]);
@@ -1617,8 +1617,8 @@
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Mask, Simd, ptr::SimdMutPtr};
     /// let mut values = [0; 4];
     /// let offset = Simd::from_array([3, 2, 1, 0]);
@@ -1846,7 +1846,7 @@
 /// This trait, when implemented, asserts the compiler can monomorphize
 /// `#[repr(simd)]` structs with the marked type as an element.
 /// Strictly, it is valid to impl if the vector will not be miscompiled.
-/// Practically, it is user-unfriendly to impl it if the vector won&#39;t compile,
+/// Practically, it is user-unfriendly to impl it if the vector won't compile,
 /// even when no soundness guarantees are broken by allowing the user to try.
 </span><span class="kw">pub unsafe trait </span>SimdElement: Sealed + Copy {
     <span class="doccomment">/// The mask element type corresponding to this element type.

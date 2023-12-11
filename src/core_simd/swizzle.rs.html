@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (90e321d82 2023-12-02)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle.rs`."><title>swizzle.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (d86d65bbc 2023-12-10)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -415,8 +415,8 @@
 /// those vectors:
 /// ```
 /// # #![feature(portable_simd)]
-/// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-/// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+/// # #[cfg(feature = "as_crate")] use core_simd::simd;
+/// # #[cfg(not(feature = "as_crate"))] use core::simd;
 /// # use simd::{u32x2, u32x4, simd_swizzle};
 /// let a = u32x4::from_array([0, 1, 2, 3]);
 /// let b = u32x4::from_array([4, 5, 6, 7]);
@@ -466,7 +466,7 @@
     ///
     /// Lane `i` of the output is `vector[Self::INDEX[i]]`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">fn </span>swizzle&lt;T, <span class="kw">const </span>M: usize&gt;(vector: Simd&lt;T, M&gt;) -&gt; Simd&lt;T, N&gt;
     <span class="kw">where
         </span>T: SimdElement,
@@ -486,7 +486,7 @@
                         <span class="macro">assert!</span>(index <span class="kw">as </span>u32 <span class="kw">as </span>usize == index);
                         <span class="macro">assert!</span>(
                             index &lt; M,
-                            <span class="string">&quot;source element index exceeds input vector length&quot;
+                            <span class="string">"source element index exceeds input vector length"
                         </span>);
                         output[i] = index <span class="kw">as </span>u32;
                         i += <span class="number">1</span>;
@@ -502,7 +502,7 @@
     /// Lane `i` of the output is `concat[Self::INDEX[i]]`, where `concat` is the concatenation of
     /// `first` and `second`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">fn </span>concat_swizzle&lt;T, <span class="kw">const </span>M: usize&gt;(first: Simd&lt;T, M&gt;, second: Simd&lt;T, M&gt;) -&gt; Simd&lt;T, N&gt;
     <span class="kw">where
         </span>T: SimdElement,
@@ -522,7 +522,7 @@
                         <span class="macro">assert!</span>(index <span class="kw">as </span>u32 <span class="kw">as </span>usize == index);
                         <span class="macro">assert!</span>(
                             index &lt; <span class="number">2 </span>* M,
-                            <span class="string">&quot;source element index exceeds input vector length&quot;
+                            <span class="string">"source element index exceeds input vector length"
                         </span>);
                         output[i] = index <span class="kw">as </span>u32;
                         i += <span class="number">1</span>;
@@ -538,7 +538,7 @@
     /// Element `i` of the output is `concat[Self::INDEX[i]]`, where `concat` is the concatenation of
     /// `first` and `second`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original inputs"</span>]
     </span><span class="kw">fn </span>swizzle_mask&lt;T, <span class="kw">const </span>M: usize&gt;(mask: Mask&lt;T, M&gt;) -&gt; Mask&lt;T, N&gt;
     <span class="kw">where
         </span>T: MaskElement,
@@ -554,7 +554,7 @@
     /// Element `i` of the output is `concat[Self::INDEX[i]]`, where `concat` is the concatenation of
     /// `first` and `second`.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new mask and does not mutate the original inputs"</span>]
     </span><span class="kw">fn </span>concat_swizzle_mask&lt;T, <span class="kw">const </span>M: usize&gt;(first: Mask&lt;T, M&gt;, second: Mask&lt;T, M&gt;) -&gt; Mask&lt;T, N&gt;
     <span class="kw">where
         </span>T: MaskElement,
@@ -573,7 +573,7 @@
 {
     <span class="doccomment">/// Reverse the order of the elements in the vector.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>reverse(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">struct </span>Reverse;
 
@@ -596,7 +596,7 @@
     /// while the last `self.len() - OFFSET` elements move to the front. After calling `rotate_elements_left`,
     /// the element previously at index `OFFSET` will become the first element in the slice.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>rotate_elements_left&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">struct </span>Rotate&lt;<span class="kw">const </span>OFFSET: usize&gt;;
 
@@ -620,7 +620,7 @@
     /// the end while the last `OFFSET` elements move to the front. After calling `rotate_elements_right`,
     /// the element previously at index `self.len() - OFFSET` will become the first element in the slice.
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>rotate_elements_right&lt;<span class="kw">const </span>OFFSET: usize&gt;(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">struct </span>Rotate&lt;<span class="kw">const </span>OFFSET: usize&gt;;
 
@@ -657,7 +657,7 @@
     /// assert_eq!(y.to_array(), [2, 6, 3, 7]);
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>interleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const fn </span>interleave&lt;<span class="kw">const </span>N: usize&gt;(high: bool) -&gt; [usize; N] {
             <span class="kw">let </span><span class="kw-2">mut </span>idx = [<span class="number">0</span>; N];
@@ -708,7 +708,7 @@
     /// assert_eq!(y.to_array(), [4, 5, 6, 7]);
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>deinterleave(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
         <span class="kw">const fn </span>deinterleave&lt;<span class="kw">const </span>N: usize&gt;(second: bool) -&gt; [usize; N] {
             <span class="kw">let </span><span class="kw-2">mut </span>idx = [<span class="number">0</span>; N];
@@ -744,15 +744,15 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::u32x4;
     /// let x = u32x4::from_array([0, 1, 2, 3]);
     /// assert_eq!(x.resize::&lt;8&gt;(9).to_array(), [0, 1, 2, 3, 9, 9, 9, 9]);
     /// assert_eq!(x.resize::&lt;2&gt;(9).to_array(), [0, 1]);
     /// ```
     </span><span class="attr">#[inline]
-    #[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original inputs&quot;</span>]
+    #[must_use = <span class="string">"method returns a new vector and does not mutate the original inputs"</span>]
     </span><span class="kw">pub fn </span>resize&lt;<span class="kw">const </span>M: usize&gt;(<span class="self">self</span>, value: T) -&gt; Simd&lt;T, M&gt;
     <span class="kw">where
         </span>LaneCount&lt;M&gt;: SupportedLaneCount,

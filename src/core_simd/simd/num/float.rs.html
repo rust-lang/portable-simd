@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/simd/num/float.rs`."><title>float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c67e44d78ab2db17.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (90e321d82 2023-12-02)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/simd/num/float.rs`."><title>float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e883e87179a81222.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (d86d65bbc 2023-12-10)" data-channel="nightly" data-search-js="search-5a66c239c06b3a66.js" data-settings-js="settings-fe03fdc259827cd2.js" ><script src="../../../../static.files/storage-bc37acceda91d44a.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-77dede896d6ac08e.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -443,16 +443,16 @@
     <span class="doccomment">/// A SIMD vector with a different element type.
     </span><span class="kw">type </span>Cast&lt;T: SimdElement&gt;;
 
-    <span class="doccomment">/// Performs elementwise conversion of this vector&#39;s elements to another SIMD-valid type.
+    <span class="doccomment">/// Performs elementwise conversion of this vector's elements to another SIMD-valid type.
     ///
-    /// This follows the semantics of Rust&#39;s `as` conversion for floats (truncating or saturating
+    /// This follows the semantics of Rust's `as` conversion for floats (truncating or saturating
     /// at the limits) for each element.
     ///
     /// # Example
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let floats: Simd&lt;f32, 4&gt; = Simd::from_array([1.9, -4.5, f32::INFINITY, f32::NAN]);
     /// let ints = floats.cast::&lt;i32&gt;();
@@ -489,60 +489,60 @@
 
     <span class="doccomment">/// Raw transmutation to an unsigned integer vector type with the
     /// same size and number of elements.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Bits;
 
     <span class="doccomment">/// Raw transmutation from an unsigned integer vector type with the
     /// same size and number of elements.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>from_bits(bits: <span class="self">Self</span>::Bits) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Produces a vector where every element has the absolute value of the
     /// equivalently-indexed element in `self`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Takes the reciprocal (inverse) of each element, `1/x`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Converts each element from radians to degrees.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>to_degrees(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Converts each element from degrees to radians.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>to_radians(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns true for each element if it has a positive sign, including
     /// `+0.0`, `NaN`s with positive sign bit and positive infinity.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_sign_positive(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if it has a negative sign, including
     /// `-0.0`, `NaN`s with negative sign bit and negative infinity.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_sign_negative(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if its value is `NaN`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_nan(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if its value is positive infinity or negative infinity.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_infinite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if its value is neither infinite nor `NaN`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_finite(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if its value is subnormal.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_subnormal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Returns true for each element if its value is neither zero, infinite,
     /// subnormal, nor `NaN`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask;
 
     <span class="doccomment">/// Replaces each element with a number that represents its sign.
@@ -550,25 +550,25 @@
     /// * `1.0` if the number is positive, `+0.0`, or `INFINITY`
     /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
     /// * `NAN` if the number is `NAN`
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>signum(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns each element with the magnitude of `self` and the sign of `sign`.
     ///
     /// For any element containing a `NAN`, a `NAN` with the sign of `sign` is returned.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>copysign(<span class="self">self</span>, sign: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the minimum of each element.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>simd_min(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the maximum of each element.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>simd_max(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Restrict each element to a certain interval unless it is NaN.
@@ -576,7 +576,7 @@
     /// For each element in `self`, returns the corresponding element in `max` if the element is
     /// greater than `max`, and the corresponding element in `min` if the element is less
     /// than `min`.  Otherwise returns the element in `self`.
-    </span><span class="attr">#[must_use = <span class="string">&quot;method returns a new vector and does not mutate the original value&quot;</span>]
+    </span><span class="attr">#[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 
     <span class="doccomment">/// Returns the sum of the elements of the vector.
@@ -585,8 +585,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let v = f32x2::from_array([1., 2.]);
     /// assert_eq!(v.reduce_sum(), 3.);
@@ -599,8 +599,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let v = f32x2::from_array([3., 4.]);
     /// assert_eq!(v.reduce_product(), 12.);
@@ -618,8 +618,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let v = f32x2::from_array([1., 2.]);
     /// assert_eq!(v.reduce_max(), 2.);
@@ -645,8 +645,8 @@
     ///
     /// ```
     /// # #![feature(portable_simd)]
-    /// # #[cfg(feature = &quot;as_crate&quot;)] use core_simd::simd;
-    /// # #[cfg(not(feature = &quot;as_crate&quot;))] use core::simd;
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let v = f32x2::from_array([3., 7.]);
     /// assert_eq!(v.reduce_min(), 3.);
@@ -768,7 +768,7 @@
             }
 
             <span class="attr">#[inline]
-            #[must_use = <span class="string">&quot;method returns a new mask and does not mutate the original value&quot;</span>]
+            #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
             </span><span class="kw">fn </span>is_normal(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Mask {
                 !(<span class="self">self</span>.abs().simd_eq(<span class="self">Self</span>::splat(<span class="number">0.0</span>)) | <span class="self">self</span>.is_nan() | <span class="self">self</span>.is_subnormal() | <span class="self">self</span>.is_infinite())
             }
@@ -801,7 +801,7 @@
             </span><span class="kw">fn </span>simd_clamp(<span class="self">self</span>, min: <span class="self">Self</span>, max: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
                 <span class="macro">assert!</span>(
                     min.simd_le(max).all(),
-                    <span class="string">&quot;each element in `min` must be less than or equal to the corresponding element in `max`&quot;</span>,
+                    <span class="string">"each element in `min` must be less than or equal to the corresponding element in `max`"</span>,
                 );
                 <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self</span>;
                 x = x.simd_lt(min).select(min, x);
@@ -812,7 +812,7 @@
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>reduce_sum(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// LLVM sum is inaccurate on i586
-                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
+                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">"x86"</span>, not(target_feature = <span class="string">"sse2"</span>))) {
                     <span class="self">self</span>.as_array().iter().sum()
                 } <span class="kw">else </span>{
                     <span class="comment">// Safety: `self` is a float vector
@@ -823,7 +823,7 @@
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>reduce_product(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Scalar {
                 <span class="comment">// LLVM product is inaccurate on i586
-                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">&quot;x86&quot;</span>, not(target_feature = <span class="string">&quot;sse2&quot;</span>))) {
+                </span><span class="kw">if </span><span class="macro">cfg!</span>(all(target_arch = <span class="string">"x86"</span>, not(target_feature = <span class="string">"sse2"</span>))) {
                     <span class="self">self</span>.as_array().iter().product()
                 } <span class="kw">else </span>{
                     <span class="comment">// Safety: `self` is a float vector
