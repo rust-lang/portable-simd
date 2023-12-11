@@ -1,8 +1,7 @@
-use super::masks::{ToBitMask, ToBitMaskArray};
 use crate::simd::{
     cmp::SimdPartialOrd,
     intrinsics,
-    prelude::SimdPartialEq,
+    ToBitMask, ToBitMaskArray,
     ptr::{SimdConstPtr, SimdMutPtr},
     LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
 };
