@@ -230,7 +230,7 @@
                 </span><span class="number">16 </span>=&gt; transize(vqtbl1q_u8, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx2"</span>, not(target_feature = <span class="string">"avx512vbmi"</span>)))]
                 </span><span class="number">32 </span>=&gt; transize_raw(avx2_pshufb, <span class="self">self</span>, idxs),
-                <span class="attr">#[cfg(target_feature = <span class="string">"avx512vl,avx512vbmi"</span>)]
+                <span class="attr">#[cfg(all(target_feature = <span class="string">"avx512vl"</span>, target_feature = <span class="string">"avx512vbmi"</span>))]
                 </span><span class="number">32 </span>=&gt; transize(x86::_mm256_permutexvar_epi8, <span class="self">self</span>, idxs),
                 <span class="comment">// Notable absence: avx512bw shuffle
                 // If avx512bw is available, odds of avx512vbmi are good
