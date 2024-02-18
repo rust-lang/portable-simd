@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle_dyn.rs`."><title>swizzle_dyn.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (bccb9bbb4 2024-02-16)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/core_simd/src/swizzle_dyn.rs`."><title>swizzle_dyn.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="core_simd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (6672c16af 2024-02-17)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../core_simd/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -153,26 +153,6 @@
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
 <a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount};
 <span class="kw">use </span>core::mem;
 
@@ -219,7 +199,7 @@
                 </span>))]
                 </span><span class="number">8 </span>=&gt; transize(vtbl1_u8, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(target_feature = <span class="string">"ssse3"</span>)]
-                </span><span class="number">16 </span>=&gt; transize(x86::_mm_shuffle_epi8, <span class="self">self</span>, idxs),
+                </span><span class="number">16 </span>=&gt; transize(x86::_mm_shuffle_epi8, <span class="self">self</span>, zeroing_idxs(idxs)),
                 <span class="attr">#[cfg(target_feature = <span class="string">"simd128"</span>)]
                 </span><span class="number">16 </span>=&gt; transize(wasm::i8x16_swizzle, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(
@@ -229,9 +209,9 @@
                 </span>))]
                 </span><span class="number">16 </span>=&gt; transize(vqtbl1q_u8, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx2"</span>, not(target_feature = <span class="string">"avx512vbmi"</span>)))]
-                </span><span class="number">32 </span>=&gt; transize_raw(avx2_pshufb, <span class="self">self</span>, idxs),
+                </span><span class="number">32 </span>=&gt; transize(avx2_pshufb, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx512vl"</span>, target_feature = <span class="string">"avx512vbmi"</span>))]
-                </span><span class="number">32 </span>=&gt; transize(x86::_mm256_permutexvar_epi8, <span class="self">self</span>, idxs),
+                </span><span class="number">32 </span>=&gt; transize(x86::_mm256_permutexvar_epi8, zeroing_idxs(idxs), <span class="self">self</span>),
                 <span class="comment">// Notable absence: avx512bw shuffle
                 // If avx512bw is available, odds of avx512vbmi are good
                 // FIXME: initial AVX512VBMI variant didn't actually pass muster
@@ -304,46 +284,26 @@
 #[inline(always)]
 </span><span class="kw">unsafe fn </span>transize&lt;T, <span class="kw">const </span>N: usize&gt;(
     f: <span class="kw">unsafe fn</span>(T, T) -&gt; T,
-    bytes: Simd&lt;u8, N&gt;,
-    idxs: Simd&lt;u8, N&gt;,
+    a: Simd&lt;u8, N&gt;,
+    b: Simd&lt;u8, N&gt;,
 ) -&gt; Simd&lt;u8, N&gt;
 <span class="kw">where
     </span>LaneCount&lt;N&gt;: SupportedLaneCount,
 {
-    <span class="kw">let </span>idxs = zeroing_idxs(idxs);
     <span class="comment">// SAFETY: Same obligation to use this function as to use mem::transmute_copy.
-    </span><span class="kw">unsafe </span>{ mem::transmute_copy(<span class="kw-2">&amp;</span>f(mem::transmute_copy(<span class="kw-2">&amp;</span>bytes), mem::transmute_copy(<span class="kw-2">&amp;</span>idxs))) }
+    </span><span class="kw">unsafe </span>{ mem::transmute_copy(<span class="kw-2">&amp;</span>f(mem::transmute_copy(<span class="kw-2">&amp;</span>a), mem::transmute_copy(<span class="kw-2">&amp;</span>b))) }
 }
 
-<span class="doccomment">/// Make indices that yield 0 for this architecture
-</span><span class="attr">#[inline(always)]
+<span class="doccomment">/// Make indices that yield 0 for x86
+</span><span class="attr">#[cfg(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>))]
+#[allow(unused)]
+#[inline(always)]
 </span><span class="kw">fn </span>zeroing_idxs&lt;<span class="kw">const </span>N: usize&gt;(idxs: Simd&lt;u8, N&gt;) -&gt; Simd&lt;u8, N&gt;
 <span class="kw">where
     </span>LaneCount&lt;N&gt;: SupportedLaneCount,
 {
-    <span class="comment">// On x86, make sure the top bit is set.
-    </span><span class="attr">#[cfg(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>))]
-    </span><span class="kw">let </span>idxs = {
-        <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
-        idxs.simd_lt(Simd::splat(N <span class="kw">as </span>u8))
-            .select(idxs, Simd::splat(u8::MAX))
-    };
-    <span class="comment">// Simply do nothing on most architectures.
-    </span>idxs
-}
-
-<span class="doccomment">/// As transize but no implicit call to `zeroing_idxs`.
-</span><span class="attr">#[allow(dead_code)]
-#[inline(always)]
-</span><span class="kw">unsafe fn </span>transize_raw&lt;T, <span class="kw">const </span>N: usize&gt;(
-    f: <span class="kw">unsafe fn</span>(T, T) -&gt; T,
-    bytes: Simd&lt;u8, N&gt;,
-    idxs: Simd&lt;u8, N&gt;,
-) -&gt; Simd&lt;u8, N&gt;
-<span class="kw">where
-    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
-{
-    <span class="comment">// SAFETY: Same obligation to use this function as to use mem::transmute_copy.
-    </span><span class="kw">unsafe </span>{ mem::transmute_copy(<span class="kw-2">&amp;</span>f(mem::transmute_copy(<span class="kw-2">&amp;</span>bytes), mem::transmute_copy(<span class="kw-2">&amp;</span>idxs))) }
+    <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
+    idxs.simd_lt(Simd::splat(N <span class="kw">as </span>u8))
+        .select(idxs, Simd::splat(u8::MAX))
 }
 </code></pre></div></section></main></body></html>
