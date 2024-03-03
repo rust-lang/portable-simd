@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (397937d81 2024-02-22)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c37d3936c59ababd.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (5119208fd 2024-03-02)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../test_helpers/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -754,7 +754,7 @@
     <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy;
 }
 
-<span class="macro">macro_rules! </span>impl_num {
+<span class="macro">macro_rules!</span> impl_num {
     { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">tt </span>} =&gt; {
         <span class="kw">impl </span>DefaultStrategy <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
             <span class="kw">type </span><span class="macro-nonterminal">Strategy </span>= proptest::num::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::Any</span>;
@@ -765,18 +765,18 @@
     }
 }
 
-<span class="macro">impl_num! </span>{ i8 }
-<span class="macro">impl_num! </span>{ i16 }
-<span class="macro">impl_num! </span>{ i32 }
-<span class="macro">impl_num! </span>{ i64 }
-<span class="macro">impl_num! </span>{ isize }
-<span class="macro">impl_num! </span>{ u8 }
-<span class="macro">impl_num! </span>{ u16 }
-<span class="macro">impl_num! </span>{ u32 }
-<span class="macro">impl_num! </span>{ u64 }
-<span class="macro">impl_num! </span>{ usize }
-<span class="macro">impl_num! </span>{ f32 }
-<span class="macro">impl_num! </span>{ f64 }
+<span class="macro">impl_num!</span> { i8 }
+<span class="macro">impl_num!</span> { i16 }
+<span class="macro">impl_num!</span> { i32 }
+<span class="macro">impl_num!</span> { i64 }
+<span class="macro">impl_num!</span> { isize }
+<span class="macro">impl_num!</span> { u8 }
+<span class="macro">impl_num!</span> { u16 }
+<span class="macro">impl_num!</span> { u32 }
+<span class="macro">impl_num!</span> { u64 }
+<span class="macro">impl_num!</span> { usize }
+<span class="macro">impl_num!</span> { f32 }
+<span class="macro">impl_num!</span> { f64 }
 
 <span class="kw">impl</span>&lt;T&gt; DefaultStrategy <span class="kw">for </span><span class="kw-2">*const </span>T {
     <span class="kw">type </span>Strategy = proptest::strategy::Map&lt;proptest::num::isize::Any, <span class="kw">fn</span>(isize) -&gt; <span class="kw-2">*const </span>T&gt;;
@@ -1217,7 +1217,7 @@
 
 <span class="attr">#[doc(hidden)]
 #[macro_export]
-</span><span class="macro">macro_rules! </span>test_lanes_helper {
+</span><span class="macro">macro_rules!</span> test_lanes_helper {
     ($($(<span class="attr">#[<span class="macro-nonterminal">$meta</span>:meta]</span>)* <span class="macro-nonterminal">$fn_name</span>:ident <span class="macro-nonterminal">$lanes</span>:literal;)+) =&gt; {
         $(
             <span class="attr">#[test]
@@ -1250,7 +1250,7 @@
 
 <span class="doccomment">/// Expand a const-generic test into separate tests for each possible lane count.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>test_lanes {
+</span><span class="macro">macro_rules!</span> test_lanes {
     {
         $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
     } =&gt; {
@@ -1357,7 +1357,7 @@
 
 <span class="doccomment">/// Expand a const-generic `#[should_panic]` test into separate tests for each possible lane count.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>test_lanes_panic {
+</span><span class="macro">macro_rules!</span> test_lanes_panic {
     {
         $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
     } =&gt; {
