@@ -698,6 +698,12 @@
 <a href="#696" id="696">696</a>
 <a href="#697" id="697">697</a>
 <a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking elements of vectors.
 //! Types representing
 </span><span class="attr">#![allow(non_camel_case_types)]
@@ -734,6 +740,7 @@
         <span class="kw">fn </span>eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; bool;
 
         <span class="kw">fn </span>to_usize(<span class="self">self</span>) -&gt; usize;
+        <span class="kw">fn </span>max_unsigned() -&gt; u64;
 
         <span class="kw">type </span>Unsigned: SimdElement;
 
@@ -776,6 +783,11 @@
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>to_usize(<span class="self">self</span>) -&gt; usize {
                 <span class="self">self </span><span class="kw">as </span>usize
+            }
+
+            <span class="attr">#[inline]
+            </span><span class="kw">fn </span>max_unsigned() -&gt; u64 {
+                &lt;<span class="macro-nonterminal">$unsigned</span>&gt;::MAX <span class="kw">as </span>u64
             }
 
             <span class="kw">type </span>Unsigned = <span class="macro-nonterminal">$unsigned</span>;
