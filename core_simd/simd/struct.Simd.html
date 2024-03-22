@@ -334,7 +334,7 @@ which elements are written.</p>
 The <code>enable</code> mask controls which elements are written.
 When disabled, the memory location corresponding to that element is not accessed.</p>
 <h5 id="safety-4"><a class="doc-anchor" href="#safety-4">§</a>Safety</h5>
-<p>Memory addresses for element are calculated [<code>core::ptr::wrapping_offset</code>] and
+<p>Memory addresses for element are calculated <a href="https://doc.rust-lang.org/nightly/core/primitive.pointer.html#method.wrapping_offset" title="method pointer::wrapping_offset"><code>pointer::wrapping_offset</code></a> and
 each enabled element must satisfy the same conditions as <a href="https://doc.rust-lang.org/nightly/core/ptr/fn.write.html" title="fn core::ptr::write"><code>core::ptr::write</code></a>.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.scatter" class="method"><a class="src rightside" href="../../src/core_simd/vector.rs.html#723-725">source</a><h4 class="code-header">pub fn <a href="#method.scatter" class="fn">scatter</a>(self, slice: &amp;mut <a class="primitive" href="https://doc.rust-lang.org/nightly/core/primitive.slice.html">[T]</a>, idxs: <a class="struct" href="struct.Simd.html" title="struct core_simd::simd::Simd">Simd</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/core/primitive.usize.html">usize</a>, N&gt;)</h4></section><span class="item-info"><div class="stab unstable"><span class="emoji">🔬</span><span>This is a nightly-only experimental API. (<code>portable_simd</code>)</span></div></span></summary><div class="docblock"><p>Writes the values in a SIMD vector to potentially discontiguous indices in <code>slice</code>.
 If an index is out-of-bounds, the write is suppressed without panicking.

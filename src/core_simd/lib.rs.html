@@ -53,6 +53,7 @@
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
 </pre></div><pre class="rust"><code><span class="attr">#![no_std]
 #![feature(
     const_intrinsic_copy,
@@ -95,6 +96,7 @@
 )]
 #![warn(missing_docs, clippy::missing_inline_in_public_items)] </span><span class="comment">// basically all items, really
 </span><span class="attr">#![deny(unsafe_op_in_unsafe_fn, clippy::undocumented_unsafe_blocks)]
+#![doc(test(attr(deny(warnings))))]
 #![allow(internal_features)]
 #![unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
 </span><span class="doccomment">//! Portable SIMD module.
