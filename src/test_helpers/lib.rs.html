@@ -1268,12 +1268,12 @@
                     <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
                     lanes_1 <span class="number">1</span>;
                     lanes_2 <span class="number">2</span>;
-                    lanes_4 <span class="number">4</span>;
                 );
 
                 <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+                    lanes_4 <span class="number">4</span>;
                     lanes_8 <span class="number">8</span>;
                     lanes_16 <span class="number">16</span>;
                     lanes_32 <span class="number">32</span>;
@@ -1282,17 +1282,17 @@
 
                 <span class="attr">#[cfg(feature = <span class="string">"all_lane_counts"</span>)]
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-                    <span class="comment">// test some odd and even non-power-of-2 lengths on miri
+                    <span class="comment">// test one non-power-of-2 length on miri
                     </span><span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
                     lanes_3 <span class="number">3</span>;
-                    lanes_5 <span class="number">5</span>;
-                    lanes_6 <span class="number">6</span>;
                 );
 
                 <span class="attr">#[cfg(feature = <span class="string">"all_lane_counts"</span>)]
                 #[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
                 </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
                     <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+                    lanes_5 <span class="number">5</span>;
+                    lanes_6 <span class="number">6</span>;
                     lanes_7 <span class="number">7</span>;
                     lanes_9 <span class="number">9</span>;
                     lanes_10 <span class="number">10</span>;
