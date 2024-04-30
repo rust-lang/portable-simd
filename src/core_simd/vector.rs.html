@@ -1227,6 +1227,23 @@
 <a href="#1225" id="1225">1225</a>
 <a href="#1226" id="1226">1226</a>
 <a href="#1227" id="1227">1227</a>
+<a href="#1228" id="1228">1228</a>
+<a href="#1229" id="1229">1229</a>
+<a href="#1230" id="1230">1230</a>
+<a href="#1231" id="1231">1231</a>
+<a href="#1232" id="1232">1232</a>
+<a href="#1233" id="1233">1233</a>
+<a href="#1234" id="1234">1234</a>
+<a href="#1235" id="1235">1235</a>
+<a href="#1236" id="1236">1236</a>
+<a href="#1237" id="1237">1237</a>
+<a href="#1238" id="1238">1238</a>
+<a href="#1239" id="1239">1239</a>
+<a href="#1240" id="1240">1240</a>
+<a href="#1241" id="1241">1241</a>
+<a href="#1242" id="1242">1242</a>
+<a href="#1243" id="1243">1243</a>
+<a href="#1244" id="1244">1244</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     cmp::SimdPartialOrd,
     num::SimdUint,
@@ -1373,14 +1390,31 @@
     /// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
-        <span class="comment">// This is preferred over `[value; N]`, since it's explicitly a splat:
-        // https://github.com/rust-lang/rust/issues/97804
-        </span><span class="kw">struct </span>Splat;
-        <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;N&gt; <span class="kw">for </span>Splat {
-            <span class="kw">const </span>INDEX: [usize; N] = [<span class="number">0</span>; N];
+    </span><span class="kw">pub const fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
+        <span class="kw">const fn </span>splat_const&lt;T, <span class="kw">const </span>N: usize&gt;(value: T) -&gt; Simd&lt;T, N&gt;
+        <span class="kw">where
+            </span>T: SimdElement,
+            LaneCount&lt;N&gt;: SupportedLaneCount,
+        {
+            Simd::from_array([value; N])
         }
-        Splat::swizzle::&lt;T, <span class="number">1</span>&gt;(Simd::&lt;T, <span class="number">1</span>&gt;::from([value]))
+
+        <span class="kw">fn </span>splat_rt&lt;T, <span class="kw">const </span>N: usize&gt;(value: T) -&gt; Simd&lt;T, N&gt;
+        <span class="kw">where
+            </span>T: SimdElement,
+            LaneCount&lt;N&gt;: SupportedLaneCount,
+        {
+            <span class="comment">// This is preferred over `[value; N]`, since it's explicitly a splat:
+            // https://github.com/rust-lang/rust/issues/97804
+            </span><span class="kw">struct </span>Splat;
+            <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Swizzle&lt;N&gt; <span class="kw">for </span>Splat {
+                <span class="kw">const </span>INDEX: [usize; N] = [<span class="number">0</span>; N];
+            }
+
+            Splat::swizzle::&lt;T, <span class="number">1</span>&gt;(Simd::&lt;T, <span class="number">1</span>&gt;::from([value]))
+        }
+
+        core::intrinsics::const_eval_select((value,), splat_const, splat_rt)
     }
 
     <span class="doccomment">/// Returns an array reference containing the entire SIMD vector.
