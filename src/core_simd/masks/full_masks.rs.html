@@ -528,7 +528,7 @@
     }
 
     <span class="attr">#[inline]
-    #[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
+    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
     </span><span class="kw">pub fn </span>all(<span class="self">self</span>) -&gt; bool {
         <span class="comment">// Safety: use `self` as an integer vector
         </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_reduce_all(<span class="self">self</span>.to_int()) }
