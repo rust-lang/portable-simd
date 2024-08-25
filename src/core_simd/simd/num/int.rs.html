@@ -369,9 +369,32 @@
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
 <a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{
-    cmp::SimdPartialOrd, num::SimdUint, LaneCount, Mask, Simd, SimdCast, SimdElement,
+    cmp::SimdOrd, cmp::SimdPartialOrd, num::SimdUint, LaneCount, Mask, Simd, SimdCast, SimdElement,
     SupportedLaneCount,
 };
 
@@ -441,10 +464,26 @@
     /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// use core::i32::{MIN, MAX};
-    /// let xs = Simd::from_array([MIN, MIN +1, -5, 0]);
+    /// let xs = Simd::from_array([MIN, MIN + 1, -5, 0]);
     /// assert_eq!(xs.abs(), Simd::from_array([MIN, MAX, 5, 0]));
     /// ```
     </span><span class="kw">fn </span>abs(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+
+    <span class="doccomment">/// Lanewise absolute difference.
+    /// Every element becomes the absolute difference of `self` and `second`.
+    ///
+    /// # Examples
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// use core::i32::{MIN, MAX};
+    /// let a = Simd::from_array([MIN, MAX, 100, -100]);
+    /// let b = Simd::from_array([MAX, MIN, -80, -120]);
+    /// assert_eq!(a.abs_diff(b), Simd::from_array([u32::MAX, u32::MAX, 180, 20]));
+    /// ```
+    </span><span class="kw">fn </span>abs_diff(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Unsigned;
 
     <span class="doccomment">/// Lanewise saturating absolute value, implemented in Rust.
     /// As abs(), except the MIN value becomes MAX instead of itself.
@@ -628,6 +667,13 @@
                 <span class="kw">const </span>SHR: <span class="macro-nonterminal">$ty </span>= &lt;<span class="macro-nonterminal">$ty</span>&gt;::BITS <span class="kw">as </span><span class="macro-nonterminal">$ty </span>- <span class="number">1</span>;
                 <span class="kw">let </span>m = <span class="self">self </span>&gt;&gt; Simd::splat(SHR);
                 (<span class="self">self</span>^m) - m
+            }
+
+            <span class="attr">#[inline]
+            </span><span class="kw">fn </span>abs_diff(<span class="self">self</span>, second: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Unsigned {
+                <span class="kw">let </span>max = <span class="self">self</span>.simd_max(second);
+                <span class="kw">let </span>min = <span class="self">self</span>.simd_min(second);
+                (max - min).cast()
             }
 
             <span class="attr">#[inline]
