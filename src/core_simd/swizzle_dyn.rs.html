@@ -155,6 +155,24 @@
 <a href="#155" id="155">155</a>
 <a href="#156" id="156">156</a>
 <a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount};
 <span class="kw">use </span>core::mem;
 
@@ -217,13 +235,31 @@
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx2"</span>, not(target_feature = <span class="string">"avx512vbmi"</span>)))]
                 </span><span class="number">32 </span>=&gt; transize(avx2_pshufb, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx512vl"</span>, target_feature = <span class="string">"avx512vbmi"</span>))]
-                </span><span class="number">32 </span>=&gt; transize(x86::_mm256_permutexvar_epi8, zeroing_idxs(idxs), <span class="self">self</span>),
-                <span class="comment">// Notable absence: avx512bw shuffle
-                // If avx512bw is available, odds of avx512vbmi are good
-                // FIXME: initial AVX512VBMI variant didn't actually pass muster
-                // #[cfg(target_feature = "avx512vbmi")]
-                // 64 =&gt; transize(x86::_mm512_permutexvar_epi8, self, idxs),
-                </span><span class="kw">_ </span>=&gt; {
+                </span><span class="number">32 </span>=&gt; {
+                    <span class="comment">// Unlike vpshufb, vpermb doesn't zero out values in the result based on the index high bit
+                    </span><span class="kw">let </span>swizzler = |bytes, idxs| {
+                        <span class="kw">let </span>mask = x86::_mm256_cmp_epu8_mask::&lt;{ x86::_MM_CMPINT_LT }&gt;(
+                            idxs,
+                            Simd::&lt;u8, <span class="number">32</span>&gt;::splat(N <span class="kw">as </span>u8).into(),
+                        );
+                        x86::_mm256_maskz_permutexvar_epi8(mask, idxs, bytes)
+                    };
+                    transize(swizzler, <span class="self">self</span>, idxs)
+                }
+                <span class="comment">// Notable absence: avx512bw pshufb shuffle
+                </span><span class="attr">#[cfg(all(target_feature = <span class="string">"avx512vl"</span>, target_feature = <span class="string">"avx512vbmi"</span>))]
+                </span><span class="number">64 </span>=&gt; {
+                    <span class="comment">// Unlike vpshufb, vpermb doesn't zero out values in the result based on the index high bit
+                    </span><span class="kw">let </span>swizzler = |bytes, idxs| {
+                        <span class="kw">let </span>mask = x86::_mm512_cmp_epu8_mask::&lt;{ x86::_MM_CMPINT_LT }&gt;(
+                            idxs,
+                            Simd::&lt;u8, <span class="number">64</span>&gt;::splat(N <span class="kw">as </span>u8).into(),
+                        );
+                        x86::_mm512_maskz_permutexvar_epi8(mask, idxs, bytes)
+                    };
+                    transize(swizzler, <span class="self">self</span>, idxs)
+                }
+                <span class="kw">_ </span>=&gt; {
                     <span class="kw">let </span><span class="kw-2">mut </span>array = [<span class="number">0</span>; N];
                     <span class="kw">for </span>(i, k) <span class="kw">in </span>idxs.to_array().into_iter().enumerate() {
                         <span class="kw">if </span>(k <span class="kw">as </span>usize) &lt; N {
