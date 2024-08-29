@@ -561,7 +561,6 @@
 <a href="#561" id="561">561</a>
 <a href="#562" id="562">562</a>
 <a href="#563" id="563">563</a>
-<a href="#564" id="564">564</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount};
 
 <span class="doccomment">/// Constructs a new SIMD vector by copying elements from selected elements in other vectors.
@@ -711,8 +710,7 @@
 
     <span class="doccomment">/// Create a new mask from the elements of `mask`.
     ///
-    /// Element `i` of the output is `concat[Self::INDEX[i]]`, where `concat` is the concatenation of
-    /// `first` and `second`.
+    /// Element `i` of the output is `mask[Self::INDEX[i]]`.
     </span><span class="attr">#[inline]
     #[must_use = <span class="string">"method returns a new mask and does not mutate the original inputs"</span>]
     </span><span class="kw">fn </span>swizzle_mask&lt;T, <span class="kw">const </span>M: usize&gt;(mask: Mask&lt;T, M&gt;) -&gt; Mask&lt;T, N&gt;
