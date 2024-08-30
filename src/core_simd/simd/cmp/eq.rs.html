@@ -122,7 +122,7 @@
     </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>simd_eq(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 
-    <span class="doccomment">/// Test if each element is equal to the corresponding element in `other`.
+    <span class="doccomment">/// Test if each element is not equal to the corresponding element in `other`.
     </span><span class="attr">#[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
     </span><span class="kw">fn </span>simd_ne(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self</span>::Mask;
 }
