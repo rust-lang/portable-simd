@@ -173,6 +173,35 @@
 <a href="#173" id="173">173</a>
 <a href="#174" id="174">174</a>
 <a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SupportedLaneCount};
 <span class="kw">use </span>core::mem;
 
@@ -232,6 +261,13 @@
                     target_endian = <span class="string">"little"
                 </span>))]
                 </span><span class="number">16 </span>=&gt; transize(vqtbl1q_u8, <span class="self">self</span>, idxs),
+                <span class="attr">#[cfg(all(
+                    target_arch = <span class="string">"arm"</span>,
+                    target_feature = <span class="string">"v7"</span>,
+                    target_feature = <span class="string">"neon"</span>,
+                    target_endian = <span class="string">"little"
+                </span>))]
+                </span><span class="number">16 </span>=&gt; transize(armv7_neon_swizzle_u8x16, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx2"</span>, not(target_feature = <span class="string">"avx512vbmi"</span>)))]
                 </span><span class="number">32 </span>=&gt; transize(avx2_pshufb, <span class="self">self</span>, idxs),
                 <span class="attr">#[cfg(all(target_feature = <span class="string">"avx512vl"</span>, target_feature = <span class="string">"avx512vbmi"</span>))]
@@ -270,6 +306,28 @@
                 }
             }
         }
+    }
+}
+
+<span class="doccomment">/// armv7 neon supports swizzling `u8x16` by swizzling two u8x8 blocks
+/// with a u8x8x2 lookup table.
+///
+/// # Safety
+/// This requires armv7 neon to work
+</span><span class="attr">#[cfg(all(
+    target_arch = <span class="string">"arm"</span>,
+    target_feature = <span class="string">"v7"</span>,
+    target_feature = <span class="string">"neon"</span>,
+    target_endian = <span class="string">"little"
+</span>))]
+</span><span class="kw">unsafe fn </span>armv7_neon_swizzle_u8x16(bytes: Simd&lt;u8, <span class="number">16</span>&gt;, idxs: Simd&lt;u8, <span class="number">16</span>&gt;) -&gt; Simd&lt;u8, <span class="number">16</span>&gt; {
+    <span class="kw">use </span>core::arch::arm::{uint8x8x2_t, vcombine_u8, vget_high_u8, vget_low_u8, vtbl2_u8};
+    <span class="comment">// SAFETY: Caller promised arm neon support
+    </span><span class="kw">unsafe </span>{
+        <span class="kw">let </span>bytes = uint8x8x2_t(vget_low_u8(bytes.into()), vget_high_u8(bytes.into()));
+        <span class="kw">let </span>lo = vtbl2_u8(bytes, vget_low_u8(idxs.into()));
+        <span class="kw">let </span>hi = vtbl2_u8(bytes, vget_high_u8(idxs.into()));
+        vcombine_u8(lo, hi).into()
     }
 }
 
