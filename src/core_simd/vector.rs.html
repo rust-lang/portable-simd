@@ -1249,7 +1249,8 @@
 <a href="#1248" id="1248">1248</a>
 <a href="#1249" id="1249">1249</a>
 <a href="#1250" id="1250">1250</a>
-<a href="#1251" id="1251">1251</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
+<a href="#1251" id="1251">1251</a>
+<a href="#1252" id="1252">1252</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
     cmp::SimdPartialOrd,
     num::SimdUint,
     ptr::{SimdConstPtr, SimdMutPtr},
@@ -1395,6 +1396,7 @@
     /// assert_eq!(v.as_array(), &amp;[8, 8, 8, 8]);
     /// ```
     </span><span class="attr">#[inline]
+    #[rustc_const_unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
     </span><span class="kw">pub const fn </span>splat(value: T) -&gt; <span class="self">Self </span>{
         <span class="kw">const fn </span>splat_const&lt;T, <span class="kw">const </span>N: usize&gt;(value: T) -&gt; Simd&lt;T, N&gt;
         <span class="kw">where
