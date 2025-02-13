@@ -1251,10 +1251,10 @@
 <a href="#1250" id="1250">1250</a>
 <a href="#1251" id="1251">1251</a>
 <a href="#1252" id="1252">1252</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::simd::{
+    LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
     cmp::SimdPartialOrd,
     num::SimdUint,
     ptr::{SimdConstPtr, SimdMutPtr},
-    LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
 };
 
 <span class="doccomment">/// A SIMD vector with the shape of `[T; N]` but the operations of `T`.

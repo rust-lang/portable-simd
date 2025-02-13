@@ -410,8 +410,8 @@
 <a href="#409" id="409">409</a>
 <a href="#410" id="410">410</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{
-    cmp::SimdOrd, cmp::SimdPartialOrd, num::SimdUint, LaneCount, Mask, Simd, SimdCast, SimdElement,
-    SupportedLaneCount,
+    LaneCount, Mask, Simd, SimdCast, SimdElement, SupportedLaneCount, cmp::SimdOrd,
+    cmp::SimdPartialOrd, num::SimdUint,
 };
 
 <span class="doccomment">/// Operations on SIMD vectors of signed integers.

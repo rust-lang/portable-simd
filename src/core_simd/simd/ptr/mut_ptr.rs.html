@@ -177,7 +177,7 @@
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
-<span class="kw">use </span><span class="kw">crate</span>::simd::{cmp::SimdPartialEq, num::SimdUint, LaneCount, Mask, Simd, SupportedLaneCount};
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Mask, Simd, SupportedLaneCount, cmp::SimdPartialEq, num::SimdUint};
 
 <span class="doccomment">/// Operations on SIMD vectors of mutable pointers.
 </span><span class="kw">pub trait </span>SimdMutPtr: Copy + Sealed {

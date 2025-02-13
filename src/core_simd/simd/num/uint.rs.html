@@ -260,7 +260,7 @@
 <a href="#259" id="259">259</a>
 <a href="#260" id="260">260</a>
 <a href="#261" id="261">261</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
-<span class="kw">use </span><span class="kw">crate</span>::simd::{cmp::SimdOrd, LaneCount, Simd, SimdCast, SimdElement, SupportedLaneCount};
+<span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, Simd, SimdCast, SimdElement, SupportedLaneCount, cmp::SimdOrd};
 
 <span class="doccomment">/// Operations on SIMD vectors of unsigned integers.
 </span><span class="kw">pub trait </span>SimdUint: Copy + Sealed {
