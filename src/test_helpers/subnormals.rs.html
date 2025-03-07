@@ -103,7 +103,7 @@
         $(
         <span class="kw">impl </span>FlushSubnormals <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
             <span class="kw">fn </span>flush(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
-                <span class="kw">let </span>is_f32 = core::mem::size_of::&lt;<span class="self">Self</span>&gt;() == <span class="number">4</span>;
+                <span class="kw">let </span>is_f32 = size_of::&lt;<span class="self">Self</span>&gt;() == <span class="number">4</span>;
                 <span class="kw">let </span>ppc_flush = is_f32 &amp;&amp; <span class="macro">cfg!</span>(all(
                     any(target_arch = <span class="string">"powerpc"</span>, all(target_arch = <span class="string">"powerpc64"</span>, target_endian = <span class="string">"big"</span>)),
                     target_feature = <span class="string">"altivec"</span>,

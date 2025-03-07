@@ -755,14 +755,14 @@
 
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>to_bits(<span class="self">self</span>) -&gt; Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, N&gt; {
-                <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
+                <span class="macro">assert_eq!</span>(size_of::&lt;<span class="self">Self</span>&gt;(), size_of::&lt;<span class="self">Self</span>::Bits&gt;());
                 <span class="comment">// Safety: transmuting between vector types is safe
                 </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span><span class="self">self</span>) }
             }
 
             <span class="attr">#[inline]
             </span><span class="kw">fn </span>from_bits(bits: Simd&lt;<span class="macro-nonterminal">$bits_ty</span>, N&gt;) -&gt; <span class="self">Self </span>{
-                <span class="macro">assert_eq!</span>(core::mem::size_of::&lt;<span class="self">Self</span>&gt;(), core::mem::size_of::&lt;<span class="self">Self</span>::Bits&gt;());
+                <span class="macro">assert_eq!</span>(size_of::&lt;<span class="self">Self</span>&gt;(), size_of::&lt;<span class="self">Self</span>::Bits&gt;());
                 <span class="comment">// Safety: transmuting between vector types is safe
                 </span><span class="kw">unsafe </span>{ core::mem::transmute_copy(<span class="kw-2">&amp;</span>bits) }
             }

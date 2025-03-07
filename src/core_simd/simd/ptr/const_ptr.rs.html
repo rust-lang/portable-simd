@@ -290,7 +290,7 @@
     </span><span class="kw">fn </span>cast&lt;U&gt;(<span class="self">self</span>) -&gt; <span class="self">Self</span>::CastPtr&lt;U&gt; {
         <span class="comment">// SimdElement currently requires zero-sized metadata, so this should never fail.
         // If this ever changes, `simd_cast_ptr` should produce a post-mono error.
-        </span><span class="kw">use </span>core::{mem::size_of, ptr::Pointee};
+        </span><span class="kw">use </span>core::ptr::Pointee;
         <span class="macro">assert_eq!</span>(size_of::&lt;&lt;T <span class="kw">as </span>Pointee&gt;::Metadata&gt;(), <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(size_of::&lt;&lt;U <span class="kw">as </span>Pointee&gt;::Metadata&gt;(), <span class="number">0</span>);
 

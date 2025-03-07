@@ -66,7 +66,7 @@ When trying to guarantee alignment, <a href="https://doc.rust-lang.org/nightly/c
 converting <code>[T]</code> to <code>[Simd&lt;T, N&gt;]</code>, and allows soundly operating on an aligned SIMD body,
 but it may cost more time when handling the scalar head and tail.
 If these are not enough, it is most ideal to design data structures to be already aligned
-to <code>mem::align_of::&lt;Simd&lt;T, N&gt;&gt;()</code> before using <code>unsafe</code> Rust to read or write.
+to <code>align_of::&lt;Simd&lt;T, N&gt;&gt;()</code> before using <code>unsafe</code> Rust to read or write.
 Other ways to compensate for these facts, like materializing <code>Simd</code> to or from an array first,
 are handled by safe methods like <a href="struct.Simd.html#method.from_array" title="associated function core_simd::simd::Simd::from_array"><code>Simd::from_array</code></a> and <a href="struct.Simd.html#method.from_slice" title="associated function core_simd::simd::Simd::from_slice"><code>Simd::from_slice</code></a>.</p>
 </div></details><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-Simd%3CT,+N%3E" class="impl"><a class="src rightside" href="../../src/core_simd/swizzle.rs.html#188-471">Source</a><a href="#impl-Simd%3CT,+N%3E" class="anchor">§</a><h3 class="code-header">impl&lt;T, const N: <a class="primitive" href="https://doc.rust-lang.org/nightly/core/primitive.usize.html">usize</a>&gt; <a class="struct" href="struct.Simd.html" title="struct core_simd::simd::Simd">Simd</a>&lt;T, N&gt;<div class="where">where

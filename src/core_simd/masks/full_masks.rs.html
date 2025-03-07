@@ -382,7 +382,7 @@
             <span class="attr">#[inline(always)]
             </span><span class="kw">fn </span>reverse_bits(<span class="self">self</span>, n: usize) -&gt; <span class="self">Self </span>{
                 <span class="kw">let </span>rev = &lt;<span class="macro-nonterminal">$int</span>&gt;::reverse_bits(<span class="self">self</span>);
-                <span class="kw">let </span>bitsize = core::mem::size_of::&lt;<span class="macro-nonterminal">$int</span>&gt;() * <span class="number">8</span>;
+                <span class="kw">let </span>bitsize = size_of::&lt;<span class="macro-nonterminal">$int</span>&gt;() * <span class="number">8</span>;
                 <span class="kw">if </span>n &lt; bitsize {
                     <span class="comment">// Shift things back to the right
                     </span>rev &gt;&gt; (bitsize - n)
