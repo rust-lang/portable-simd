@@ -451,7 +451,8 @@
 <a href="#450" id="450">450</a>
 <a href="#451" id="451">451</a>
 <a href="#452" id="452">452</a>
-<a href="#453" id="453">453</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::sealed::Sealed;
 <span class="kw">use </span><span class="kw">crate</span>::simd::{
     LaneCount, Mask, Simd, SimdCast, SimdElement, SupportedLaneCount,
     cmp::{SimdPartialEq, SimdPartialOrd},
@@ -716,7 +717,8 @@
                 </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_as(<span class="self">self</span>) }
             }
 
-            <span class="comment">// https://github.com/llvm/llvm-project/issues/94694
+            <span class="comment">// workaround for https://github.com/llvm/llvm-project/issues/94694 (fixed in LLVM 20)
+            // tracked in: https://github.com/rust-lang/rust/issues/135982
             </span><span class="attr">#[cfg(target_arch = <span class="string">"aarch64"</span>)]
             #[inline]
             </span><span class="kw">fn </span>cast&lt;T: SimdCast&gt;(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Cast&lt;T&gt;
