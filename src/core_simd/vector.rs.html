@@ -1447,7 +1447,7 @@
 
     <span class="doccomment">/// Returns a mutable array reference containing the entire SIMD vector.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>as_mut_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; N] {
+    </span><span class="kw">pub const fn </span>as_mut_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T; N] {
         <span class="comment">// SAFETY: `Simd&lt;T, N&gt;` is just an overaligned `[T; N]` with
         // potential padding at the end, so pointer casting to a
         // `&amp;mut [T; N]` is safe.
@@ -1576,7 +1576,7 @@
     /// ```
     </span><span class="attr">#[inline]
     #[track_caller]
-    </span><span class="kw">pub fn </span>copy_to_slice(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
+    </span><span class="kw">pub const fn </span>copy_to_slice(<span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
         <span class="macro">assert!</span>(
             slice.len() &gt;= <span class="self">Self</span>::LEN,
             <span class="string">"slice length must be at least the number of elements"
