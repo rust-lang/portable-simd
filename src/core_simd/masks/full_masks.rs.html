@@ -294,7 +294,8 @@
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
 <a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a></pre></div><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a></pre></div><pre class="rust"><code><span class="doccomment">//! Masks that take up full SIMD vector registers.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::simd::{LaneCount, MaskElement, Simd, SupportedLaneCount};
 
@@ -398,7 +399,8 @@
 {
     <span class="attr">#[inline]
     #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
+    #[rustc_const_unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Simd::splat(<span class="kw">if </span>value { T::TRUE } <span class="kw">else </span>{ T::FALSE }))
     }
 

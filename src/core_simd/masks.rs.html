@@ -647,7 +647,8 @@
 <a href="#646" id="646">646</a>
 <a href="#647" id="647">647</a>
 <a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a></pre></div><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking elements of vectors.
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a></pre></div><pre class="rust"><code><span class="doccomment">//! Types and traits associated with masking elements of vectors.
 //! Types representing
 </span><span class="attr">#![allow(non_camel_case_types)]
 
@@ -788,7 +789,8 @@
 {
     <span class="doccomment">/// Constructs a mask by setting all elements to the given value.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
+    #[rustc_const_unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
+    </span><span class="kw">pub const fn </span>splat(value: bool) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(mask_impl::Mask::splat(value))
     }
 
