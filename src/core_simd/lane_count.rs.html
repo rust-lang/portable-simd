@@ -50,8 +50,7 @@
 <a href="#49" id="49">49</a>
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a></pre></div><pre class="rust"><code><span class="kw">mod </span>sealed {
+<a href="#52" id="52">52</a></pre></div><pre class="rust"><code><span class="kw">mod </span>sealed {
     <span class="kw">pub trait </span>Sealed {}
 }
 <span class="kw">use </span>sealed::Sealed;
@@ -61,7 +60,7 @@
 
 <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; LaneCount&lt;N&gt; {
     <span class="doccomment">/// The number of bytes in a bitmask with this many lanes.
-    </span><span class="kw">pub const </span>BITMASK_LEN: usize = (N + <span class="number">7</span>) / <span class="number">8</span>;
+    </span><span class="kw">pub const </span>BITMASK_LEN: usize = N.div_ceil(<span class="number">8</span>);
 }
 
 <span class="doccomment">/// Statically guarantees that a lane count is marked as supported.
@@ -84,13 +83,12 @@
     ($(<span class="macro-nonterminal">$lanes</span>:literal),+) =&gt; {
         $(
             <span class="kw">impl </span>SupportedLaneCount <span class="kw">for </span>LaneCount&lt;<span class="macro-nonterminal">$lanes</span>&gt; {
-                <span class="kw">type </span>BitMask = [u8; (<span class="macro-nonterminal">$lanes </span>+ <span class="number">7</span>) / <span class="number">8</span>];
-                <span class="kw">const </span>EMPTY_BIT_MASK: <span class="self">Self</span>::BitMask = [<span class="number">0</span>; (<span class="macro-nonterminal">$lanes </span>+ <span class="number">7</span>) / <span class="number">8</span>];
+                <span class="kw">type </span>BitMask = [u8; <span class="self">Self</span>::BITMASK_LEN];
+                <span class="kw">const </span>EMPTY_BIT_MASK: <span class="self">Self</span>::BitMask = [<span class="number">0</span>; <span class="self">Self</span>::BITMASK_LEN];
                 <span class="kw">const </span>FULL_BIT_MASK: <span class="self">Self</span>::BitMask = {
-                    <span class="kw">const </span>LEN: usize = (<span class="macro-nonterminal">$lanes </span>+ <span class="number">7</span>) / <span class="number">8</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>array = [!<span class="number">0u8</span>; LEN];
+                    <span class="kw">let </span><span class="kw-2">mut </span>array = [!<span class="number">0u8</span>; <span class="self">Self</span>::BITMASK_LEN];
                     <span class="kw">if </span><span class="macro-nonterminal">$lanes </span>% <span class="number">8 </span>&gt; <span class="number">0 </span>{
-                        array[LEN - <span class="number">1</span>] = (!<span class="number">0</span>) &gt;&gt; (<span class="number">8 </span>- <span class="macro-nonterminal">$lanes </span>% <span class="number">8</span>);
+                        array[<span class="self">Self</span>::BITMASK_LEN - <span class="number">1</span>] = (!<span class="number">0</span>) &gt;&gt; (<span class="number">8 </span>- <span class="macro-nonterminal">$lanes </span>% <span class="number">8</span>);
                     }
                     array
                 };
