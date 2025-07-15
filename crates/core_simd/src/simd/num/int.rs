@@ -5,7 +5,7 @@ use crate::simd::{
 };
 
 /// Operations on SIMD vectors of signed integers.
-pub trait SimdInt: Copy + Sealed {
+pub trait SimdInt: 'static + Copy + Sealed {
     /// Mask type used for manipulating this SIMD vector type.
     type Mask;
 

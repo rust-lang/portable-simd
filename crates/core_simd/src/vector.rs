@@ -1103,7 +1103,7 @@ use sealed::Sealed;
 /// Strictly, it is valid to impl if the vector will not be miscompiled.
 /// Practically, it is user-unfriendly to impl it if the vector won't compile,
 /// even when no soundness guarantees are broken by allowing the user to try.
-pub unsafe trait SimdElement: Sealed + Copy {
+pub unsafe trait SimdElement: 'static + Copy + Sealed {
     /// The mask element type corresponding to this element type.
     type Mask: MaskElement;
 }
