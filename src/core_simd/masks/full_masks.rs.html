@@ -120,13 +120,13 @@
 <a href=#120 id=120 data-nosnippet>120</a>
 <a href=#121 id=121 data-nosnippet>121</a>    <span class="attr">#[inline]
 <a href=#122 id=122 data-nosnippet>122</a>    #[must_use = <span class="string">"method returns a new vector and does not mutate the original value"</span>]
-<a href=#123 id=123 data-nosnippet>123</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>to_int(<span class="self">self</span>) -&gt; Simd&lt;T, N&gt; {
+<a href=#123 id=123 data-nosnippet>123</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>to_simd(<span class="self">self</span>) -&gt; Simd&lt;T, N&gt; {
 <a href=#124 id=124 data-nosnippet>124</a>        <span class="self">self</span>.<span class="number">0
 <a href=#125 id=125 data-nosnippet>125</a>    </span>}
 <a href=#126 id=126 data-nosnippet>126</a>
 <a href=#127 id=127 data-nosnippet>127</a>    <span class="attr">#[inline]
 <a href=#128 id=128 data-nosnippet>128</a>    #[must_use = <span class="string">"method returns a new mask and does not mutate the original value"</span>]
-<a href=#129 id=129 data-nosnippet>129</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>from_int_unchecked(value: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
+<a href=#129 id=129 data-nosnippet>129</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>from_simd_unchecked(value: Simd&lt;T, N&gt;) -&gt; <span class="self">Self </span>{
 <a href=#130 id=130 data-nosnippet>130</a>        <span class="self">Self</span>(value)
 <a href=#131 id=131 data-nosnippet>131</a>    }
 <a href=#132 id=132 data-nosnippet>132</a>
@@ -145,7 +145,7 @@
 <a href=#145 id=145 data-nosnippet>145</a>    <span class="kw">where
 <a href=#146 id=146 data-nosnippet>146</a>        </span>LaneCount&lt;M&gt;: SupportedLaneCount,
 <a href=#147 id=147 data-nosnippet>147</a>    {
-<a href=#148 id=148 data-nosnippet>148</a>        <span class="kw">let </span>resized = <span class="self">self</span>.to_int().resize::&lt;M&gt;(T::FALSE);
+<a href=#148 id=148 data-nosnippet>148</a>        <span class="kw">let </span>resized = <span class="self">self</span>.to_simd().resize::&lt;M&gt;(T::FALSE);
 <a href=#149 id=149 data-nosnippet>149</a>
 <a href=#150 id=150 data-nosnippet>150</a>        <span class="comment">// Safety: `resized` is an integer vector with length M, which must match T
 <a href=#151 id=151 data-nosnippet>151</a>        </span><span class="kw">let </span>bitmask: U = <span class="kw">unsafe </span>{ core::intrinsics::simd::simd_bitmask(resized) };
@@ -180,7 +180,7 @@
 <a href=#180 id=180 data-nosnippet>180</a>        };
 <a href=#181 id=181 data-nosnippet>181</a>
 <a href=#182 id=182 data-nosnippet>182</a>        <span class="comment">// SAFETY: `mask` only contains `T::TRUE` or `T::FALSE`
-<a href=#183 id=183 data-nosnippet>183</a>        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_int_unchecked(mask.resize::&lt;N&gt;(T::FALSE)) }
+<a href=#183 id=183 data-nosnippet>183</a>        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::from_simd_unchecked(mask.resize::&lt;N&gt;(T::FALSE)) }
 <a href=#184 id=184 data-nosnippet>184</a>    }
 <a href=#185 id=185 data-nosnippet>185</a>
 <a href=#186 id=186 data-nosnippet>186</a>    <span class="attr">#[inline]
@@ -223,14 +223,14 @@
 <a href=#223 id=223 data-nosnippet>223</a>    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
 <a href=#224 id=224 data-nosnippet>224</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>any(<span class="self">self</span>) -&gt; bool {
 <a href=#225 id=225 data-nosnippet>225</a>        <span class="comment">// Safety: use `self` as an integer vector
-<a href=#226 id=226 data-nosnippet>226</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_reduce_any(<span class="self">self</span>.to_int()) }
+<a href=#226 id=226 data-nosnippet>226</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_reduce_any(<span class="self">self</span>.to_simd()) }
 <a href=#227 id=227 data-nosnippet>227</a>    }
 <a href=#228 id=228 data-nosnippet>228</a>
 <a href=#229 id=229 data-nosnippet>229</a>    <span class="attr">#[inline]
 <a href=#230 id=230 data-nosnippet>230</a>    #[must_use = <span class="string">"method returns a new bool and does not mutate the original value"</span>]
 <a href=#231 id=231 data-nosnippet>231</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>all(<span class="self">self</span>) -&gt; bool {
 <a href=#232 id=232 data-nosnippet>232</a>        <span class="comment">// Safety: use `self` as an integer vector
-<a href=#233 id=233 data-nosnippet>233</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_reduce_all(<span class="self">self</span>.to_int()) }
+<a href=#233 id=233 data-nosnippet>233</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_reduce_all(<span class="self">self</span>.to_simd()) }
 <a href=#234 id=234 data-nosnippet>234</a>    }
 <a href=#235 id=235 data-nosnippet>235</a>}
 <a href=#236 id=236 data-nosnippet>236</a>

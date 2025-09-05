@@ -474,7 +474,7 @@
 <a href=#474 id=474 data-nosnippet>474</a>        or: <span class="self">Self</span>,
 <a href=#475 id=475 data-nosnippet>475</a>    ) -&gt; <span class="self">Self </span>{
 <a href=#476 id=476 data-nosnippet>476</a>        <span class="comment">// SAFETY: The safety of reading elements through `ptr` is ensured by the caller.
-<a href=#477 id=477 data-nosnippet>477</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_masked_load(enable.to_int(), ptr, or) }
+<a href=#477 id=477 data-nosnippet>477</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_masked_load(enable.to_simd(), ptr, or) }
 <a href=#478 id=478 data-nosnippet>478</a>    }
 <a href=#479 id=479 data-nosnippet>479</a>
 <a href=#480 id=480 data-nosnippet>480</a>    <span class="doccomment">/// Reads from potentially discontiguous indices in `slice` to construct a SIMD vector.
@@ -652,7 +652,7 @@
 <a href=#652 id=652 data-nosnippet>652</a>        or: <span class="self">Self</span>,
 <a href=#653 id=653 data-nosnippet>653</a>    ) -&gt; <span class="self">Self </span>{
 <a href=#654 id=654 data-nosnippet>654</a>        <span class="comment">// Safety: The caller is responsible for upholding all invariants
-<a href=#655 id=655 data-nosnippet>655</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_gather(or, source, enable.to_int()) }
+<a href=#655 id=655 data-nosnippet>655</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_gather(or, source, enable.to_simd()) }
 <a href=#656 id=656 data-nosnippet>656</a>    }
 <a href=#657 id=657 data-nosnippet>657</a>
 <a href=#658 id=658 data-nosnippet>658</a>    <span class="doccomment">/// Conditionally write contiguous elements to `slice`. The `enable` mask controls
@@ -723,7 +723,7 @@
 <a href=#723 id=723 data-nosnippet>723</a>    </span><span class="attr">#[inline]
 <a href=#724 id=724 data-nosnippet>724</a>    </span><span class="kw">pub unsafe fn </span>store_select_ptr(<span class="self">self</span>, ptr: <span class="kw-2">*mut </span>T, enable: Mask&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, N&gt;) {
 <a href=#725 id=725 data-nosnippet>725</a>        <span class="comment">// SAFETY: The safety of writing elements through `ptr` is ensured by the caller.
-<a href=#726 id=726 data-nosnippet>726</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_masked_store(enable.to_int(), ptr, <span class="self">self</span>) }
+<a href=#726 id=726 data-nosnippet>726</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_masked_store(enable.to_simd(), ptr, <span class="self">self</span>) }
 <a href=#727 id=727 data-nosnippet>727</a>    }
 <a href=#728 id=728 data-nosnippet>728</a>
 <a href=#729 id=729 data-nosnippet>729</a>    <span class="doccomment">/// Writes the values in a SIMD vector to potentially discontiguous indices in `slice`.
@@ -882,7 +882,7 @@
 <a href=#882 id=882 data-nosnippet>882</a>    #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
 <a href=#883 id=883 data-nosnippet>883</a>    </span><span class="kw">pub unsafe fn </span>scatter_select_ptr(<span class="self">self</span>, dest: Simd&lt;<span class="kw-2">*mut </span>T, N&gt;, enable: Mask&lt;isize, N&gt;) {
 <a href=#884 id=884 data-nosnippet>884</a>        <span class="comment">// Safety: The caller is responsible for upholding all invariants
-<a href=#885 id=885 data-nosnippet>885</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_scatter(<span class="self">self</span>, dest, enable.to_int()) }
+<a href=#885 id=885 data-nosnippet>885</a>        </span><span class="kw">unsafe </span>{ core::intrinsics::simd::simd_scatter(<span class="self">self</span>, dest, enable.to_simd()) }
 <a href=#886 id=886 data-nosnippet>886</a>    }
 <a href=#887 id=887 data-nosnippet>887</a>}
 <a href=#888 id=888 data-nosnippet>888</a>
@@ -926,7 +926,7 @@
 <a href=#926 id=926 data-nosnippet>926</a>        </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
 <a href=#927 id=927 data-nosnippet>927</a>            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, N&gt; =
 <a href=#928 id=928 data-nosnippet>928</a>                core::intrinsics::simd::simd_eq(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
-<a href=#929 id=929 data-nosnippet>929</a>            Mask::from_int_unchecked(tfvec)
+<a href=#929 id=929 data-nosnippet>929</a>            Mask::from_simd_unchecked(tfvec)
 <a href=#930 id=930 data-nosnippet>930</a>        };
 <a href=#931 id=931 data-nosnippet>931</a>
 <a href=#932 id=932 data-nosnippet>932</a>        <span class="comment">// Two vectors are equal if all elements are equal when compared elementwise
@@ -940,7 +940,7 @@
 <a href=#940 id=940 data-nosnippet>940</a>        </span><span class="kw">let </span>mask = <span class="kw">unsafe </span>{
 <a href=#941 id=941 data-nosnippet>941</a>            <span class="kw">let </span>tfvec: Simd&lt;&lt;T <span class="kw">as </span>SimdElement&gt;::Mask, N&gt; =
 <a href=#942 id=942 data-nosnippet>942</a>                core::intrinsics::simd::simd_ne(<span class="kw-2">*</span><span class="self">self</span>, <span class="kw-2">*</span>other);
-<a href=#943 id=943 data-nosnippet>943</a>            Mask::from_int_unchecked(tfvec)
+<a href=#943 id=943 data-nosnippet>943</a>            Mask::from_simd_unchecked(tfvec)
 <a href=#944 id=944 data-nosnippet>944</a>        };
 <a href=#945 id=945 data-nosnippet>945</a>
 <a href=#946 id=946 data-nosnippet>946</a>        <span class="comment">// Two vectors are non-equal if any elements are non-equal when compared elementwise
