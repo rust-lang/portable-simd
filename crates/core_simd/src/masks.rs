@@ -2,17 +2,10 @@
 //! Types representing
 #![allow(non_camel_case_types)]
 
-#[cfg_attr(
-    not(all(target_arch = "x86_64", target_feature = "avx512f")),
-    path = "masks/full_masks.rs"
-)]
-#[cfg_attr(
-    all(target_arch = "x86_64", target_feature = "avx512f"),
-    path = "masks/bitmask.rs"
-)]
+#[path = "masks/full_masks.rs"]
 mod mask_impl;
 
-use crate::simd::{LaneCount, Simd, SimdCast, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Select, Simd, SimdCast, SimdElement, SupportedLaneCount};
 use core::cmp::Ordering;
 use core::{fmt, mem};
 
@@ -105,9 +98,8 @@ impl_element! { isize, usize }
 ///
 /// Masks represent boolean inclusion/exclusion on a per-element basis.
 ///
-/// The layout of this type is unspecified, and may change between platforms
-/// and/or Rust versions, and code should not assume that it is equivalent to
-/// `[T; N]`.
+/// The layout of this type is equivalent to `Simd<T, N>`, but elements
+/// are guaranteed to be either 0 or -1.
 #[repr(transparent)]
 pub struct Mask<T, const N: usize>(mask_impl::Mask<T, N>)
 where

@@ -1,4 +1,4 @@
-use crate::simd::{LaneCount, Simd, SupportedLaneCount};
+use crate::simd::{LaneCount, Select, Simd, SupportedLaneCount};
 use core::mem;
 
 impl<const N: usize> Simd<u8, N>
