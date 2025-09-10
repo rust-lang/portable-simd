@@ -2,9 +2,6 @@
 //! Types representing
 #![allow(non_camel_case_types)]
 
-#[path = "masks/full_masks.rs"]
-mod mask_impl;
-
 use crate::simd::{LaneCount, Select, Simd, SimdCast, SimdElement, SupportedLaneCount};
 use core::cmp::Ordering;
 use core::{fmt, mem};
@@ -101,7 +98,7 @@ impl_element! { isize, usize }
 /// The layout of this type is equivalent to `Simd<T, N>`, but elements
 /// are guaranteed to be either 0 or -1.
 #[repr(transparent)]
-pub struct Mask<T, const N: usize>(mask_impl::Mask<T, N>)
+pub struct Mask<T, const N: usize>(Simd<T, N>)
 where
     T: MaskElement,
     LaneCount<N>: SupportedLaneCount;
@@ -133,7 +130,7 @@ where
     #[inline]
     #[rustc_const_unstable(feature = "portable_simd", issue = "86656")]
     pub const fn splat(value: bool) -> Self {
-        Self(mask_impl::Mask::splat(value))
+        Self(Simd::splat(if value { T::TRUE } else { T::FALSE }))
     }
 
     /// Converts an array of bools to a SIMD mask.
@@ -184,8 +181,8 @@ where
         // Safety: the caller must confirm this invariant
         unsafe {
             core::intrinsics::assume(<T as Sealed>::valid(value));
-            Self(mask_impl::Mask::from_simd_unchecked(value))
         }
+        Self(value)
     }
 
     /// Converts a vector of integers to a mask, where 0 represents `false` and -1
@@ -207,14 +204,15 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original value"]
     pub fn to_simd(self) -> Simd<T, N> {
-        self.0.to_simd()
+        self.0
     }
 
     /// Converts the mask to a mask of any other element size.
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn cast<U: MaskElement>(self) -> Mask<U, N> {
-        Mask(self.0.convert())
+        // Safety: mask elements are integers
+        unsafe { Mask(core::intrinsics::simd::simd_as(self.0)) }
     }
 
     /// Tests the value of the specified element.
@@ -225,7 +223,7 @@ where
     #[must_use = "method returns a new bool and does not mutate the original value"]
     pub unsafe fn test_unchecked(&self, index: usize) -> bool {
         // Safety: the caller must confirm this invariant
-        unsafe { self.0.test_unchecked(index) }
+        unsafe { T::eq(*self.0.as_array().get_unchecked(index), T::TRUE) }
     }
 
     /// Tests the value of the specified element.
@@ -236,9 +234,7 @@ where
     #[must_use = "method returns a new bool and does not mutate the original value"]
     #[track_caller]
     pub fn test(&self, index: usize) -> bool {
-        assert!(index < N, "element index out of range");
-        // Safety: the element index has been checked
-        unsafe { self.test_unchecked(index) }
+        T::eq(self.0[index], T::TRUE)
     }
 
     /// Sets the value of the specified element.
@@ -249,7 +245,7 @@ where
     pub unsafe fn set_unchecked(&mut self, index: usize, value: bool) {
         // Safety: the caller must confirm this invariant
         unsafe {
-            self.0.set_unchecked(index, value);
+            *self.0.as_mut_array().get_unchecked_mut(index) = if value { T::TRUE } else { T::FALSE }
         }
     }
 
@@ -260,25 +256,23 @@ where
     #[inline]
     #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
-        assert!(index < N, "element index out of range");
-        // Safety: the element index has been checked
-        unsafe {
-            self.set_unchecked(index, value);
-        }
+        self.0[index] = if value { T::TRUE } else { T::FALSE }
     }
 
     /// Returns true if any element is set, or false otherwise.
     #[inline]
     #[must_use = "method returns a new bool and does not mutate the original value"]
     pub fn any(self) -> bool {
-        self.0.any()
+        // Safety: `self` is a mask vector
+        unsafe { core::intrinsics::simd::simd_reduce_any(self.0) }
     }
 
     /// Returns true if all elements are set, or false otherwise.
     #[inline]
     #[must_use = "method returns a new bool and does not mutate the original value"]
     pub fn all(self) -> bool {
-        self.0.all()
+        // Safety: `self` is a mask vector
+        unsafe { core::intrinsics::simd::simd_reduce_all(self.0) }
     }
 
     /// Creates a bitmask from a mask.
@@ -288,7 +282,40 @@ where
     #[inline]
     #[must_use = "method returns a new integer and does not mutate the original value"]
     pub fn to_bitmask(self) -> u64 {
-        self.0.to_bitmask_integer()
+        #[inline]
+        unsafe fn to_bitmask_impl<T, U, const M: usize, const N: usize>(mask: Mask<T, N>) -> U
+        where
+            T: MaskElement,
+            LaneCount<M>: SupportedLaneCount,
+            LaneCount<N>: SupportedLaneCount,
+        {
+            let resized = mask.resize::<M>(false);
+
+            // Safety: `resized` is an integer vector with length M, which must match T
+            unsafe { core::intrinsics::simd::simd_bitmask(resized.0) }
+        }
+
+        // TODO modify simd_bitmask to zero-extend output, making this unnecessary
+        let bitmask = if N <= 8 {
+            // Safety: bitmask matches length
+            unsafe { to_bitmask_impl::<T, u8, 8, N>(self) as u64 }
+        } else if N <= 16 {
+            // Safety: bitmask matches length
+            unsafe { to_bitmask_impl::<T, u16, 16, N>(self) as u64 }
+        } else if N <= 32 {
+            // Safety: bitmask matches length
+            unsafe { to_bitmask_impl::<T, u32, 32, N>(self) as u64 }
+        } else {
+            // Safety: bitmask matches length
+            unsafe { to_bitmask_impl::<T, u64, 64, N>(self) }
+        };
+
+        // LLVM assumes bit order should match endianness
+        if cfg!(target_endian = "big") {
+            bitmask.reverse_bits() >> (64 - N.min(64))
+        } else {
+            bitmask
+        }
     }
 
     /// Creates a mask from a bitmask.
@@ -298,7 +325,7 @@ where
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn from_bitmask(bitmask: u64) -> Self {
-        Self(mask_impl::Mask::from_bitmask_integer(bitmask))
+        Self(bitmask.select(Simd::splat(T::TRUE), Simd::splat(T::FALSE)))
     }
 
     /// Finds the index of the first set element.
@@ -442,7 +469,8 @@ where
     type Output = Self;
     #[inline]
     fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
+        // Safety: `self` is an integer vector
+        unsafe { Self(core::intrinsics::simd::simd_and(self.0, rhs.0)) }
     }
 }
 
@@ -478,7 +506,8 @@ where
     type Output = Self;
     #[inline]
     fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
+        // Safety: `self` is an integer vector
+        unsafe { Self(core::intrinsics::simd::simd_or(self.0, rhs.0)) }
     }
 }
 
@@ -514,7 +543,8 @@ where
     type Output = Self;
     #[inline]
     fn bitxor(self, rhs: Self) -> Self::Output {
-        Self(self.0 ^ rhs.0)
+        // Safety: `self` is an integer vector
+        unsafe { Self(core::intrinsics::simd::simd_xor(self.0, rhs.0)) }
     }
 }
 
@@ -550,7 +580,7 @@ where
     type Output = Mask<T, N>;
     #[inline]
     fn not(self) -> Self::Output {
-        Self(!self.0)
+        Self::splat(true) ^ self
     }
 }
 
@@ -561,7 +591,7 @@ where
 {
     #[inline]
     fn bitand_assign(&mut self, rhs: Self) {
-        self.0 = self.0 & rhs.0;
+        *self = *self & rhs;
     }
 }
 
@@ -583,7 +613,7 @@ where
 {
     #[inline]
     fn bitor_assign(&mut self, rhs: Self) {
-        self.0 = self.0 | rhs.0;
+        *self = *self | rhs;
     }
 }
 
@@ -605,7 +635,7 @@ where
 {
     #[inline]
     fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 = self.0 ^ rhs.0;
+        *self = *self ^ rhs;
     }
 }
 
