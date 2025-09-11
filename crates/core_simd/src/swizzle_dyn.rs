@@ -220,6 +220,8 @@ unsafe fn avx2_pshufb512(bytes: Simd<u8, 64>, idxs: Simd<u8, 64>) -> Simd<u8, 64
 
         let z0 = half_swizzler(bytes0, bytes1, idxs0);
         let z1 = half_swizzler(bytes0, bytes1, idxs1);
+
+        // SAFETY: Concatenation of two 32-element vectors to one 64-element vector
         let z = mem::transmute::<[Simd<u8, 32>; 2], Simd<u8, 64>>([z0.into(), z1.into()]);
 
         idxs.simd_lt(high).select(z, Simd::splat(0u8))
