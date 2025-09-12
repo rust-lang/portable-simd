@@ -118,8 +118,9 @@ impl_element! { isize, usize }
 ///
 /// Masks represent boolean inclusion/exclusion on a per-element basis.
 ///
-/// The layout of this type is equivalent to `Simd<T, N>`, but elements
-/// are guaranteed to be either 0 or -1.
+/// The layout of this type is unspecified, and may change between platforms
+/// and/or Rust versions, and code should not assume that it is equivalent to
+/// `[T; N]`.
 #[repr(transparent)]
 pub struct Mask<T, const N: usize>(Simd<T, N>)
 where
