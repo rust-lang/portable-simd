@@ -1,4 +1,6 @@
-use crate::simd::{LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{
+    FixEndianness, LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount,
+};
 
 /// Choose elements from two vectors using a mask.
 ///
@@ -82,21 +84,8 @@ where
             assert!(N <= 64, "number of elements can't be greater than 64");
         }
 
-        // LLVM assumes bit order should match endianness
-        let bitmask = if cfg!(target_endian = "big") {
-            let rev = self.reverse_bits();
-            if N < 64 {
-                // Shift things back to the right
-                rev >> (64 - N)
-            } else {
-                rev
-            }
-        } else {
-            self
-        };
-
         #[inline]
-        unsafe fn select_impl<T, U, const M: usize, const N: usize>(
+        unsafe fn select_impl<T, U: FixEndianness, const M: usize, const N: usize>(
             bitmask: U,
             true_values: Simd<T, N>,
             false_values: Simd<T, N>,
@@ -110,6 +99,9 @@ where
             let true_values = true_values.resize::<M>(default);
             let false_values = false_values.resize::<M>(default);
 
+            // LLVM assumes bit order should match endianness
+            let bitmask = bitmask.fix_endianness();
+
             // Safety: the caller guarantees that the size of U matches M
             let selected = unsafe {
                 core::intrinsics::simd::simd_select_bitmask(bitmask, true_values, false_values)
@@ -120,15 +112,19 @@ where
 
         // TODO modify simd_bitmask_select to truncate input, making this unnecessary
         if N <= 8 {
+            let bitmask = self as u8;
             // Safety: bitmask matches length
-            unsafe { select_impl::<T, u8, 8, N>(bitmask as u8, true_values, false_values) }
+            unsafe { select_impl::<T, u8, 8, N>(bitmask, true_values, false_values) }
         } else if N <= 16 {
+            let bitmask = self as u16;
             // Safety: bitmask matches length
-            unsafe { select_impl::<T, u16, 16, N>(bitmask as u16, true_values, false_values) }
+            unsafe { select_impl::<T, u16, 16, N>(bitmask, true_values, false_values) }
         } else if N <= 32 {
+            let bitmask = self as u32;
             // Safety: bitmask matches length
-            unsafe { select_impl::<T, u32, 32, N>(bitmask as u32, true_values, false_values) }
+            unsafe { select_impl::<T, u32, 32, N>(bitmask, true_values, false_values) }
         } else {
+            let bitmask = self;
             // Safety: bitmask matches length
             unsafe { select_impl::<T, u64, 64, N>(bitmask, true_values, false_values) }
         }

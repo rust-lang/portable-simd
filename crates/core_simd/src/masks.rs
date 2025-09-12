@@ -6,6 +6,29 @@ use crate::simd::{LaneCount, Select, Simd, SimdCast, SimdElement, SupportedLaneC
 use core::cmp::Ordering;
 use core::{fmt, mem};
 
+pub(crate) trait FixEndianness {
+    fn fix_endianness(self) -> Self;
+}
+
+macro_rules! impl_fix_endianness {
+    { $($int:ty),* } => {
+        $(
+        impl FixEndianness for $int {
+            #[inline(always)]
+            fn fix_endianness(self) -> Self {
+                if cfg!(target_endian = "big") {
+                    <$int>::reverse_bits(self)
+                } else {
+                    self
+                }
+            }
+        }
+        )*
+    }
+}
+
+impl_fix_endianness! { u8, u16, u32, u64 }
+
 mod sealed {
     use super::*;
 
@@ -283,7 +306,9 @@ where
     #[must_use = "method returns a new integer and does not mutate the original value"]
     pub fn to_bitmask(self) -> u64 {
         #[inline]
-        unsafe fn to_bitmask_impl<T, U, const M: usize, const N: usize>(mask: Mask<T, N>) -> U
+        unsafe fn to_bitmask_impl<T, U: FixEndianness, const M: usize, const N: usize>(
+            mask: Mask<T, N>,
+        ) -> U
         where
             T: MaskElement,
             LaneCount<M>: SupportedLaneCount,
@@ -292,11 +317,14 @@ where
             let resized = mask.resize::<M>(false);
 
             // Safety: `resized` is an integer vector with length M, which must match T
-            unsafe { core::intrinsics::simd::simd_bitmask(resized.0) }
+            let bitmask: U = unsafe { core::intrinsics::simd::simd_bitmask(resized.0) };
+
+            // LLVM assumes bit order should match endianness
+            bitmask.fix_endianness()
         }
 
         // TODO modify simd_bitmask to zero-extend output, making this unnecessary
-        let bitmask = if N <= 8 {
+        if N <= 8 {
             // Safety: bitmask matches length
             unsafe { to_bitmask_impl::<T, u8, 8, N>(self) as u64 }
         } else if N <= 16 {
@@ -308,13 +336,6 @@ where
         } else {
             // Safety: bitmask matches length
             unsafe { to_bitmask_impl::<T, u64, 64, N>(self) }
-        };
-
-        // LLVM assumes bit order should match endianness
-        if cfg!(target_endian = "big") {
-            bitmask.reverse_bits() >> (64 - N.min(64))
-        } else {
-            bitmask
         }
     }
 
