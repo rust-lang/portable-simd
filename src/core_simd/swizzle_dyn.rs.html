@@ -139,7 +139,7 @@
 <a href=#139 id=139 data-nosnippet>139</a>#[inline]
 <a href=#140 id=140 data-nosnippet>140</a>#[allow(clippy::let_and_return)]
 <a href=#141 id=141 data-nosnippet>141</a></span><span class="kw">unsafe fn </span>avx2_pshufb(bytes: Simd&lt;u8, <span class="number">32</span>&gt;, idxs: Simd&lt;u8, <span class="number">32</span>&gt;) -&gt; Simd&lt;u8, <span class="number">32</span>&gt; {
-<a href=#142 id=142 data-nosnippet>142</a>    <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
+<a href=#142 id=142 data-nosnippet>142</a>    <span class="kw">use </span><span class="kw">crate</span>::simd::{Select, cmp::SimdPartialOrd};
 <a href=#143 id=143 data-nosnippet>143</a>    <span class="attr">#[cfg(target_arch = <span class="string">"x86"</span>)]
 <a href=#144 id=144 data-nosnippet>144</a>    </span><span class="kw">use </span>core::arch::x86;
 <a href=#145 id=145 data-nosnippet>145</a>    <span class="attr">#[cfg(target_arch = <span class="string">"x86_64"</span>)]
@@ -200,7 +200,7 @@
 <a href=#200 id=200 data-nosnippet>200</a><span class="kw">where
 <a href=#201 id=201 data-nosnippet>201</a>    </span>LaneCount&lt;N&gt;: SupportedLaneCount,
 <a href=#202 id=202 data-nosnippet>202</a>{
-<a href=#203 id=203 data-nosnippet>203</a>    <span class="kw">use </span><span class="kw">crate</span>::simd::cmp::SimdPartialOrd;
+<a href=#203 id=203 data-nosnippet>203</a>    <span class="kw">use </span><span class="kw">crate</span>::simd::{Select, cmp::SimdPartialOrd};
 <a href=#204 id=204 data-nosnippet>204</a>    idxs.simd_lt(Simd::splat(N <span class="kw">as </span>u8))
 <a href=#205 id=205 data-nosnippet>205</a>        .select(idxs, Simd::splat(u8::MAX))
 <a href=#206 id=206 data-nosnippet>206</a>}</code></pre></div></section></main></body></html>
