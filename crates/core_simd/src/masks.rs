@@ -302,10 +302,13 @@ where
     /// Creates a bitmask from a mask.
     ///
     /// Each bit is set if the corresponding element in the mask is `true`.
-    /// If the mask contains more than 64 elements, the bitmask is truncated to the first 64.
     #[inline]
     #[must_use = "method returns a new integer and does not mutate the original value"]
     pub fn to_bitmask(self) -> u64 {
+        const {
+            assert!(N <= 64, "number of elements can't be greater than 64");
+        }
+
         #[inline]
         unsafe fn to_bitmask_impl<T, U: FixEndianness, const M: usize, const N: usize>(
             mask: Mask<T, N>,
