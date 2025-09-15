@@ -1,4 +1,4 @@
-use crate::simd::{LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount};
+use crate::simd::{LaneCount, Mask, Simd, SimdElement, SupportedLaneCount};
 
 /// Constructs a new SIMD vector by copying elements from selected elements in other vectors.
 ///
@@ -160,7 +160,7 @@ pub trait Swizzle<const N: usize> {
     #[must_use = "method returns a new mask and does not mutate the original inputs"]
     fn swizzle_mask<T, const M: usize>(mask: Mask<T, M>) -> Mask<T, N>
     where
-        T: MaskElement,
+        T: SimdElement,
         LaneCount<N>: SupportedLaneCount,
         LaneCount<M>: SupportedLaneCount,
     {
@@ -176,7 +176,7 @@ pub trait Swizzle<const N: usize> {
     #[must_use = "method returns a new mask and does not mutate the original inputs"]
     fn concat_swizzle_mask<T, const M: usize>(first: Mask<T, M>, second: Mask<T, M>) -> Mask<T, N>
     where
-        T: MaskElement,
+        T: SimdElement,
         LaneCount<N>: SupportedLaneCount,
         LaneCount<M>: SupportedLaneCount,
     {
@@ -518,7 +518,7 @@ where
 
 impl<T, const N: usize> Mask<T, N>
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<N>: SupportedLaneCount,
 {
     /// Reverse the order of the elements in the mask.
@@ -556,11 +556,8 @@ where
     pub fn shift_elements_left<const OFFSET: usize>(self, padding: bool) -> Self {
         // Safety: swizzles are safe for masks
         unsafe {
-            Self::from_simd_unchecked(self.to_simd().shift_elements_left::<OFFSET>(if padding {
-                T::TRUE
-            } else {
-                T::FALSE
-            }))
+            let padding = Mask::<T, 1>::splat(padding).to_simd()[0];
+            Self::from_simd_unchecked(self.to_simd().shift_elements_left::<OFFSET>(padding))
         }
     }
 
@@ -571,11 +568,8 @@ where
     pub fn shift_elements_right<const OFFSET: usize>(self, padding: bool) -> Self {
         // Safety: swizzles are safe for masks
         unsafe {
-            Self::from_simd_unchecked(self.to_simd().shift_elements_right::<OFFSET>(if padding {
-                T::TRUE
-            } else {
-                T::FALSE
-            }))
+            let padding = Mask::<T, 1>::splat(padding).to_simd()[0];
+            Self::from_simd_unchecked(self.to_simd().shift_elements_right::<OFFSET>(padding))
         }
     }
 
@@ -661,11 +655,8 @@ where
     {
         // Safety: swizzles are safe for masks
         unsafe {
-            Mask::<T, M>::from_simd_unchecked(self.to_simd().resize::<M>(if value {
-                T::TRUE
-            } else {
-                T::FALSE
-            }))
+            let padding = Mask::<T, 1>::splat(value).to_simd()[0];
+            Mask::<T, M>::from_simd_unchecked(self.to_simd().resize::<M>(padding))
         }
     }
 

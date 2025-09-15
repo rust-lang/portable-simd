@@ -1,5 +1,5 @@
 use crate::simd::{
-    LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
+    LaneCount, Mask, SupportedLaneCount, Swizzle,
     cmp::SimdPartialOrd,
     num::SimdUint,
     ptr::{SimdConstPtr, SimdMutPtr},
@@ -399,7 +399,7 @@ where
     /// ```
     #[must_use]
     #[inline]
-    pub fn load_select_or_default(slice: &[T], enable: Mask<<T as SimdElement>::Mask, N>) -> Self
+    pub fn load_select_or_default(slice: &[T], enable: Mask<T, N>) -> Self
     where
         T: Default,
     {
@@ -427,11 +427,7 @@ where
     /// ```
     #[must_use]
     #[inline]
-    pub fn load_select(
-        slice: &[T],
-        mut enable: Mask<<T as SimdElement>::Mask, N>,
-        or: Self,
-    ) -> Self {
+    pub fn load_select(slice: &[T], mut enable: Mask<T, N>, or: Self) -> Self {
         enable &= mask_up_to(slice.len());
         // SAFETY: We performed the bounds check by updating the mask. &[T] is properly aligned to
         // the element.
@@ -448,11 +444,7 @@ where
     /// Enabled loads must not exceed the length of `slice`.
     #[must_use]
     #[inline]
-    pub unsafe fn load_select_unchecked(
-        slice: &[T],
-        enable: Mask<<T as SimdElement>::Mask, N>,
-        or: Self,
-    ) -> Self {
+    pub unsafe fn load_select_unchecked(slice: &[T], enable: Mask<T, N>, or: Self) -> Self {
         let ptr = slice.as_ptr();
         // SAFETY: The safety of reading elements from `slice` is ensured by the caller.
         unsafe { Self::load_select_ptr(ptr, enable, or) }
@@ -468,11 +460,7 @@ where
     /// Enabled `ptr` elements must be safe to read as if by `std::ptr::read`.
     #[must_use]
     #[inline]
-    pub unsafe fn load_select_ptr(
-        ptr: *const T,
-        enable: Mask<<T as SimdElement>::Mask, N>,
-        or: Self,
-    ) -> Self {
+    pub unsafe fn load_select_ptr(ptr: *const T, enable: Mask<T, N>, or: Self) -> Self {
         // SAFETY: The safety of reading elements through `ptr` is ensured by the caller.
         unsafe { core::intrinsics::simd::simd_masked_load(enable.to_simd(), ptr, or) }
     }
@@ -539,11 +527,11 @@ where
     #[inline]
     pub fn gather_select(
         slice: &[T],
-        enable: Mask<isize, N>,
+        enable: Mask<usize, N>,
         idxs: Simd<usize, N>,
         or: Self,
     ) -> Self {
-        let enable: Mask<isize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
+        let enable: Mask<usize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
         // Safety: We have masked-off out-of-bounds indices.
         unsafe { Self::gather_select_unchecked(slice, enable, idxs, or) }
     }
@@ -580,7 +568,7 @@ where
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub unsafe fn gather_select_unchecked(
         slice: &[T],
-        enable: Mask<isize, N>,
+        enable: Mask<usize, N>,
         idxs: Simd<usize, N>,
         or: Self,
     ) -> Self {
@@ -588,7 +576,7 @@ where
         // Ferris forgive me, I have done pointer arithmetic here.
         let ptrs = base_ptr.wrapping_add(idxs);
         // Safety: The caller is responsible for determining the indices are okay to read
-        unsafe { Self::gather_select_ptr(ptrs, enable, or) }
+        unsafe { Self::gather_select_ptr(ptrs, enable.cast::<*const T>(), or) }
     }
 
     /// Reads elementwise from pointers into a SIMD vector.
@@ -648,7 +636,7 @@ where
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub unsafe fn gather_select_ptr(
         source: Simd<*const T, N>,
-        enable: Mask<isize, N>,
+        enable: Mask<*const T, N>,
         or: Self,
     ) -> Self {
         // Safety: The caller is responsible for upholding all invariants
@@ -674,7 +662,7 @@ where
     /// assert_eq!(arr, [0, -4, -3, 0]);
     /// ```
     #[inline]
-    pub fn store_select(self, slice: &mut [T], mut enable: Mask<<T as SimdElement>::Mask, N>) {
+    pub fn store_select(self, slice: &mut [T], mut enable: Mask<T, N>) {
         enable &= mask_up_to(slice.len());
         // SAFETY: We performed the bounds check by updating the mask. &[T] is properly aligned to
         // the element.
@@ -702,11 +690,7 @@ where
     /// assert_eq!(arr, [0, -4, -3, -2]);
     /// ```
     #[inline]
-    pub unsafe fn store_select_unchecked(
-        self,
-        slice: &mut [T],
-        enable: Mask<<T as SimdElement>::Mask, N>,
-    ) {
+    pub unsafe fn store_select_unchecked(self, slice: &mut [T], enable: Mask<T, N>) {
         let ptr = slice.as_mut_ptr();
         // SAFETY: The safety of writing elements in `slice` is ensured by the caller.
         unsafe { self.store_select_ptr(ptr, enable) }
@@ -721,7 +705,7 @@ where
     /// Memory addresses for element are calculated [`pointer::wrapping_offset`] and
     /// each enabled element must satisfy the same conditions as [`core::ptr::write`].
     #[inline]
-    pub unsafe fn store_select_ptr(self, ptr: *mut T, enable: Mask<<T as SimdElement>::Mask, N>) {
+    pub unsafe fn store_select_ptr(self, ptr: *mut T, enable: Mask<T, N>) {
         // SAFETY: The safety of writing elements through `ptr` is ensured by the caller.
         unsafe { core::intrinsics::simd::simd_masked_store(enable.to_simd(), ptr, self) }
     }
@@ -768,8 +752,8 @@ where
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
     #[inline]
-    pub fn scatter_select(self, slice: &mut [T], enable: Mask<isize, N>, idxs: Simd<usize, N>) {
-        let enable: Mask<isize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
+    pub fn scatter_select(self, slice: &mut [T], enable: Mask<usize, N>, idxs: Simd<usize, N>) {
+        let enable: Mask<usize, N> = enable & idxs.simd_lt(Simd::splat(slice.len()));
         // Safety: We have masked-off out-of-bounds indices.
         unsafe { self.scatter_select_unchecked(slice, enable, idxs) }
     }
@@ -808,7 +792,7 @@ where
     pub unsafe fn scatter_select_unchecked(
         self,
         slice: &mut [T],
-        enable: Mask<isize, N>,
+        enable: Mask<usize, N>,
         idxs: Simd<usize, N>,
     ) {
         // Safety: This block works with *mut T derived from &mut 'a [T],
@@ -827,7 +811,7 @@ where
             // Ferris forgive me, I have done pointer arithmetic here.
             let ptrs = base_ptr.wrapping_add(idxs);
             // The ptrs have been bounds-masked to prevent memory-unsafe writes insha'allah
-            self.scatter_select_ptr(ptrs, enable);
+            self.scatter_select_ptr(ptrs, enable.cast::<*mut T>());
             // Cleared ☢️ *mut T Zone
         }
     }
@@ -880,7 +864,7 @@ where
     /// ```
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
-    pub unsafe fn scatter_select_ptr(self, dest: Simd<*mut T, N>, enable: Mask<isize, N>) {
+    pub unsafe fn scatter_select_ptr(self, dest: Simd<*mut T, N>, enable: Mask<*mut T, N>) {
         // Safety: The caller is responsible for upholding all invariants
         unsafe { core::intrinsics::simd::simd_scatter(self, dest, enable.to_simd()) }
     }
@@ -926,7 +910,7 @@ where
         let mask = unsafe {
             let tfvec: Simd<<T as SimdElement>::Mask, N> =
                 core::intrinsics::simd::simd_eq(*self, *other);
-            Mask::from_simd_unchecked(tfvec)
+            Mask::<T, N>::from_simd_unchecked(tfvec)
         };
 
         // Two vectors are equal if all elements are equal when compared elementwise
@@ -940,7 +924,7 @@ where
         let mask = unsafe {
             let tfvec: Simd<<T as SimdElement>::Mask, N> =
                 core::intrinsics::simd::simd_ne(*self, *other);
-            Mask::from_simd_unchecked(tfvec)
+            Mask::<T, N>::from_simd_unchecked(tfvec)
         };
 
         // Two vectors are non-equal if any elements are non-equal when compared elementwise
@@ -1090,8 +1074,32 @@ where
     }
 }
 
-mod sealed {
+pub(crate) mod sealed {
+    use super::*;
+    use crate::simd::SimdCast;
+
     pub trait Sealed {}
+
+    /// These functions prevent other traits from bleeding into the parent bounds.
+    ///
+    /// For example, `eq` could be provided by requiring `MaskElement: PartialEq`, but that would
+    /// prevent us from ever removing that bound, or from implementing `MaskElement` on
+    /// non-`PartialEq` types in the future.
+    pub trait MaskElement: SimdCast + Sealed {
+        fn valid<const N: usize>(value: Simd<Self, N>) -> bool
+        where
+            LaneCount<N>: SupportedLaneCount,
+            Self: SimdElement;
+
+        fn eq(self, other: Self) -> bool;
+
+        fn to_usize(self) -> usize;
+
+        type Unsigned: SimdElement;
+
+        const TRUE: Self;
+        const FALSE: Self;
+    }
 }
 use sealed::Sealed;
 
@@ -1105,7 +1113,7 @@ use sealed::Sealed;
 /// even when no soundness guarantees are broken by allowing the user to try.
 pub unsafe trait SimdElement: Sealed + Copy {
     /// The mask element type corresponding to this element type.
-    type Mask: MaskElement;
+    type Mask: sealed::MaskElement;
 }
 
 impl Sealed for u8 {}
@@ -1149,6 +1157,54 @@ impl Sealed for i8 {}
 unsafe impl SimdElement for i8 {
     type Mask = i8;
 }
+macro_rules! impl_mask_element {
+    ($ty:ty, $unsigned:ty) => {
+        impl sealed::MaskElement for $ty {
+            #[inline]
+            fn valid<const N: usize>(value: Simd<Self, N>) -> bool
+            where
+                LaneCount<N>: SupportedLaneCount,
+                Self: SimdElement,
+            {
+                // We can't use `Simd` directly, because `Simd`'s functions call this function and
+                // we will end up with an infinite loop.
+                // Safety: `value` is an integer vector
+                unsafe {
+                    use core::intrinsics::simd;
+                    let falses: Simd<Self, N> = simd::simd_eq(value, Simd::splat(0 as _));
+                    let trues: Simd<Self, N> = simd::simd_eq(value, Simd::splat(-1 as _));
+                    let valid: Simd<Self, N> = simd::simd_or(falses, trues);
+                    simd::simd_reduce_all(valid)
+                }
+            }
+
+            #[inline]
+            fn eq(self, other: Self) -> bool {
+                self == other
+            }
+
+            #[inline]
+            fn to_usize(self) -> usize {
+                self as usize
+            }
+
+            type Unsigned = $unsigned;
+
+            const TRUE: Self = -1;
+            const FALSE: Self = 0;
+        }
+    };
+}
+
+impl_mask_element! { i8, u8 }
+
+impl_mask_element! { i16, u16 }
+
+impl_mask_element! { i32, u32 }
+
+impl_mask_element! { i64, u64 }
+
+impl_mask_element! { isize, usize }
 
 impl Sealed for i16 {}
 
@@ -1233,20 +1289,27 @@ where
 fn mask_up_to<M, const N: usize>(len: usize) -> Mask<M, N>
 where
     LaneCount<N>: SupportedLaneCount,
-    M: MaskElement,
+    M: SimdElement,
 {
     let index = lane_indices::<N>();
-    let max_value: u64 = M::max_unsigned();
-    macro_rules! case {
-        ($ty:ty) => {
-            if N < <$ty>::MAX as usize && max_value as $ty as u64 == max_value {
-                return index.cast().simd_lt(Simd::splat(len.min(N) as $ty)).cast();
-            }
-        };
+    // Choose the comparison width based on the mask element size of M
+    match core::mem::size_of::<M::Mask>() {
+        1 => {
+            let idx: Simd<u8, N> = index.cast();
+            idx.simd_lt(Simd::splat(len.min(N) as u8)).cast()
+        }
+        2 => {
+            let idx: Simd<u16, N> = index.cast();
+            idx.simd_lt(Simd::splat(len.min(N) as u16)).cast()
+        }
+        4 => {
+            let idx: Simd<u32, N> = index.cast();
+            idx.simd_lt(Simd::splat(len.min(N) as u32)).cast()
+        }
+        8 => {
+            let idx: Simd<u64, N> = index.cast();
+            idx.simd_lt(Simd::splat(len.min(N) as u64)).cast()
+        }
+        _ => index.simd_lt(Simd::splat(len)).cast(),
     }
-    case!(u8);
-    case!(u16);
-    case!(u32);
-    case!(u64);
-    index.simd_lt(Simd::splat(len)).cast()
 }

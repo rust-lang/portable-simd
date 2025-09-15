@@ -98,7 +98,7 @@ where
     type Isize = Simd<isize, N>;
     type CastPtr<U> = Simd<*const U, N>;
     type MutPtr = Simd<*mut T, N>;
-    type Mask = Mask<isize, N>;
+    type Mask = Mask<*const T, N>;
 
     #[inline]
     fn is_null(self) -> Self::Mask {

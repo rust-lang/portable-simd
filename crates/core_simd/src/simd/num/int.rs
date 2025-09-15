@@ -251,7 +251,7 @@ macro_rules! impl_trait {
         where
             LaneCount<N>: SupportedLaneCount,
         {
-            type Mask = Mask<<$ty as SimdElement>::Mask, N>;
+            type Mask = Mask<$ty, N>;
             type Scalar = $ty;
             type Unsigned = Simd<$unsigned, N>;
             type Cast<T: SimdElement> = Simd<T, N>;
