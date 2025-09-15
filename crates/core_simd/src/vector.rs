@@ -1,5 +1,5 @@
 use crate::simd::{
-    LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
+    LaneCount, Mask, SupportedLaneCount, Swizzle,
     cmp::SimdPartialOrd,
     num::SimdUint,
     ptr::{SimdConstPtr, SimdMutPtr},
@@ -1074,8 +1074,32 @@ where
     }
 }
 
-mod sealed {
+pub(crate) mod sealed {
+    use super::*;
+    use crate::simd::SimdCast;
+
     pub trait Sealed {}
+
+    /// These functions prevent other traits from bleeding into the parent bounds.
+    ///
+    /// For example, `eq` could be provided by requiring `MaskElement: PartialEq`, but that would
+    /// prevent us from ever removing that bound, or from implementing `MaskElement` on
+    /// non-`PartialEq` types in the future.
+    pub trait MaskElement: SimdCast + Sealed {
+        fn valid<const N: usize>(value: Simd<Self, N>) -> bool
+        where
+            LaneCount<N>: SupportedLaneCount,
+            Self: SimdElement;
+
+        fn eq(self, other: Self) -> bool;
+
+        fn to_usize(self) -> usize;
+
+        type Unsigned: SimdElement;
+
+        const TRUE: Self;
+        const FALSE: Self;
+    }
 }
 use sealed::Sealed;
 
@@ -1089,7 +1113,7 @@ use sealed::Sealed;
 /// even when no soundness guarantees are broken by allowing the user to try.
 pub unsafe trait SimdElement: Sealed + Copy {
     /// The mask element type corresponding to this element type.
-    type Mask: MaskElement;
+    type Mask: sealed::MaskElement;
 }
 
 impl Sealed for u8 {}
@@ -1133,6 +1157,54 @@ impl Sealed for i8 {}
 unsafe impl SimdElement for i8 {
     type Mask = i8;
 }
+macro_rules! impl_mask_element {
+    ($ty:ty, $unsigned:ty) => {
+        impl sealed::MaskElement for $ty {
+            #[inline]
+            fn valid<const N: usize>(value: Simd<Self, N>) -> bool
+            where
+                LaneCount<N>: SupportedLaneCount,
+                Self: SimdElement,
+            {
+                // We can't use `Simd` directly, because `Simd`'s functions call this function and
+                // we will end up with an infinite loop.
+                // Safety: `value` is an integer vector
+                unsafe {
+                    use core::intrinsics::simd;
+                    let falses: Simd<Self, N> = simd::simd_eq(value, Simd::splat(0 as _));
+                    let trues: Simd<Self, N> = simd::simd_eq(value, Simd::splat(-1 as _));
+                    let valid: Simd<Self, N> = simd::simd_or(falses, trues);
+                    simd::simd_reduce_all(valid)
+                }
+            }
+
+            #[inline]
+            fn eq(self, other: Self) -> bool {
+                self == other
+            }
+
+            #[inline]
+            fn to_usize(self) -> usize {
+                self as usize
+            }
+
+            type Unsigned = $unsigned;
+
+            const TRUE: Self = -1;
+            const FALSE: Self = 0;
+        }
+    };
+}
+
+impl_mask_element! { i8, u8 }
+
+impl_mask_element! { i16, u16 }
+
+impl_mask_element! { i32, u32 }
+
+impl_mask_element! { i64, u64 }
+
+impl_mask_element! { isize, usize }
 
 impl Sealed for i16 {}
 

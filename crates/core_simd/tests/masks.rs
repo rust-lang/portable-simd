@@ -113,7 +113,7 @@ macro_rules! test_mask_api {
 
             #[test]
             fn cast() {
-                fn cast_impl<T: core_simd::simd::MaskElement>()
+                fn cast_impl<T: core_simd::simd::SimdElement>()
                 where
                     Mask<$type, 8>: Into<Mask<T, 8>>,
                 {

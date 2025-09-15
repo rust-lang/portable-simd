@@ -2,7 +2,8 @@
 //! Types representing
 #![allow(non_camel_case_types)]
 
-use crate::simd::{LaneCount, Select, Simd, SimdCast, SimdElement, SupportedLaneCount};
+use crate::core_simd::vector::sealed::MaskElement;
+use crate::simd::{LaneCount, Select, Simd, SimdElement, SupportedLaneCount};
 use core::cmp::Ordering;
 use core::{fmt, mem};
 
@@ -28,91 +29,6 @@ macro_rules! impl_fix_endianness {
 }
 
 impl_fix_endianness! { u8, u16, u32, u64 }
-
-mod sealed {
-    use super::*;
-
-    /// Not only does this seal the `MaskElement` trait, but these functions prevent other traits
-    /// from bleeding into the parent bounds.
-    ///
-    /// For example, `eq` could be provided by requiring `MaskElement: PartialEq`, but that would
-    /// prevent us from ever removing that bound, or from implementing `MaskElement` on
-    /// non-`PartialEq` types in the future.
-    pub trait Sealed {
-        fn valid<const N: usize>(values: Simd<Self, N>) -> bool
-        where
-            LaneCount<N>: SupportedLaneCount,
-            Self: SimdElement;
-
-        fn eq(self, other: Self) -> bool;
-
-        fn to_usize(self) -> usize;
-        fn max_unsigned() -> u64;
-
-        type Unsigned: SimdElement;
-
-        const TRUE: Self;
-
-        const FALSE: Self;
-    }
-}
-use sealed::Sealed;
-
-/// Marker trait for types that may be used as SIMD mask elements.
-///
-/// # Safety
-/// Type must be a signed integer.
-pub unsafe trait MaskElement: SimdElement<Mask = Self> + SimdCast + Sealed {}
-
-macro_rules! impl_element {
-    { $ty:ty, $unsigned:ty } => {
-        impl Sealed for $ty {
-            #[inline]
-            fn valid<const N: usize>(value: Simd<Self, N>) -> bool
-            where
-                LaneCount<N>: SupportedLaneCount,
-            {
-                // We can't use `Simd` directly, because `Simd`'s functions call this function and
-                // we will end up with an infinite loop.
-                // Safety: `value` is an integer vector
-                unsafe {
-                    use core::intrinsics::simd;
-                    let falses: Simd<Self, N> = simd::simd_eq(value, Simd::splat(0 as _));
-                    let trues: Simd<Self, N> = simd::simd_eq(value, Simd::splat(-1 as _));
-                    let valid: Simd<Self, N> = simd::simd_or(falses, trues);
-                    simd::simd_reduce_all(valid)
-                }
-            }
-
-            #[inline]
-            fn eq(self, other: Self) -> bool { self == other }
-
-            #[inline]
-            fn to_usize(self) -> usize {
-                self as usize
-            }
-
-            #[inline]
-            fn max_unsigned() -> u64 {
-                <$unsigned>::MAX as u64
-            }
-
-            type Unsigned = $unsigned;
-
-            const TRUE: Self = -1;
-            const FALSE: Self = 0;
-        }
-
-        // Safety: this is a valid mask element type
-        unsafe impl MaskElement for $ty {}
-    }
-}
-
-impl_element! { i8, u8 }
-impl_element! { i16, u16 }
-impl_element! { i32, u32 }
-impl_element! { i64, u64 }
-impl_element! { isize, usize }
 
 /// A SIMD vector mask for `N` elements matching the element type `T`.
 ///
@@ -155,9 +71,9 @@ where
     #[rustc_const_unstable(feature = "portable_simd", issue = "86656")]
     pub const fn splat(value: bool) -> Self {
         Self(Simd::splat(if value {
-            <T::Mask as Sealed>::TRUE
+            <T::Mask as MaskElement>::TRUE
         } else {
-            <T::Mask as Sealed>::FALSE
+            <T::Mask as MaskElement>::FALSE
         }))
     }
 
@@ -208,7 +124,7 @@ where
     pub unsafe fn from_simd_unchecked(value: Simd<T::Mask, N>) -> Self {
         // Safety: the caller must confirm this invariant
         unsafe {
-            core::intrinsics::assume(<T::Mask as Sealed>::valid(value));
+            core::intrinsics::assume(<T::Mask as MaskElement>::valid(value));
         }
         Self(value)
     }
@@ -223,7 +139,7 @@ where
     #[track_caller]
     pub fn from_simd(value: Simd<T::Mask, N>) -> Self {
         assert!(
-            <T::Mask as Sealed>::valid(value),
+            <T::Mask as MaskElement>::valid(value),
             "all values must be either 0 or -1",
         );
         // Safety: the validity has been checked
@@ -256,9 +172,9 @@ where
     pub unsafe fn test_unchecked(&self, index: usize) -> bool {
         // Safety: the caller must confirm this invariant
         unsafe {
-            <T::Mask as Sealed>::eq(
+            <T::Mask as MaskElement>::eq(
                 *self.0.as_array().get_unchecked(index),
-                <T::Mask as Sealed>::TRUE,
+                <T::Mask as MaskElement>::TRUE,
             )
         }
     }
@@ -271,7 +187,7 @@ where
     #[must_use = "method returns a new bool and does not mutate the original value"]
     #[track_caller]
     pub fn test(&self, index: usize) -> bool {
-        <T::Mask as Sealed>::eq(self.0[index], <T::Mask as Sealed>::TRUE)
+        <T::Mask as MaskElement>::eq(self.0[index], <T::Mask as MaskElement>::TRUE)
     }
 
     /// Sets the value of the specified element.
@@ -283,9 +199,9 @@ where
         // Safety: the caller must confirm this invariant
         unsafe {
             *self.0.as_mut_array().get_unchecked_mut(index) = if value {
-                <T::Mask as Sealed>::TRUE
+                <T::Mask as MaskElement>::TRUE
             } else {
-                <T::Mask as Sealed>::FALSE
+                <T::Mask as MaskElement>::FALSE
             }
         }
     }
@@ -298,9 +214,9 @@ where
     #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
         self.0[index] = if value {
-            <T::Mask as Sealed>::TRUE
+            <T::Mask as MaskElement>::TRUE
         } else {
-            <T::Mask as Sealed>::FALSE
+            <T::Mask as MaskElement>::FALSE
         }
     }
 
@@ -372,8 +288,8 @@ where
     #[must_use = "method returns a new mask and does not mutate the original value"]
     pub fn from_bitmask(bitmask: u64) -> Self {
         Self(bitmask.select(
-            Simd::splat(<T::Mask as Sealed>::TRUE),
-            Simd::splat(<T::Mask as Sealed>::FALSE),
+            Simd::splat(<T::Mask as MaskElement>::TRUE),
+            Simd::splat(<T::Mask as MaskElement>::FALSE),
         ))
     }
 
@@ -426,20 +342,20 @@ where
         };
 
         // Safety: the input and output are integer vectors
-        let masked_index: Simd<<T::Mask as Sealed>::Unsigned, N> =
+        let masked_index: Simd<<T::Mask as MaskElement>::Unsigned, N> =
             unsafe { core::intrinsics::simd::simd_cast(masked_index) };
 
         // Safety: the input is an integer vectors
-        let min_index: <T::Mask as Sealed>::Unsigned =
+        let min_index: <T::Mask as MaskElement>::Unsigned =
             unsafe { core::intrinsics::simd::simd_reduce_min(masked_index) };
 
         // Safety: the return value is the unsigned version of T
         let min_index: T::Mask = unsafe { core::mem::transmute_copy(&min_index) };
 
-        if <T::Mask as Sealed>::eq(min_index, <T::Mask as Sealed>::TRUE) {
+        if <T::Mask as MaskElement>::eq(min_index, <T::Mask as MaskElement>::TRUE) {
             None
         } else {
-            Some(<T::Mask as Sealed>::to_usize(min_index))
+            Some(<T::Mask as MaskElement>::to_usize(min_index))
         }
     }
 }
