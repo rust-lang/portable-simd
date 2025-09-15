@@ -1,6 +1,4 @@
-use crate::simd::{
-    FixEndianness, LaneCount, Mask, MaskElement, Simd, SimdElement, SupportedLaneCount,
-};
+use crate::simd::{FixEndianness, LaneCount, Mask, Simd, SimdElement, SupportedLaneCount};
 
 /// Choose elements from two vectors using a mask.
 ///
@@ -58,7 +56,7 @@ pub trait Select<T> {
 impl<T, U, const N: usize> Select<Simd<T, N>> for Mask<U, N>
 where
     T: SimdElement,
-    U: MaskElement,
+    U: SimdElement,
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
@@ -133,14 +131,19 @@ where
 
 impl<T, U, const N: usize> Select<Mask<T, N>> for Mask<U, N>
 where
-    T: MaskElement,
-    U: MaskElement,
+    T: SimdElement,
+    U: SimdElement,
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn select(self, true_values: Mask<T, N>, false_values: Mask<T, N>) -> Mask<T, N> {
-        let selected: Simd<T, N> =
-            Select::select(self, true_values.to_simd(), false_values.to_simd());
+        // Safety:
+        // simd_as between masks is always safe (they're vectors of ints).
+        // simd_select uses a mask that matches the width and number of elements
+        let selected: Simd<T::Mask, N> = unsafe {
+            let mask: Simd<T::Mask, N> = core::intrinsics::simd::simd_as(self.to_simd());
+            core::intrinsics::simd::simd_select(mask, true_values.to_simd(), false_values.to_simd())
+        };
 
         // Safety: all values come from masks
         unsafe { Mask::from_simd_unchecked(selected) }
@@ -149,12 +152,12 @@ where
 
 impl<T, const N: usize> Select<Mask<T, N>> for u64
 where
-    T: MaskElement,
+    T: SimdElement,
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn select(self, true_values: Mask<T, N>, false_values: Mask<T, N>) -> Mask<T, N> {
-        let selected: Simd<T, N> =
+        let selected: Simd<T::Mask, N> =
             Select::select(self, true_values.to_simd(), false_values.to_simd());
 
         // Safety: all values come from masks

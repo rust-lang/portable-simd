@@ -250,7 +250,7 @@ macro_rules! impl_trait {
         where
             LaneCount<N>: SupportedLaneCount,
         {
-            type Mask = Mask<<$mask_ty as SimdElement>::Mask, N>;
+            type Mask = Mask<$ty, N>;
             type Scalar = $ty;
             type Bits = Simd<$bits_ty, N>;
             type Cast<T: SimdElement> = Simd<T, N>;
@@ -345,7 +345,7 @@ macro_rules! impl_trait {
             #[inline]
             fn is_sign_negative(self) -> Self::Mask {
                 let sign_bits = self.to_bits() & Simd::splat((!0 >> 1) + 1);
-                sign_bits.simd_gt(Simd::splat(0))
+                sign_bits.simd_gt(Simd::splat(0)).cast::<$ty>()
             }
 
             #[inline]
@@ -367,8 +367,11 @@ macro_rules! impl_trait {
             fn is_subnormal(self) -> Self::Mask {
                 // On some architectures (e.g. armv7 and some ppc) subnormals are flushed to zero,
                 // so this comparison must be done with integers.
-                let not_zero = self.abs().to_bits().simd_ne(Self::splat(0.0).to_bits());
-                not_zero & (self.to_bits() & Self::splat(Self::Scalar::INFINITY).to_bits()).simd_eq(Simd::splat(0))
+                let not_zero = self.abs().to_bits().simd_ne(Self::splat(0.0).to_bits()).cast::<$ty>();
+                let exp_zero = (self.to_bits() & Self::splat(Self::Scalar::INFINITY).to_bits())
+                    .simd_eq(Simd::splat(0))
+                    .cast::<$ty>();
+                not_zero & exp_zero
             }
 
             #[inline]
