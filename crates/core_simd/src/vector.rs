@@ -1,5 +1,5 @@
 use crate::simd::{
-    LaneCount, Mask, MaskElement, SupportedLaneCount, Swizzle,
+    Mask, MaskElement, Swizzle,
     cmp::SimdPartialOrd,
     num::SimdUint,
     ptr::{SimdConstPtr, SimdMutPtr},
@@ -100,14 +100,13 @@ use crate::simd::{
 // avoided, as it will likely become illegal on `#[repr(simd)]` structs in the future. It also
 // causes rustc to emit illegal LLVM IR in some cases.
 #[repr(simd, packed)]
+#[rustc_simd_monomorphize_lane_limit = "64"]
 pub struct Simd<T, const N: usize>([T; N])
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement;
 
 impl<T, const N: usize> Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     /// Number of elements in this vector.
@@ -149,7 +148,6 @@ where
         const fn splat_const<T, const N: usize>(value: T) -> Simd<T, N>
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
         {
             Simd::from_array([value; N])
         }
@@ -157,7 +155,6 @@ where
         fn splat_rt<T, const N: usize>(value: T) -> Simd<T, N>
         where
             T: SimdElement,
-            LaneCount<N>: SupportedLaneCount,
         {
             // This is preferred over `[value; N]`, since it's explicitly a splat:
             // https://github.com/rust-lang/rust/issues/97804
@@ -886,16 +883,10 @@ where
     }
 }
 
-impl<T, const N: usize> Copy for Simd<T, N>
-where
-    LaneCount<N>: SupportedLaneCount,
-    T: SimdElement,
-{
-}
+impl<T, const N: usize> Copy for Simd<T, N> where T: SimdElement {}
 
 impl<T, const N: usize> Clone for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -906,7 +897,6 @@ where
 
 impl<T, const N: usize> Default for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement + Default,
 {
     #[inline]
@@ -917,7 +907,6 @@ where
 
 impl<T, const N: usize> PartialEq for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement + PartialEq,
 {
     #[inline]
@@ -951,7 +940,6 @@ where
 /// Lexicographic order. For the SIMD elementwise minimum and maximum, use simd_min and simd_max instead.
 impl<T, const N: usize> PartialOrd for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement + PartialOrd,
 {
     #[inline]
@@ -961,17 +949,11 @@ where
     }
 }
 
-impl<T, const N: usize> Eq for Simd<T, N>
-where
-    LaneCount<N>: SupportedLaneCount,
-    T: SimdElement + Eq,
-{
-}
+impl<T, const N: usize> Eq for Simd<T, N> where T: SimdElement + Eq {}
 
 /// Lexicographic order. For the SIMD elementwise minimum and maximum, use simd_min and simd_max instead.
 impl<T, const N: usize> Ord for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement + Ord,
 {
     #[inline]
@@ -983,7 +965,6 @@ where
 
 impl<T, const N: usize> core::hash::Hash for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement + core::hash::Hash,
 {
     #[inline]
@@ -998,7 +979,6 @@ where
 // array references
 impl<T, const N: usize> AsRef<[T; N]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1009,7 +989,6 @@ where
 
 impl<T, const N: usize> AsMut<[T; N]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1021,7 +1000,6 @@ where
 // slice references
 impl<T, const N: usize> AsRef<[T]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1032,7 +1010,6 @@ where
 
 impl<T, const N: usize> AsMut<[T]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1044,7 +1021,6 @@ where
 // vector/array conversion
 impl<T, const N: usize> From<[T; N]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1055,7 +1031,6 @@ where
 
 impl<T, const N: usize> From<Simd<T, N>> for [T; N]
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
@@ -1066,7 +1041,6 @@ where
 
 impl<T, const N: usize> TryFrom<&[T]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     type Error = core::array::TryFromSliceError;
@@ -1079,7 +1053,6 @@ where
 
 impl<T, const N: usize> TryFrom<&mut [T]> for Simd<T, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     type Error = core::array::TryFromSliceError;
@@ -1217,10 +1190,7 @@ where
 }
 
 #[inline]
-fn lane_indices<const N: usize>() -> Simd<usize, N>
-where
-    LaneCount<N>: SupportedLaneCount,
-{
+fn lane_indices<const N: usize>() -> Simd<usize, N> {
     #![allow(clippy::needless_range_loop)]
     let mut index = [0; N];
     for i in 0..N {
@@ -1232,7 +1202,6 @@ where
 #[inline]
 fn mask_up_to<M, const N: usize>(len: usize) -> Mask<M, N>
 where
-    LaneCount<N>: SupportedLaneCount,
     M: MaskElement,
 {
     let index = lane_indices::<N>();

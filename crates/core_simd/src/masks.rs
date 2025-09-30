@@ -2,7 +2,7 @@
 //! Types representing
 #![allow(non_camel_case_types)]
 
-use crate::simd::{LaneCount, Select, Simd, SimdCast, SimdElement, SupportedLaneCount};
+use crate::simd::{Select, Simd, SimdCast, SimdElement};
 use core::cmp::Ordering;
 use core::{fmt, mem};
 
@@ -41,7 +41,6 @@ mod sealed {
     pub trait Sealed {
         fn valid<const N: usize>(values: Simd<Self, N>) -> bool
         where
-            LaneCount<N>: SupportedLaneCount,
             Self: SimdElement;
 
         fn eq(self, other: Self) -> bool;
@@ -69,8 +68,6 @@ macro_rules! impl_element {
         impl Sealed for $ty {
             #[inline]
             fn valid<const N: usize>(value: Simd<Self, N>) -> bool
-            where
-                LaneCount<N>: SupportedLaneCount,
             {
                 // We can't use `Simd` directly, because `Simd`'s functions call this function and
                 // we will end up with an infinite loop.
@@ -124,20 +121,13 @@ impl_element! { isize, usize }
 #[repr(transparent)]
 pub struct Mask<T, const N: usize>(Simd<T, N>)
 where
-    T: MaskElement,
-    LaneCount<N>: SupportedLaneCount;
+    T: MaskElement;
 
-impl<T, const N: usize> Copy for Mask<T, N>
-where
-    T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
-{
-}
+impl<T, const N: usize> Copy for Mask<T, N> where T: MaskElement {}
 
 impl<T, const N: usize> Clone for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn clone(&self) -> Self {
@@ -148,7 +138,6 @@ where
 impl<T, const N: usize> Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     /// Constructs a mask by setting all elements to the given value.
     #[inline]
@@ -315,8 +304,6 @@ where
         ) -> U
         where
             T: MaskElement,
-            LaneCount<M>: SupportedLaneCount,
-            LaneCount<N>: SupportedLaneCount,
         {
             let resized = mask.resize::<M>(false);
 
@@ -421,7 +408,6 @@ where
 impl<T, const N: usize> From<[bool; N]> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(array: [bool; N]) -> Self {
@@ -432,7 +418,6 @@ where
 impl<T, const N: usize> From<Mask<T, N>> for [bool; N]
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn from(vector: Mask<T, N>) -> Self {
@@ -443,7 +428,6 @@ where
 impl<T, const N: usize> Default for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn default() -> Self {
@@ -454,7 +438,6 @@ where
 impl<T, const N: usize> PartialEq for Mask<T, N>
 where
     T: MaskElement + PartialEq,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -465,7 +448,6 @@ where
 impl<T, const N: usize> PartialOrd for Mask<T, N>
 where
     T: MaskElement + PartialOrd,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -476,7 +458,6 @@ where
 impl<T, const N: usize> fmt::Debug for Mask<T, N>
 where
     T: MaskElement + fmt::Debug,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -489,7 +470,6 @@ where
 impl<T, const N: usize> core::ops::BitAnd for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -502,7 +482,6 @@ where
 impl<T, const N: usize> core::ops::BitAnd<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -514,7 +493,6 @@ where
 impl<T, const N: usize> core::ops::BitAnd<Mask<T, N>> for bool
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Mask<T, N>;
     #[inline]
@@ -526,7 +504,6 @@ where
 impl<T, const N: usize> core::ops::BitOr for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -539,7 +516,6 @@ where
 impl<T, const N: usize> core::ops::BitOr<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -551,7 +527,6 @@ where
 impl<T, const N: usize> core::ops::BitOr<Mask<T, N>> for bool
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Mask<T, N>;
     #[inline]
@@ -563,7 +538,6 @@ where
 impl<T, const N: usize> core::ops::BitXor for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -576,7 +550,6 @@ where
 impl<T, const N: usize> core::ops::BitXor<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Self;
     #[inline]
@@ -588,7 +561,6 @@ where
 impl<T, const N: usize> core::ops::BitXor<Mask<T, N>> for bool
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Mask<T, N>;
     #[inline]
@@ -600,7 +572,6 @@ where
 impl<T, const N: usize> core::ops::Not for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     type Output = Mask<T, N>;
     #[inline]
@@ -612,7 +583,6 @@ where
 impl<T, const N: usize> core::ops::BitAndAssign for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitand_assign(&mut self, rhs: Self) {
@@ -623,7 +593,6 @@ where
 impl<T, const N: usize> core::ops::BitAndAssign<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitand_assign(&mut self, rhs: bool) {
@@ -634,7 +603,6 @@ where
 impl<T, const N: usize> core::ops::BitOrAssign for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitor_assign(&mut self, rhs: Self) {
@@ -645,7 +613,6 @@ where
 impl<T, const N: usize> core::ops::BitOrAssign<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitor_assign(&mut self, rhs: bool) {
@@ -656,7 +623,6 @@ where
 impl<T, const N: usize> core::ops::BitXorAssign for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitxor_assign(&mut self, rhs: Self) {
@@ -667,7 +633,6 @@ where
 impl<T, const N: usize> core::ops::BitXorAssign<bool> for Mask<T, N>
 where
     T: MaskElement,
-    LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
     fn bitxor_assign(&mut self, rhs: bool) {
@@ -679,8 +644,6 @@ macro_rules! impl_from {
     { $from:ty  => $($to:ty),* } => {
         $(
         impl<const N: usize> From<Mask<$from, N>> for Mask<$to, N>
-        where
-            LaneCount<N>: SupportedLaneCount,
         {
             #[inline]
             fn from(value: Mask<$from, N>) -> Self {

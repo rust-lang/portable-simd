@@ -1,7 +1,6 @@
 use super::sealed::Sealed;
 use crate::simd::{
-    LaneCount, Mask, Select, Simd, SimdCast, SimdElement, SupportedLaneCount, cmp::SimdOrd,
-    cmp::SimdPartialOrd, num::SimdUint,
+    Mask, Select, Simd, SimdCast, SimdElement, cmp::SimdOrd, cmp::SimdPartialOrd, num::SimdUint,
 };
 
 /// Operations on SIMD vectors of signed integers.
@@ -243,13 +242,13 @@ macro_rules! impl_trait {
         $(
         impl<const N: usize> Sealed for Simd<$ty, N>
         where
-            LaneCount<N>: SupportedLaneCount,
+
         {
         }
 
         impl<const N: usize> SimdInt for Simd<$ty, N>
         where
-            LaneCount<N>: SupportedLaneCount,
+
         {
             type Mask = Mask<<$ty as SimdElement>::Mask, N>;
             type Scalar = $ty;

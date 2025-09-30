@@ -1,10 +1,7 @@
-use crate::simd::{LaneCount, Simd, SupportedLaneCount};
+use crate::simd::Simd;
 use core::mem;
 
-impl<const N: usize> Simd<u8, N>
-where
-    LaneCount<N>: SupportedLaneCount,
-{
+impl<const N: usize> Simd<u8, N> {
     /// Swizzle a vector of bytes according to the index vector.
     /// Indices within range select the appropriate byte.
     /// Indices "out of bounds" instead select 0.
@@ -186,7 +183,6 @@ unsafe fn transize<T, const N: usize>(
     b: Simd<u8, N>,
 ) -> Simd<u8, N>
 where
-    LaneCount<N>: SupportedLaneCount,
 {
     // SAFETY: Same obligation to use this function as to use mem::transmute_copy.
     unsafe { mem::transmute_copy(&f(mem::transmute_copy(&a), mem::transmute_copy(&b))) }
@@ -198,7 +194,6 @@ where
 #[inline(always)]
 fn zeroing_idxs<const N: usize>(idxs: Simd<u8, N>) -> Simd<u8, N>
 where
-    LaneCount<N>: SupportedLaneCount,
 {
     use crate::simd::{Select, cmp::SimdPartialOrd};
     idxs.simd_lt(Simd::splat(N as u8))
