@@ -240,16 +240,9 @@ pub trait SimdInt: Copy + Sealed {
 macro_rules! impl_trait {
     { $($ty:ident ($unsigned:ident)),* } => {
         $(
-        impl<const N: usize> Sealed for Simd<$ty, N>
-        where
+        impl<const N: usize> Sealed for Simd<$ty, N> {}
 
-        {
-        }
-
-        impl<const N: usize> SimdInt for Simd<$ty, N>
-        where
-
-        {
+        impl<const N: usize> SimdInt for Simd<$ty, N> {
             type Mask = Mask<<$ty as SimdElement>::Mask, N>;
             type Scalar = $ty;
             type Unsigned = Simd<$unsigned, N>;

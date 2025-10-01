@@ -51,6 +51,8 @@ use crate::simd::{
 /// Thus it is sound to [`transmute`] `Simd<T, N>` to `[T; N]` and should optimize to "zero cost",
 /// but the reverse transmutation may require a copy the compiler cannot simply elide.
 ///
+/// `N` cannot be 0 and may be at most 64. This limit may be increased in the future.
+///
 /// # ABI "Features"
 /// Due to Rust's safety guarantees, `Simd<T, N>` is currently passed and returned via memory,
 /// not SIMD registers, except as an optimization. Using `#[inline]` on functions that accept

@@ -118,6 +118,9 @@ impl_element! { isize, usize }
 /// The layout of this type is unspecified, and may change between platforms
 /// and/or Rust versions, and code should not assume that it is equivalent to
 /// `[T; N]`.
+///
+/// `N` cannot be 0 and may be at most 64. This limit may be increased in
+/// the future.
 #[repr(transparent)]
 pub struct Mask<T, const N: usize>(Simd<T, N>)
 where
