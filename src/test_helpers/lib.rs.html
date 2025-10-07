@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-069232aa.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.0-nightly (2e2642e64 2025-08-16)" data-channel="nightly" data-search-js="search-b069538f.js" data-settings-js="settings-5514c975.js" ><script src="../../static.files/storage-68b7e25d.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-eebb9057.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">test_helpers/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![feature(powerpc_target_feature)]
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0-nightly (dc2c3564d 2025-09-29)" data-channel="nightly" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-828709d0.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">test_helpers/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![feature(powerpc_target_feature)]
 <a href=#2 id=2 data-nosnippet>2</a>#![cfg_attr(
 <a href=#3 id=3 data-nosnippet>3</a>    any(target_arch = <span class="string">"powerpc"</span>, target_arch = <span class="string">"powerpc64"</span>),
 <a href=#4 id=4 data-nosnippet>4</a>    feature(stdarch_powerpc)
@@ -604,186 +604,182 @@
 <a href=#604 id=604 data-nosnippet>604</a>                <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#605 id=605 data-nosnippet>605</a>
 <a href=#606 id=606 data-nosnippet>606</a>                <span class="kw">fn </span>implementation&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>: usize&gt;()
-<a href=#607 id=607 data-nosnippet>607</a>                <span class="kw">where
-<a href=#608 id=608 data-nosnippet>608</a>                    </span>core_simd::simd::LaneCount&lt;<span class="macro-nonterminal">$lanes</span>&gt;: core_simd::simd::SupportedLaneCount,
-<a href=#609 id=609 data-nosnippet>609</a>                <span class="macro-nonterminal">$body
-<a href=#610 id=610 data-nosnippet>610</a>
-<a href=#611 id=611 data-nosnippet>611</a>                </span><span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
-<a href=#612 id=612 data-nosnippet>612</a>                </span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
-<a href=#613 id=613 data-nosnippet>613</a>
-<a href=#614 id=614 data-nosnippet>614</a>                <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#615 id=615 data-nosnippet>615</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
-<a href=#616 id=616 data-nosnippet>616</a>                    lanes_1 <span class="number">1</span>;
-<a href=#617 id=617 data-nosnippet>617</a>                    lanes_2 <span class="number">2</span>;
-<a href=#618 id=618 data-nosnippet>618</a>                    <span class="comment">// Cover an odd and an even non-power-of-2 length in Miri.
-<a href=#619 id=619 data-nosnippet>619</a>                    // (Even non-power-of-2 vectors have alignment between element
-<a href=#620 id=620 data-nosnippet>620</a>                    // and vector size, so we want to cover that case as well.)
-<a href=#621 id=621 data-nosnippet>621</a>                    </span>lanes_3 <span class="number">3</span>;
-<a href=#622 id=622 data-nosnippet>622</a>
-<a href=#623 id=623 data-nosnippet>623</a>                    lanes_6 <span class="number">6</span>;
-<a href=#624 id=624 data-nosnippet>624</a>                );
-<a href=#625 id=625 data-nosnippet>625</a>
-<a href=#626 id=626 data-nosnippet>626</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
-<a href=#627 id=627 data-nosnippet>627</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#628 id=628 data-nosnippet>628</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
-<a href=#629 id=629 data-nosnippet>629</a>                    lanes_4 <span class="number">4</span>;
-<a href=#630 id=630 data-nosnippet>630</a>                    lanes_5 <span class="number">5</span>;
-<a href=#631 id=631 data-nosnippet>631</a>
-<a href=#632 id=632 data-nosnippet>632</a>                    lanes_7 <span class="number">7</span>;
-<a href=#633 id=633 data-nosnippet>633</a>                    lanes_8 <span class="number">8</span>;
-<a href=#634 id=634 data-nosnippet>634</a>                    lanes_9 <span class="number">9</span>;
-<a href=#635 id=635 data-nosnippet>635</a>                    lanes_10 <span class="number">10</span>;
-<a href=#636 id=636 data-nosnippet>636</a>                    lanes_11 <span class="number">11</span>;
-<a href=#637 id=637 data-nosnippet>637</a>                    lanes_12 <span class="number">12</span>;
-<a href=#638 id=638 data-nosnippet>638</a>                    lanes_13 <span class="number">13</span>;
-<a href=#639 id=639 data-nosnippet>639</a>                    lanes_14 <span class="number">14</span>;
-<a href=#640 id=640 data-nosnippet>640</a>                    lanes_15 <span class="number">15</span>;
-<a href=#641 id=641 data-nosnippet>641</a>                    lanes_16 <span class="number">16</span>;
-<a href=#642 id=642 data-nosnippet>642</a>                    lanes_17 <span class="number">17</span>;
-<a href=#643 id=643 data-nosnippet>643</a>                    <span class="comment">//lanes_18 18;
-<a href=#644 id=644 data-nosnippet>644</a>                    //lanes_19 19;
-<a href=#645 id=645 data-nosnippet>645</a>                    //lanes_20 20;
-<a href=#646 id=646 data-nosnippet>646</a>                    //lanes_21 21;
-<a href=#647 id=647 data-nosnippet>647</a>                    //lanes_22 22;
-<a href=#648 id=648 data-nosnippet>648</a>                    //lanes_23 23;
-<a href=#649 id=649 data-nosnippet>649</a>                    </span>lanes_24 <span class="number">24</span>;
-<a href=#650 id=650 data-nosnippet>650</a>                    <span class="comment">//lanes_25 25;
-<a href=#651 id=651 data-nosnippet>651</a>                    //lanes_26 26;
-<a href=#652 id=652 data-nosnippet>652</a>                    //lanes_27 27;
-<a href=#653 id=653 data-nosnippet>653</a>                    //lanes_28 28;
-<a href=#654 id=654 data-nosnippet>654</a>                    //lanes_29 29;
-<a href=#655 id=655 data-nosnippet>655</a>                    //lanes_30 30;
-<a href=#656 id=656 data-nosnippet>656</a>                    //lanes_31 31;
-<a href=#657 id=657 data-nosnippet>657</a>                    </span>lanes_32 <span class="number">32</span>;
-<a href=#658 id=658 data-nosnippet>658</a>                    <span class="comment">//lanes_33 33;
-<a href=#659 id=659 data-nosnippet>659</a>                    //lanes_34 34;
-<a href=#660 id=660 data-nosnippet>660</a>                    //lanes_35 35;
-<a href=#661 id=661 data-nosnippet>661</a>                    //lanes_36 36;
-<a href=#662 id=662 data-nosnippet>662</a>                    //lanes_37 37;
-<a href=#663 id=663 data-nosnippet>663</a>                    //lanes_38 38;
-<a href=#664 id=664 data-nosnippet>664</a>                    //lanes_39 39;
-<a href=#665 id=665 data-nosnippet>665</a>                    //lanes_40 40;
-<a href=#666 id=666 data-nosnippet>666</a>                    //lanes_41 41;
-<a href=#667 id=667 data-nosnippet>667</a>                    //lanes_42 42;
-<a href=#668 id=668 data-nosnippet>668</a>                    //lanes_43 43;
-<a href=#669 id=669 data-nosnippet>669</a>                    //lanes_44 44;
-<a href=#670 id=670 data-nosnippet>670</a>                    //lanes_45 45;
-<a href=#671 id=671 data-nosnippet>671</a>                    //lanes_46 46;
-<a href=#672 id=672 data-nosnippet>672</a>                    </span>lanes_47 <span class="number">47</span>;
-<a href=#673 id=673 data-nosnippet>673</a>                    <span class="comment">//lanes_48 48;
-<a href=#674 id=674 data-nosnippet>674</a>                    //lanes_49 49;
-<a href=#675 id=675 data-nosnippet>675</a>                    //lanes_50 50;
-<a href=#676 id=676 data-nosnippet>676</a>                    //lanes_51 51;
-<a href=#677 id=677 data-nosnippet>677</a>                    //lanes_52 52;
-<a href=#678 id=678 data-nosnippet>678</a>                    //lanes_53 53;
-<a href=#679 id=679 data-nosnippet>679</a>                    //lanes_54 54;
-<a href=#680 id=680 data-nosnippet>680</a>                    //lanes_55 55;
-<a href=#681 id=681 data-nosnippet>681</a>                    </span>lanes_56 <span class="number">56</span>;
-<a href=#682 id=682 data-nosnippet>682</a>                    lanes_57 <span class="number">57</span>;
-<a href=#683 id=683 data-nosnippet>683</a>                    <span class="comment">//lanes_58 58;
-<a href=#684 id=684 data-nosnippet>684</a>                    //lanes_59 59;
-<a href=#685 id=685 data-nosnippet>685</a>                    //lanes_60 60;
-<a href=#686 id=686 data-nosnippet>686</a>                    //lanes_61 61;
-<a href=#687 id=687 data-nosnippet>687</a>                    //lanes_62 62;
-<a href=#688 id=688 data-nosnippet>688</a>                    </span>lanes_63 <span class="number">63</span>;
-<a href=#689 id=689 data-nosnippet>689</a>                    lanes_64 <span class="number">64</span>;
-<a href=#690 id=690 data-nosnippet>690</a>                );
-<a href=#691 id=691 data-nosnippet>691</a>            }
-<a href=#692 id=692 data-nosnippet>692</a>        )*
-<a href=#693 id=693 data-nosnippet>693</a>    }
-<a href=#694 id=694 data-nosnippet>694</a>}
-<a href=#695 id=695 data-nosnippet>695</a>
-<a href=#696 id=696 data-nosnippet>696</a><span class="doccomment">/// Expand a const-generic `#[should_panic]` test into separate tests for each possible lane count.
-<a href=#697 id=697 data-nosnippet>697</a></span><span class="attr">#[macro_export]
-<a href=#698 id=698 data-nosnippet>698</a></span><span class="macro">macro_rules!</span> test_lanes_panic {
-<a href=#699 id=699 data-nosnippet>699</a>    {
-<a href=#700 id=700 data-nosnippet>700</a>        $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
-<a href=#701 id=701 data-nosnippet>701</a>    } =&gt; {
-<a href=#702 id=702 data-nosnippet>702</a>        $(
-<a href=#703 id=703 data-nosnippet>703</a>            <span class="kw">mod </span><span class="macro-nonterminal">$test </span>{
-<a href=#704 id=704 data-nosnippet>704</a>                <span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#705 id=705 data-nosnippet>705</a>
-<a href=#706 id=706 data-nosnippet>706</a>                <span class="kw">fn </span>implementation&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>: usize&gt;()
-<a href=#707 id=707 data-nosnippet>707</a>                <span class="kw">where
-<a href=#708 id=708 data-nosnippet>708</a>                    </span>core_simd::simd::LaneCount&lt;<span class="macro-nonterminal">$lanes</span>&gt;: core_simd::simd::SupportedLaneCount,
-<a href=#709 id=709 data-nosnippet>709</a>                <span class="macro-nonterminal">$body
-<a href=#710 id=710 data-nosnippet>710</a>
-<a href=#711 id=711 data-nosnippet>711</a>                </span><span class="comment">// test some odd and even non-power-of-2 lengths on miri
-<a href=#712 id=712 data-nosnippet>712</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#713 id=713 data-nosnippet>713</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
-<a href=#714 id=714 data-nosnippet>714</a>                    lanes_1 <span class="number">1</span>;
-<a href=#715 id=715 data-nosnippet>715</a>                    lanes_2 <span class="number">2</span>;
-<a href=#716 id=716 data-nosnippet>716</a>                    lanes_3 <span class="number">3</span>;
-<a href=#717 id=717 data-nosnippet>717</a>
-<a href=#718 id=718 data-nosnippet>718</a>                    lanes_6 <span class="number">6</span>;
-<a href=#719 id=719 data-nosnippet>719</a>                );
-<a href=#720 id=720 data-nosnippet>720</a>
-<a href=#721 id=721 data-nosnippet>721</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
-<a href=#722 id=722 data-nosnippet>722</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#723 id=723 data-nosnippet>723</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
-<a href=#724 id=724 data-nosnippet>724</a>                    lanes_4 <span class="number">4</span>;
-<a href=#725 id=725 data-nosnippet>725</a>                    lanes_5 <span class="number">5</span>;
-<a href=#726 id=726 data-nosnippet>726</a>
-<a href=#727 id=727 data-nosnippet>727</a>                    lanes_7 <span class="number">7</span>;
-<a href=#728 id=728 data-nosnippet>728</a>                    lanes_8 <span class="number">8</span>;
-<a href=#729 id=729 data-nosnippet>729</a>                    lanes_9 <span class="number">9</span>;
-<a href=#730 id=730 data-nosnippet>730</a>                    lanes_10 <span class="number">10</span>;
-<a href=#731 id=731 data-nosnippet>731</a>                    lanes_11 <span class="number">11</span>;
-<a href=#732 id=732 data-nosnippet>732</a>                    lanes_12 <span class="number">12</span>;
-<a href=#733 id=733 data-nosnippet>733</a>                    lanes_13 <span class="number">13</span>;
-<a href=#734 id=734 data-nosnippet>734</a>                    lanes_14 <span class="number">14</span>;
-<a href=#735 id=735 data-nosnippet>735</a>                    lanes_15 <span class="number">15</span>;
-<a href=#736 id=736 data-nosnippet>736</a>                    lanes_16 <span class="number">16</span>;
-<a href=#737 id=737 data-nosnippet>737</a>                    lanes_17 <span class="number">17</span>;
-<a href=#738 id=738 data-nosnippet>738</a>                    <span class="comment">//lanes_18 18;
-<a href=#739 id=739 data-nosnippet>739</a>                    //lanes_19 19;
-<a href=#740 id=740 data-nosnippet>740</a>                    //lanes_20 20;
-<a href=#741 id=741 data-nosnippet>741</a>                    //lanes_21 21;
-<a href=#742 id=742 data-nosnippet>742</a>                    //lanes_22 22;
-<a href=#743 id=743 data-nosnippet>743</a>                    //lanes_23 23;
-<a href=#744 id=744 data-nosnippet>744</a>                    </span>lanes_24 <span class="number">24</span>;
-<a href=#745 id=745 data-nosnippet>745</a>                    <span class="comment">//lanes_25 25;
-<a href=#746 id=746 data-nosnippet>746</a>                    //lanes_26 26;
-<a href=#747 id=747 data-nosnippet>747</a>                    //lanes_27 27;
-<a href=#748 id=748 data-nosnippet>748</a>                    //lanes_28 28;
-<a href=#749 id=749 data-nosnippet>749</a>                    //lanes_29 29;
-<a href=#750 id=750 data-nosnippet>750</a>                    //lanes_30 30;
-<a href=#751 id=751 data-nosnippet>751</a>                    //lanes_31 31;
-<a href=#752 id=752 data-nosnippet>752</a>                    </span>lanes_32 <span class="number">32</span>;
-<a href=#753 id=753 data-nosnippet>753</a>                    <span class="comment">//lanes_33 33;
-<a href=#754 id=754 data-nosnippet>754</a>                    //lanes_34 34;
-<a href=#755 id=755 data-nosnippet>755</a>                    //lanes_35 35;
-<a href=#756 id=756 data-nosnippet>756</a>                    //lanes_36 36;
-<a href=#757 id=757 data-nosnippet>757</a>                    //lanes_37 37;
-<a href=#758 id=758 data-nosnippet>758</a>                    //lanes_38 38;
-<a href=#759 id=759 data-nosnippet>759</a>                    //lanes_39 39;
-<a href=#760 id=760 data-nosnippet>760</a>                    //lanes_40 40;
-<a href=#761 id=761 data-nosnippet>761</a>                    //lanes_41 41;
-<a href=#762 id=762 data-nosnippet>762</a>                    //lanes_42 42;
-<a href=#763 id=763 data-nosnippet>763</a>                    //lanes_43 43;
-<a href=#764 id=764 data-nosnippet>764</a>                    //lanes_44 44;
-<a href=#765 id=765 data-nosnippet>765</a>                    //lanes_45 45;
-<a href=#766 id=766 data-nosnippet>766</a>                    //lanes_46 46;
-<a href=#767 id=767 data-nosnippet>767</a>                    </span>lanes_47 <span class="number">47</span>;
-<a href=#768 id=768 data-nosnippet>768</a>                    <span class="comment">//lanes_48 48;
-<a href=#769 id=769 data-nosnippet>769</a>                    //lanes_49 49;
-<a href=#770 id=770 data-nosnippet>770</a>                    //lanes_50 50;
-<a href=#771 id=771 data-nosnippet>771</a>                    //lanes_51 51;
-<a href=#772 id=772 data-nosnippet>772</a>                    //lanes_52 52;
-<a href=#773 id=773 data-nosnippet>773</a>                    //lanes_53 53;
-<a href=#774 id=774 data-nosnippet>774</a>                    //lanes_54 54;
-<a href=#775 id=775 data-nosnippet>775</a>                    //lanes_55 55;
-<a href=#776 id=776 data-nosnippet>776</a>                    </span>lanes_56 <span class="number">56</span>;
-<a href=#777 id=777 data-nosnippet>777</a>                    lanes_57 <span class="number">57</span>;
-<a href=#778 id=778 data-nosnippet>778</a>                    <span class="comment">//lanes_58 58;
-<a href=#779 id=779 data-nosnippet>779</a>                    //lanes_59 59;
-<a href=#780 id=780 data-nosnippet>780</a>                    //lanes_60 60;
-<a href=#781 id=781 data-nosnippet>781</a>                    //lanes_61 61;
-<a href=#782 id=782 data-nosnippet>782</a>                    //lanes_62 62;
-<a href=#783 id=783 data-nosnippet>783</a>                    </span>lanes_63 <span class="number">63</span>;
-<a href=#784 id=784 data-nosnippet>784</a>                    lanes_64 <span class="number">64</span>;
-<a href=#785 id=785 data-nosnippet>785</a>                );
-<a href=#786 id=786 data-nosnippet>786</a>            }
-<a href=#787 id=787 data-nosnippet>787</a>        )*
-<a href=#788 id=788 data-nosnippet>788</a>    }
-<a href=#789 id=789 data-nosnippet>789</a>}</code></pre></div></section></main></body></html>
+<a href=#607 id=607 data-nosnippet>607</a>                <span class="macro-nonterminal">$body
+<a href=#608 id=608 data-nosnippet>608</a>
+<a href=#609 id=609 data-nosnippet>609</a>                </span><span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
+<a href=#610 id=610 data-nosnippet>610</a>                </span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+<a href=#611 id=611 data-nosnippet>611</a>
+<a href=#612 id=612 data-nosnippet>612</a>                <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+<a href=#613 id=613 data-nosnippet>613</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+<a href=#614 id=614 data-nosnippet>614</a>                    lanes_1 <span class="number">1</span>;
+<a href=#615 id=615 data-nosnippet>615</a>                    lanes_2 <span class="number">2</span>;
+<a href=#616 id=616 data-nosnippet>616</a>                    <span class="comment">// Cover an odd and an even non-power-of-2 length in Miri.
+<a href=#617 id=617 data-nosnippet>617</a>                    // (Even non-power-of-2 vectors have alignment between element
+<a href=#618 id=618 data-nosnippet>618</a>                    // and vector size, so we want to cover that case as well.)
+<a href=#619 id=619 data-nosnippet>619</a>                    </span>lanes_3 <span class="number">3</span>;
+<a href=#620 id=620 data-nosnippet>620</a>
+<a href=#621 id=621 data-nosnippet>621</a>                    lanes_6 <span class="number">6</span>;
+<a href=#622 id=622 data-nosnippet>622</a>                );
+<a href=#623 id=623 data-nosnippet>623</a>
+<a href=#624 id=624 data-nosnippet>624</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+<a href=#625 id=625 data-nosnippet>625</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+<a href=#626 id=626 data-nosnippet>626</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+<a href=#627 id=627 data-nosnippet>627</a>                    lanes_4 <span class="number">4</span>;
+<a href=#628 id=628 data-nosnippet>628</a>                    lanes_5 <span class="number">5</span>;
+<a href=#629 id=629 data-nosnippet>629</a>
+<a href=#630 id=630 data-nosnippet>630</a>                    lanes_7 <span class="number">7</span>;
+<a href=#631 id=631 data-nosnippet>631</a>                    lanes_8 <span class="number">8</span>;
+<a href=#632 id=632 data-nosnippet>632</a>                    lanes_9 <span class="number">9</span>;
+<a href=#633 id=633 data-nosnippet>633</a>                    lanes_10 <span class="number">10</span>;
+<a href=#634 id=634 data-nosnippet>634</a>                    lanes_11 <span class="number">11</span>;
+<a href=#635 id=635 data-nosnippet>635</a>                    lanes_12 <span class="number">12</span>;
+<a href=#636 id=636 data-nosnippet>636</a>                    lanes_13 <span class="number">13</span>;
+<a href=#637 id=637 data-nosnippet>637</a>                    lanes_14 <span class="number">14</span>;
+<a href=#638 id=638 data-nosnippet>638</a>                    lanes_15 <span class="number">15</span>;
+<a href=#639 id=639 data-nosnippet>639</a>                    lanes_16 <span class="number">16</span>;
+<a href=#640 id=640 data-nosnippet>640</a>                    lanes_17 <span class="number">17</span>;
+<a href=#641 id=641 data-nosnippet>641</a>                    <span class="comment">//lanes_18 18;
+<a href=#642 id=642 data-nosnippet>642</a>                    //lanes_19 19;
+<a href=#643 id=643 data-nosnippet>643</a>                    //lanes_20 20;
+<a href=#644 id=644 data-nosnippet>644</a>                    //lanes_21 21;
+<a href=#645 id=645 data-nosnippet>645</a>                    //lanes_22 22;
+<a href=#646 id=646 data-nosnippet>646</a>                    //lanes_23 23;
+<a href=#647 id=647 data-nosnippet>647</a>                    </span>lanes_24 <span class="number">24</span>;
+<a href=#648 id=648 data-nosnippet>648</a>                    <span class="comment">//lanes_25 25;
+<a href=#649 id=649 data-nosnippet>649</a>                    //lanes_26 26;
+<a href=#650 id=650 data-nosnippet>650</a>                    //lanes_27 27;
+<a href=#651 id=651 data-nosnippet>651</a>                    //lanes_28 28;
+<a href=#652 id=652 data-nosnippet>652</a>                    //lanes_29 29;
+<a href=#653 id=653 data-nosnippet>653</a>                    //lanes_30 30;
+<a href=#654 id=654 data-nosnippet>654</a>                    //lanes_31 31;
+<a href=#655 id=655 data-nosnippet>655</a>                    </span>lanes_32 <span class="number">32</span>;
+<a href=#656 id=656 data-nosnippet>656</a>                    <span class="comment">//lanes_33 33;
+<a href=#657 id=657 data-nosnippet>657</a>                    //lanes_34 34;
+<a href=#658 id=658 data-nosnippet>658</a>                    //lanes_35 35;
+<a href=#659 id=659 data-nosnippet>659</a>                    //lanes_36 36;
+<a href=#660 id=660 data-nosnippet>660</a>                    //lanes_37 37;
+<a href=#661 id=661 data-nosnippet>661</a>                    //lanes_38 38;
+<a href=#662 id=662 data-nosnippet>662</a>                    //lanes_39 39;
+<a href=#663 id=663 data-nosnippet>663</a>                    //lanes_40 40;
+<a href=#664 id=664 data-nosnippet>664</a>                    //lanes_41 41;
+<a href=#665 id=665 data-nosnippet>665</a>                    //lanes_42 42;
+<a href=#666 id=666 data-nosnippet>666</a>                    //lanes_43 43;
+<a href=#667 id=667 data-nosnippet>667</a>                    //lanes_44 44;
+<a href=#668 id=668 data-nosnippet>668</a>                    //lanes_45 45;
+<a href=#669 id=669 data-nosnippet>669</a>                    //lanes_46 46;
+<a href=#670 id=670 data-nosnippet>670</a>                    </span>lanes_47 <span class="number">47</span>;
+<a href=#671 id=671 data-nosnippet>671</a>                    <span class="comment">//lanes_48 48;
+<a href=#672 id=672 data-nosnippet>672</a>                    //lanes_49 49;
+<a href=#673 id=673 data-nosnippet>673</a>                    //lanes_50 50;
+<a href=#674 id=674 data-nosnippet>674</a>                    //lanes_51 51;
+<a href=#675 id=675 data-nosnippet>675</a>                    //lanes_52 52;
+<a href=#676 id=676 data-nosnippet>676</a>                    //lanes_53 53;
+<a href=#677 id=677 data-nosnippet>677</a>                    //lanes_54 54;
+<a href=#678 id=678 data-nosnippet>678</a>                    //lanes_55 55;
+<a href=#679 id=679 data-nosnippet>679</a>                    </span>lanes_56 <span class="number">56</span>;
+<a href=#680 id=680 data-nosnippet>680</a>                    lanes_57 <span class="number">57</span>;
+<a href=#681 id=681 data-nosnippet>681</a>                    <span class="comment">//lanes_58 58;
+<a href=#682 id=682 data-nosnippet>682</a>                    //lanes_59 59;
+<a href=#683 id=683 data-nosnippet>683</a>                    //lanes_60 60;
+<a href=#684 id=684 data-nosnippet>684</a>                    //lanes_61 61;
+<a href=#685 id=685 data-nosnippet>685</a>                    //lanes_62 62;
+<a href=#686 id=686 data-nosnippet>686</a>                    </span>lanes_63 <span class="number">63</span>;
+<a href=#687 id=687 data-nosnippet>687</a>                    lanes_64 <span class="number">64</span>;
+<a href=#688 id=688 data-nosnippet>688</a>                );
+<a href=#689 id=689 data-nosnippet>689</a>            }
+<a href=#690 id=690 data-nosnippet>690</a>        )*
+<a href=#691 id=691 data-nosnippet>691</a>    }
+<a href=#692 id=692 data-nosnippet>692</a>}
+<a href=#693 id=693 data-nosnippet>693</a>
+<a href=#694 id=694 data-nosnippet>694</a><span class="doccomment">/// Expand a const-generic `#[should_panic]` test into separate tests for each possible lane count.
+<a href=#695 id=695 data-nosnippet>695</a></span><span class="attr">#[macro_export]
+<a href=#696 id=696 data-nosnippet>696</a></span><span class="macro">macro_rules!</span> test_lanes_panic {
+<a href=#697 id=697 data-nosnippet>697</a>    {
+<a href=#698 id=698 data-nosnippet>698</a>        $(<span class="kw">fn </span><span class="macro-nonterminal">$test</span>:ident&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>:ident: usize&gt;() <span class="macro-nonterminal">$body</span>:tt)*
+<a href=#699 id=699 data-nosnippet>699</a>    } =&gt; {
+<a href=#700 id=700 data-nosnippet>700</a>        $(
+<a href=#701 id=701 data-nosnippet>701</a>            <span class="kw">mod </span><span class="macro-nonterminal">$test </span>{
+<a href=#702 id=702 data-nosnippet>702</a>                <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#703 id=703 data-nosnippet>703</a>
+<a href=#704 id=704 data-nosnippet>704</a>                <span class="kw">fn </span>implementation&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>: usize&gt;()
+<a href=#705 id=705 data-nosnippet>705</a>                <span class="macro-nonterminal">$body
+<a href=#706 id=706 data-nosnippet>706</a>
+<a href=#707 id=707 data-nosnippet>707</a>                </span><span class="comment">// test some odd and even non-power-of-2 lengths on miri
+<a href=#708 id=708 data-nosnippet>708</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+<a href=#709 id=709 data-nosnippet>709</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
+<a href=#710 id=710 data-nosnippet>710</a>                    lanes_1 <span class="number">1</span>;
+<a href=#711 id=711 data-nosnippet>711</a>                    lanes_2 <span class="number">2</span>;
+<a href=#712 id=712 data-nosnippet>712</a>                    lanes_3 <span class="number">3</span>;
+<a href=#713 id=713 data-nosnippet>713</a>
+<a href=#714 id=714 data-nosnippet>714</a>                    lanes_6 <span class="number">6</span>;
+<a href=#715 id=715 data-nosnippet>715</a>                );
+<a href=#716 id=716 data-nosnippet>716</a>
+<a href=#717 id=717 data-nosnippet>717</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
+<a href=#718 id=718 data-nosnippet>718</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+<a href=#719 id=719 data-nosnippet>719</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
+<a href=#720 id=720 data-nosnippet>720</a>                    lanes_4 <span class="number">4</span>;
+<a href=#721 id=721 data-nosnippet>721</a>                    lanes_5 <span class="number">5</span>;
+<a href=#722 id=722 data-nosnippet>722</a>
+<a href=#723 id=723 data-nosnippet>723</a>                    lanes_7 <span class="number">7</span>;
+<a href=#724 id=724 data-nosnippet>724</a>                    lanes_8 <span class="number">8</span>;
+<a href=#725 id=725 data-nosnippet>725</a>                    lanes_9 <span class="number">9</span>;
+<a href=#726 id=726 data-nosnippet>726</a>                    lanes_10 <span class="number">10</span>;
+<a href=#727 id=727 data-nosnippet>727</a>                    lanes_11 <span class="number">11</span>;
+<a href=#728 id=728 data-nosnippet>728</a>                    lanes_12 <span class="number">12</span>;
+<a href=#729 id=729 data-nosnippet>729</a>                    lanes_13 <span class="number">13</span>;
+<a href=#730 id=730 data-nosnippet>730</a>                    lanes_14 <span class="number">14</span>;
+<a href=#731 id=731 data-nosnippet>731</a>                    lanes_15 <span class="number">15</span>;
+<a href=#732 id=732 data-nosnippet>732</a>                    lanes_16 <span class="number">16</span>;
+<a href=#733 id=733 data-nosnippet>733</a>                    lanes_17 <span class="number">17</span>;
+<a href=#734 id=734 data-nosnippet>734</a>                    <span class="comment">//lanes_18 18;
+<a href=#735 id=735 data-nosnippet>735</a>                    //lanes_19 19;
+<a href=#736 id=736 data-nosnippet>736</a>                    //lanes_20 20;
+<a href=#737 id=737 data-nosnippet>737</a>                    //lanes_21 21;
+<a href=#738 id=738 data-nosnippet>738</a>                    //lanes_22 22;
+<a href=#739 id=739 data-nosnippet>739</a>                    //lanes_23 23;
+<a href=#740 id=740 data-nosnippet>740</a>                    </span>lanes_24 <span class="number">24</span>;
+<a href=#741 id=741 data-nosnippet>741</a>                    <span class="comment">//lanes_25 25;
+<a href=#742 id=742 data-nosnippet>742</a>                    //lanes_26 26;
+<a href=#743 id=743 data-nosnippet>743</a>                    //lanes_27 27;
+<a href=#744 id=744 data-nosnippet>744</a>                    //lanes_28 28;
+<a href=#745 id=745 data-nosnippet>745</a>                    //lanes_29 29;
+<a href=#746 id=746 data-nosnippet>746</a>                    //lanes_30 30;
+<a href=#747 id=747 data-nosnippet>747</a>                    //lanes_31 31;
+<a href=#748 id=748 data-nosnippet>748</a>                    </span>lanes_32 <span class="number">32</span>;
+<a href=#749 id=749 data-nosnippet>749</a>                    <span class="comment">//lanes_33 33;
+<a href=#750 id=750 data-nosnippet>750</a>                    //lanes_34 34;
+<a href=#751 id=751 data-nosnippet>751</a>                    //lanes_35 35;
+<a href=#752 id=752 data-nosnippet>752</a>                    //lanes_36 36;
+<a href=#753 id=753 data-nosnippet>753</a>                    //lanes_37 37;
+<a href=#754 id=754 data-nosnippet>754</a>                    //lanes_38 38;
+<a href=#755 id=755 data-nosnippet>755</a>                    //lanes_39 39;
+<a href=#756 id=756 data-nosnippet>756</a>                    //lanes_40 40;
+<a href=#757 id=757 data-nosnippet>757</a>                    //lanes_41 41;
+<a href=#758 id=758 data-nosnippet>758</a>                    //lanes_42 42;
+<a href=#759 id=759 data-nosnippet>759</a>                    //lanes_43 43;
+<a href=#760 id=760 data-nosnippet>760</a>                    //lanes_44 44;
+<a href=#761 id=761 data-nosnippet>761</a>                    //lanes_45 45;
+<a href=#762 id=762 data-nosnippet>762</a>                    //lanes_46 46;
+<a href=#763 id=763 data-nosnippet>763</a>                    </span>lanes_47 <span class="number">47</span>;
+<a href=#764 id=764 data-nosnippet>764</a>                    <span class="comment">//lanes_48 48;
+<a href=#765 id=765 data-nosnippet>765</a>                    //lanes_49 49;
+<a href=#766 id=766 data-nosnippet>766</a>                    //lanes_50 50;
+<a href=#767 id=767 data-nosnippet>767</a>                    //lanes_51 51;
+<a href=#768 id=768 data-nosnippet>768</a>                    //lanes_52 52;
+<a href=#769 id=769 data-nosnippet>769</a>                    //lanes_53 53;
+<a href=#770 id=770 data-nosnippet>770</a>                    //lanes_54 54;
+<a href=#771 id=771 data-nosnippet>771</a>                    //lanes_55 55;
+<a href=#772 id=772 data-nosnippet>772</a>                    </span>lanes_56 <span class="number">56</span>;
+<a href=#773 id=773 data-nosnippet>773</a>                    lanes_57 <span class="number">57</span>;
+<a href=#774 id=774 data-nosnippet>774</a>                    <span class="comment">//lanes_58 58;
+<a href=#775 id=775 data-nosnippet>775</a>                    //lanes_59 59;
+<a href=#776 id=776 data-nosnippet>776</a>                    //lanes_60 60;
+<a href=#777 id=777 data-nosnippet>777</a>                    //lanes_61 61;
+<a href=#778 id=778 data-nosnippet>778</a>                    //lanes_62 62;
+<a href=#779 id=779 data-nosnippet>779</a>                    </span>lanes_63 <span class="number">63</span>;
+<a href=#780 id=780 data-nosnippet>780</a>                    lanes_64 <span class="number">64</span>;
+<a href=#781 id=781 data-nosnippet>781</a>                );
+<a href=#782 id=782 data-nosnippet>782</a>            }
+<a href=#783 id=783 data-nosnippet>783</a>        )*
+<a href=#784 id=784 data-nosnippet>784</a>    }
+<a href=#785 id=785 data-nosnippet>785</a>}</code></pre></div></section></main></body></html>
