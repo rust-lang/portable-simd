@@ -19,6 +19,9 @@ from_transmute! { unsafe u16x32 => __m512i }
 from_transmute! { unsafe i16x8 => __m128i }
 from_transmute! { unsafe i16x16 => __m256i }
 from_transmute! { unsafe i16x32 => __m512i }
+from_transmute! { unsafe f16x8 => __m128h }
+from_transmute! { unsafe f16x16 => __m256h }
+from_transmute! { unsafe f16x32 => __m512h }
 
 from_transmute! { unsafe u32x4 => __m128i }
 from_transmute! { unsafe u32x8 => __m256i }

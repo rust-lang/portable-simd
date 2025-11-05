@@ -10,7 +10,8 @@
     staged_api,
     prelude_import,
     ptr_metadata,
-    rustc_attrs
+    rustc_attrs,
+    f16
 )]
 #![cfg_attr(
     all(
@@ -34,6 +35,18 @@
 #![cfg_attr(
     all(target_arch = "x86_64", target_feature = "avx512f"),
     feature(stdarch_x86_avx512)
+)]
+#![cfg_attr(
+    any(target_arch = "x86", target_arch = "x86_64"),
+    feature(stdarch_x86_avx512_f16)
+)]
+#![cfg_attr(
+    any(
+        target_arch = "aarch64",
+        target_arch = "arm64ec",
+        all(target_arch = "arm", target_feature = "v7"),
+    ),
+    feature(stdarch_neon_f16)
 )]
 #![warn(missing_docs, clippy::missing_inline_in_public_items)] // basically all items, really
 #![deny(

@@ -18,6 +18,9 @@ use core::arch::aarch64::*;
 mod neon {
     use super::*;
 
+    from_transmute! { unsafe f16x4 => float16x4_t }
+    from_transmute! { unsafe f16x8 => float16x8_t }
+
     from_transmute! { unsafe f32x2 => float32x2_t }
     from_transmute! { unsafe f32x4 => float32x4_t }
 
