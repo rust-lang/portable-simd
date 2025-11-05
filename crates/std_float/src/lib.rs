@@ -2,6 +2,7 @@
     feature = "as_crate",
     feature(core_intrinsics),
     feature(portable_simd),
+    feature(f16),
     allow(internal_features)
 )]
 #[cfg(not(feature = "as_crate"))]
@@ -140,6 +141,7 @@ pub trait StdFloat: Sealed + Sized {
     fn fract(self) -> Self;
 }
 
+impl<const N: usize> Sealed for Simd<f16, N> {}
 impl<const N: usize> Sealed for Simd<f32, N> {}
 impl<const N: usize> Sealed for Simd<f64, N> {}
 
@@ -147,6 +149,21 @@ macro_rules! impl_float {
     {
         $($fn:ident: $intrinsic:ident,)*
     } => {
+        impl<const N: usize> StdFloat for Simd<f16, N>
+        {
+            #[inline]
+            fn fract(self) -> Self {
+                self - self.trunc()
+            }
+
+            $(
+            #[inline]
+            fn $fn(self) -> Self {
+                unsafe { intrinsics::$intrinsic(self) }
+            }
+            )*
+        }
+
         impl<const N: usize> StdFloat for Simd<f32, N>
         {
             #[inline]
