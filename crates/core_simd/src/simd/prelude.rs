@@ -81,3 +81,13 @@ pub use super::{mask64x1, mask64x2, mask64x4, mask64x8, mask64x16, mask64x32, ma
 #[rustfmt::skip]
 #[doc(no_inline)]
 pub use super::{masksizex1, masksizex2, masksizex4, masksizex8, masksizex16, masksizex32, masksizex64};
+
+// Generic type shorthands for writing generic SIMD code
+#[doc(no_inline)]
+pub use super::{
+    f32xN, f64xN, i8xN, i16xN, i32xN, i64xN, isizexN, u8xN, u16xN, u32xN, u64xN, usizexN,
+};
+
+// Generic mask type shorthands for writing generic SIMD code
+#[doc(no_inline)]
+pub use super::{mask8xN, mask16xN, mask32xN, mask64xN, masksizexN};
