@@ -240,12 +240,29 @@ fn test_subnormal_values() {
     let b = f32x4::from_array([2.0, 0.0, 0.0, 0.0]);
     let result = a.dot(b);
     assert!(result.is_finite());
-    assert_eq!(result, subnormal_f32 * 2.0);
+
+    // On platforms with flush-to-zero (FTZ) mode (e.g., ARM NEON), subnormal
+    // values in SIMD operations may be flushed to zero for performance.
+    // We accept either the mathematically correct result or zero.
+    let expected = subnormal_f32 * 2.0;
+    assert!(
+        result == expected || result == 0.0,
+        "Expected {} (or 0.0 due to FTZ), got {}",
+        expected,
+        result
+    );
 
     let subnormal_f64 = f64::MIN_POSITIVE / 2.0;
     let c = f64x4::from_array([subnormal_f64, 0.0, 0.0, 0.0]);
     let d = f64x4::from_array([2.0, 0.0, 0.0, 0.0]);
     let result_f64 = c.dot(d);
     assert!(result_f64.is_finite());
-    assert_eq!(result_f64, subnormal_f64 * 2.0);
+
+    let expected_f64 = subnormal_f64 * 2.0;
+    assert!(
+        result_f64 == expected_f64 || result_f64 == 0.0,
+        "Expected {} (or 0.0 due to FTZ), got {}",
+        expected_f64,
+        result_f64
+    );
 }
