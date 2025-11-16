@@ -235,6 +235,70 @@ pub trait SimdFloat: Copy + Sealed {
     /// assert!(v.reduce_min().is_nan());
     /// ```
     fn reduce_min(self) -> Self::Scalar;
+
+    /// Computes the dot product of two vectors by multiplying corresponding elements
+    /// and summing the results.
+    ///
+    /// This is equivalent to `(self * rhs).reduce_sum()`, but expresses the intent
+    /// more clearly and may use platform-specific optimizations.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// let a = f32x4::from_array([1.0, 2.0, 3.0, 4.0]);
+    /// let b = f32x4::from_array([5.0, 6.0, 7.0, 8.0]);
+    /// assert_eq!(a.dot(b), 70.0);  // 1*5 + 2*6 + 3*7 + 4*8
+    /// ```
+    #[must_use = "method returns the dot product and does not mutate the original value"]
+    fn dot(self, rhs: Self) -> Self::Scalar;
+
+    /// Computes the dot product of the first 3 elements, ignoring the rest.
+    ///
+    /// Computes `self[0]*rhs[0] + self[1]*rhs[1] + self[2]*rhs[2]`.
+    ///
+    /// The 4th element (w component) and any elements beyond index 2 are ignored.
+    /// This is useful for 3D vector operations where vectors are stored in
+    /// 4-element SIMD registers for alignment.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// let a = f32x4::from_array([1.0, 2.0, 3.0, 999.0]);
+    /// let b = f32x4::from_array([4.0, 5.0, 6.0, 888.0]);
+    /// assert_eq!(a.dot3(b), 32.0);  // 1*4 + 2*5 + 3*6 = 32
+    /// // Note: w component (999.0, 888.0) is ignored
+    /// ```
+    #[must_use = "method returns the dot product and does not mutate the original value"]
+    fn dot3(self, rhs: Self) -> Self::Scalar;
+
+    /// Computes the dot product of the first 4 elements, ignoring the rest.
+    ///
+    /// Computes `self[0]*rhs[0] + self[1]*rhs[1] + self[2]*rhs[2] + self[3]*rhs[3]`.
+    ///
+    /// Any elements beyond index 3 are ignored. For `Simd<T, 4>` types,
+    /// this is equivalent to [`dot`](Self::dot).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// let a = f32x4::from_array([1.0, 2.0, 3.0, 4.0]);
+    /// let b = f32x4::from_array([5.0, 6.0, 7.0, 8.0]);
+    /// assert_eq!(a.dot4(b), 70.0);  // 1*5 + 2*6 + 3*7 + 4*8
+    /// ```
+    #[must_use = "method returns the dot product and does not mutate the original value"]
+    fn dot4(self, rhs: Self) -> Self::Scalar;
 }
 
 macro_rules! impl_trait {
@@ -438,6 +502,25 @@ macro_rules! impl_trait {
             fn reduce_min(self) -> Self::Scalar {
                 // Safety: `self` is a float vector
                 unsafe { core::intrinsics::simd::simd_reduce_min(self) }
+            }
+
+            #[inline]
+            fn dot(self, rhs: Self) -> Self::Scalar {
+                (self * rhs).reduce_sum()
+            }
+
+            #[inline]
+            fn dot3(self, rhs: Self) -> Self::Scalar {
+                const { assert!(N >= 3, "dot3 requires at least 3 elements") };
+                let product = self * rhs;
+                product[0] + product[1] + product[2]
+            }
+
+            #[inline]
+            fn dot4(self, rhs: Self) -> Self::Scalar {
+                const { assert!(N >= 4, "dot4 requires at least 4 elements") };
+                let product = self * rhs;
+                product[0] + product[1] + product[2] + product[3]
             }
         }
         )*
