@@ -1,6 +1,7 @@
 #![feature(portable_simd)]
 
 use core_simd::simd::prelude::*;
+use std_float::StdFloat;
 
 #[test]
 fn test_mul_add_basic() {

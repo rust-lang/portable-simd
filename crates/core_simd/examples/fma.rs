@@ -2,6 +2,7 @@
 
 #![feature(portable_simd)]
 use core_simd::simd::prelude::*;
+use std_float::StdFloat;
 
 fn main() {
     let a = f32x4::from_array([1.0, 2.0, 3.0, 4.0]);
