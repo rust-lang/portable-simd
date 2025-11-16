@@ -66,7 +66,7 @@ pub trait StdFloat: Sealed + Sized {
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original value"]
     fn mul_sub(self, a: Self, b: Self) -> Self {
-        unsafe { intrinsics::simd_fma(self, a, intrinsics::simd_fneg(b)) }
+        unsafe { intrinsics::simd_fma(self, a, intrinsics::simd_neg(b)) }
     }
 
     /// Produces a vector where every element has the square root value
