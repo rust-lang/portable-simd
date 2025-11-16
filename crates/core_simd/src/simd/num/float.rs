@@ -235,6 +235,46 @@ pub trait SimdFloat: Copy + Sealed {
     /// assert!(v.reduce_min().is_nan());
     /// ```
     fn reduce_min(self) -> Self::Scalar;
+
+    /// Fused multiply-add: computes `(self * a) + b` with only one rounding error.
+    ///
+    /// This produces more accurate results than separate multiply and add operations,
+    /// and can be faster on platforms with dedicated FMA instructions.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// let a = f32x4::splat(2.0);
+    /// let b = f32x4::splat(3.0);
+    /// let c = f32x4::splat(4.0);
+    /// assert_eq!(a.mul_add(b, c), f32x4::splat(10.0)); // 2*3 + 4 = 10
+    /// ```
+    #[must_use = "method returns a new vector and does not mutate the original value"]
+    fn mul_add(self, a: Self, b: Self) -> Self;
+
+    /// Fused multiply-subtract: computes `(self * a) - b` with only one rounding error.
+    ///
+    /// This produces more accurate results than separate multiply and subtract operations,
+    /// and can be faster on platforms with dedicated FMS instructions.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::prelude::*;
+    /// let a = f32x4::splat(2.0);
+    /// let b = f32x4::splat(3.0);
+    /// let c = f32x4::splat(4.0);
+    /// assert_eq!(a.mul_sub(b, c), f32x4::splat(2.0)); // 2*3 - 4 = 2
+    /// ```
+    #[must_use = "method returns a new vector and does not mutate the original value"]
+    fn mul_sub(self, a: Self, b: Self) -> Self;
 }
 
 macro_rules! impl_trait {
@@ -438,6 +478,19 @@ macro_rules! impl_trait {
             fn reduce_min(self) -> Self::Scalar {
                 // Safety: `self` is a float vector
                 unsafe { core::intrinsics::simd::simd_reduce_min(self) }
+            }
+
+            #[inline]
+            fn mul_add(self, a: Self, b: Self) -> Self {
+                // Safety: `self`, `a`, and `b` are float vectors
+                unsafe { core::intrinsics::simd::simd_fma(self, a, b) }
+            }
+
+            #[inline]
+            fn mul_sub(self, a: Self, b: Self) -> Self {
+                // self * a - b = self * a + (-b)
+                // Safety: `self`, `a`, and `b` are float vectors
+                unsafe { core::intrinsics::simd::simd_fma(self, a, -b) }
             }
         }
         )*
