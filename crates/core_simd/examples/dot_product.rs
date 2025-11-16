@@ -72,7 +72,6 @@ pub fn dot_prod_simd_1(a: &[f32], b: &[f32]) -> f32 {
 
 // A lot of knowledgeable use of SIMD comes from knowing specific instructions that are
 // available - let's try to use the `mul_add` instruction, which is the fused-multiply-add we were looking for.
-use std_float::StdFloat;
 pub fn dot_prod_simd_2(a: &[f32], b: &[f32]) -> f32 {
     assert_eq!(a.len(), b.len());
     // TODO handle remainder when a.len() % 4 != 0
