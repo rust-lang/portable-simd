@@ -218,6 +218,11 @@ where
     /// `idx` must be in-bounds (`idx < N`)
     #[inline]
     unsafe fn get_inner(self, idx: usize) -> T {
+        // FIXME: This is a workaround for a CI failure in #498
+        if cfg!(target_family = "wasm") {
+            return self.as_array()[idx];
+        }
+
         // SAFETY: our precondition is also that the value is in-bounds
         // and this type is a simd type of the correct element type.
         unsafe { core::intrinsics::simd::simd_extract_dyn(self, idx as u32) }
@@ -281,6 +286,13 @@ where
     #[inline]
     #[must_use = "This returns a new vector, rather than updating in-place"]
     unsafe fn set_inner(self, idx: usize, val: T) -> Self {
+        // FIXME: This is a workaround for a CI failure in #498
+        if cfg!(target_family = "wasm") {
+            let mut temp = self;
+            temp.as_mut_array()[idx] = val;
+            return temp;
+        }
+
         // SAFETY: our precondition is also that the value is in-bounds
         // and this type is a simd type of the correct element type.
         unsafe { core::intrinsics::simd::simd_insert_dyn(self, idx as u32, val) }
