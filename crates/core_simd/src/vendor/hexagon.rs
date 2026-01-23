@@ -12,19 +12,13 @@ mod hvx {
 
     // HVX vector register is 1024-bit (128 bytes)
     // Can be viewed as different element types:
-    // - 128 x 8-bit bytes
     // - 64 x 16-bit halfwords
     // - 32 x 32-bit words
     // - 16 x 64-bit doublewords
+    // Note: 128 x 8-bit bytes (u8x128/i8x128) disabled for now due to test suite impact
 
     // For now, we use repr(transparent) structs as placeholders
     // These would be replaced with actual intrinsic types when available
-
-    #[repr(transparent)]
-    pub struct HvxVectorU8([u8; 128]);
-
-    #[repr(transparent)]
-    pub struct HvxVectorI8([i8; 128]);
 
     #[repr(transparent)]
     pub struct HvxVectorU16([u16; 64]);
@@ -70,8 +64,7 @@ mod hvx {
     pub struct HvxVectorHalfI64([i64; 8]);
 
     // Map portable SIMD types to HVX full vector types (1024-bit)
-    from_transmute! { unsafe u8x128 => HvxVectorU8 }
-    from_transmute! { unsafe i8x128 => HvxVectorI8 }
+    // Note: u8x128/i8x128 mappings disabled for now due to test suite impact
     from_transmute! { unsafe u16x64 => HvxVectorU16 }
     from_transmute! { unsafe i16x64 => HvxVectorI16 }
     from_transmute! { unsafe u32x32 => HvxVectorU32 }
