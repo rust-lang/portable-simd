@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0-nightly (dc2c3564d 2025-09-29)" data-channel="nightly" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-828709d0.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">test_helpers/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![feature(powerpc_target_feature)]
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test_helpers/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0bd2dfd4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_helpers" data-themes="" data-resource-suffix="" data-rustdoc-version="1.95.0-nightly (873d4682c 2026-01-25)" data-channel="nightly" data-search-js="search-86d08462.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-f9617a14.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12f88f4f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-ffcac47a.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">test_helpers/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![feature(powerpc_target_feature)]
 <a href=#2 id=2 data-nosnippet>2</a>#![cfg_attr(
 <a href=#3 id=3 data-nosnippet>3</a>    any(target_arch = <span class="string">"powerpc"</span>, target_arch = <span class="string">"powerpc64"</span>),
 <a href=#4 id=4 data-nosnippet>4</a>    feature(stdarch_powerpc)
@@ -27,12 +27,12 @@
 <a href=#27 id=27 data-nosnippet>27</a>}
 <a href=#28 id=28 data-nosnippet>28</a>
 <a href=#29 id=29 data-nosnippet>29</a><span class="macro">macro_rules!</span> impl_num {
-<a href=#30 id=30 data-nosnippet>30</a>    { <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">tt </span>} =&gt; {
-<a href=#31 id=31 data-nosnippet>31</a>        <span class="kw">impl </span>DefaultStrategy <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#32 id=32 data-nosnippet>32</a>            <span class="kw">type </span><span class="macro-nonterminal">Strategy </span>= proptest::num::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::Any</span>;
+<a href=#30 id=30 data-nosnippet>30</a>    { <span class="macro-nonterminal">$type</span>:tt } =&gt; {
+<a href=#31 id=31 data-nosnippet>31</a>        <span class="kw">impl </span>DefaultStrategy <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#32 id=32 data-nosnippet>32</a>            <span class="kw">type </span>Strategy = proptest::num::<span class="macro-nonterminal">$type</span>::Any;
 <a href=#33 id=33 data-nosnippet>33</a>            <span class="kw">fn </span>default_strategy() -&gt; <span class="self">Self</span>::Strategy {
-<a href=#34 id=34 data-nosnippet>34</a>                proptest::num::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::ANY
-<a href=#35 id=35 data-nosnippet>35</a>            </span>}
+<a href=#34 id=34 data-nosnippet>34</a>                proptest::num::<span class="macro-nonterminal">$type</span>::ANY
+<a href=#35 id=35 data-nosnippet>35</a>            }
 <a href=#36 id=36 data-nosnippet>36</a>        }
 <a href=#37 id=37 data-nosnippet>37</a>    }
 <a href=#38 id=38 data-nosnippet>38</a>}
@@ -578,7 +578,7 @@
 <a href=#578 id=578 data-nosnippet>578</a>        <span class="macro-nonterminal">$fn_name</span>:ident <span class="macro-nonterminal">$lanes</span>:literal;
 <a href=#579 id=579 data-nosnippet>579</a>        $(<span class="macro-nonterminal">$fn_name_rest</span>:ident <span class="macro-nonterminal">$lanes_rest</span>:literal;)*
 <a href=#580 id=580 data-nosnippet>580</a>    ) =&gt; {
-<a href=#581 id=581 data-nosnippet>581</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
+<a href=#581 id=581 data-nosnippet>581</a>        <span class="macro-nonterminal">$crate::test_lanes_helper</span>!(
 <a href=#582 id=582 data-nosnippet>582</a>            $(<span class="attr">#[<span class="macro-nonterminal">$meta</span>]</span>)+;
 <a href=#583 id=583 data-nosnippet>583</a>            $($(<span class="attr">#[<span class="macro-nonterminal">$meta_before</span>]</span>)+ <span class="macro-nonterminal">$fn_name_before $lanes_before</span>;)*
 <a href=#584 id=584 data-nosnippet>584</a>            $(<span class="attr">#[<span class="macro-nonterminal">$meta</span>]</span>)+ <span class="macro-nonterminal">$fn_name $lanes</span>;
@@ -589,7 +589,7 @@
 <a href=#589 id=589 data-nosnippet>589</a>        $(<span class="attr">#[<span class="macro-nonterminal">$meta_ignored</span>:meta]</span>)+;
 <a href=#590 id=590 data-nosnippet>590</a>        $($(<span class="attr">#[<span class="macro-nonterminal">$meta</span>:meta]</span>)+ <span class="macro-nonterminal">$fn_name</span>:ident <span class="macro-nonterminal">$lanes</span>:literal;)+
 <a href=#591 id=591 data-nosnippet>591</a>    ) =&gt; {
-<a href=#592 id=592 data-nosnippet>592</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>($($(<span class="attr">#[<span class="macro-nonterminal">$meta</span>]</span>)+ <span class="macro-nonterminal">$fn_name $lanes</span>;)+);
+<a href=#592 id=592 data-nosnippet>592</a>        <span class="macro-nonterminal">$crate::test_lanes_helper</span>!($($(<span class="attr">#[<span class="macro-nonterminal">$meta</span>]</span>)+ <span class="macro-nonterminal">$fn_name $lanes</span>;)+);
 <a href=#593 id=593 data-nosnippet>593</a>    };
 <a href=#594 id=594 data-nosnippet>594</a>}
 <a href=#595 id=595 data-nosnippet>595</a>
@@ -601,7 +601,7 @@
 <a href=#601 id=601 data-nosnippet>601</a>    } =&gt; {
 <a href=#602 id=602 data-nosnippet>602</a>        $(
 <a href=#603 id=603 data-nosnippet>603</a>            <span class="kw">mod </span><span class="macro-nonterminal">$test </span>{
-<a href=#604 id=604 data-nosnippet>604</a>                <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#604 id=604 data-nosnippet>604</a>                <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#605 id=605 data-nosnippet>605</a>
 <a href=#606 id=606 data-nosnippet>606</a>                <span class="kw">fn </span>implementation&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>: usize&gt;()
 <a href=#607 id=607 data-nosnippet>607</a>                <span class="macro-nonterminal">$body
@@ -609,8 +609,8 @@
 <a href=#609 id=609 data-nosnippet>609</a>                </span><span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
 <a href=#610 id=610 data-nosnippet>610</a>                </span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 <a href=#611 id=611 data-nosnippet>611</a>
-<a href=#612 id=612 data-nosnippet>612</a>                <span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#613 id=613 data-nosnippet>613</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+<a href=#612 id=612 data-nosnippet>612</a>                <span class="macro-nonterminal">$crate::test_lanes_helper</span>!(
+<a href=#613 id=613 data-nosnippet>613</a>                    <span class="attr">#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
 <a href=#614 id=614 data-nosnippet>614</a>                    lanes_1 <span class="number">1</span>;
 <a href=#615 id=615 data-nosnippet>615</a>                    lanes_2 <span class="number">2</span>;
 <a href=#616 id=616 data-nosnippet>616</a>                    <span class="comment">// Cover an odd and an even non-power-of-2 length in Miri.
@@ -622,8 +622,8 @@
 <a href=#622 id=622 data-nosnippet>622</a>                );
 <a href=#623 id=623 data-nosnippet>623</a>
 <a href=#624 id=624 data-nosnippet>624</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
-<a href=#625 id=625 data-nosnippet>625</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#626 id=626 data-nosnippet>626</a>                    <span class="attr">#[<span class="macro-nonterminal">cfg_attr</span>(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
+<a href=#625 id=625 data-nosnippet>625</a>                </span><span class="macro-nonterminal">$crate::test_lanes_helper</span>!(
+<a href=#626 id=626 data-nosnippet>626</a>                    <span class="attr">#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, wasm_bindgen_test::wasm_bindgen_test)]</span>;
 <a href=#627 id=627 data-nosnippet>627</a>                    lanes_4 <span class="number">4</span>;
 <a href=#628 id=628 data-nosnippet>628</a>                    lanes_5 <span class="number">5</span>;
 <a href=#629 id=629 data-nosnippet>629</a>
@@ -699,14 +699,14 @@
 <a href=#699 id=699 data-nosnippet>699</a>    } =&gt; {
 <a href=#700 id=700 data-nosnippet>700</a>        $(
 <a href=#701 id=701 data-nosnippet>701</a>            <span class="kw">mod </span><span class="macro-nonterminal">$test </span>{
-<a href=#702 id=702 data-nosnippet>702</a>                <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#702 id=702 data-nosnippet>702</a>                <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#703 id=703 data-nosnippet>703</a>
 <a href=#704 id=704 data-nosnippet>704</a>                <span class="kw">fn </span>implementation&lt;<span class="kw">const </span><span class="macro-nonterminal">$lanes</span>: usize&gt;()
 <a href=#705 id=705 data-nosnippet>705</a>                <span class="macro-nonterminal">$body
 <a href=#706 id=706 data-nosnippet>706</a>
 <a href=#707 id=707 data-nosnippet>707</a>                </span><span class="comment">// test some odd and even non-power-of-2 lengths on miri
-<a href=#708 id=708 data-nosnippet>708</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#709 id=709 data-nosnippet>709</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
+<a href=#708 id=708 data-nosnippet>708</a>                </span><span class="macro-nonterminal">$crate::test_lanes_helper</span>!(
+<a href=#709 id=709 data-nosnippet>709</a>                    <span class="attr">#[should_panic]</span>;
 <a href=#710 id=710 data-nosnippet>710</a>                    lanes_1 <span class="number">1</span>;
 <a href=#711 id=711 data-nosnippet>711</a>                    lanes_2 <span class="number">2</span>;
 <a href=#712 id=712 data-nosnippet>712</a>                    lanes_3 <span class="number">3</span>;
@@ -715,8 +715,8 @@
 <a href=#715 id=715 data-nosnippet>715</a>                );
 <a href=#716 id=716 data-nosnippet>716</a>
 <a href=#717 id=717 data-nosnippet>717</a>                <span class="attr">#[cfg(not(miri))] </span><span class="comment">// Miri intrinsic implementations are uniform and larger tests are sloooow
-<a href=#718 id=718 data-nosnippet>718</a>                </span><span class="macro-nonterminal">$</span><span class="macro">crate::test_lanes_helper!</span>(
-<a href=#719 id=719 data-nosnippet>719</a>                    <span class="attr">#[<span class="macro-nonterminal">should_panic</span>]</span>;
+<a href=#718 id=718 data-nosnippet>718</a>                </span><span class="macro-nonterminal">$crate::test_lanes_helper</span>!(
+<a href=#719 id=719 data-nosnippet>719</a>                    <span class="attr">#[should_panic]</span>;
 <a href=#720 id=720 data-nosnippet>720</a>                    lanes_4 <span class="number">4</span>;
 <a href=#721 id=721 data-nosnippet>721</a>                    lanes_5 <span class="number">5</span>;
 <a href=#722 id=722 data-nosnippet>722</a>
@@ -782,4 +782,5 @@
 <a href=#782 id=782 data-nosnippet>782</a>            }
 <a href=#783 id=783 data-nosnippet>783</a>        )*
 <a href=#784 id=784 data-nosnippet>784</a>    }
-<a href=#785 id=785 data-nosnippet>785</a>}</code></pre></div></section></main></body></html>
+<a href=#785 id=785 data-nosnippet>785</a>}
+</code></pre></div></section></main></body></html>
