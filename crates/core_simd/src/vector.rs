@@ -372,10 +372,10 @@ where
     /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::{Simd, Mask};
     /// let vec: Vec<i32> = vec![10, 11, 12];
-    /// let enable = Mask::from_array([true, true, false, true, false]);
+    /// let enable = Mask::from_array([false, true, true, true]);
     ///
     /// let result = Simd::load_select_or_default(&vec, enable);
-    /// assert_eq!(result, Simd::from_array([10, 11, 0, 0, 0]));
+    /// assert_eq!(result, Simd::from_array([0, 11, 12, 0]));
     /// ```
     #[must_use]
     #[inline]
