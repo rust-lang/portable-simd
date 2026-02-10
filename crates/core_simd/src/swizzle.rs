@@ -666,4 +666,179 @@ where
         // Safety: swizzles are safe for masks
         unsafe { Mask::<T, LEN>::from_simd_unchecked(self.to_simd().extract::<START, LEN>()) }
     }
+
+    /// Splits a vector into its two halves.
+    ///
+    /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
+    /// from the input vectors. You must specify it explicitly or constrain it by context. A
+    /// compile-time error will be raised if `HALF_LANES * 2 != LANES`.
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    /// let [y, z] = x.split();
+    /// assert_eq!(y.to_array(), [0, 1, 2, 3]);
+    /// assert_eq!(z.to_array(), [4, 5, 6, 7]);
+    /// ```
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    // TODO: when `generic_const_exprs` supports it, change signature to
+    //   `pub fn split(self) -> [Simd<T, {LANES / 2}>; 2]`
+    pub fn split<const HALF_LANES: usize>(self) -> [Simd<T, HALF_LANES>; 2]
+    where
+        LaneCount<HALF_LANES>: SupportedLaneCount,
+    {
+        const fn slice_index<const LEN: usize>(hi_half: bool, lanes: usize) -> [usize; LEN] {
+            assert!(
+                LEN * 2 == lanes,
+                "x.split_to::<N>() must provide N=x.lanes()/2"
+            );
+            let offset = if hi_half { LEN } else { 0 };
+            let mut index = [0; LEN];
+            let mut i = 0;
+            while i < LEN {
+                index[i] = i + offset;
+                i += 1;
+            }
+            index
+        }
+        struct Split<const HI_HALF: bool>;
+        impl<const HI_HALF: bool, const LEN: usize, const LANES: usize> Swizzle<LANES, LEN>
+            for Split<HI_HALF>
+        {
+            const INDEX: [usize; LEN] = slice_index::<LEN>(HI_HALF, LANES);
+        }
+        [Split::<false>::swizzle(self), Split::<true>::swizzle(self)]
+    }
+
+    /// Concatenates two vectors of equal length.
+    ///
+    /// Due to limitations in const generics, the length of the resulting vector cannot be inferred
+    /// from the input vectors. You must specify it explicitly or constrain it by context.
+    /// A compile time error will be raised if `LANES + LANES2 != OUTPUT_LANES`.
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3]);
+    /// let y = Simd::from_array([4, 5, 6, 7]);
+    /// let z = x.concat(y);
+    /// assert_eq!(z.to_array(), [0, 1, 2, 3, 4, 5, 6, 7]);
+    /// ```
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    // TODO: when `generic_const_exprs` supports it, change signature to
+    //   `pub fn concat<const LANES2>(self, other: Simd<T, LANES2>) -> Simd<T, {LANES + LANES2}>`
+    pub fn concat<const OUTPUT_LANES: usize, const LANES2: usize>(
+        self,
+        other: Simd<T, LANES2>,
+    ) -> Simd<T, OUTPUT_LANES>
+    where
+        LaneCount<OUTPUT_LANES>: SupportedLaneCount,
+        LaneCount<LANES2>: SupportedLaneCount,
+    {
+        struct Extend;
+        impl<const I: usize, const O: usize> Swizzle<I, O> for Extend {
+            const INDEX: [usize; O] = {
+                assert!(I <= O);
+                let mut index = [0; O];
+                let mut i = 0;
+                while i < I {
+                    index[i] = i;
+                    i += 1;
+                }
+                index
+            };
+        }
+        struct Concat<const A: usize, const B: usize, const Y: usize>;
+        impl<const A: usize, const B: usize, const Y: usize> Swizzle2<Y, Y> for Concat<A, B, Y> {
+            const INDEX: [Which; Y] = {
+                assert!(
+                    A + B == Y,
+                    "concat: OUTPUT_LANES must be the sum of all input lane counts"
+                );
+                let mut retval = [Which::First(0); Y];
+                let mut i = 0;
+                while i < Y {
+                    if i < A {
+                        retval[i] = Which::First(i);
+                    } else {
+                        retval[i] = Which::Second(i - A);
+                    }
+                    i += 1;
+                }
+                retval
+            };
+        }
+        Concat::<LANES, LANES2, OUTPUT_LANES>::swizzle2(
+            Extend::swizzle(self),
+            Extend::swizzle(other),
+        )
+    }
+
+    /// For each lane `i`, swaps it with lane `i ^ SWAP_MASK`.
+    ///
+    /// This is a powerful swizzle operation that can implement many common patterns as special cases:
+    /// Each power-of-2 swap mask produces a single stage of the [butterfly shuffles](https://en.wikipedia.org/wiki/Butterfly_network)
+    /// that are often useful for horizontal reductions.
+    ///
+    /// A similar operation (operating on bits instead of lanes) is known as `grev` in the RISC-V
+    /// Bitmanip specification.
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
+    /// let x = Simd::from_array([0, 1, 2, 3, 4, 5, 6, 7]);
+    /// // Swap adjacent lanes:
+    /// assert_eq!(x.swizzle_to_xor_indices::<1>().to_array(), [1, 0, 3, 2, 5, 4, 7, 6]);
+    /// // Swap lanes separated by distance 2:
+    /// assert_eq!(x.swizzle_to_xor_indices::<2>().to_array(), [2, 3, 0, 1, 6, 7, 4, 5]);
+    /// // Swap lanes separated by distance 4:
+    /// assert_eq!(x.swizzle_to_xor_indices::<4>().to_array(), [4, 5, 6, 7, 0, 1, 2, 3]);
+    /// // Reverse lanes, within each 4-lane group:
+    /// assert_eq!(x.swizzle_to_xor_indices::<3>().to_array(), [3, 2, 1, 0, 7, 6, 5, 4]);
+    /// ```
+    ///
+    /// This operation is commonly useful for horizontal reductions, for example:
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd::Simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd::Simd;
+    /// let x = Simd::from_array([0u32, 1, 2, 3, 4, 5, 6, 7]);
+    /// let x = x + x.swizzle_to_xor_indices::<1>();
+    /// let x = x + x.swizzle_to_xor_indices::<2>();
+    /// let x = x + x.swizzle_to_xor_indices::<4>();
+    /// assert_eq!(x.to_array(), [28, 28, 28, 28, 28, 28, 28, 28]);
+    /// ```
+
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original inputs"]
+    #[doc(alias = "grev")]
+    #[doc(alias = "butterfly")]
+    #[doc(alias = "bfly")]
+    pub fn swizzle_to_xor_indices<const SWAP_MASK: usize>(self) -> Self {
+        const fn swizzle_to_xor_indices_index<const LANES: usize>(
+            swap_mask: usize,
+        ) -> [usize; LANES] {
+            let mut index = [0; LANES];
+            let mut i = 0;
+            while i < LANES {
+                index[i] = i ^ swap_mask;
+                i += 1;
+            }
+            index
+        }
+        struct ButterflySwizzle<const DISTANCE: usize>;
+        impl<const LANES: usize, const DISTANCE: usize> Swizzle<LANES, LANES>
+            for ButterflySwizzle<DISTANCE>
+        {
+            const INDEX: [usize; LANES] = swizzle_to_xor_indices_index::<LANES>(DISTANCE);
+        }
+        ButterflySwizzle::<SWAP_MASK>::swizzle(self)
+    }
 }
