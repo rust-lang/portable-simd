@@ -2,19 +2,18 @@ use super::sealed::Sealed;
 use crate::simd::{Simd, SimdCast, SimdElement, cmp::SimdOrd};
 
 /// Operations on SIMD vectors of unsigned integers.
-pub trait SimdUint: Copy + Sealed {
-    /// Scalar type contained by this SIMD vector type.
-    type Scalar;
-
-    /// A SIMD vector with a different element type.
-    type Cast<T: SimdElement>;
-
+pub trait SimdUint<T, const N: usize>: Copy + Sealed
+where
+    T: SimdElement,
+{
+    /// Signed element type with the same width as `T`.
+    type Signed: SimdElement;
     /// Performs elementwise conversion of this vector's elements to another SIMD-valid type.
     ///
     /// This follows the semantics of Rust's `as` conversion for casting integers (wrapping to
     /// other integer types, and saturating to float types).
     #[must_use]
-    fn cast<T: SimdCast>(self) -> Self::Cast<T>;
+    fn cast<U: SimdCast>(self) -> Simd<U, N>;
 
     /// Wrapping negation.
     ///
@@ -75,25 +74,25 @@ pub trait SimdUint: Copy + Sealed {
     fn abs_diff(self, second: Self) -> Self;
 
     /// Returns the sum of the elements of the vector, with wrapping addition.
-    fn reduce_sum(self) -> Self::Scalar;
+    fn reduce_sum(self) -> T;
 
     /// Returns the product of the elements of the vector, with wrapping multiplication.
-    fn reduce_product(self) -> Self::Scalar;
+    fn reduce_product(self) -> T;
 
     /// Returns the maximum element in the vector.
-    fn reduce_max(self) -> Self::Scalar;
+    fn reduce_max(self) -> T;
 
     /// Returns the minimum element in the vector.
-    fn reduce_min(self) -> Self::Scalar;
+    fn reduce_min(self) -> T;
 
     /// Returns the cumulative bitwise "and" across the elements of the vector.
-    fn reduce_and(self) -> Self::Scalar;
+    fn reduce_and(self) -> T;
 
     /// Returns the cumulative bitwise "or" across the elements of the vector.
-    fn reduce_or(self) -> Self::Scalar;
+    fn reduce_or(self) -> T;
 
     /// Returns the cumulative bitwise "xor" across the elements of the vector.
-    fn reduce_xor(self) -> Self::Scalar;
+    fn reduce_xor(self) -> T;
 
     /// Reverses the byte order of each element.
     fn swap_bytes(self) -> Self;
@@ -126,13 +125,11 @@ macro_rules! impl_trait {
         $(
         impl<const N: usize> Sealed for Simd<$ty, N> {}
 
-        impl<const N: usize> SimdUint for Simd<$ty, N>
-        {
-            type Scalar = $ty;
-            type Cast<T: SimdElement> = Simd<T, N>;
+        impl<const N: usize> SimdUint<$ty, N> for Simd<$ty, N> {
+            type Signed = $signed;
 
             #[inline]
-            fn cast<T: SimdCast>(self) -> Self::Cast<T> {
+            fn cast<U: SimdCast>(self) -> Simd<U, N> {
                 // Safety: supported types are guaranteed by SimdCast
                 unsafe { core::intrinsics::simd::simd_as(self) }
             }
@@ -140,7 +137,7 @@ macro_rules! impl_trait {
             #[inline]
             fn wrapping_neg(self) -> Self {
                 use crate::simd::num::SimdInt;
-                (-self.cast::<$signed>()).cast()
+                (-self.cast::<Self::Signed>()).cast()
             }
 
             #[inline]
@@ -163,43 +160,43 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn reduce_sum(self) -> Self::Scalar {
+            fn reduce_sum(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_add_ordered(self, 0) }
             }
 
             #[inline]
-            fn reduce_product(self) -> Self::Scalar {
+            fn reduce_product(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_mul_ordered(self, 1) }
             }
 
             #[inline]
-            fn reduce_max(self) -> Self::Scalar {
+            fn reduce_max(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_max(self) }
             }
 
             #[inline]
-            fn reduce_min(self) -> Self::Scalar {
+            fn reduce_min(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_min(self) }
             }
 
             #[inline]
-            fn reduce_and(self) -> Self::Scalar {
+            fn reduce_and(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_and(self) }
             }
 
             #[inline]
-            fn reduce_or(self) -> Self::Scalar {
+            fn reduce_or(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_or(self) }
             }
 
             #[inline]
-            fn reduce_xor(self) -> Self::Scalar {
+            fn reduce_xor(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_xor(self) }
             }

@@ -4,25 +4,19 @@ use crate::simd::{
 };
 
 /// Operations on SIMD vectors of signed integers.
-pub trait SimdInt: Copy + Sealed {
-    /// Mask type used for manipulating this SIMD vector type.
-    type Mask;
-
-    /// Scalar type contained by this SIMD vector type.
-    type Scalar;
-
-    /// A SIMD vector of unsigned integers with the same element size.
-    type Unsigned;
-
-    /// A SIMD vector with a different element type.
-    type Cast<T: SimdElement>;
+pub trait SimdInt<T, const N: usize>: Copy + Sealed
+where
+    T: SimdElement,
+{
+    /// Unsigned element type with the same width as `T`.
+    type Unsigned: SimdElement;
 
     /// Performs elementwise conversion of this vector's elements to another SIMD-valid type.
     ///
     /// This follows the semantics of Rust's `as` conversion for casting integers (wrapping to
     /// other integer types, and saturating to float types).
     #[must_use]
-    fn cast<T: SimdCast>(self) -> Self::Cast<T>;
+    fn cast<U: SimdCast>(self) -> Simd<U, N>;
 
     /// Lanewise saturating add.
     ///
@@ -89,7 +83,7 @@ pub trait SimdInt: Copy + Sealed {
     /// let b = Simd::from_array([MAX, MIN, -80, -120]);
     /// assert_eq!(a.abs_diff(b), Simd::from_array([u32::MAX, u32::MAX, 180, 20]));
     /// ```
-    fn abs_diff(self, second: Self) -> Self::Unsigned;
+    fn abs_diff(self, second: Self) -> Simd<Self::Unsigned, N>;
 
     /// Lanewise saturating absolute value, implemented in Rust.
     /// As abs(), except the MIN value becomes MAX instead of itself.
@@ -128,10 +122,10 @@ pub trait SimdInt: Copy + Sealed {
     fn saturating_neg(self) -> Self;
 
     /// Returns true for each positive element and false if it is zero or negative.
-    fn is_positive(self) -> Self::Mask;
+    fn is_positive(self) -> Mask<<T as SimdElement>::Mask, N>;
 
     /// Returns true for each negative element and false if it is zero or positive.
-    fn is_negative(self) -> Self::Mask;
+    fn is_negative(self) -> Mask<<T as SimdElement>::Mask, N>;
 
     /// Returns numbers representing the sign of each element.
     /// * `0` if the number is zero
@@ -155,7 +149,7 @@ pub trait SimdInt: Copy + Sealed {
     /// let v = i32x4::from_array([i32::MAX, 1, 0, 0]);
     /// assert_eq!(v.reduce_sum(), i32::MIN);
     /// ```
-    fn reduce_sum(self) -> Self::Scalar;
+    fn reduce_sum(self) -> T;
 
     /// Returns the product of the elements of the vector, with wrapping multiplication.
     ///
@@ -173,7 +167,7 @@ pub trait SimdInt: Copy + Sealed {
     /// let v = i32x4::from_array([i32::MAX, 2, 1, 1]);
     /// assert!(v.reduce_product() < i32::MAX);
     /// ```
-    fn reduce_product(self) -> Self::Scalar;
+    fn reduce_product(self) -> T;
 
     /// Returns the maximum element in the vector.
     ///
@@ -187,7 +181,7 @@ pub trait SimdInt: Copy + Sealed {
     /// let v = i32x4::from_array([1, 2, 3, 4]);
     /// assert_eq!(v.reduce_max(), 4);
     /// ```
-    fn reduce_max(self) -> Self::Scalar;
+    fn reduce_max(self) -> T;
 
     /// Returns the minimum element in the vector.
     ///
@@ -201,16 +195,16 @@ pub trait SimdInt: Copy + Sealed {
     /// let v = i32x4::from_array([1, 2, 3, 4]);
     /// assert_eq!(v.reduce_min(), 1);
     /// ```
-    fn reduce_min(self) -> Self::Scalar;
+    fn reduce_min(self) -> T;
 
     /// Returns the cumulative bitwise "and" across the elements of the vector.
-    fn reduce_and(self) -> Self::Scalar;
+    fn reduce_and(self) -> T;
 
     /// Returns the cumulative bitwise "or" across the elements of the vector.
-    fn reduce_or(self) -> Self::Scalar;
+    fn reduce_or(self) -> T;
 
     /// Returns the cumulative bitwise "xor" across the elements of the vector.
-    fn reduce_xor(self) -> Self::Scalar;
+    fn reduce_xor(self) -> T;
 
     /// Reverses the byte order of each element.
     fn swap_bytes(self) -> Self;
@@ -220,22 +214,22 @@ pub trait SimdInt: Copy + Sealed {
     fn reverse_bits(self) -> Self;
 
     /// Returns the number of ones in the binary representation of each element.
-    fn count_ones(self) -> Self::Unsigned;
+    fn count_ones(self) -> Simd<Self::Unsigned, N>;
 
     /// Returns the number of zeros in the binary representation of each element.
-    fn count_zeros(self) -> Self::Unsigned;
+    fn count_zeros(self) -> Simd<Self::Unsigned, N>;
 
     /// Returns the number of leading zeros in the binary representation of each element.
-    fn leading_zeros(self) -> Self::Unsigned;
+    fn leading_zeros(self) -> Simd<Self::Unsigned, N>;
 
     /// Returns the number of trailing zeros in the binary representation of each element.
-    fn trailing_zeros(self) -> Self::Unsigned;
+    fn trailing_zeros(self) -> Simd<Self::Unsigned, N>;
 
     /// Returns the number of leading ones in the binary representation of each element.
-    fn leading_ones(self) -> Self::Unsigned;
+    fn leading_ones(self) -> Simd<Self::Unsigned, N>;
 
     /// Returns the number of trailing ones in the binary representation of each element.
-    fn trailing_ones(self) -> Self::Unsigned;
+    fn trailing_ones(self) -> Simd<Self::Unsigned, N>;
 }
 
 macro_rules! impl_trait {
@@ -243,14 +237,11 @@ macro_rules! impl_trait {
         $(
         impl<const N: usize> Sealed for Simd<$ty, N> {}
 
-        impl<const N: usize> SimdInt for Simd<$ty, N> {
-            type Mask = Mask<<$ty as SimdElement>::Mask, N>;
-            type Scalar = $ty;
-            type Unsigned = Simd<$unsigned, N>;
-            type Cast<T: SimdElement> = Simd<T, N>;
+        impl<const N: usize> SimdInt<$ty, N> for Simd<$ty, N> {
+            type Unsigned = $unsigned;
 
             #[inline]
-            fn cast<T: SimdCast>(self) -> Self::Cast<T> {
+            fn cast<U: SimdCast>(self) -> Simd<U, N> {
                 // Safety: supported types are guaranteed by SimdCast
                 unsafe { core::intrinsics::simd::simd_as(self) }
             }
@@ -275,7 +266,7 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn abs_diff(self, second: Self) -> Self::Unsigned {
+            fn abs_diff(self, second: Self) -> Simd<Self::Unsigned, N> {
                 let max = self.simd_max(second);
                 let min = self.simd_min(second);
                 (max - min).cast()
@@ -295,12 +286,12 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn is_positive(self) -> Self::Mask {
+            fn is_positive(self) -> Mask<<$ty as SimdElement>::Mask, N> {
                 self.simd_gt(Self::splat(0))
             }
 
             #[inline]
-            fn is_negative(self) -> Self::Mask {
+            fn is_negative(self) -> Mask<<$ty as SimdElement>::Mask, N> {
                 self.simd_lt(Self::splat(0))
             }
 
@@ -313,43 +304,43 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn reduce_sum(self) -> Self::Scalar {
+            fn reduce_sum(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_add_ordered(self, 0) }
             }
 
             #[inline]
-            fn reduce_product(self) -> Self::Scalar {
+            fn reduce_product(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_mul_ordered(self, 1) }
             }
 
             #[inline]
-            fn reduce_max(self) -> Self::Scalar {
+            fn reduce_max(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_max(self) }
             }
 
             #[inline]
-            fn reduce_min(self) -> Self::Scalar {
+            fn reduce_min(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_min(self) }
             }
 
             #[inline]
-            fn reduce_and(self) -> Self::Scalar {
+            fn reduce_and(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_and(self) }
             }
 
             #[inline]
-            fn reduce_or(self) -> Self::Scalar {
+            fn reduce_or(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_or(self) }
             }
 
             #[inline]
-            fn reduce_xor(self) -> Self::Scalar {
+            fn reduce_xor(self) -> $ty {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_xor(self) }
             }
@@ -367,33 +358,33 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn count_ones(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().count_ones()
+            fn count_ones(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().count_ones()
             }
 
             #[inline]
-            fn count_zeros(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().count_zeros()
+            fn count_zeros(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().count_zeros()
             }
 
             #[inline]
-            fn leading_zeros(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().leading_zeros()
+            fn leading_zeros(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().leading_zeros()
             }
 
             #[inline]
-            fn trailing_zeros(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().trailing_zeros()
+            fn trailing_zeros(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().trailing_zeros()
             }
 
             #[inline]
-            fn leading_ones(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().leading_ones()
+            fn leading_ones(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().leading_ones()
             }
 
             #[inline]
-            fn trailing_ones(self) -> Self::Unsigned {
-                self.cast::<$unsigned>().trailing_ones()
+            fn trailing_ones(self) -> Simd<Self::Unsigned, N> {
+                self.cast::<Self::Unsigned>().trailing_ones()
             }
         }
         )*
