@@ -93,9 +93,9 @@ impl<const N: usize> Simd<u8, N> {
                 _ => {
                     let mut array = [0; N];
                     for (i, k) in idxs.to_array().into_iter().enumerate() {
-                        if (k as usize) < N {
-                            array[i] = self[k as usize];
-                        };
+                        if let Some(val) = self.get_checked(usize::from(k)) {
+                            array[i] = val;
+                        }
                     }
                     array.into()
                 }

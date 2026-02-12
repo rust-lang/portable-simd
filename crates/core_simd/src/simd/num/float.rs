@@ -269,19 +269,19 @@ macro_rules! impl_trait {
                     unsafe { core::intrinsics::simd::simd_as(self) }
                 } else if N < 4 {
                     let x = self.resize::<4>(Default::default()).cast();
-                    x.resize::<N>(x[0])
+                    x.resize::<N>(x.get(0))
                 } else if N < 8 {
                     let x = self.resize::<8>(Default::default()).cast();
-                    x.resize::<N>(x[0])
+                    x.resize::<N>(x.get(0))
                 } else if N < 16 {
                     let x = self.resize::<16>(Default::default()).cast();
-                    x.resize::<N>(x[0])
+                    x.resize::<N>(x.get(0))
                 } else if N < 32 {
                     let x = self.resize::<32>(Default::default()).cast();
-                    x.resize::<N>(x[0])
+                    x.resize::<N>(x.get(0))
                 } else {
                     let x = self.resize::<64>(Default::default()).cast();
-                    x.resize::<N>(x[0])
+                    x.resize::<N>(x.get(0))
                 }
             }
 

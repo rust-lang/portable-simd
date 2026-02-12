@@ -250,7 +250,7 @@ where
     #[must_use = "method returns a new bool and does not mutate the original value"]
     #[track_caller]
     pub fn test(&self, index: usize) -> bool {
-        T::eq(self.0[index], T::TRUE)
+        T::eq(self.0.get(index), T::TRUE)
     }
 
     /// Sets the value of the specified element.
@@ -261,7 +261,9 @@ where
     pub unsafe fn set_unchecked(&mut self, index: usize, value: bool) {
         // Safety: the caller must confirm this invariant
         unsafe {
-            *self.0.as_mut_array().get_unchecked_mut(index) = if value { T::TRUE } else { T::FALSE }
+            self.0 = self
+                .0
+                .set_unchecked(index, if value { T::TRUE } else { T::FALSE });
         }
     }
 
@@ -272,7 +274,7 @@ where
     #[inline]
     #[track_caller]
     pub fn set(&mut self, index: usize, value: bool) {
-        self.0[index] = if value { T::TRUE } else { T::FALSE }
+        self.0 = self.0.set(index, if value { T::TRUE } else { T::FALSE });
     }
 
     /// Returns true if any element is set, or false otherwise.
