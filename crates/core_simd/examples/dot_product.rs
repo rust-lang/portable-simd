@@ -146,6 +146,17 @@ pub fn dot_prod_simd_5(a: &[f32], b: &[f32]) -> f32 {
         .reduce_sum()
 }
 
+// Using the dot() API - clearer and more expressive than manual multiply + reduce_sum.
+pub fn dot_prod_with_api(a: &[f32], b: &[f32]) -> f32 {
+    a.as_chunks::<4>()
+        .0
+        .iter()
+        .map(|&a| f32x4::from_array(a))
+        .zip(b.as_chunks::<4>().0.iter().map(|&b| f32x4::from_array(b)))
+        .map(|(a, b)| a.dot(b))
+        .sum()
+}
+
 fn main() {
     // Empty main to make cargo happy
 }
@@ -169,6 +180,7 @@ mod tests {
         assert_eq!(0.0, dot_prod_simd_3(&a, &b));
         assert_eq!(0.0, dot_prod_simd_4(&a, &b));
         assert_eq!(0.0, dot_prod_simd_5(&a, &b));
+        assert_eq!(0.0, dot_prod_with_api(&a, &b));
 
         // We can handle vectors that are non-multiples of 4
         assert_eq!(1003.0, dot_prod_simd_3(&x, &y));
