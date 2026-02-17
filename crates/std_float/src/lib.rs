@@ -56,6 +56,19 @@ pub trait StdFloat: Sealed + Sized {
         unsafe { intrinsics::simd_fma(self, a, b) }
     }
 
+    /// Elementwise fused multiply-subtract. Computes `(self * a) - b` with only one rounding error,
+    /// yielding a more accurate result than an unfused multiply-subtract.
+    ///
+    /// Using `mul_sub` *may* be more performant than an unfused multiply-subtract if the target
+    /// architecture has a dedicated `fma` CPU instruction.  However, this is not always
+    /// true, and will be heavily dependent on designing algorithms with specific target
+    /// hardware in mind.
+    #[inline]
+    #[must_use = "method returns a new vector and does not mutate the original value"]
+    fn mul_sub(self, a: Self, b: Self) -> Self {
+        unsafe { intrinsics::simd_fma(self, a, intrinsics::simd_neg(b)) }
+    }
+
     /// Produces a vector where every element has the square root value
     /// of the equivalently-indexed element in `self`
     #[inline]
