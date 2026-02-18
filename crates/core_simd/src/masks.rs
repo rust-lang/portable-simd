@@ -405,6 +405,27 @@ where
             Some(min_index.to_usize())
         }
     }
+
+    /// Returns the number of `true` elements in the mask.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::mask32x4;
+    /// assert_eq!(mask32x4::splat(false).count(), 0);
+    /// assert_eq!(mask32x4::splat(true).count(), 4);
+    ///
+    /// let mask = mask32x4::from_array([true, false, true, true]);
+    /// assert_eq!(mask.count(), 3);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn count(self) -> usize {
+        self.to_bitmask().count_ones() as usize
+    }
 }
 
 // vector/array conversion

@@ -133,6 +133,39 @@ macro_rules! test_mask_api {
                 cast_impl::<i64>();
                 cast_impl::<isize>();
             }
+
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+            fn count_returns_number_of_true_elements() {
+                assert_eq!(Mask::<$type, 8>::splat(false).count(), 0);
+                assert_eq!(Mask::<$type, 8>::splat(true).count(), 8);
+
+                let mask = Mask::<$type, 8>::from_array([true, false, false, true, false, false, true, false]);
+                assert_eq!(mask.count(), 3);
+
+                let alternating = Mask::<$type, 8>::from_array([true, false, true, false, true, false, true, false]);
+                assert_eq!(alternating.count(), 4);
+            }
+
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+            fn count_works_across_all_sizes() {
+                assert_eq!(Mask::<$type, 1>::splat(true).count(), 1);
+                assert_eq!(Mask::<$type, 2>::splat(true).count(), 2);
+                assert_eq!(Mask::<$type, 4>::splat(true).count(), 4);
+                assert_eq!(Mask::<$type, 8>::splat(true).count(), 8);
+                assert_eq!(Mask::<$type, 16>::splat(true).count(), 16);
+                assert_eq!(Mask::<$type, 32>::splat(true).count(), 32);
+                assert_eq!(Mask::<$type, 64>::splat(true).count(), 64);
+            }
+
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+            fn count_matches_manual_iteration() {
+                let mask = Mask::<$type, 8>::from_array([false, true, false, true, true, false, true, false]);
+                let manual_count = mask.to_array().iter().filter(|&&x| x).count();
+                assert_eq!(mask.count(), manual_count);
+            }
         }
     }
 }
