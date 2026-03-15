@@ -1058,6 +1058,73 @@ where
     }
 }
 
+macro_rules! impl_simd_array_conversions {
+    ($A:literal, $B:literal) => {
+        impl<T, U> From<Simd<T, { $A * $B }>> for [U; $B]
+        where
+            T: SimdElement,
+            Simd<T, $A>: Into<U>,
+        {
+            fn from(v: Simd<T, { $A * $B }>) -> Self {
+                // Safety: these have identical layout
+                let intermediate: [Simd<T, $A>; $B] = unsafe { core::mem::transmute_copy(&v) };
+                intermediate.map(Into::into)
+            }
+        }
+        impl<T, U> From<[U; $B]> for Simd<T, { $A * $B }>
+        where
+            T: SimdElement,
+            U: Into<Simd<T, $A>>,
+        {
+            fn from(v: [U; $B]) -> Self {
+                let intermediate: [Simd<T, $A>; $B] = v.map(Into::into);
+                // Safety: these have identical layout
+                unsafe { core::mem::transmute_copy(&intermediate) }
+            }
+        }
+    };
+    ($($A:literal, [$($B:literal),+];)+) => {
+        $($(impl_simd_array_conversions!($A, $B);)+)+
+    };
+}
+
+// this covers all `A`, `B` pairs where `A >= 2 && B >= 2 && A * B <= 64`
+impl_simd_array_conversions! {
+    2, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+    3, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21];
+    4, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    5, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    6, [2, 3, 4, 5, 6, 7, 8, 9, 10];
+    7, [2, 3, 4, 5, 6, 7, 8, 9];
+    8, [2, 3, 4, 5, 6, 7, 8];
+    9, [2, 3, 4, 5, 6, 7];
+    10, [2, 3, 4, 5, 6];
+    11, [2, 3, 4, 5];
+    12, [2, 3, 4, 5];
+    13, [2, 3, 4];
+    14, [2, 3, 4];
+    15, [2, 3, 4];
+    16, [2, 3, 4];
+    17, [2, 3];
+    18, [2, 3];
+    19, [2, 3];
+    20, [2, 3];
+    21, [2, 3];
+    22, [2];
+    23, [2];
+    24, [2];
+    25, [2];
+    26, [2];
+    27, [2];
+    28, [2];
+    29, [2];
+    30, [2];
+    31, [2];
+    32, [2];
+}
+
 mod sealed {
     pub trait Sealed {}
 }
