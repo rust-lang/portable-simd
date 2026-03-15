@@ -225,3 +225,78 @@ mask_alias! {
         masksizex64 64
     }
 }
+
+// Generic SIMD type aliases for writing code generic over lane count.
+//
+// Use these when writing functions that work with any lane count N (1-64).
+// Example: fn dot_product<const N: usize>(a: f32xN<N>, b: f32xN<N>) -> f32
+
+/// Generic `Simd<i8, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type i8xN<const N: usize> = crate::simd::Simd<i8, N>;
+
+/// Generic `Simd<i16, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type i16xN<const N: usize> = crate::simd::Simd<i16, N>;
+
+/// Generic `Simd<i32, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type i32xN<const N: usize> = crate::simd::Simd<i32, N>;
+
+/// Generic `Simd<i64, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type i64xN<const N: usize> = crate::simd::Simd<i64, N>;
+
+/// Generic `Simd<isize, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type isizexN<const N: usize> = crate::simd::Simd<isize, N>;
+
+/// Generic `Simd<u8, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type u8xN<const N: usize> = crate::simd::Simd<u8, N>;
+
+/// Generic `Simd<u16, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type u16xN<const N: usize> = crate::simd::Simd<u16, N>;
+
+/// Generic `Simd<u32, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type u32xN<const N: usize> = crate::simd::Simd<u32, N>;
+
+/// Generic `Simd<u64, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type u64xN<const N: usize> = crate::simd::Simd<u64, N>;
+
+/// Generic `Simd<usize, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type usizexN<const N: usize> = crate::simd::Simd<usize, N>;
+
+/// Generic `Simd<f32, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type f32xN<const N: usize> = crate::simd::Simd<f32, N>;
+
+/// Generic `Simd<f64, N>` vector type.
+#[allow(non_camel_case_types)]
+pub type f64xN<const N: usize> = crate::simd::Simd<f64, N>;
+
+// Generic mask type aliases
+
+/// Generic `Mask<i8, N>` mask type for 8-bit lanes.
+#[allow(non_camel_case_types)]
+pub type mask8xN<const N: usize> = crate::simd::Mask<i8, N>;
+
+/// Generic `Mask<i16, N>` mask type for 16-bit lanes.
+#[allow(non_camel_case_types)]
+pub type mask16xN<const N: usize> = crate::simd::Mask<i16, N>;
+
+/// Generic `Mask<i32, N>` mask type for 32-bit lanes.
+#[allow(non_camel_case_types)]
+pub type mask32xN<const N: usize> = crate::simd::Mask<i32, N>;
+
+/// Generic `Mask<i64, N>` mask type for 64-bit lanes.
+#[allow(non_camel_case_types)]
+pub type mask64xN<const N: usize> = crate::simd::Mask<i64, N>;
+
+/// Generic `Mask<isize, N>` mask type for pointer-sized lanes.
+#[allow(non_camel_case_types)]
+pub type masksizexN<const N: usize> = crate::simd::Mask<isize, N>;
