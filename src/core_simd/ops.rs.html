@@ -245,7 +245,7 @@
 <a href=#245 id=245 data-nosnippet>245</a><span class="comment">// We don't need any special precautions here:
 <a href=#246 id=246 data-nosnippet>246</a>// Floats always accept arithmetic ops, but may become NaN.
 <a href=#247 id=247 data-nosnippet>247</a></span><span class="macro">for_base_ops!</span> {
-<a href=#248 id=248 data-nosnippet>248</a>    T = (f32, f64);
+<a href=#248 id=248 data-nosnippet>248</a>    T = (f16, f32, f64);
 <a href=#249 id=249 data-nosnippet>249</a>    <span class="kw">type </span>Lhs = Simd&lt;T, N&gt;;
 <a href=#250 id=250 data-nosnippet>250</a>    <span class="kw">type </span>Rhs = Simd&lt;T, N&gt;;
 <a href=#251 id=251 data-nosnippet>251</a>    <span class="kw">type </span>Output = <span class="self">Self</span>;
