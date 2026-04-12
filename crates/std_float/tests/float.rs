@@ -1,4 +1,5 @@
 #![feature(portable_simd)]
+#![feature(f16)]
 
 macro_rules! unary_test {
     { $scalar:tt, $($func:tt),+ } => {
@@ -91,5 +92,6 @@ macro_rules! impl_tests {
     }
 }
 
+impl_tests! { f16 }
 impl_tests! { f32 }
 impl_tests! { f64 }
