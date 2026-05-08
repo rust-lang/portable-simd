@@ -880,6 +880,13 @@ where
 
 impl<T, const N: usize> Copy for Simd<T, N> where T: SimdElement {}
 
+impl<T, const N: usize> core::ops::Receiver for Simd<T, N>
+where
+    T: SimdElement,
+{
+    type Target = T;
+}
+
 impl<T, const N: usize> Clone for Simd<T, N>
 where
     T: SimdElement,

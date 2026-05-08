@@ -1,5 +1,6 @@
 #![no_std]
 #![feature(
+    arbitrary_self_types,
     convert_float_to_int,
     f16,
     core_intrinsics,

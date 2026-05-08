@@ -5,10 +5,7 @@ use crate::simd::{
 };
 
 /// Operations on SIMD vectors of floats.
-pub trait SimdFloat<T, const N: usize>: Copy + Sealed
-where
-    T: SimdElement,
-{
+pub trait SimdFloat: SimdElement + Copy + Sealed {
     /// Bit representation of this SIMD vector type.
     type Bits: SimdElement;
     /// Performs elementwise conversion of this vector's elements to another SIMD-valid type.
@@ -23,7 +20,7 @@ where
     /// # #[cfg(not(feature = "as_crate"))] use core::simd;
     /// # use simd::prelude::*;
     /// let floats: Simd<f32, 4> = Simd::from_array([1.9, -4.5, f32::INFINITY, f32::NAN]);
-    /// let ints = floats.cast::<i32>();
+    /// let ints = floats.cast::<i32, 4>();
     /// assert_eq!(ints, Simd::from_array([1, -4, i32::MAX, 0]));
     ///
     /// // Formally equivalent, but `Simd::cast` can optimize better.
@@ -35,7 +32,7 @@ where
     /// assert_eq!(floats_again, Simd::from_array([1.0, -4.0, 2147483647.0, 0.0]));
     /// ```
     #[must_use]
-    fn cast<U: SimdCast>(self) -> Simd<U, N>;
+    fn cast<U: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<U, N>;
 
     /// Rounds toward zero and converts to the same-width integer type, assuming that
     /// the value is finite and fits in that type.
@@ -50,68 +47,72 @@ where
     /// If these requirements are infeasible or costly, consider using the safe function [cast],
     /// which saturates on conversion.
     ///
-    /// [cast]: Simd::cast
-    unsafe fn to_int_unchecked<I: SimdCast>(self) -> Simd<I, N>
+    /// [cast]: SimdFloat::cast
+    unsafe fn to_int_unchecked<I: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<I, N>
     where
-        T: core::convert::FloatToInt<I>;
+        Self: core::convert::FloatToInt<I>;
 
     /// Raw transmutation to an unsigned integer vector type with the
     /// same size and number of elements.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn to_bits(self) -> Simd<Self::Bits, N>;
+    fn to_bits<const N: usize>(self: Simd<Self, N>) -> Simd<Self::Bits, N>;
 
     /// Raw transmutation from an unsigned integer vector type with the
     /// same size and number of elements.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn from_bits(bits: Simd<Self::Bits, N>) -> Self;
+    fn from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N>;
 
     /// Produces a vector where every element has the absolute value of the
     /// equivalently-indexed element in `self`.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn abs(self) -> Self;
+    fn abs<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Takes the reciprocal (inverse) of each element, `1/x`.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn recip(self) -> Self;
+    fn recip<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Converts each element from radians to degrees.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn to_degrees(self) -> Self;
+    fn to_degrees<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Converts each element from degrees to radians.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn to_radians(self) -> Self;
+    fn to_radians<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns true for each element if it has a positive sign, including
     /// `+0.0`, `NaN`s with positive sign bit and positive infinity.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_sign_positive(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_sign_positive<const N: usize>(
+        self: Simd<Self, N>,
+    ) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if it has a negative sign, including
     /// `-0.0`, `NaN`s with negative sign bit and negative infinity.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_sign_negative(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_sign_negative<const N: usize>(
+        self: Simd<Self, N>,
+    ) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if its value is `NaN`.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_nan(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_nan<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if its value is positive infinity or negative infinity.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_infinite(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_infinite<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if its value is neither infinite nor `NaN`.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_finite(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_finite<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if its value is subnormal.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_subnormal(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_subnormal<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Returns true for each element if its value is neither zero, infinite,
     /// subnormal, nor `NaN`.
     #[must_use = "method returns a new mask and does not mutate the original value"]
-    fn is_normal(self) -> Mask<<T as SimdElement>::Mask, N>;
+    fn is_normal<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N>;
 
     /// Replaces each element with a number that represents its sign.
     ///
@@ -119,25 +120,25 @@ where
     /// * `-1.0` if the number is negative, `-0.0`, or `NEG_INFINITY`
     /// * `NAN` if the number is `NAN`
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn signum(self) -> Self;
+    fn signum<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns each element with the magnitude of `self` and the sign of `sign`.
     ///
     /// For any element containing a `NAN`, a `NAN` with the sign of `sign` is returned.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn copysign(self, sign: Self) -> Self;
+    fn copysign<const N: usize>(self: Simd<Self, N>, sign: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the minimum of each element.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn simd_min(self, other: Self) -> Self;
+    fn simd_min<const N: usize>(self: Simd<Self, N>, other: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the maximum of each element.
     ///
     /// If one of the values is `NAN`, then the other value is returned.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn simd_max(self, other: Self) -> Self;
+    fn simd_max<const N: usize>(self: Simd<Self, N>, other: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Restrict each element to a certain interval unless it is NaN.
     ///
@@ -145,7 +146,11 @@ where
     /// greater than `max`, and the corresponding element in `min` if the element is less
     /// than `min`.  Otherwise returns the element in `self`.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn simd_clamp(self, min: Self, max: Self) -> Self;
+    fn simd_clamp<const N: usize>(
+        self: Simd<Self, N>,
+        min: Simd<Self, N>,
+        max: Simd<Self, N>,
+    ) -> Simd<Self, N>;
 
     /// Returns the sum of the elements of the vector.
     ///
@@ -159,7 +164,7 @@ where
     /// let v = f32x2::from_array([1., 2.]);
     /// assert_eq!(v.reduce_sum(), 3.);
     /// ```
-    fn reduce_sum(self) -> T;
+    fn reduce_sum<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Reducing multiply.  Returns the product of the elements of the vector.
     ///
@@ -173,7 +178,7 @@ where
     /// let v = f32x2::from_array([3., 4.]);
     /// assert_eq!(v.reduce_product(), 12.);
     /// ```
-    fn reduce_product(self) -> T;
+    fn reduce_product<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the maximum element in the vector.
     ///
@@ -200,7 +205,7 @@ where
     /// let v = f32x2::from_array([f32::NAN, f32::NAN]);
     /// assert!(v.reduce_max().is_nan());
     /// ```
-    fn reduce_max(self) -> T;
+    fn reduce_max<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the minimum element in the vector.
     ///
@@ -227,20 +232,20 @@ where
     /// let v = f32x2::from_array([f32::NAN, f32::NAN]);
     /// assert!(v.reduce_min().is_nan());
     /// ```
-    fn reduce_min(self) -> T;
+    fn reduce_min<const N: usize>(self: Simd<Self, N>) -> Self;
 }
 
 macro_rules! impl_trait {
     { $($ty:ty { bits: $bits_ty:ty, mask: $mask_ty:ty }),* } => {
         $(
-        impl<const N: usize> Sealed for Simd<$ty, N> {}
+        impl Sealed for $ty {}
 
-        impl<const N: usize> SimdFloat<$ty, N> for Simd<$ty, N> {
+        impl SimdFloat for $ty {
             type Bits = $bits_ty;
 
             #[cfg(not(target_arch = "aarch64"))]
             #[inline]
-            fn cast<U: SimdCast>(self) -> Simd<U, N> {
+            fn cast<U: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<U, N> {
                 // Safety: supported types are guaranteed by SimdCast
                 unsafe { core::intrinsics::simd::simd_as(self) }
             }
@@ -249,140 +254,144 @@ macro_rules! impl_trait {
             // tracked in: https://github.com/rust-lang/rust/issues/135982
             #[cfg(target_arch = "aarch64")]
             #[inline]
-            fn cast<U: SimdCast>(self) -> Simd<U, N> {
+            fn cast<U: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<U, N> {
                 const { assert!(N <= 64) };
                 if N <= 2 || N == 4 || N == 8 || N == 16 || N == 32 || N == 64 {
                     // Safety: supported types are guaranteed by SimdCast
                     unsafe { core::intrinsics::simd::simd_as(self) }
                 } else if N < 4 {
-                    let x = self.resize::<4>(Default::default()).cast();
+                    let x = self.resize::<4>(Default::default()).cast::<U, 4>();
                     x.resize::<N>(x[0])
                 } else if N < 8 {
-                    let x = self.resize::<8>(Default::default()).cast();
+                    let x = self.resize::<8>(Default::default()).cast::<U, 8>();
                     x.resize::<N>(x[0])
                 } else if N < 16 {
-                    let x = self.resize::<16>(Default::default()).cast();
+                    let x = self.resize::<16>(Default::default()).cast::<U, 16>();
                     x.resize::<N>(x[0])
                 } else if N < 32 {
-                    let x = self.resize::<32>(Default::default()).cast();
+                    let x = self.resize::<32>(Default::default()).cast::<U, 32>();
                     x.resize::<N>(x[0])
                 } else {
-                    let x = self.resize::<64>(Default::default()).cast();
+                    let x = self.resize::<64>(Default::default()).cast::<U, 64>();
                     x.resize::<N>(x[0])
                 }
             }
 
             #[inline]
             #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
-            unsafe fn to_int_unchecked<I: SimdCast>(self) -> Simd<I, N>
+            unsafe fn to_int_unchecked<I: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<I, N>
             where
-                $ty: core::convert::FloatToInt<I>,
+                Self: core::convert::FloatToInt<I>,
             {
                 // Safety: supported types are guaranteed by SimdCast, the caller is responsible for the extra invariants
                 unsafe { core::intrinsics::simd::simd_cast(self) }
             }
 
             #[inline]
-            fn to_bits(self) -> Simd<Self::Bits, N> {
-                assert_eq!(size_of::<Self>(), size_of::<Simd<Self::Bits, N>>());
+            fn to_bits<const N: usize>(self: Simd<Self, N>) -> Simd<Self::Bits, N> {
+                assert_eq!(size_of::<Simd<Self, N>>(), size_of::<Simd<Self::Bits, N>>());
                 // Safety: transmuting between vector types is safe
                 unsafe { core::mem::transmute_copy(&self) }
             }
 
             #[inline]
-            fn from_bits(bits: Simd<Self::Bits, N>) -> Self {
-                assert_eq!(size_of::<Self>(), size_of::<Simd<Self::Bits, N>>());
+            fn from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N> {
+                assert_eq!(size_of::<Simd<Self, N>>(), size_of::<Simd<Self::Bits, N>>());
                 // Safety: transmuting between vector types is safe
                 unsafe { core::mem::transmute_copy(&bits) }
             }
 
             #[inline]
-            fn abs(self) -> Self {
+            fn abs<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is a float vector
                 unsafe { core::intrinsics::simd::simd_fabs(self) }
             }
 
             #[inline]
-            fn recip(self) -> Self {
-                Self::splat(1.0) / self
+            fn recip<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
+                Simd::splat(1.0) / self
             }
 
             #[inline]
-            fn to_degrees(self) -> Self {
+            fn to_degrees<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // to_degrees uses a special constant for better precision, so extract that constant
-                self * Self::splat(<$ty>::to_degrees(1.))
+                self * Simd::splat(<$ty>::to_degrees(1.))
             }
 
             #[inline]
-            fn to_radians(self) -> Self {
-                self * Self::splat(<$ty>::to_radians(1.))
+            fn to_radians<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
+                self * Simd::splat(<$ty>::to_radians(1.))
             }
 
             #[inline]
-            fn is_sign_positive(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
+            fn is_sign_positive<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
                 !self.is_sign_negative()
             }
 
             #[inline]
-            fn is_sign_negative(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
+            fn is_sign_negative<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
                 let sign_bits = self.to_bits() & Simd::splat((!0 >> 1) + 1);
                 sign_bits.simd_gt(Simd::splat(0))
             }
 
             #[inline]
-            fn is_nan(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
+            fn is_nan<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
                 self.simd_ne(self)
             }
 
             #[inline]
-            fn is_infinite(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
-                self.abs().simd_eq(Self::splat(<$ty>::INFINITY))
+            fn is_infinite<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
+                self.abs().simd_eq(Simd::splat(<$ty>::INFINITY))
             }
 
             #[inline]
-            fn is_finite(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
-                self.abs().simd_lt(Self::splat(<$ty>::INFINITY))
+            fn is_finite<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
+                self.abs().simd_lt(Simd::splat(<$ty>::INFINITY))
             }
 
             #[inline]
-            fn is_subnormal(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
+            fn is_subnormal<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
                 // On some architectures (e.g. armv7 and some ppc) subnormals are flushed to zero,
                 // so this comparison must be done with integers.
-                let not_zero = self.abs().to_bits().simd_ne(Self::splat(0.0).to_bits());
-                not_zero & (self.to_bits() & Self::splat(<$ty>::INFINITY).to_bits()).simd_eq(Simd::splat(0))
+                let not_zero = self.abs().to_bits().simd_ne(Simd::splat(0.0 as $ty).to_bits());
+                not_zero & (self.to_bits() & Simd::splat(<$ty>::INFINITY).to_bits()).simd_eq(Simd::splat(0))
             }
 
             #[inline]
-            fn is_normal(self) -> Mask<<$mask_ty as SimdElement>::Mask, N> {
-                !(self.abs().simd_eq(Self::splat(0.0)) | self.is_nan() | self.is_subnormal() | self.is_infinite())
+            fn is_normal<const N: usize>(self: Simd<Self, N>) -> Mask<<Self as SimdElement>::Mask, N> {
+                !(self.abs().simd_eq(Simd::splat(0.0)) | self.is_nan() | self.is_subnormal() | self.is_infinite())
             }
 
             #[inline]
-            fn signum(self) -> Self {
-                self.is_nan().select(Self::splat(<$ty>::NAN), Self::splat(1.0).copysign(self))
+            fn signum<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
+                self.is_nan().select(Simd::splat(<$ty>::NAN), Simd::splat(1.0).copysign(self))
             }
 
             #[inline]
-            fn copysign(self, sign: Self) -> Self {
-                let sign_bit = sign.to_bits() & Self::splat(-0.).to_bits();
-                let magnitude = self.to_bits() & !Self::splat(-0.).to_bits();
-                Self::from_bits(sign_bit | magnitude)
+            fn copysign<const N: usize>(self: Simd<Self, N>, sign: Simd<Self, N>) -> Simd<Self, N> {
+                let sign_bit = sign.to_bits() & Simd::splat(-0. as $ty).to_bits();
+                let magnitude = self.to_bits() & !Simd::splat(-0. as $ty).to_bits();
+                <Self as SimdFloat>::from_bits(sign_bit | magnitude)
             }
 
             #[inline]
-            fn simd_min(self, other: Self) -> Self {
+            fn simd_min<const N: usize>(self: Simd<Self, N>, other: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` and `other` are float vectors
                 unsafe { core::intrinsics::simd::simd_minimum_number_nsz(self, other) }
             }
 
             #[inline]
-            fn simd_max(self, other: Self) -> Self {
+            fn simd_max<const N: usize>(self: Simd<Self, N>, other: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` and `other` are floating point vectors
                 unsafe { core::intrinsics::simd::simd_maximum_number_nsz(self, other) }
             }
 
             #[inline]
-            fn simd_clamp(self, min: Self, max: Self) -> Self {
+            fn simd_clamp<const N: usize>(
+                self: Simd<Self, N>,
+                min: Simd<Self, N>,
+                max: Simd<Self, N>,
+            ) -> Simd<Self, N> {
                 assert!(
                     min.simd_le(max).all(),
                     "each element in `min` must be less than or equal to the corresponding element in `max`",
@@ -394,7 +403,7 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn reduce_sum(self) -> $ty {
+            fn reduce_sum<const N: usize>(self: Simd<Self, N>) -> Self {
                 // LLVM sum is inaccurate on i586
                 if cfg!(all(target_arch = "x86", not(target_feature = "sse2"))) {
                     self.as_array().iter().sum()
@@ -405,7 +414,7 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn reduce_product(self) -> $ty {
+            fn reduce_product<const N: usize>(self: Simd<Self, N>) -> Self {
                 // LLVM product is inaccurate on i586
                 if cfg!(all(target_arch = "x86", not(target_feature = "sse2"))) {
                     self.as_array().iter().product()
@@ -416,14 +425,14 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn reduce_max(self) -> $ty {
+            fn reduce_max<const N: usize>(self: Simd<Self, N>) -> Self {
                 // LLVM has no intrinsic we can use here
                 // (https://github.com/llvm/llvm-project/issues/185827).
                 self.as_array().iter().copied().fold(<$ty>::NAN, <$ty>::max)
             }
 
             #[inline]
-            fn reduce_min(self) -> $ty {
+            fn reduce_min<const N: usize>(self: Simd<Self, N>) -> Self {
                 self.as_array().iter().copied().fold(<$ty>::NAN, <$ty>::min)
             }
         }

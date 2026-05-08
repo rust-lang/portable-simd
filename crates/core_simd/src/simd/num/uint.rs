@@ -2,10 +2,7 @@ use super::sealed::Sealed;
 use crate::simd::{Simd, SimdCast, SimdElement, cmp::SimdOrd};
 
 /// Operations on SIMD vectors of unsigned integers.
-pub trait SimdUint<T, const N: usize>: Copy + Sealed
-where
-    T: SimdElement,
-{
+pub trait SimdUint: SimdElement + Copy + Sealed {
     /// Signed element type with the same width as `T`.
     type Signed: SimdElement;
     /// Performs elementwise conversion of this vector's elements to another SIMD-valid type.
@@ -13,13 +10,13 @@ where
     /// This follows the semantics of Rust's `as` conversion for casting integers (wrapping to
     /// other integer types, and saturating to float types).
     #[must_use]
-    fn cast<U: SimdCast>(self) -> Simd<U, N>;
+    fn cast<U: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<U, N>;
 
     /// Wrapping negation.
     ///
     /// Like [`u32::wrapping_neg`], all applications of this function will wrap, with the exception
     /// of `-0`.
-    fn wrapping_neg(self) -> Self;
+    fn wrapping_neg<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Lanewise saturating add.
     ///
@@ -37,7 +34,7 @@ where
     /// assert_eq!(unsat, Simd::from_array([1, 0, MAX, MAX - 1]));
     /// assert_eq!(sat, max);
     /// ```
-    fn saturating_add(self, second: Self) -> Self;
+    fn saturating_add<const N: usize>(self: Simd<Self, N>, second: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Lanewise saturating subtract.
     ///
@@ -55,7 +52,7 @@ where
     /// assert_eq!(unsat, Simd::from_array([3, 2, 1, 0]));
     /// assert_eq!(sat, Simd::splat(0));
     /// ```
-    fn saturating_sub(self, second: Self) -> Self;
+    fn saturating_sub<const N: usize>(self: Simd<Self, N>, second: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Lanewise absolute difference.
     /// Every element becomes the absolute difference of `self` and `second`.
@@ -71,178 +68,187 @@ where
     /// let b = Simd::from_array([MAX, 0, 80, 200]);
     /// assert_eq!(a.abs_diff(b), Simd::from_array([MAX, MAX, 20, 180]));
     /// ```
-    fn abs_diff(self, second: Self) -> Self;
+    fn abs_diff<const N: usize>(self: Simd<Self, N>, second: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the sum of the elements of the vector, with wrapping addition.
-    fn reduce_sum(self) -> T;
+    fn reduce_sum<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the product of the elements of the vector, with wrapping multiplication.
-    fn reduce_product(self) -> T;
+    fn reduce_product<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the maximum element in the vector.
-    fn reduce_max(self) -> T;
+    fn reduce_max<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the minimum element in the vector.
-    fn reduce_min(self) -> T;
+    fn reduce_min<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the cumulative bitwise "and" across the elements of the vector.
-    fn reduce_and(self) -> T;
+    fn reduce_and<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the cumulative bitwise "or" across the elements of the vector.
-    fn reduce_or(self) -> T;
+    fn reduce_or<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Returns the cumulative bitwise "xor" across the elements of the vector.
-    fn reduce_xor(self) -> T;
+    fn reduce_xor<const N: usize>(self: Simd<Self, N>) -> Self;
 
     /// Reverses the byte order of each element.
-    fn swap_bytes(self) -> Self;
+    fn swap_bytes<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Reverses the order of bits in each elemnent.
     /// The least significant bit becomes the most significant bit, second least-significant bit becomes second most-significant bit, etc.
-    fn reverse_bits(self) -> Self;
+    fn reverse_bits<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of ones in the binary representation of each element.
-    fn count_ones(self) -> Self;
+    fn count_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of zeros in the binary representation of each element.
-    fn count_zeros(self) -> Self;
+    fn count_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of leading zeros in the binary representation of each element.
-    fn leading_zeros(self) -> Self;
+    fn leading_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of trailing zeros in the binary representation of each element.
-    fn trailing_zeros(self) -> Self;
+    fn trailing_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of leading ones in the binary representation of each element.
-    fn leading_ones(self) -> Self;
+    fn leading_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 
     /// Returns the number of trailing ones in the binary representation of each element.
-    fn trailing_ones(self) -> Self;
+    fn trailing_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N>;
 }
 
 macro_rules! impl_trait {
     { $($ty:ident ($signed:ident)),* } => {
         $(
-        impl<const N: usize> Sealed for Simd<$ty, N> {}
+        impl Sealed for $ty {}
 
-        impl<const N: usize> SimdUint<$ty, N> for Simd<$ty, N> {
+        impl SimdUint for $ty {
             type Signed = $signed;
 
             #[inline]
-            fn cast<U: SimdCast>(self) -> Simd<U, N> {
+            fn cast<U: SimdCast, const N: usize>(self: Simd<Self, N>) -> Simd<U, N> {
                 // Safety: supported types are guaranteed by SimdCast
                 unsafe { core::intrinsics::simd::simd_as(self) }
             }
 
             #[inline]
-            fn wrapping_neg(self) -> Self {
+            fn wrapping_neg<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 use crate::simd::num::SimdInt;
-                (-self.cast::<Self::Signed>()).cast()
+                (-self.cast::<Self::Signed, N>()).cast::<Self, N>()
             }
 
             #[inline]
-            fn saturating_add(self, second: Self) -> Self {
+            fn saturating_add<const N: usize>(
+                self: Simd<Self, N>,
+                second: Simd<Self, N>,
+            ) -> Simd<Self, N> {
                 // Safety: `self` is a vector
                 unsafe { core::intrinsics::simd::simd_saturating_add(self, second) }
             }
 
             #[inline]
-            fn saturating_sub(self, second: Self) -> Self {
+            fn saturating_sub<const N: usize>(
+                self: Simd<Self, N>,
+                second: Simd<Self, N>,
+            ) -> Simd<Self, N> {
                 // Safety: `self` is a vector
                 unsafe { core::intrinsics::simd::simd_saturating_sub(self, second) }
             }
 
             #[inline]
-            fn abs_diff(self, second: Self) -> Self {
+            fn abs_diff<const N: usize>(
+                self: Simd<Self, N>,
+                second: Simd<Self, N>,
+            ) -> Simd<Self, N> {
                 let max = self.simd_max(second);
                 let min = self.simd_min(second);
                 max - min
             }
 
             #[inline]
-            fn reduce_sum(self) -> $ty {
+            fn reduce_sum<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_add_ordered(self, 0) }
             }
 
             #[inline]
-            fn reduce_product(self) -> $ty {
+            fn reduce_product<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_mul_ordered(self, 1) }
             }
 
             #[inline]
-            fn reduce_max(self) -> $ty {
+            fn reduce_max<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_max(self) }
             }
 
             #[inline]
-            fn reduce_min(self) -> $ty {
+            fn reduce_min<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_min(self) }
             }
 
             #[inline]
-            fn reduce_and(self) -> $ty {
+            fn reduce_and<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_and(self) }
             }
 
             #[inline]
-            fn reduce_or(self) -> $ty {
+            fn reduce_or<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_or(self) }
             }
 
             #[inline]
-            fn reduce_xor(self) -> $ty {
+            fn reduce_xor<const N: usize>(self: Simd<Self, N>) -> Self {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_reduce_xor(self) }
             }
 
             #[inline]
-            fn swap_bytes(self) -> Self {
+            fn swap_bytes<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_bswap(self) }
             }
 
             #[inline]
-            fn reverse_bits(self) -> Self {
+            fn reverse_bits<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_bitreverse(self) }
             }
 
             #[inline]
-            fn count_ones(self) -> Self {
+            fn count_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_ctpop(self) }
             }
 
             #[inline]
-            fn count_zeros(self) -> Self {
+            fn count_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 (!self).count_ones()
             }
 
             #[inline]
-            fn leading_zeros(self) -> Self {
+            fn leading_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_ctlz(self) }
             }
 
             #[inline]
-            fn trailing_zeros(self) -> Self {
+            fn trailing_zeros<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 // Safety: `self` is an integer vector
                 unsafe { core::intrinsics::simd::simd_cttz(self) }
             }
 
             #[inline]
-            fn leading_ones(self) -> Self {
+            fn leading_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 (!self).leading_zeros()
             }
 
             #[inline]
-            fn trailing_ones(self) -> Self {
+            fn trailing_ones<const N: usize>(self: Simd<Self, N>) -> Simd<Self, N> {
                 (!self).trailing_zeros()
             }
         }

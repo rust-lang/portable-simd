@@ -39,8 +39,8 @@ pub trait ToBytes: Sealed {
 }
 
 macro_rules! swap_bytes {
-    { f32, $x:expr } => { Simd::from_bits($x.to_bits().swap_bytes()) };
-    { f64, $x:expr } => { Simd::from_bits($x.to_bits().swap_bytes()) };
+    { f32, $x:expr } => { <f32 as SimdFloat>::from_bits($x.to_bits().swap_bytes()) };
+    { f64, $x:expr } => { <f64 as SimdFloat>::from_bits($x.to_bits().swap_bytes()) };
     { $ty:ty, $x:expr } => { $x.swap_bytes() }
 }
 
