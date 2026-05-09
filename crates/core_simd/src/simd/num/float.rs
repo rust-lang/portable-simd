@@ -60,7 +60,7 @@ pub trait SimdFloat: SimdElement + Copy + Sealed {
     /// Raw transmutation from an unsigned integer vector type with the
     /// same size and number of elements.
     #[must_use = "method returns a new vector and does not mutate the original value"]
-    fn from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N>;
+    fn simd_from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N>;
 
     /// Produces a vector where every element has the absolute value of the
     /// equivalently-indexed element in `self`.
@@ -295,7 +295,7 @@ macro_rules! impl_trait {
             }
 
             #[inline]
-            fn from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N> {
+            fn simd_from_bits<const N: usize>(bits: Simd<Self::Bits, N>) -> Simd<Self, N> {
                 assert_eq!(size_of::<Simd<Self, N>>(), size_of::<Simd<Self::Bits, N>>());
                 // Safety: transmuting between vector types is safe
                 unsafe { core::mem::transmute_copy(&bits) }
@@ -371,7 +371,7 @@ macro_rules! impl_trait {
             fn copysign<const N: usize>(self: Simd<Self, N>, sign: Simd<Self, N>) -> Simd<Self, N> {
                 let sign_bit = sign.to_bits() & Simd::splat(-0. as $ty).to_bits();
                 let magnitude = self.to_bits() & !Simd::splat(-0. as $ty).to_bits();
-                <Self as SimdFloat>::from_bits(sign_bit | magnitude)
+                <Self as SimdFloat>::simd_from_bits(sign_bit | magnitude)
             }
 
             #[inline]
