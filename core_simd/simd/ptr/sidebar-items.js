@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["SimdConstPtr","SimdMutPtr"]};
+window.SIDEBAR_ITEMS = {"fn":["with_exposed_provenance","with_exposed_provenance_mut","without_provenance","without_provenance_mut"],"trait":["SimdConstPtr","SimdMutPtr"]};
