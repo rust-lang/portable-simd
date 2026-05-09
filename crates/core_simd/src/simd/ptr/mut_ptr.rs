@@ -4,7 +4,7 @@ use crate::simd::{Mask, Simd, SimdElement, cmp::SimdPartialEq, num::SimdUint};
 /// Operations on SIMD vectors of mutable pointers.
 pub trait SimdMutPtr: SimdElement + Copy + Sealed {
     /// The pointee type referenced by these pointers.
-    type Pointee: core::ptr::Pointee<Metadata = ()>;
+    type Pointee;
 
     /// Returns `true` for each element that is null.
     fn is_null<const N: usize>(self: Simd<Self, N>) -> Mask<isize, N>;
@@ -12,9 +12,7 @@ pub trait SimdMutPtr: SimdElement + Copy + Sealed {
     /// Casts to a pointer of another type.
     ///
     /// Equivalent to calling [`pointer::cast`] on each element.
-    fn cast<U, const N: usize>(self: Simd<Self, N>) -> Simd<*mut U, N>
-    where
-        U: core::ptr::Pointee<Metadata = ()>;
+    fn cast<U, const N: usize>(self: Simd<Self, N>) -> Simd<*mut U, N>;
 
     /// Changes constness without changing the type.
     ///
@@ -58,10 +56,7 @@ pub trait SimdMutPtr: SimdElement + Copy + Sealed {
     fn wrapping_sub<const N: usize>(self: Simd<Self, N>, count: Simd<usize, N>) -> Simd<Self, N>;
 }
 
-impl<T> SimdMutPtr for *mut T
-where
-    T: core::ptr::Pointee<Metadata = ()>,
-{
+impl<T> SimdMutPtr for *mut T {
     type Pointee = T;
 
     #[inline]
@@ -70,10 +65,7 @@ where
     }
 
     #[inline]
-    fn cast<U, const N: usize>(self: Simd<Self, N>) -> Simd<*mut U, N>
-    where
-        U: core::ptr::Pointee<Metadata = ()>,
-    {
+    fn cast<U, const N: usize>(self: Simd<Self, N>) -> Simd<*mut U, N> {
         // SimdElement currently requires zero-sized metadata, so this should never fail.
         // If this ever changes, `simd_cast_ptr` should produce a post-mono error.
         use core::ptr::Pointee;
