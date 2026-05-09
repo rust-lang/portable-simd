@@ -119,6 +119,52 @@ pub trait SimdUint: Copy + Sealed {
 
     /// Returns the number of trailing ones in the binary representation of each element.
     fn trailing_ones(self) -> Self;
+
+    /// Unchecked shift left.
+    ///
+    /// Computes `self << rhs`, assuming that `rhs` is less than the number of bits in `T`.
+    ///
+    /// # Safety
+    ///
+    /// This results in undefined behavior if any element of `rhs` is greater than or equal
+    /// to the number of bits in `T`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{prelude::*, num::SimdUint};
+    /// let a = u32x4::from_array([1, 2, 3, 4]);
+    /// let b = u32x4::from_array([1, 2, 3, 4]);
+    /// let c = unsafe { SimdUint::unchecked_shl(a, b) };
+    /// assert_eq!(c, u32x4::from_array([2, 8, 24, 64]));
+    /// ```
+    unsafe fn unchecked_shl(self, rhs: Self) -> Self;
+
+    /// Unchecked shift right.
+    ///
+    /// Computes `self >> rhs`, assuming that `rhs` is less than the number of bits in `T`.
+    ///
+    /// # Safety
+    ///
+    /// This results in undefined behavior if any element of `rhs` is greater than or equal
+    /// to the number of bits in `T`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{prelude::*, num::SimdUint};
+    /// let a = u32x4::from_array([16, 32, 64, 128]);
+    /// let b = u32x4::from_array([1, 2, 3, 4]);
+    /// let c = unsafe { SimdUint::unchecked_shr(a, b) };
+    /// assert_eq!(c, u32x4::from_array([8, 8, 8, 8]));
+    /// ```
+    unsafe fn unchecked_shr(self, rhs: Self) -> Self;
 }
 
 macro_rules! impl_trait {
@@ -247,6 +293,18 @@ macro_rules! impl_trait {
             #[inline]
             fn trailing_ones(self) -> Self {
                 (!self).trailing_zeros()
+            }
+
+            #[inline]
+            unsafe fn unchecked_shl(self, rhs: Self) -> Self {
+                // Safety: the caller must ensure rhs < T::BITS for all lanes
+                unsafe { core::intrinsics::simd::simd_shl(self, rhs) }
+            }
+
+            #[inline]
+            unsafe fn unchecked_shr(self, rhs: Self) -> Self {
+                // Safety: the caller must ensure rhs < T::BITS for all lanes
+                unsafe { core::intrinsics::simd::simd_shr(self, rhs) }
             }
         }
         )*
