@@ -77,6 +77,8 @@ impl<const N: usize> Simd<u8, N> {
                     };
                     transize(swizzler, self, idxs)
                 }
+                #[cfg(all(target_feature = "avx2", not(target_feature = "avx512vbmi")))]
+                64 => transize(avx2_pshufb512, self, idxs),
                 // Notable absence: avx512bw pshufb shuffle
                 #[cfg(all(target_feature = "avx512vl", target_feature = "avx512vbmi"))]
                 64 => {
@@ -165,6 +167,61 @@ unsafe fn avx2_pshufb(bytes: Simd<u8, 32>, idxs: Simd<u8, 32>) -> Simd<u8, 32> {
         // Repeat, then pick indices < 16, overwriting indices 0-15 from previous compose step
         let compose = idxs.simd_lt(mid).select(lo_shuf, compose);
         compose
+    }
+}
+
+/// The above function but for 64 bytes
+///
+/// # Safety
+/// This requires AVX2 to work
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[target_feature(enable = "avx2")]
+#[allow(unused)]
+#[inline]
+#[allow(clippy::let_and_return)]
+unsafe fn avx2_pshufb512(bytes: Simd<u8, 64>, idxs: Simd<u8, 64>) -> Simd<u8, 64> {
+    use crate::simd::cmp::SimdPartialOrd;
+    #[cfg(target_arch = "x86")]
+    use core::arch::x86;
+    #[cfg(target_arch = "x86_64")]
+    use core::arch::x86_64 as x86;
+    use x86::_mm256_blendv_epi8 as avx2_blend;
+    use x86::_mm256_permute2x128_si256 as avx2_cross_shuffle;
+    use x86::_mm256_shuffle_epi8 as avx2_half_pshufb;
+    let high = Simd::splat(64u8);
+    // SAFETY: Caller promised AVX2
+    unsafe {
+        let half_swizzler = |bytes0: Simd<u8, 32>, bytes1: Simd<u8, 32>, idxs: Simd<u8, 32>| {
+            let mask0 = idxs << 2;
+            let mask1 = idxs << 3;
+
+            let lolo0 = avx2_cross_shuffle::<0x00>(bytes0.into(), bytes0.into());
+            let hihi0 = avx2_cross_shuffle::<0x11>(bytes0.into(), bytes0.into());
+            let lolo0 = avx2_half_pshufb(lolo0, idxs.into());
+            let hihi0 = avx2_half_pshufb(hihi0, idxs.into());
+            let x = avx2_blend(lolo0, hihi0, mask1.into());
+
+            let lolo1 = avx2_cross_shuffle::<0x00>(bytes1.into(), bytes1.into());
+            let hihi1 = avx2_cross_shuffle::<0x11>(bytes1.into(), bytes1.into());
+            let lolo1 = avx2_half_pshufb(lolo1, idxs.into());
+            let hihi1 = avx2_half_pshufb(hihi1, idxs.into());
+            let y = avx2_blend(lolo1, hihi1, mask1.into());
+
+            avx2_blend(x, y, mask0.into())
+        };
+
+        let bytes0 = bytes.extract::<0, 32>();
+        let bytes1 = bytes.extract::<32, 32>();
+        let idxs0 = idxs.extract::<0, 32>();
+        let idxs1 = idxs.extract::<32, 32>();
+
+        let z0 = half_swizzler(bytes0, bytes1, idxs0);
+        let z1 = half_swizzler(bytes0, bytes1, idxs1);
+
+        // SAFETY: Concatenation of two 32-element vectors to one 64-element vector
+        let z = mem::transmute::<[Simd<u8, 32>; 2], Simd<u8, 64>>([z0.into(), z1.into()]);
+
+        idxs.simd_lt(high).select(z, Simd::splat(0u8))
     }
 }
 
