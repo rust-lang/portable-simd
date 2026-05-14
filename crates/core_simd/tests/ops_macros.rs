@@ -202,7 +202,7 @@ macro_rules! impl_common_integer_tests {
 
             fn swap_bytes<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::swap_bytes,
+                    &|x: $vector::<LANES>| x.swap_bytes(),
                     &$scalar::swap_bytes,
                     &|_| true,
                 )
@@ -210,7 +210,7 @@ macro_rules! impl_common_integer_tests {
 
             fn reverse_bits<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::reverse_bits,
+                    &|x: $vector::<LANES>| x.reverse_bits(),
                     &$scalar::reverse_bits,
                     &|_| true,
                 )
@@ -218,7 +218,7 @@ macro_rules! impl_common_integer_tests {
 
             fn count_ones<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::count_ones,
+                    &|x: $vector::<LANES>| x.count_ones(),
                     &|x| x.count_ones() as _,
                     &|_| true,
                 )
@@ -226,7 +226,7 @@ macro_rules! impl_common_integer_tests {
 
             fn count_zeros<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::count_zeros,
+                    &|x: $vector::<LANES>| x.count_zeros(),
                     &|x| x.count_zeros() as _,
                     &|_| true,
                 )
@@ -234,7 +234,7 @@ macro_rules! impl_common_integer_tests {
 
             fn leading_zeros<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::leading_zeros,
+                    &|x: $vector::<LANES>| x.leading_zeros(),
                     &|x| x.leading_zeros() as _,
                     &|_| true,
                 )
@@ -242,7 +242,7 @@ macro_rules! impl_common_integer_tests {
 
             fn trailing_zeros<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::trailing_zeros,
+                    &|x: $vector::<LANES>| x.trailing_zeros(),
                     &|x| x.trailing_zeros() as _,
                     &|_| true,
                 )
@@ -250,7 +250,7 @@ macro_rules! impl_common_integer_tests {
 
             fn leading_ones<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::leading_ones,
+                    &|x: $vector::<LANES>| x.leading_ones(),
                     &|x| x.leading_ones() as _,
                     &|_| true,
                 )
@@ -258,7 +258,7 @@ macro_rules! impl_common_integer_tests {
 
             fn trailing_ones<const LANES: usize>() {
                 test_helpers::test_unary_elementwise(
-                    &$vector::<LANES>::trailing_ones,
+                    &|x: $vector::<LANES>| x.trailing_ones(),
                     &|x| x.trailing_ones() as _,
                     &|_| true,
                 )
@@ -289,7 +289,7 @@ macro_rules! impl_signed_tests {
 
                 fn is_positive<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_positive,
+                        &|x: Vector<LANES>| x.is_positive(),
                         &Scalar::is_positive,
                         &|_| true,
                     );
@@ -297,7 +297,7 @@ macro_rules! impl_signed_tests {
 
                 fn is_negative<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_negative,
+                        &|x: Vector<LANES>| x.is_negative(),
                         &Scalar::is_negative,
                         &|_| true,
                     );
@@ -305,7 +305,7 @@ macro_rules! impl_signed_tests {
 
                 fn signum<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
-                        &Vector::<LANES>::signum,
+                        &|x: Vector<LANES>| x.signum(),
                         &Scalar::signum,
                         &|_| true,
                     )
@@ -325,7 +325,7 @@ macro_rules! impl_signed_tests {
 
                 fn abs_diff<const LANES: usize>() {
                     test_helpers::test_binary_elementwise(
-                        &Vector::<LANES>::abs_diff,
+                        &|x: Vector<LANES>, y: Vector<LANES>| x.abs_diff(y),
                         &Scalar::abs_diff,
                         &|_, _| true,
                     )
@@ -438,7 +438,7 @@ macro_rules! impl_unsigned_tests {
             test_helpers::test_lanes! {
                 fn wrapping_neg<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
-                        &Vector::<LANES>::wrapping_neg,
+                        &|x: Vector<LANES>| x.wrapping_neg(),
                         &Scalar::wrapping_neg,
                         &|_| true,
                     );
@@ -446,7 +446,7 @@ macro_rules! impl_unsigned_tests {
 
                 fn abs_diff<const LANES: usize>() {
                     test_helpers::test_binary_elementwise(
-                        &Vector::<LANES>::abs_diff,
+                        &|x: Vector<LANES>, y: Vector<LANES>| x.abs_diff(y),
                         &Scalar::abs_diff,
                         &|_, _| true,
                     )
@@ -488,7 +488,7 @@ macro_rules! impl_float_tests {
             test_helpers::test_lanes! {
                 fn is_sign_positive<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_sign_positive,
+                        &|x: Vector<LANES>| x.is_sign_positive(),
                         &Scalar::is_sign_positive,
                         &|_| true,
                     );
@@ -496,7 +496,7 @@ macro_rules! impl_float_tests {
 
                 fn is_sign_negative<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_sign_negative,
+                        &|x: Vector<LANES>| x.is_sign_negative(),
                         &Scalar::is_sign_negative,
                         &|_| true,
                     );
@@ -504,7 +504,7 @@ macro_rules! impl_float_tests {
 
                 fn is_finite<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_finite,
+                        &|x: Vector<LANES>| x.is_finite(),
                         &Scalar::is_finite,
                         &|_| true,
                     );
@@ -512,7 +512,7 @@ macro_rules! impl_float_tests {
 
                 fn is_infinite<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_infinite,
+                        &|x: Vector<LANES>| x.is_infinite(),
                         &Scalar::is_infinite,
                         &|_| true,
                     );
@@ -520,7 +520,7 @@ macro_rules! impl_float_tests {
 
                 fn is_nan<const LANES: usize>() {
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_nan,
+                        &|x: Vector<LANES>| x.is_nan(),
                         &Scalar::is_nan,
                         &|_| true,
                     );
@@ -531,7 +531,7 @@ macro_rules! impl_float_tests {
                     // https://github.com/rust-lang/portable-simd/issues/439
                     #[cfg(not(target_arch = "arm"))]
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_normal,
+                        &|x: Vector<LANES>| x.is_normal(),
                         &Scalar::is_normal,
                         &|_| true,
                     );
@@ -542,7 +542,7 @@ macro_rules! impl_float_tests {
                     // https://github.com/rust-lang/portable-simd/issues/439
                     #[cfg(not(target_arch = "arm"))]
                     test_helpers::test_unary_mask_elementwise(
-                        &Vector::<LANES>::is_subnormal,
+                        &|x: Vector<LANES>| x.is_subnormal(),
                         &Scalar::is_subnormal,
                         &|_| true,
                     );
@@ -550,7 +550,7 @@ macro_rules! impl_float_tests {
 
                 fn abs<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
-                        &Vector::<LANES>::abs,
+                        &|x: Vector<LANES>| x.abs(),
                         &Scalar::abs,
                         &|_| true,
                     )
@@ -558,7 +558,7 @@ macro_rules! impl_float_tests {
 
                 fn recip<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
-                        &Vector::<LANES>::recip,
+                        &|x: Vector<LANES>| x.recip(),
                         &Scalar::recip,
                         &|_| true,
                     )
@@ -566,7 +566,7 @@ macro_rules! impl_float_tests {
 
                 fn to_degrees<const LANES: usize>() {
                     test_helpers::test_unary_elementwise_flush_subnormals(
-                        &Vector::<LANES>::to_degrees,
+                        &|x: Vector<LANES>| x.to_degrees(),
                         &Scalar::to_degrees,
                         &|_| true,
                     )
@@ -574,7 +574,7 @@ macro_rules! impl_float_tests {
 
                 fn to_radians<const LANES: usize>() {
                     test_helpers::test_unary_elementwise_flush_subnormals(
-                        &Vector::<LANES>::to_radians,
+                        &|x: Vector<LANES>| x.to_radians(),
                         &Scalar::to_radians,
                         &|_| true,
                     )
@@ -582,7 +582,7 @@ macro_rules! impl_float_tests {
 
                 fn signum<const LANES: usize>() {
                     test_helpers::test_unary_elementwise(
-                        &Vector::<LANES>::signum,
+                        &|x: Vector<LANES>| x.signum(),
                         &Scalar::signum,
                         &|_| true,
                     )
@@ -590,7 +590,7 @@ macro_rules! impl_float_tests {
 
                 fn copysign<const LANES: usize>() {
                     test_helpers::test_binary_elementwise(
-                        &Vector::<LANES>::copysign,
+                        &|x: Vector<LANES>, y: Vector<LANES>| x.copysign(y),
                         &Scalar::copysign,
                         &|_, _| true,
                     )
@@ -599,7 +599,7 @@ macro_rules! impl_float_tests {
                 fn simd_min<const LANES: usize>() {
                     // Regular conditions (both values aren't zero)
                     test_helpers::test_binary_elementwise(
-                        &Vector::<LANES>::simd_min,
+                        &|x: Vector<LANES>, y: Vector<LANES>| x.simd_min(y),
                         &Scalar::min,
                         // Reject the case where both values are zero with different signs
                         &|a, b| {
@@ -622,7 +622,7 @@ macro_rules! impl_float_tests {
                 fn simd_max<const LANES: usize>() {
                     // Regular conditions (both values aren't zero)
                     test_helpers::test_binary_elementwise(
-                        &Vector::<LANES>::simd_max,
+                        &|x: Vector<LANES>, y: Vector<LANES>| x.simd_max(y),
                         &Scalar::max,
                         // Reject the case where both values are zero with different signs
                         &|a, b| {

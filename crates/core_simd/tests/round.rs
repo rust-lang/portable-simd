@@ -72,7 +72,7 @@ macro_rules! float_rounding_test {
                     runner.run(
                         &test_helpers::array::UniformArrayStrategy::new(-MAX_REPRESENTABLE_VALUE..MAX_REPRESENTABLE_VALUE),
                         |x| {
-                            let result_1 = unsafe { Vector::from_array(x).to_int_unchecked::<IntScalar>().to_array() };
+                            let result_1 = unsafe { Vector::from_array(x).to_int_unchecked::<IntScalar, LANES>().to_array() };
                             let result_2 = {
                                 let mut result: [IntScalar; LANES] = [0; LANES];
                                 for (i, o) in x.iter().zip(result.iter_mut()) {

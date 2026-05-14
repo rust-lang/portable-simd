@@ -291,6 +291,80 @@ where
         unsafe { core::intrinsics::simd::simd_reduce_all(self.0) }
     }
 
+    /// Test if each element is equal to the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_eq(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_eq(self.0, other.0)) }
+    }
+
+    /// Test if each element is not equal to the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_ne(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_ne(self.0, other.0)) }
+    }
+
+    /// Test if each element is less than the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_lt(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_lt(self.0, other.0)) }
+    }
+
+    /// Test if each element is less than or equal to the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_le(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_le(self.0, other.0)) }
+    }
+
+    /// Test if each element is greater than the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_gt(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_gt(self.0, other.0)) }
+    }
+
+    /// Test if each element is greater than or equal to the corresponding element in `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_ge(self, other: Self) -> Self {
+        // Safety: `self` is a mask vector, and the result of comparison is always a valid mask.
+        unsafe { Self::from_simd_unchecked(core::intrinsics::simd::simd_ge(self.0, other.0)) }
+    }
+
+    /// Returns the element-wise maximum with `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_max(self, other: Self) -> Self {
+        self.simd_gt(other).select(other, self)
+    }
+
+    /// Returns the element-wise minimum with `other`.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    pub fn simd_min(self, other: Self) -> Self {
+        self.simd_lt(other).select(other, self)
+    }
+
+    /// Restrict each element to a certain interval.
+    #[inline]
+    #[must_use = "method returns a new mask and does not mutate the original value"]
+    #[track_caller]
+    pub fn simd_clamp(self, min: Self, max: Self) -> Self {
+        assert!(
+            min.simd_le(max).all(),
+            "each element in `min` must be less than or equal to the corresponding element in `max`",
+        );
+        self.simd_max(min).simd_min(max)
+    }
+
     /// Creates a bitmask from a mask.
     ///
     /// Each bit is set if the corresponding element in the mask is `true`.
@@ -667,3 +741,10 @@ impl_from! { i16 => i32, i64, isize, i8 }
 impl_from! { i32 => i64, isize, i8, i16 }
 impl_from! { i64 => isize, i8, i16, i32 }
 impl_from! { isize => i8, i16, i32, i64 }
+
+impl<T, const N: usize> core::ops::Receiver for Mask<T, N>
+where
+    T: MaskElement,
+{
+    type Target = T;
+}

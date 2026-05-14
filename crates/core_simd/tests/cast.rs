@@ -11,7 +11,7 @@ macro_rules! cast_types {
                     test_helpers::test_lanes! {
                         fn cast_as<const N: usize>() {
                             test_helpers::test_unary_elementwise(
-                                &Vector::<N>::cast::<$target>,
+                                &|x: Vector<N>| -> Simd<$target, N> { x.cast() },
                                 &|x| x as $target,
                                 &|_| true,
                             )
