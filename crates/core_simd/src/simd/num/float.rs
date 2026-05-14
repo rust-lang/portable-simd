@@ -343,7 +343,7 @@ macro_rules! impl_trait {
             fn copysign<const N: usize>(self: Simd<Self, N>, sign: Simd<Self, N>) -> Simd<Self, N> {
                 let sign_bit = sign.to_bits() & Simd::splat(-0. as $ty).to_bits();
                 let magnitude = self.to_bits() & !Simd::splat(-0. as $ty).to_bits();
-                <Self as SimdFloat>::simd_from_bits(sign_bit | magnitude)
+                Self::simd_from_bits(sign_bit | magnitude)
             }
 
             #[inline]
