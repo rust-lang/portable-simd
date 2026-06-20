@@ -4,45 +4,46 @@
 <a href=#4 id=4 data-nosnippet>4</a>    f16,
 <a href=#5 id=5 data-nosnippet>5</a>    core_intrinsics,
 <a href=#6 id=6 data-nosnippet>6</a>    decl_macro,
-<a href=#7 id=7 data-nosnippet>7</a>    repr_simd,
-<a href=#8 id=8 data-nosnippet>8</a>    staged_api,
-<a href=#9 id=9 data-nosnippet>9</a>    prelude_import,
-<a href=#10 id=10 data-nosnippet>10</a>    ptr_metadata,
-<a href=#11 id=11 data-nosnippet>11</a>    rustc_attrs
-<a href=#12 id=12 data-nosnippet>12</a>)]
-<a href=#13 id=13 data-nosnippet>13</a>#![cfg_attr(doc, feature(intra_doc_pointers))]
-<a href=#14 id=14 data-nosnippet>14</a>#![cfg_attr(
-<a href=#15 id=15 data-nosnippet>15</a>    all(
-<a href=#16 id=16 data-nosnippet>16</a>        any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"arm64ec"</span>, target_arch = <span class="string">"arm"</span>,),
-<a href=#17 id=17 data-nosnippet>17</a>        any(
-<a href=#18 id=18 data-nosnippet>18</a>            all(target_feature = <span class="string">"v6"</span>, not(target_feature = <span class="string">"mclass"</span>)),
-<a href=#19 id=19 data-nosnippet>19</a>            all(target_feature = <span class="string">"mclass"</span>, target_feature = <span class="string">"dsp"</span>),
-<a href=#20 id=20 data-nosnippet>20</a>        )
-<a href=#21 id=21 data-nosnippet>21</a>    ),
-<a href=#22 id=22 data-nosnippet>22</a>    feature(stdarch_arm_dsp)
-<a href=#23 id=23 data-nosnippet>23</a>)]
-<a href=#24 id=24 data-nosnippet>24</a>#![cfg_attr(
-<a href=#25 id=25 data-nosnippet>25</a>    all(target_arch = <span class="string">"arm"</span>, target_feature = <span class="string">"v7"</span>),
-<a href=#26 id=26 data-nosnippet>26</a>    feature(stdarch_arm_neon_intrinsics)
-<a href=#27 id=27 data-nosnippet>27</a>)]
-<a href=#28 id=28 data-nosnippet>28</a>#![cfg_attr(target_arch = <span class="string">"loongarch64"</span>, feature(stdarch_loongarch))]
-<a href=#29 id=29 data-nosnippet>29</a>#![cfg_attr(
-<a href=#30 id=30 data-nosnippet>30</a>    any(target_arch = <span class="string">"powerpc"</span>, target_arch = <span class="string">"powerpc64"</span>),
-<a href=#31 id=31 data-nosnippet>31</a>    feature(stdarch_powerpc)
-<a href=#32 id=32 data-nosnippet>32</a>)]
-<a href=#33 id=33 data-nosnippet>33</a>#![cfg_attr(target_arch = <span class="string">"hexagon"</span>, feature(stdarch_hexagon))]
-<a href=#34 id=34 data-nosnippet>34</a>#![warn(missing_docs, clippy::missing_inline_in_public_items)] </span><span class="comment">// basically all items, really
-<a href=#35 id=35 data-nosnippet>35</a></span><span class="attr">#![deny(
-<a href=#36 id=36 data-nosnippet>36</a>    unsafe_op_in_unsafe_fn,
-<a href=#37 id=37 data-nosnippet>37</a>    unreachable_pub,
-<a href=#38 id=38 data-nosnippet>38</a>    clippy::undocumented_unsafe_blocks
-<a href=#39 id=39 data-nosnippet>39</a>)]
-<a href=#40 id=40 data-nosnippet>40</a>#![doc(test(attr(deny(warnings))))]
-<a href=#41 id=41 data-nosnippet>41</a>#![allow(internal_features, clippy::repr_packed_without_abi)]
-<a href=#42 id=42 data-nosnippet>42</a>#![unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
-<a href=#43 id=43 data-nosnippet>43</a></span><span class="doccomment">//! Portable SIMD module.
-<a href=#44 id=44 data-nosnippet>44</a>
-<a href=#45 id=45 data-nosnippet>45</a></span><span class="attr">#[path = <span class="string">"mod.rs"</span>]
-<a href=#46 id=46 data-nosnippet>46</a></span><span class="kw">mod </span>core_simd;
-<a href=#47 id=47 data-nosnippet>47</a><span class="kw">pub use </span><span class="self">self</span>::core_simd::simd;
+<a href=#7 id=7 data-nosnippet>7</a>    impl_restriction,
+<a href=#8 id=8 data-nosnippet>8</a>    repr_simd,
+<a href=#9 id=9 data-nosnippet>9</a>    staged_api,
+<a href=#10 id=10 data-nosnippet>10</a>    prelude_import,
+<a href=#11 id=11 data-nosnippet>11</a>    ptr_metadata,
+<a href=#12 id=12 data-nosnippet>12</a>    rustc_attrs
+<a href=#13 id=13 data-nosnippet>13</a>)]
+<a href=#14 id=14 data-nosnippet>14</a>#![cfg_attr(doc, feature(intra_doc_pointers))]
+<a href=#15 id=15 data-nosnippet>15</a>#![cfg_attr(
+<a href=#16 id=16 data-nosnippet>16</a>    all(
+<a href=#17 id=17 data-nosnippet>17</a>        any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"arm64ec"</span>, target_arch = <span class="string">"arm"</span>,),
+<a href=#18 id=18 data-nosnippet>18</a>        any(
+<a href=#19 id=19 data-nosnippet>19</a>            all(target_feature = <span class="string">"v6"</span>, not(target_feature = <span class="string">"mclass"</span>)),
+<a href=#20 id=20 data-nosnippet>20</a>            all(target_feature = <span class="string">"mclass"</span>, target_feature = <span class="string">"dsp"</span>),
+<a href=#21 id=21 data-nosnippet>21</a>        )
+<a href=#22 id=22 data-nosnippet>22</a>    ),
+<a href=#23 id=23 data-nosnippet>23</a>    feature(stdarch_arm_dsp)
+<a href=#24 id=24 data-nosnippet>24</a>)]
+<a href=#25 id=25 data-nosnippet>25</a>#![cfg_attr(
+<a href=#26 id=26 data-nosnippet>26</a>    all(target_arch = <span class="string">"arm"</span>, target_feature = <span class="string">"v7"</span>),
+<a href=#27 id=27 data-nosnippet>27</a>    feature(stdarch_arm_neon_intrinsics)
+<a href=#28 id=28 data-nosnippet>28</a>)]
+<a href=#29 id=29 data-nosnippet>29</a>#![cfg_attr(target_arch = <span class="string">"loongarch64"</span>, feature(stdarch_loongarch))]
+<a href=#30 id=30 data-nosnippet>30</a>#![cfg_attr(
+<a href=#31 id=31 data-nosnippet>31</a>    any(target_arch = <span class="string">"powerpc"</span>, target_arch = <span class="string">"powerpc64"</span>),
+<a href=#32 id=32 data-nosnippet>32</a>    feature(stdarch_powerpc)
+<a href=#33 id=33 data-nosnippet>33</a>)]
+<a href=#34 id=34 data-nosnippet>34</a>#![cfg_attr(target_arch = <span class="string">"hexagon"</span>, feature(stdarch_hexagon))]
+<a href=#35 id=35 data-nosnippet>35</a>#![warn(missing_docs, clippy::missing_inline_in_public_items)] </span><span class="comment">// basically all items, really
+<a href=#36 id=36 data-nosnippet>36</a></span><span class="attr">#![deny(
+<a href=#37 id=37 data-nosnippet>37</a>    unsafe_op_in_unsafe_fn,
+<a href=#38 id=38 data-nosnippet>38</a>    unreachable_pub,
+<a href=#39 id=39 data-nosnippet>39</a>    clippy::undocumented_unsafe_blocks
+<a href=#40 id=40 data-nosnippet>40</a>)]
+<a href=#41 id=41 data-nosnippet>41</a>#![doc(test(attr(deny(warnings))))]
+<a href=#42 id=42 data-nosnippet>42</a>#![allow(internal_features, clippy::repr_packed_without_abi)]
+<a href=#43 id=43 data-nosnippet>43</a>#![unstable(feature = <span class="string">"portable_simd"</span>, issue = <span class="string">"86656"</span>)]
+<a href=#44 id=44 data-nosnippet>44</a></span><span class="doccomment">//! Portable SIMD module.
+<a href=#45 id=45 data-nosnippet>45</a>
+<a href=#46 id=46 data-nosnippet>46</a></span><span class="attr">#[path = <span class="string">"mod.rs"</span>]
+<a href=#47 id=47 data-nosnippet>47</a></span><span class="kw">mod </span>core_simd;
+<a href=#48 id=48 data-nosnippet>48</a><span class="kw">pub use </span><span class="self">self</span>::core_simd::simd;
 </code></pre></div></section></main></body></html>
