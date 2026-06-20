@@ -880,6 +880,13 @@ where
 
 impl<T, const N: usize> Copy for Simd<T, N> where T: SimdElement {}
 
+impl<T, const N: usize> core::ops::Receiver for Simd<T, N>
+where
+    T: SimdElement,
+{
+    type Target = T;
+}
+
 impl<T, const N: usize> Clone for Simd<T, N>
 where
     T: SimdElement,
@@ -1172,10 +1179,7 @@ impl<T> Sealed for *const T {}
 // Safety: (thin) const pointers are valid SIMD element types, and are supported by this API
 //
 // Fat pointers may be supported in the future.
-unsafe impl<T> SimdElement for *const T
-where
-    T: core::ptr::Pointee<Metadata = ()>,
-{
+unsafe impl<T> SimdElement for *const T {
     type Mask = isize;
 }
 
@@ -1184,10 +1188,7 @@ impl<T> Sealed for *mut T {}
 // Safety: (thin) mut pointers are valid SIMD element types, and are supported by this API
 //
 // Fat pointers may be supported in the future.
-unsafe impl<T> SimdElement for *mut T
-where
-    T: core::ptr::Pointee<Metadata = ()>,
-{
+unsafe impl<T> SimdElement for *mut T {
     type Mask = isize;
 }
 

@@ -5,6 +5,9 @@ mod mut_ptr;
 
 mod sealed {
     pub trait Sealed {}
+
+    impl<T> Sealed for *const T {}
+    impl<T> Sealed for *mut T {}
 }
 
 pub use const_ptr::*;
