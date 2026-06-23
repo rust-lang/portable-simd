@@ -8,7 +8,7 @@ fn a(i: usize, j: usize) -> f64 {
 
 fn mult_av(v: &[f64], out: &mut [f64]) {
     assert!(v.len() == out.len());
-    assert!(v.len() % 2 == 0);
+    assert!(v.len().is_multiple_of(2));
 
     for (i, out) in out.iter_mut().enumerate() {
         let mut sum = f64x2::splat(0.0);
@@ -26,7 +26,7 @@ fn mult_av(v: &[f64], out: &mut [f64]) {
 
 fn mult_atv(v: &[f64], out: &mut [f64]) {
     assert!(v.len() == out.len());
-    assert!(v.len() % 2 == 0);
+    assert!(v.len().is_multiple_of(2));
 
     for (i, out) in out.iter_mut().enumerate() {
         let mut sum = f64x2::splat(0.0);
@@ -48,7 +48,7 @@ fn mult_atav(v: &[f64], out: &mut [f64], tmp: &mut [f64]) {
 }
 
 pub fn spectral_norm(n: usize) -> f64 {
-    assert!(n % 2 == 0, "only even lengths are accepted");
+    assert!(n.is_multiple_of(2), "only even lengths are accepted");
 
     let mut u = vec![1.0; n];
     let mut v = u.clone();
