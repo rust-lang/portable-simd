@@ -27,15 +27,37 @@ SIMD has a few special vocabulary terms you should know:
 
 * **Lane:** A single element position within a vector is called a lane. If you have `N` lanes available then they're numbered from `0` to `N-1` when referring to them, again like an array. The biggest difference between an array element and a vector lane is that in general it is *relatively costly* to access an individual lane value. On most architectures, the vector has to be pushed out of the SIMD register onto the stack, then an individual lane is accessed while it's on the stack (and possibly the stack value is read back into a register). For this reason, when working with SIMD you should avoid reading or writing the value of an individual lane during hot loops.
 
+* **Element:** The value held in a single lane — for instance the `3.14` sitting in lane `0`. "Element" names the *value*, while "lane" names the *position* that holds it. The two are often used loosely as synonyms, and you may also run into "field" used for the same idea; this guide keeps them apart, as explained in [Words That Are Easy to Mix Up](#words-that-are-easy-to-mix-up) below.
+
+* **Splat:** Building a vector by copying one scalar into every lane. `f32x4::splat(2.0)` gives you `[2.0, 2.0, 2.0, 2.0]`. It's one of the most common ways to get a vector to work with — for instance, adding the same constant to every lane of a vector starts by splatting that constant. Other libraries and architectures often call this a "broadcast".
+
 * **Bit Widths:** When talking about SIMD, the bit widths used are the bit size of the vectors involved, *not* the individual elements. So "128-bit SIMD" has 128-bit vectors, and that might be `f32x4`, `i32x4`, `i16x8`, or other variations. While 128-bit SIMD is the most common, there's also 64-bit, 256-bit, and even 512-bit on the newest CPUs.
 
 * **Vector Register:** The extra-wide registers that are used for SIMD operations are commonly called vector registers, though you may also see "SIMD registers", vendor names for specific features, or even "floating-point register" as it is common for the same registers to be used with both scalar and vectorized floating-point operations.
 
+* **Mask:** A vector whose lanes are boolean-like — each lane is "all bits set" (true) or "all bits clear" (false) — used to hold a per-lane yes/no answer. Lane-wise comparisons such as `a.simd_lt(b)` produce a mask, and you pass a mask to operations like `select` to choose between two vectors lane by lane. In `std::simd` masks have their own `Mask<T, N>` types, because the layout a CPU prefers for them varies by architecture; don't assume a mask is laid out like an ordinary integer vector.
+
 * **Vertical:** When an operation is "vertical", each lane processes individually without regard to the other lanes in the same vector. For example, a "vertical add" between two vectors would add lane 0 in `a` with lane 0 in `b`, with the total in lane 0 of `out`, and then the same thing for lanes 1, 2, etc. Most SIMD operations are vertical operations, so if your problem is a vertical problem then you can probably solve it with SIMD.
+
+* **Horizontal:** The opposite of vertical: a horizontal operation combines or moves data *across* the lanes of a single vector instead of treating each lane on its own. Summing all the lanes of one vector down to a single scalar is a horizontal add (the **Reducing** entry below is the most common horizontal pattern). Horizontal work tends to be slower than vertical work, so good SIMD code stays vertical as long as it can and only goes horizontal at the end.
 
 * **Reducing/Reduce:** When an operation is "reducing" (functions named `reduce_*`), the lanes within a single vector are merged using some operation such as addition, returning the merged value as a scalar. For instance, a reducing add would return the sum of all the lanes' values.
 
 * **Target Feature:** Rust calls a CPU architecture extension a `target_feature`. Proper SIMD requires various CPU extensions to be enabled (details below). Don't confuse this with `feature`, which is a Cargo crate concept.
+
+* **Intrinsic:** A special function the compiler recognizes and lowers directly into the operation it represents, instead of compiling it as an ordinary call. Intrinsics are still code you call, but they're handled specially, and they're how you reach things the language itself has no syntax for. You'll run into two kinds: *architecture (vendor) intrinsics*, each exposing a single CPU instruction under that vendor's naming (x86's `_mm_add_ps`, Arm's `vaddq_f32`, found in [`core::arch`] and usually `unsafe` because they require the right target feature), and *compiler intrinsics* such as LLVM's `llvm.*`, the backend's own lower-level building blocks that aren't tied to one instruction and get lowered per target. Portable SIMD is built on the latter, which is what lets one piece of code compile everywhere.
+
+## Words That Are Easy to Mix Up
+
+A handful of SIMD words get used interchangeably in casual conversation but mean subtly different things. Pinning them down makes the rest of these docs — and vendor manuals — much easier to read.
+
+**Lane vs. field vs. element.** A *lane* is a position in the vector, numbered `0` to `N-1`, like an index into an array. An *element* is the value that currently occupies a lane. So "lane 2" is a slot, and "the element in lane 2" is its contents. *Field* is a third word you'll occasionally see — usually in older or vendor-specific writing — for the same idea; it carries no separate meaning here, and this guide sticks to *lane* for the position and *element* for the value.
+
+**Scalar vs. vector.** A *scalar* is a single value, the ordinary `f32` or `i32` you're already used to. A *vector* is a group of those values that the CPU operates on together — in `std::simd` a fixed-size group, so an `f32x4` is four `f32` scalars in one register. (Not every architecture fixes the size: RISC-V V and Arm SVE have *variable*-size vectors, and the compiler can lower portable-simd's fixed-size types to those variable-size instructions when that's better — portable-simd just doesn't offer variable-size types of its own yet.) The whole point of SIMD is to replace many scalar operations with one vector operation, so "scalar code" is the non-SIMD baseline you're comparing against.
+
+**Instruction vs. operation.** An *operation* is the abstract thing you want done — "add these two vectors lane-wise". An *instruction* is a concrete, encoded directive that a particular CPU understands and that carries the operation out, such as x86's `paddd` or Arm's `add v0.4s, v1.4s, v2.4s`. A single operation can map to different instructions on different architectures, or to several instructions on one — which is precisely the gap a portable API exists to paper over.
+
+**Intrinsic vs. instruction.** An *intrinsic* (see the term above) is the source-level handle for an instruction, not the instruction itself. The mapping is *usually* one-to-one but isn't guaranteed: the optimizer may fold an intrinsic into surrounding code, drop it when its result is unused, or select a slightly different encoding. The portable `Simd` types sit one level above intrinsics — you write the operation once and the compiler picks the intrinsics and instructions for your target.
 
 ## Target Features
 
@@ -84,6 +106,7 @@ However, this is not the same as alignment. Computer architectures generally pre
 
 When working with slices, data correctly aligned for SIMD can be acquired using the [`as_simd`] and [`as_simd_mut`] methods of the slice primitive.
 
+[`core::arch`]: https://doc.rust-lang.org/core/arch/index.html
 [`mem::transmute`]: https://doc.rust-lang.org/core/mem/fn.transmute.html
 [`align_of`]: https://doc.rust-lang.org/core/mem/fn.align_of.html
 [`as_simd`]: https://doc.rust-lang.org/nightly/std/primitive.slice.html#method.as_simd
