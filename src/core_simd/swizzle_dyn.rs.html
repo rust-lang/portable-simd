@@ -338,8 +338,9 @@
 <a href=#338 id=338 data-nosnippet>338</a>#[allow(unused)]
 <a href=#339 id=339 data-nosnippet>339</a>#[inline(always)]
 <a href=#340 id=340 data-nosnippet>340</a></span><span class="kw">fn </span>zeroing_idxs&lt;<span class="kw">const </span>N: usize&gt;(idxs: Simd&lt;u8, N&gt;) -&gt; Simd&lt;u8, N&gt; {
-<a href=#341 id=341 data-nosnippet>341</a>    <span class="kw">use </span><span class="kw">crate</span>::simd::{Select, cmp::SimdPartialOrd};
-<a href=#342 id=342 data-nosnippet>342</a>    idxs.simd_lt(Simd::splat(N <span class="kw">as </span>u8))
-<a href=#343 id=343 data-nosnippet>343</a>        .select(idxs, Simd::splat(u8::MAX))
-<a href=#344 id=344 data-nosnippet>344</a>}
+<a href=#341 id=341 data-nosnippet>341</a>    <span class="comment">// Adding this sets the high bit for indices N..=127, while PSHUFB ignores
+<a href=#342 id=342 data-nosnippet>342</a>    // the other changed bits. The OR preserves the high bit for indices 128..=255.
+<a href=#343 id=343 data-nosnippet>343</a>    </span><span class="kw">let </span>zeroing_bits = idxs + Simd::splat((<span class="number">127 </span>- N + <span class="number">1</span>) <span class="kw">as </span>u8);
+<a href=#344 id=344 data-nosnippet>344</a>    idxs | zeroing_bits
+<a href=#345 id=345 data-nosnippet>345</a>}
 </code></pre></div></section></main></body></html>
