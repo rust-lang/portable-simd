@@ -73,13 +73,12 @@ impl<const N: usize> Simd<u8, N> {
                 16 => transize(x86::_mm_shuffle_epi8, self, zeroing_idxs(idxs)),
                 #[cfg(all(target_feature = "avx512vl", target_feature = "avx512vbmi"))]
                 32 => {
-                    // Unlike vpshufb, vpermb doesn't zero out values in the result based on the index high bit
                     let swizzler = |bytes, idxs| {
-                        let mask = x86::_mm256_cmp_epu8_mask::<{ x86::_MM_CMPINT_LT }>(
-                            idxs,
-                            Simd::<u8, 32>::splat(N as u8).into(),
-                        );
-                        x86::_mm256_maskz_permutexvar_epi8(mask, idxs, bytes)
+                        // Clamp out-of-range indices to the first byte of a
+                        // second, all-zero table.
+                        let idxs =
+                            x86::_mm256_min_epu8(idxs, Simd::<u8, 32>::splat(N as u8).into());
+                        x86::_mm256_permutex2var_epi8(bytes, idxs, x86::_mm256_setzero_si256())
                     };
                     transize(swizzler, self, idxs)
                 }
@@ -90,13 +89,12 @@ impl<const N: usize> Simd<u8, N> {
                 // Notable absence: avx512bw pshufb shuffle
                 #[cfg(all(target_feature = "avx512vl", target_feature = "avx512vbmi"))]
                 64 => {
-                    // Unlike vpshufb, vpermb doesn't zero out values in the result based on the index high bit
                     let swizzler = |bytes, idxs| {
-                        let mask = x86::_mm512_cmp_epu8_mask::<{ x86::_MM_CMPINT_LT }>(
-                            idxs,
-                            Simd::<u8, 64>::splat(N as u8).into(),
-                        );
-                        x86::_mm512_maskz_permutexvar_epi8(mask, idxs, bytes)
+                        // Clamp out-of-range indices to the first byte of a
+                        // second, all-zero table.
+                        let idxs =
+                            x86::_mm512_min_epu8(idxs, Simd::<u8, 64>::splat(N as u8).into());
+                        x86::_mm512_permutex2var_epi8(bytes, idxs, x86::_mm512_setzero_si512())
                     };
                     transize(swizzler, self, idxs)
                 }
