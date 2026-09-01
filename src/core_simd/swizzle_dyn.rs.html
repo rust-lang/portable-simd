@@ -265,80 +265,87 @@
 <a href=#265 id=265 data-nosnippet>265</a>    <span class="kw">use </span>x86::_mm256_shuffle_epi8 <span class="kw">as </span>avx2_half_pshufb;
 <a href=#266 id=266 data-nosnippet>266</a>    <span class="comment">// SAFETY: Caller promised AVX2
 <a href=#267 id=267 data-nosnippet>267</a>    </span><span class="kw">unsafe </span>{
-<a href=#268 id=268 data-nosnippet>268</a>        <span class="kw">let </span>lolo = avx2_cross_shuffle::&lt;<span class="number">0x00</span>&gt;(bytes.into(), bytes.into());
-<a href=#269 id=269 data-nosnippet>269</a>        <span class="kw">let </span>hihi = avx2_cross_shuffle::&lt;<span class="number">0x11</span>&gt;(bytes.into(), bytes.into());
-<a href=#270 id=270 data-nosnippet>270</a>
-<a href=#271 id=271 data-nosnippet>271</a>        <span class="comment">// Adding 0x60 preserves the low nibble and bit 4 for valid
-<a href=#272 id=272 data-nosnippet>272</a>        // indices 0..=31. Larger indices get their high bit set, so
-<a href=#273 id=273 data-nosnippet>273</a>        // VPSHUFB supplies the required out-of-bounds zeroing.
-<a href=#274 id=274 data-nosnippet>274</a>        </span><span class="kw">let </span>control = x86::_mm256_adds_epu8(idxs.into(), x86::_mm256_set1_epi8(<span class="number">0x60</span>));
-<a href=#275 id=275 data-nosnippet>275</a>
-<a href=#276 id=276 data-nosnippet>276</a>        <span class="comment">// Move index bit 4 into each byte's sign bit for VPBLENDVB.
-<a href=#277 id=277 data-nosnippet>277</a>        </span><span class="kw">let </span>select_high = x86::_mm256_slli_epi16::&lt;<span class="number">3</span>&gt;(control);
-<a href=#278 id=278 data-nosnippet>278</a>        <span class="kw">let </span>from_low = avx2_half_pshufb(lolo, control);
-<a href=#279 id=279 data-nosnippet>279</a>        <span class="kw">let </span>from_high = avx2_half_pshufb(hihi, control);
-<a href=#280 id=280 data-nosnippet>280</a>        x86::_mm256_blendv_epi8(from_low, from_high, select_high).into()
-<a href=#281 id=281 data-nosnippet>281</a>    }
-<a href=#282 id=282 data-nosnippet>282</a>}
-<a href=#283 id=283 data-nosnippet>283</a>
-<a href=#284 id=284 data-nosnippet>284</a><span class="doccomment">/// LoongArch64 LSX supports swizzling `u8x16`
-<a href=#285 id=285 data-nosnippet>285</a>///
-<a href=#286 id=286 data-nosnippet>286</a>/// # Safety
-<a href=#287 id=287 data-nosnippet>287</a>/// This requires LoongArch LSX to work
-<a href=#288 id=288 data-nosnippet>288</a></span><span class="attr">#[cfg(all(target_arch = <span class="string">"loongarch64"</span>, target_feature = <span class="string">"lsx"</span>))]
-<a href=#289 id=289 data-nosnippet>289</a></span><span class="kw">unsafe fn </span>loong64_lsx_swizzle(bytes: Simd&lt;u8, <span class="number">16</span>&gt;, idxs: Simd&lt;u8, <span class="number">16</span>&gt;) -&gt; Simd&lt;u8, <span class="number">16</span>&gt; {
-<a href=#290 id=290 data-nosnippet>290</a>    <span class="kw">use </span>core::arch::loongarch64::{lsx_vand_v, lsx_vshuf_b, lsx_vslei_bu};
-<a href=#291 id=291 data-nosnippet>291</a>    <span class="comment">// SAFETY: Caller promised loongarch lsx support
-<a href=#292 id=292 data-nosnippet>292</a>    </span><span class="kw">unsafe </span>{
-<a href=#293 id=293 data-nosnippet>293</a>        <span class="kw">let </span>bytes = lsx_vshuf_b(bytes.into(), bytes.into(), idxs.into());
-<a href=#294 id=294 data-nosnippet>294</a>        <span class="kw">let </span>mask = lsx_vslei_bu::&lt;<span class="number">15</span>&gt;(idxs.into());
-<a href=#295 id=295 data-nosnippet>295</a>        lsx_vand_v(bytes, mask).into()
-<a href=#296 id=296 data-nosnippet>296</a>    }
-<a href=#297 id=297 data-nosnippet>297</a>}
-<a href=#298 id=298 data-nosnippet>298</a>
-<a href=#299 id=299 data-nosnippet>299</a><span class="doccomment">/// LoongArch64 LASX supports swizzling `u8x32`
-<a href=#300 id=300 data-nosnippet>300</a>///
-<a href=#301 id=301 data-nosnippet>301</a>/// # Safety
-<a href=#302 id=302 data-nosnippet>302</a>/// This requires LoongArch LASX to work
-<a href=#303 id=303 data-nosnippet>303</a></span><span class="attr">#[cfg(all(target_arch = <span class="string">"loongarch64"</span>, target_feature = <span class="string">"lasx"</span>))]
-<a href=#304 id=304 data-nosnippet>304</a></span><span class="kw">unsafe fn </span>loong64_lasx_swizzle(bytes: Simd&lt;u8, <span class="number">32</span>&gt;, idxs: Simd&lt;u8, <span class="number">32</span>&gt;) -&gt; Simd&lt;u8, <span class="number">32</span>&gt; {
-<a href=#305 id=305 data-nosnippet>305</a>    <span class="kw">use </span>core::arch::loongarch64::{lasx_xvand_v, lasx_xvpermi_q, lasx_xvshuf_b, lasx_xvslei_bu};
-<a href=#306 id=306 data-nosnippet>306</a>    <span class="comment">// SAFETY: Caller promised loongarch lasx support
-<a href=#307 id=307 data-nosnippet>307</a>    </span><span class="kw">unsafe </span>{
-<a href=#308 id=308 data-nosnippet>308</a>        <span class="kw">let </span>lolo = lasx_xvpermi_q::&lt;<span class="number">0x00</span>&gt;(bytes.into(), bytes.into());
-<a href=#309 id=309 data-nosnippet>309</a>        <span class="kw">let </span>hihi = lasx_xvpermi_q::&lt;<span class="number">0x11</span>&gt;(bytes.into(), bytes.into());
-<a href=#310 id=310 data-nosnippet>310</a>        <span class="kw">let </span>bytes = lasx_xvshuf_b(hihi, lolo, idxs.into());
-<a href=#311 id=311 data-nosnippet>311</a>        <span class="kw">let </span>mask = lasx_xvslei_bu::&lt;<span class="number">31</span>&gt;(idxs.into());
-<a href=#312 id=312 data-nosnippet>312</a>        lasx_xvand_v(bytes, mask).into()
-<a href=#313 id=313 data-nosnippet>313</a>    }
-<a href=#314 id=314 data-nosnippet>314</a>}
-<a href=#315 id=315 data-nosnippet>315</a>
-<a href=#316 id=316 data-nosnippet>316</a><span class="doccomment">/// This sets up a call to an architecture-specific function, and in doing so
-<a href=#317 id=317 data-nosnippet>317</a>/// it persuades rustc that everything is the correct size. Which it is.
-<a href=#318 id=318 data-nosnippet>318</a>/// This would not be needed if one could convince Rust that, by matching on N,
-<a href=#319 id=319 data-nosnippet>319</a>/// N is that value, and thus it would be valid to substitute e.g. 16.
-<a href=#320 id=320 data-nosnippet>320</a>///
-<a href=#321 id=321 data-nosnippet>321</a>/// # Safety
-<a href=#322 id=322 data-nosnippet>322</a>/// The correctness of this function hinges on the sizes agreeing in actuality.
-<a href=#323 id=323 data-nosnippet>323</a></span><span class="attr">#[allow(dead_code)]
-<a href=#324 id=324 data-nosnippet>324</a>#[inline(always)]
-<a href=#325 id=325 data-nosnippet>325</a></span><span class="kw">unsafe fn </span>transize&lt;T, <span class="kw">const </span>N: usize&gt;(
-<a href=#326 id=326 data-nosnippet>326</a>    f: <span class="kw">unsafe fn</span>(T, T) -&gt; T,
-<a href=#327 id=327 data-nosnippet>327</a>    a: Simd&lt;u8, N&gt;,
-<a href=#328 id=328 data-nosnippet>328</a>    b: Simd&lt;u8, N&gt;,
-<a href=#329 id=329 data-nosnippet>329</a>) -&gt; Simd&lt;u8, N&gt; {
-<a href=#330 id=330 data-nosnippet>330</a>    <span class="comment">// SAFETY: Same obligation to use this function as to use mem::transmute_copy.
-<a href=#331 id=331 data-nosnippet>331</a>    </span><span class="kw">unsafe </span>{ mem::transmute_copy(<span class="kw-2">&amp;</span>f(mem::transmute_copy(<span class="kw-2">&amp;</span>a), mem::transmute_copy(<span class="kw-2">&amp;</span>b))) }
-<a href=#332 id=332 data-nosnippet>332</a>}
-<a href=#333 id=333 data-nosnippet>333</a>
-<a href=#334 id=334 data-nosnippet>334</a><span class="doccomment">/// Make indices that yield 0 for x86
-<a href=#335 id=335 data-nosnippet>335</a></span><span class="attr">#[cfg(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>))]
-<a href=#336 id=336 data-nosnippet>336</a>#[allow(unused)]
-<a href=#337 id=337 data-nosnippet>337</a>#[inline(always)]
-<a href=#338 id=338 data-nosnippet>338</a></span><span class="kw">fn </span>zeroing_idxs&lt;<span class="kw">const </span>N: usize&gt;(idxs: Simd&lt;u8, N&gt;) -&gt; Simd&lt;u8, N&gt; {
-<a href=#339 id=339 data-nosnippet>339</a>    <span class="comment">// Adding this sets the high bit for indices N..=127, while PSHUFB ignores
-<a href=#340 id=340 data-nosnippet>340</a>    // the other changed bits. The OR preserves the high bit for indices 128..=255.
-<a href=#341 id=341 data-nosnippet>341</a>    </span><span class="kw">let </span>zeroing_bits = idxs + Simd::splat((<span class="number">127 </span>- N + <span class="number">1</span>) <span class="kw">as </span>u8);
-<a href=#342 id=342 data-nosnippet>342</a>    idxs | zeroing_bits
-<a href=#343 id=343 data-nosnippet>343</a>}
+<a href=#268 id=268 data-nosnippet>268</a>        <span class="kw">let </span>bytes = bytes.into();
+<a href=#269 id=269 data-nosnippet>269</a>        <span class="kw">let </span>indices = idxs.into();
+<a href=#270 id=270 data-nosnippet>270</a>        <span class="kw">let </span>swapped = avx2_cross_shuffle::&lt;<span class="number">0x01</span>&gt;(bytes, bytes);
+<a href=#271 id=271 data-nosnippet>271</a>
+<a href=#272 id=272 data-nosnippet>272</a>        <span class="comment">// Adding 0x60 preserves the low nibble and bit 4 for valid
+<a href=#273 id=273 data-nosnippet>273</a>        // indices 0..=31. Larger indices get their high bit set, so
+<a href=#274 id=274 data-nosnippet>274</a>        // VPSHUFB supplies the required out-of-bounds zeroing.
+<a href=#275 id=275 data-nosnippet>275</a>        </span><span class="kw">let </span>control = x86::_mm256_adds_epu8(indices, x86::_mm256_set1_epi8(<span class="number">0x60</span>));
+<a href=#276 id=276 data-nosnippet>276</a>
+<a href=#277 id=277 data-nosnippet>277</a>        <span class="kw">let </span>local = avx2_half_pshufb(bytes, control);
+<a href=#278 id=278 data-nosnippet>278</a>        <span class="kw">let </span>remote = avx2_half_pshufb(swapped, control);
+<a href=#279 id=279 data-nosnippet>279</a>
+<a href=#280 id=280 data-nosnippet>280</a>        <span class="comment">// In the low lane, adding 0x10 moves the valid index's bit 4
+<a href=#281 id=281 data-nosnippet>281</a>        // into the sign bit. The high lane has the opposite
+<a href=#282 id=282 data-nosnippet>282</a>        // local/remote mapping, so adding 0x90 flips the selection.
+<a href=#283 id=283 data-nosnippet>283</a>        // Out-of-range indices already zeroed both shuffle results,
+<a href=#284 id=284 data-nosnippet>284</a>        // making the blend selection irrelevant for them.
+<a href=#285 id=285 data-nosnippet>285</a>        </span><span class="kw">let </span>select_bias = x86::_mm256_set_m128i(x86::_mm_set1_epi8(-<span class="number">112</span>), x86::_mm_set1_epi8(<span class="number">16</span>));
+<a href=#286 id=286 data-nosnippet>286</a>        <span class="kw">let </span>select_remote = x86::_mm256_add_epi8(control, select_bias);
+<a href=#287 id=287 data-nosnippet>287</a>        x86::_mm256_blendv_epi8(local, remote, select_remote).into()
+<a href=#288 id=288 data-nosnippet>288</a>    }
+<a href=#289 id=289 data-nosnippet>289</a>}
+<a href=#290 id=290 data-nosnippet>290</a>
+<a href=#291 id=291 data-nosnippet>291</a><span class="doccomment">/// LoongArch64 LSX supports swizzling `u8x16`
+<a href=#292 id=292 data-nosnippet>292</a>///
+<a href=#293 id=293 data-nosnippet>293</a>/// # Safety
+<a href=#294 id=294 data-nosnippet>294</a>/// This requires LoongArch LSX to work
+<a href=#295 id=295 data-nosnippet>295</a></span><span class="attr">#[cfg(all(target_arch = <span class="string">"loongarch64"</span>, target_feature = <span class="string">"lsx"</span>))]
+<a href=#296 id=296 data-nosnippet>296</a></span><span class="kw">unsafe fn </span>loong64_lsx_swizzle(bytes: Simd&lt;u8, <span class="number">16</span>&gt;, idxs: Simd&lt;u8, <span class="number">16</span>&gt;) -&gt; Simd&lt;u8, <span class="number">16</span>&gt; {
+<a href=#297 id=297 data-nosnippet>297</a>    <span class="kw">use </span>core::arch::loongarch64::{lsx_vand_v, lsx_vshuf_b, lsx_vslei_bu};
+<a href=#298 id=298 data-nosnippet>298</a>    <span class="comment">// SAFETY: Caller promised loongarch lsx support
+<a href=#299 id=299 data-nosnippet>299</a>    </span><span class="kw">unsafe </span>{
+<a href=#300 id=300 data-nosnippet>300</a>        <span class="kw">let </span>bytes = lsx_vshuf_b(bytes.into(), bytes.into(), idxs.into());
+<a href=#301 id=301 data-nosnippet>301</a>        <span class="kw">let </span>mask = lsx_vslei_bu::&lt;<span class="number">15</span>&gt;(idxs.into());
+<a href=#302 id=302 data-nosnippet>302</a>        lsx_vand_v(bytes, mask).into()
+<a href=#303 id=303 data-nosnippet>303</a>    }
+<a href=#304 id=304 data-nosnippet>304</a>}
+<a href=#305 id=305 data-nosnippet>305</a>
+<a href=#306 id=306 data-nosnippet>306</a><span class="doccomment">/// LoongArch64 LASX supports swizzling `u8x32`
+<a href=#307 id=307 data-nosnippet>307</a>///
+<a href=#308 id=308 data-nosnippet>308</a>/// # Safety
+<a href=#309 id=309 data-nosnippet>309</a>/// This requires LoongArch LASX to work
+<a href=#310 id=310 data-nosnippet>310</a></span><span class="attr">#[cfg(all(target_arch = <span class="string">"loongarch64"</span>, target_feature = <span class="string">"lasx"</span>))]
+<a href=#311 id=311 data-nosnippet>311</a></span><span class="kw">unsafe fn </span>loong64_lasx_swizzle(bytes: Simd&lt;u8, <span class="number">32</span>&gt;, idxs: Simd&lt;u8, <span class="number">32</span>&gt;) -&gt; Simd&lt;u8, <span class="number">32</span>&gt; {
+<a href=#312 id=312 data-nosnippet>312</a>    <span class="kw">use </span>core::arch::loongarch64::{lasx_xvand_v, lasx_xvpermi_q, lasx_xvshuf_b, lasx_xvslei_bu};
+<a href=#313 id=313 data-nosnippet>313</a>    <span class="comment">// SAFETY: Caller promised loongarch lasx support
+<a href=#314 id=314 data-nosnippet>314</a>    </span><span class="kw">unsafe </span>{
+<a href=#315 id=315 data-nosnippet>315</a>        <span class="kw">let </span>lolo = lasx_xvpermi_q::&lt;<span class="number">0x00</span>&gt;(bytes.into(), bytes.into());
+<a href=#316 id=316 data-nosnippet>316</a>        <span class="kw">let </span>hihi = lasx_xvpermi_q::&lt;<span class="number">0x11</span>&gt;(bytes.into(), bytes.into());
+<a href=#317 id=317 data-nosnippet>317</a>        <span class="kw">let </span>bytes = lasx_xvshuf_b(hihi, lolo, idxs.into());
+<a href=#318 id=318 data-nosnippet>318</a>        <span class="kw">let </span>mask = lasx_xvslei_bu::&lt;<span class="number">31</span>&gt;(idxs.into());
+<a href=#319 id=319 data-nosnippet>319</a>        lasx_xvand_v(bytes, mask).into()
+<a href=#320 id=320 data-nosnippet>320</a>    }
+<a href=#321 id=321 data-nosnippet>321</a>}
+<a href=#322 id=322 data-nosnippet>322</a>
+<a href=#323 id=323 data-nosnippet>323</a><span class="doccomment">/// This sets up a call to an architecture-specific function, and in doing so
+<a href=#324 id=324 data-nosnippet>324</a>/// it persuades rustc that everything is the correct size. Which it is.
+<a href=#325 id=325 data-nosnippet>325</a>/// This would not be needed if one could convince Rust that, by matching on N,
+<a href=#326 id=326 data-nosnippet>326</a>/// N is that value, and thus it would be valid to substitute e.g. 16.
+<a href=#327 id=327 data-nosnippet>327</a>///
+<a href=#328 id=328 data-nosnippet>328</a>/// # Safety
+<a href=#329 id=329 data-nosnippet>329</a>/// The correctness of this function hinges on the sizes agreeing in actuality.
+<a href=#330 id=330 data-nosnippet>330</a></span><span class="attr">#[allow(dead_code)]
+<a href=#331 id=331 data-nosnippet>331</a>#[inline(always)]
+<a href=#332 id=332 data-nosnippet>332</a></span><span class="kw">unsafe fn </span>transize&lt;T, <span class="kw">const </span>N: usize&gt;(
+<a href=#333 id=333 data-nosnippet>333</a>    f: <span class="kw">unsafe fn</span>(T, T) -&gt; T,
+<a href=#334 id=334 data-nosnippet>334</a>    a: Simd&lt;u8, N&gt;,
+<a href=#335 id=335 data-nosnippet>335</a>    b: Simd&lt;u8, N&gt;,
+<a href=#336 id=336 data-nosnippet>336</a>) -&gt; Simd&lt;u8, N&gt; {
+<a href=#337 id=337 data-nosnippet>337</a>    <span class="comment">// SAFETY: Same obligation to use this function as to use mem::transmute_copy.
+<a href=#338 id=338 data-nosnippet>338</a>    </span><span class="kw">unsafe </span>{ mem::transmute_copy(<span class="kw-2">&amp;</span>f(mem::transmute_copy(<span class="kw-2">&amp;</span>a), mem::transmute_copy(<span class="kw-2">&amp;</span>b))) }
+<a href=#339 id=339 data-nosnippet>339</a>}
+<a href=#340 id=340 data-nosnippet>340</a>
+<a href=#341 id=341 data-nosnippet>341</a><span class="doccomment">/// Make indices that yield 0 for x86
+<a href=#342 id=342 data-nosnippet>342</a></span><span class="attr">#[cfg(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>))]
+<a href=#343 id=343 data-nosnippet>343</a>#[allow(unused)]
+<a href=#344 id=344 data-nosnippet>344</a>#[inline(always)]
+<a href=#345 id=345 data-nosnippet>345</a></span><span class="kw">fn </span>zeroing_idxs&lt;<span class="kw">const </span>N: usize&gt;(idxs: Simd&lt;u8, N&gt;) -&gt; Simd&lt;u8, N&gt; {
+<a href=#346 id=346 data-nosnippet>346</a>    <span class="comment">// Adding this sets the high bit for indices N..=127, while PSHUFB ignores
+<a href=#347 id=347 data-nosnippet>347</a>    // the other changed bits. The OR preserves the high bit for indices 128..=255.
+<a href=#348 id=348 data-nosnippet>348</a>    </span><span class="kw">let </span>zeroing_bits = idxs + Simd::splat((<span class="number">127 </span>- N + <span class="number">1</span>) <span class="kw">as </span>u8);
+<a href=#349 id=349 data-nosnippet>349</a>    idxs | zeroing_bits
+<a href=#350 id=350 data-nosnippet>350</a>}
 </code></pre></div></section></main></body></html>
