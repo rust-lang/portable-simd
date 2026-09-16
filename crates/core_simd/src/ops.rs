@@ -9,29 +9,6 @@ mod deref;
 mod shift_scalar;
 mod unary;
 
-impl<I, T, const N: usize> core::ops::Index<I> for Simd<T, N>
-where
-    T: SimdElement,
-    I: core::slice::SliceIndex<[T]>,
-{
-    type Output = I::Output;
-    #[inline]
-    fn index(&self, index: I) -> &Self::Output {
-        &self.as_array()[index]
-    }
-}
-
-impl<I, T, const N: usize> core::ops::IndexMut<I> for Simd<T, N>
-where
-    T: SimdElement,
-    I: core::slice::SliceIndex<[T]>,
-{
-    #[inline]
-    fn index_mut(&mut self, index: I) -> &mut Self::Output {
-        &mut self.as_mut_array()[index]
-    }
-}
-
 macro_rules! unsafe_base {
     ($lhs:ident, $rhs:ident, {$simd_call:ident}, $($_:tt)*) => {
         // Safety: $lhs and $rhs are vectors
@@ -101,7 +78,8 @@ macro_rules! int_divrem_guard {
             {
                 let mut out = Simd::splat(0 as _);
                 for i in 0..Self::LEN {
-                    out[i] = $lhs[i] $op rhs[i];
+                    let val = $lhs.get(i) $op rhs.get(i);
+                    out = out.set(i, val);
                 }
                 out
             }

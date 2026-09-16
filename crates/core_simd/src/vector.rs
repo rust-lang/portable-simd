@@ -155,6 +155,11 @@ where
 
     /// Returns an array reference containing the entire SIMD vector.
     ///
+    /// While this exists and *can* be used to read an arbitrary element from a
+    /// vector, like `v.as_array()[i]`, that's discouraged because it forces the
+    /// vector to memory which tends to perform poorly.  Instead, use
+    /// [`Self::get`].  (This is also why `Index` is not implemented.)
+    ///
     /// # Examples
     ///
     /// ```
@@ -175,6 +180,11 @@ where
     }
 
     /// Returns a mutable array reference containing the entire SIMD vector.
+    ///
+    /// While this exists and *can* be used to write an arbitrary element into a
+    /// vector, like `v.as_mut_array()[i] = x`, that's discouraged because it
+    /// forces the vector to memory which tends to perform poorly.  Instead, use
+    /// [`Self::set`].  (This is also why `IndexMut` is not implemented.)
     #[inline]
     pub const fn as_mut_array(&mut self) -> &mut [T; N] {
         // SAFETY: `Simd<T, N>` is just an overaligned `[T; N]` with
@@ -184,6 +194,147 @@ where
         // NOTE: This deliberately doesn't just use `&mut self.0`, see the comment
         // on the struct definition for details.
         unsafe { &mut *(self as *mut Self as *mut [T; N]) }
+    }
+
+    /// # Safety
+    /// `idx` must be in-bounds (`idx < N`)
+    #[inline]
+    unsafe fn get_inner(self, idx: usize) -> T {
+        // FIXME: This is a workaround for a CI failure in #498
+        if cfg!(target_family = "wasm") {
+            return self.as_array()[idx];
+        }
+
+        // SAFETY: our precondition is also that the value is in-bounds
+        // and this type is a simd type of the correct element type.
+        unsafe { core::intrinsics::simd::simd_extract_dyn(self, idx as u32) }
+    }
+
+    /// Gets the value at `idx` to `val`.
+    ///
+    /// This typically faster than reading via `as_array`.
+    ///
+    /// # Panics
+    ///
+    /// If `idx` is out of bounds (aka if `idx >= N`).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{Simd, u64x4};
+    /// let v: u64x4 = Simd::from_array([3, 5, 7, 11]);
+    /// assert_eq!(v.get(2), 7);
+    /// ```
+    #[inline]
+    pub fn get(self, idx: usize) -> T {
+        assert!(idx < N);
+        // SAFETY: just checked in-bounds with the assert
+        unsafe { self.get_inner(idx) }
+    }
+
+    /// Gets the value at `idx` to `val`, or `None` if `idx >= N`.
+    ///
+    /// This typically faster than reading via `as_array`.
+    #[inline]
+    pub fn get_checked(self, idx: usize) -> Option<T> {
+        if idx < N {
+            // SAFETY: just checked in-bounds with the if
+            Some(unsafe { self.get_inner(idx) })
+        } else {
+            None
+        }
+    }
+
+    /// Gets the value at `idx` to `val`.
+    ///
+    /// This typically faster than reading via `as_array`.
+    ///
+    /// # Safety
+    /// `idx` must be in-bounds (`idx < N`)
+    #[inline]
+    pub unsafe fn get_unchecked(self, idx: usize) -> T {
+        // SAFETY: our precondition is also that the value is in-bounds
+        unsafe {
+            core::hint::assert_unchecked(idx < N);
+            self.get_inner(idx)
+        }
+    }
+
+    /// # Safety
+    /// `idx` must be in-bounds (`idx < N`)
+    #[inline]
+    #[must_use = "This returns a new vector, rather than updating in-place"]
+    unsafe fn set_inner(self, idx: usize, val: T) -> Self {
+        // FIXME: This is a workaround for a CI failure in #498
+        if cfg!(target_family = "wasm") {
+            let mut temp = self;
+            temp.as_mut_array()[idx] = val;
+            return temp;
+        }
+
+        // SAFETY: our precondition is also that the value is in-bounds
+        // and this type is a simd type of the correct element type.
+        unsafe { core::intrinsics::simd::simd_insert_dyn(self, idx as u32, val) }
+    }
+
+    /// Sets the value at `idx` to `val`, returning the updated vector.
+    ///
+    /// This typically faster than updating via `as_mut_array`.
+    ///
+    /// # Panics
+    ///
+    /// If `idx` is out of bounds (aka if `idx >= N`).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![feature(portable_simd)]
+    /// # #[cfg(feature = "as_crate")] use core_simd::simd;
+    /// # #[cfg(not(feature = "as_crate"))] use core::simd;
+    /// # use simd::{Simd, u64x4};
+    /// let v: u64x4 = Simd::from_array([3, 5, 7, 11]);
+    /// assert_eq!(v.set(2, 99).as_array(), &[3, 5, 99, 11]);
+    /// ```
+    #[inline]
+    #[must_use = "This returns a new vector, rather than updating in-place"]
+    pub fn set(self, idx: usize, val: T) -> Self {
+        assert!(idx < N);
+        // SAFETY: just checked in-bounds with the assert
+        unsafe { self.set_inner(idx, val) }
+    }
+
+    /// Sets the value at `idx` to `val` and returns the updated vector
+    /// or returns `None` if `idx >= N`.
+    ///
+    /// This typically faster than updating via `as_mut_array`.
+    #[inline]
+    #[must_use = "This returns a new vector, rather than updating in-place"]
+    pub fn set_checked(self, idx: usize, val: T) -> Option<Self> {
+        if idx < N {
+            // SAFETY: just checked in-bounds with the if
+            Some(unsafe { self.set_inner(idx, val) })
+        } else {
+            None
+        }
+    }
+
+    /// Sets the value at `idx` to `val`, returning the updated vector.
+    ///
+    /// This typically faster than updating via `as_mut_array`.
+    ///
+    /// # Safety
+    /// `idx` must be in-bounds (`idx < N`)
+    #[inline]
+    #[must_use = "This returns a new vector, rather than updating in-place"]
+    pub unsafe fn set_unchecked(self, idx: usize, val: T) -> Self {
+        // SAFETY: our precondition is also that the value is in-bounds
+        unsafe {
+            core::hint::assert_unchecked(idx < N);
+            self.set_inner(idx, val)
+        }
     }
 
     /// Loads a vector from an array of `T`.

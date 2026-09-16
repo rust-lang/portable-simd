@@ -139,8 +139,8 @@ mod nbody {
                 (r[i + 1] * r[i + 1]).reduce_sum(),
             ]);
             let dmags = f64x2::splat(dt) / (d2s * d2s.sqrt());
-            mag[i] = dmags[0];
-            mag[i + 1] = dmags[1];
+            mag[i] = dmags.get(0);
+            mag[i + 1] = dmags.get(1);
         }
 
         let mut i = 0;
