@@ -106,7 +106,7 @@ impl<const N: usize> Simd<u8, N> {
                     let mut array = [0; N];
                     for (i, k) in idxs.to_array().into_iter().enumerate() {
                         if (k as usize) < N {
-                            array[i] = self[k as usize];
+                            array[i] = self.get(k as usize);
                         };
                     }
                     array.into()
