@@ -155,6 +155,8 @@ where
 
     /// Returns an array reference containing the entire SIMD vector.
     ///
+    /// For reading a single element, prefer [`Self::get`], which may optimize better.
+    ///
     /// # Examples
     ///
     /// ```
@@ -175,6 +177,8 @@ where
     }
 
     /// Returns a mutable array reference containing the entire SIMD vector.
+    ///
+    /// For updating a single element, prefer [`Self::set`], which may optimize better.
     #[inline]
     pub const fn as_mut_array(&mut self) -> &mut [T; N] {
         // SAFETY: `Simd<T, N>` is just an overaligned `[T; N]` with
@@ -184,6 +188,77 @@ where
         // NOTE: This deliberately doesn't just use `&mut self.0`, see the comment
         // on the struct definition for details.
         unsafe { &mut *(self as *mut Self as *mut [T; N]) }
+    }
+
+    /// Returns the element at `index`.
+    ///
+    /// This may optimize better than reading an element via [`Self::as_array`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if `index` is greater than or equal to the number of elements in the vector.
+    #[inline]
+    #[must_use]
+    #[track_caller]
+    pub fn get(&self, index: usize) -> T {
+        assert!(
+            index < N,
+            "index out of bounds: the len is {N} but the index is {index}"
+        );
+        // safety: index < N
+        unsafe { self.get_unchecked(index) }
+    }
+
+    /// Returns the element at `index` without checking bounds.
+    ///
+    /// # Safety
+    ///
+    /// `index` must be less than the number of elements in the vector.
+    #[inline]
+    #[must_use]
+    pub unsafe fn get_unchecked(&self, index: usize) -> T {
+        // safety: the caller guarantees that index < N
+        unsafe {
+            core::hint::assert_unchecked(index < N);
+            core::intrinsics::simd::simd_extract_dyn(*self, index as u32)
+        }
+    }
+
+    /// Sets the element at `index` to `value`.
+    ///
+    /// This may optimize better than updating an element via [`Self::as_mut_array`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if `index` is greater than or equal to the number of elements in the vector.
+    #[inline]
+    #[track_caller]
+    pub fn set(&mut self, index: usize, value: T) {
+        assert!(
+            index < N,
+            "index out of bounds: the len is {N} but the index is {index}"
+        );
+        // safety: index < N
+        unsafe { self.set_unchecked(index, value) }
+    }
+
+    /// Sets the element at `index` to `value` without checking bounds.
+    ///
+    /// # Safety
+    ///
+    /// `index` must be less than the number of elements in the vector.
+    #[inline]
+    pub unsafe fn set_unchecked(&mut self, index: usize, value: T) {
+        // safety: the caller guarantees that index < N
+        unsafe {
+            core::hint::assert_unchecked(index < N);
+            if cfg!(target_arch = "wasm32") {
+                // work around https://github.com/llvm/llvm-project/issues/190306
+                *self.as_mut_array().get_unchecked_mut(index) = value;
+            } else {
+                *self = core::intrinsics::simd::simd_insert_dyn(*self, index as u32, value);
+            }
+        }
     }
 
     /// Loads a vector from an array of `T`.
