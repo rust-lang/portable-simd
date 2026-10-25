@@ -252,7 +252,12 @@ where
         // safety: the caller guarantees that index < N
         unsafe {
             core::hint::assert_unchecked(index < N);
-            *self = core::intrinsics::simd::simd_insert_dyn(*self, index as u32, value);
+            if cfg!(target_arch = "wasm32") {
+                // work around https://github.com/llvm/llvm-project/issues/190306
+                *self.as_mut_array().get_unchecked_mut(index) = value;
+            } else {
+                *self = core::intrinsics::simd::simd_insert_dyn(*self, index as u32, value);
+            }
         }
     }
 
