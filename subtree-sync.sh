@@ -2,7 +2,7 @@
 
 # Script for performing pulls (pull changes from rust-lang/rust) and pushes
 # (push changes to rust-lang/rust) using Josh.
-# Install the https://github.com/rust-lang/josh-sync to use this script.
+# Install https://github.com/rust-lang/josh-sync to use this script.
 # Usage:
 # 1. Pull
 # ./subtree-sync.sh pull
