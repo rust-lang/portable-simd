@@ -89,7 +89,7 @@ where
         where
             T: SimdElement,
         {
-            let default = true_values[0];
+            let default = true_values.get(0);
             let true_values = true_values.resize::<M>(default);
             let false_values = false_values.resize::<M>(default);
 
