@@ -1,11 +1,18 @@
 #!/bin/bash
 
+# Script for performing pulls (pull changes from rust-lang/rust) and pushes
+# (push changes to rust-lang/rust) using Josh.
+# Install the https://github.com/rust-lang/josh-sync to use this script.
+# Usage:
+# 1. Pull
+# ./subtree-sync.sh pull
+#
+# 2. Push
+# ./subtree-sync.sh push <github-username>
+
 set -eou pipefail
 
 git fetch origin
-pushd $2
-git fetch origin
-popd
 
 if [ "$(git rev-parse --show-prefix)" != "" ]; then
     echo "Run this script from the git root" >&2
@@ -17,36 +24,17 @@ if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
     exit 1
 fi
 
-if [ ! -f library/portable-simd/git-subtree.sh ]; then
-    curl -sS https://raw.githubusercontent.com/bjorn3/git/tqc-subtree-portable/contrib/subtree/git-subtree.sh -o library/portable-simd/git-subtree.sh
-    chmod +x library/portable-simd/git-subtree.sh
-fi
-
 today=$(date +%Y-%m-%d)
 
 case $1 in
     "push")
-        upstream=rust-upstream-$today
-        merge=sync-from-rust-$today
-
-        pushd $2
-        git checkout main
-        git pull
-        popd
-
-        library/portable-simd/git-subtree.sh push -P library/portable-simd $2 $upstream
-
-        pushd $2
-        git checkout -B $merge origin/main
-        git merge $upstream
-        popd
-        echo "Branch \`$merge\` created in \`$2\`. You may need to resolve merge conflicts."
+        username=${2}
+        branch=sync-to-rust-${today}
+        rustc-josh-sync push "${branch}" "${username}"
         ;;
     "pull")
-        branch=sync-from-portable-simd-$today
-
-        git checkout -B $branch
-        echo "Creating branch \`$branch\`... You may need to resolve merge conflicts."
-        library/portable-simd/git-subtree.sh pull -P library/portable-simd $2 origin/main
+        branch=sync-from-rust-${today}
+        git checkout -B "${branch}"
+        rustc-josh-sync pull
         ;;
 esac
