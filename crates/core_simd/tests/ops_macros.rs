@@ -263,6 +263,46 @@ macro_rules! impl_common_integer_tests {
                     &|_| true,
                 )
             }
+
+            fn unchecked_shl<const LANES: usize>() {
+                // Test with valid shift amounts
+                let a = $vector::<LANES>::splat(1);
+                let b = $vector::<LANES>::splat(2);
+                let result = unsafe { a.unchecked_shl(b) };
+                assert_eq!(result, $vector::<LANES>::splat(4));
+
+                // Test with zero shift
+                let a = $vector::<LANES>::splat(42);
+                let b = $vector::<LANES>::splat(0);
+                let result = unsafe { a.unchecked_shl(b) };
+                assert_eq!(result, $vector::<LANES>::splat(42));
+
+                // Test with shift by 1
+                let a = $vector::<LANES>::splat(8);
+                let b = $vector::<LANES>::splat(1);
+                let result = unsafe { a.unchecked_shl(b) };
+                assert_eq!(result, $vector::<LANES>::splat(16));
+            }
+
+            fn unchecked_shr<const LANES: usize>() {
+                // Test with valid shift amounts
+                let a = $vector::<LANES>::splat(16);
+                let b = $vector::<LANES>::splat(2);
+                let result = unsafe { a.unchecked_shr(b) };
+                assert_eq!(result, $vector::<LANES>::splat(4));
+
+                // Test with zero shift
+                let a = $vector::<LANES>::splat(42);
+                let b = $vector::<LANES>::splat(0);
+                let result = unsafe { a.unchecked_shr(b) };
+                assert_eq!(result, $vector::<LANES>::splat(42));
+
+                // Test with shift by 1
+                let a = $vector::<LANES>::splat(8);
+                let b = $vector::<LANES>::splat(1);
+                let result = unsafe { a.unchecked_shr(b) };
+                assert_eq!(result, $vector::<LANES>::splat(4));
+            }
         }
     }
 }
