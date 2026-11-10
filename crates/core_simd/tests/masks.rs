@@ -66,11 +66,10 @@ macro_rules! test_mask_api {
                 }
             }
 
-            // LLVM can crash compiling this test on Windows x86-64 with AVX-512.
+            // LLVM can crash compiling this test on x86-64 with AVX-512.
             // https://github.com/llvm/llvm-project/issues/231707
             #[cfg(not(all(
                 target_arch = "x86_64",
-                target_os = "windows",
                 target_feature = "avx512f",
             )))]
             test_helpers::test_lanes! {
