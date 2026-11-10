@@ -110,7 +110,7 @@
 <a href=#110 id=110 data-nosnippet>110</a>                    <span class="kw">let </span><span class="kw-2">mut </span>array = [<span class="number">0</span>; N];
 <a href=#111 id=111 data-nosnippet>111</a>                    <span class="kw">for </span>(i, k) <span class="kw">in </span>idxs.to_array().into_iter().enumerate() {
 <a href=#112 id=112 data-nosnippet>112</a>                        <span class="kw">if </span>(k <span class="kw">as </span>usize) &lt; N {
-<a href=#113 id=113 data-nosnippet>113</a>                            array[i] = <span class="self">self</span>[k <span class="kw">as </span>usize];
+<a href=#113 id=113 data-nosnippet>113</a>                            array[i] = <span class="self">self</span>.get(k <span class="kw">as </span>usize);
 <a href=#114 id=114 data-nosnippet>114</a>                        };
 <a href=#115 id=115 data-nosnippet>115</a>                    }
 <a href=#116 id=116 data-nosnippet>116</a>                    array.into()
